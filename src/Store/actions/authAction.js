@@ -1,44 +1,32 @@
 import axios from 'axios';
-import { FETCH_POSTS, NEW_POST, GET_ERRORS } from './types';
-import setAuthToken from '../../Utils/setAuthToken';
-import { URL } from '../../Utils/globalVaribals';
-const USERS = 'api/users';
+import { FETCH_POSTS, NEW_POST, GET_ERRORS, LOGIN_SUCCESS } from './types';
+import { userService } from '../../servises';
+import { redirect } from '../../helpers';
 
-export const loginUser = userData => dispatch => {
-    axios
-        .post(`${URL}/${USERS}/login`, userData)
-        .then(res => {
-            console.log(res.data);
-            const cookieData = document.cookie;
-            console.log(cookieData)
-        })
 
-        // httpService.post(USERS + '/login', userData)
-        //     .then(res => {
-        //         console.log(res);
-        //     })
-        // Save to localStorage
-        // const { token } = res.data;
-        // // Set token to ls
-        // localStorage.setItem('jwtToken', token);
-        // // Set token to Auth header
-        // setAuthToken(token);
-        // // Decode token to get user data
-        // const decoded = jwt_decode(token);
-        // console.log(decoded);
-        // // Set current user
-        // dispatch(setCurrentUser(decoded));
-        .catch(err => {
-            console.log('ERR', err.response.data);
-            dispatch({
-                type: GET_ERRORS,
-                payload: err.response.data
-
-            });
-        })
+export const loginUser = userData => {
+    return dispatch => {
+        userService.login(userData)
+            .then(
+                user => {
+                    dispatch(success(user));
+                    redirect('/');
+                },
+                error => {
+                    console.log('eerrr', error);
+                    dispatch(failure(error));
+                    // dispatch(alertActions.error(error.toString()));
+                }
+            );
+        function success(user) { return { type: LOGIN_SUCCESS, payload: user } }
+    }
 }
 
+function failure(error) { return { type: GET_ERRORS, payload: error.error } }
 
+export const setCurrentUser = user => {
+    return { type: LOGIN_SUCCESS, payload: user }
+}
 export const fetchPosts = () => dispatch => {
     console.log('fatching action');
     fetch('https://jsonplaceholder.typicode.com/posts')

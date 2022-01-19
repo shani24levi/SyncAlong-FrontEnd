@@ -4,7 +4,7 @@ import rootReducer from './reducers';
 
 const initialState = {};
 
-const middleware = [thunk];
+const middleware = [thunk]; //for aysnc await calls 
 
 const store = createStore(
     rootReducer,
