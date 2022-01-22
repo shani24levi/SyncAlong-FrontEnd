@@ -1,7 +1,8 @@
 import axios from 'axios';
-import { FETCH_POSTS, NEW_POST, GET_ERRORS, LOGIN_SUCCESS } from './types';
+import { GET_ERRORS, LOGIN_SUCCESS, GET_CURR_USER, REGRISTER_SUCCESS } from './types';
 import { userService } from '../../servises';
 import { redirect } from '../../helpers';
+import { alertActions } from './alertActions';
 
 
 export const loginUser = userData => {
@@ -22,33 +23,24 @@ export const loginUser = userData => {
     }
 }
 
-function failure(error) { return { type: GET_ERRORS, payload: error.error } }
+export const setCurrentUser = user => { return { type: LOGIN_SUCCESS, payload: user } }
+export const currentUser = () => { return { type: GET_CURR_USER } }
 
-export const setCurrentUser = user => {
-    return { type: LOGIN_SUCCESS, payload: user }
+export const registerUser = userData => {
+    return dispatch => {
+        userService.register(userData)
+            .then(
+                user => {
+                    dispatch(alertActions.success('Registration successful'));
+                    redirect('/auth/login')
+                },
+                error => {
+                    console.log('eerrr', error);
+                    dispatch(failure(error));
+                    // dispatch(alertActions.error(error.toString()));
+                }
+            )
+    }
 }
-export const fetchPosts = () => dispatch => {
-    console.log('fatching action');
-    fetch('https://jsonplaceholder.typicode.com/posts')
-        .then(res => res.json())
-        .then(posts =>
-            dispatch({
-                type: FETCH_POSTS,
-                payload: posts
-            })
-        );
-};
 
-export const createPost = postData => dispatch => {
-    fetch('https://jsonplaceholder.typicode.com/posts', {
-        method: 'POST',
-        body: JSON.stringify(postData)
-    })
-        .then(res => res.json())
-        .then(post =>
-            dispatch({
-                type: NEW_POST,
-                payload: post
-            })
-        );
-};
+function failure(error) { return { type: GET_ERRORS, payload: error.error } }

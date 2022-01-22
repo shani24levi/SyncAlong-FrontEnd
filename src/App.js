@@ -8,6 +8,7 @@ import Login from './Components/auth/Login';
 import Register from './Components/auth/Register';
 import Header from './Components/layout/Header/NavBar';
 import Landing from './Components/screens/Landing';
+import Home from './Components/screens/Home';
 
 // Remarks for me and ayman (clear before submiting)
 // Srore and browserRoute called in index.js - raping all app.
@@ -25,6 +26,7 @@ const App = () => {
               <Route exact path="/" element={<Landing />} />
               <Route exact path='/auth/login' element={<Login />} />
               <Route exact path='/auth/register' element={<Register />} />
+              <Route exact path='/auth/homepage' element={<Home />} />
             </Routes>
           </div>
         </div>

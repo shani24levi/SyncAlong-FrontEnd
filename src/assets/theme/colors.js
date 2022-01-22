@@ -49,8 +49,8 @@ const themeColors = {
     },
     error: {
         light: "#f3a4b5",
-        main: "#f5365c",
-        dark: "#f5365c",
+        main: "#8B0000",
+        dark: "#8B0000",
         snackbar: "#f75676",
         badgeBg: "#fdd1da",
         badgeBgHover: "#e30b36",

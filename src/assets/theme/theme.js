@@ -25,7 +25,7 @@ const theme = createTheme({
         },
         secondary: {
             light: deepPurple[50],
-            main: '#f44336',
+            main: '#8B0000',
             dark: deepPurple[800],
             contrastText: '#000',
         },
@@ -38,7 +38,9 @@ const theme = createTheme({
             color: "#ddd",
         },
         body2: {
+            fontSize: 12,
             fontFamily: "'Montserrat', sans-serif",
+            color: "#A52A2A",
         },
     },
     bottom: {

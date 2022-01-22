@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 // @material-ui/core components
 import { makeStyles, useTheme } from "@material-ui/core/styles";
@@ -8,25 +9,25 @@ import Container from "@material-ui/core/Container";
 import Divider from "@material-ui/core/Divider";
 import Hidden from "@material-ui/core/Hidden";
 import IconButton from "@material-ui/core/IconButton";
-import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import Menu from "@material-ui/core/Menu";
 import Toolbar from "@material-ui/core/Toolbar";
 // @material-ui/icons components
-import AccountCircle from "@material-ui/icons/AccountCircle";
 import Clear from "@material-ui/icons/Clear";
-import Dashboard from "@material-ui/icons/Dashboard";
 import MenuIcon from "@material-ui/icons/Menu";
-import Person from "@material-ui/icons/Person";
-import VpnKey from "@material-ui/icons/VpnKey";
-import LogoutIcon from '@mui/icons-material/Logout';
+
+//link component
+import PublicLinksNav from './PublicLinksNav'
+import LogedInLinksNav from './LogedInLinksNav'
+
+//redux 
+import { connect } from 'react-redux';
 
 // core components styling
 import componentStyles from "../../../assets/material-ui-style/componenets/auth-navbar";
-import { Button } from "@material-ui/core";
 const useStyles = makeStyles(componentStyles);
 
-export default function NavBar() {
+const NavBar = (props) => {
     const classes = useStyles();
     const theme = useTheme();
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -42,124 +43,6 @@ export default function NavBar() {
     };
 
     const menuId = "responsive-menu-id";
-
-    const PublicListNav = (
-        <Box
-            display="flex"
-            alignItems="center"
-            width="auto"
-            component={List}
-            className={classes.flexDirectionColumn}
-        >
-            <ListItem
-                component={Link}
-                to="/"
-                onClick={handleMenuClose}
-                classes={{
-                    root: classes.listItemRoot,
-                }}
-            >
-                <Box
-                    component={Dashboard}
-                    width="1.25rem!important"
-                    height="1.25rem!important"
-                    marginRight=".5rem!important"
-                />
-                Dashboard
-            </ListItem>
-            <ListItem
-                component={Link}
-                to="/auth/register"
-                onClick={handleMenuClose}
-                classes={{
-                    root: classes.listItemRoot,
-                }}
-            >
-                <Box
-                    component={AccountCircle}
-                    width="1.25rem!important"
-                    height="1.25rem!important"
-                    marginRight=".5rem!important"
-                />
-                Register
-            </ListItem>
-            <ListItem
-                component={Link}
-                to="/auth/login"
-                onClick={handleMenuClose}
-                classes={{
-                    root: classes.listItemRoot,
-                }}
-            >
-                <Box
-                    component={VpnKey}
-                    width="1.25rem!important"
-                    height="1.25rem!important"
-                    marginRight=".5rem!important"
-                />
-                Login
-            </ListItem>
-        </Box>
-    );
-
-    const LogedInUserListNav = (
-        <Box
-            display="flex"
-            alignItems="center"
-            width="auto"
-            component={List}
-            className={classes.flexDirectionColumn}
-        >
-            <ListItem
-                component={Link}
-                to="/admin/dashboard"
-                onClick={handleMenuClose}
-                classes={{
-                    root: classes.listItemRoot,
-                }}
-            >
-                <Box
-                    component={Dashboard}
-                    width="1.25rem!important"
-                    height="1.25rem!important"
-                    marginRight=".5rem!important"
-                />
-                Dashboard
-            </ListItem>
-            <ListItem
-                component={Link}
-                to="/auth/logout"
-                onClick={handleMenuClose}
-                classes={{
-                    root: classes.listItemRoot,
-                }}
-            >
-                <Box
-                    component={LogoutIcon}
-                    width="1.25rem!important"
-                    height="1.25rem!important"
-                    marginRight=".5rem!important"
-                />
-                Login
-            </ListItem>
-            <ListItem
-                component={Link}
-                to="/admin/user-profile"
-                onClick={handleMenuClose}
-                classes={{
-                    root: classes.listItemRoot,
-                }}
-            >
-                <Box
-                    component={Person}
-                    width="1.25rem!important"
-                    height="1.25rem!important"
-                    marginRight=".5rem!important"
-                />
-                Profile
-            </ListItem>
-        </Box>
-    );
 
     return (
         <>
@@ -246,11 +129,13 @@ export default function NavBar() {
                                     marginLeft="1.25rem!important"
                                     marginRight="1.25rem!important"
                                 />
-                                {PublicListNav}
+                                {props.auth.loggingIn ? <LogedInLinksNav handleMenuClose={handleMenuClose} /> : <PublicLinksNav handleMenuClose={handleMenuClose} />}
                             </Menu>
                         </Hidden>
                         <Hidden mdDown implementation="css">
-                            {PublicListNav}
+                            {props.auth.loggingIn ? <LogedInLinksNav handleMenuClose={handleMenuClose} /> : <PublicLinksNav handleMenuClose={handleMenuClose} />}
+
+                            {/* {props.auth.loggingIn ? LogedInUserListNav : PublicListNav} */}
                         </Hidden>
                     </Container>
                 </Toolbar>
@@ -258,3 +143,16 @@ export default function NavBar() {
         </>
     );
 }
+
+
+NavBar.propTypes = {
+    auth: PropTypes.object.isRequired,
+};
+
+function mapStateToProps(state) {
+    return {
+        auth: state.auth,
+    };
+}
+
+export default connect(mapStateToProps, null)(NavBar);

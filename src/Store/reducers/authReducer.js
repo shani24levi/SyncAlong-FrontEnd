@@ -1,4 +1,4 @@
-import { FETCH_POSTS, NEW_POST, LOGIN_SUCCESS, LOGIN_FAILURE } from '../actions/types';
+import { LOGIN_SUCCESS, GET_CURR_USER } from '../actions/types';
 
 //console.log('local ', JSON.parse(localStorage.getItem('user')));
 let user = localStorage.getItem('user');
@@ -17,19 +17,11 @@ export default function (state = initialState, action) {
         loggingIn: true,
         user: action.payload
       };
+    case GET_CURR_USER:
+      return {
+        user: user
+      };
 
-    case FETCH_POSTS:
-      console.log('fatching reduser');
-      return {
-        ...state,
-        loggingIn: true,
-        user: action.payload
-      };
-    case NEW_POST:
-      return {
-        ...state,
-        user: action.payload
-      };
     default:
       return state;
   }

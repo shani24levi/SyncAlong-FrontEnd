@@ -8,7 +8,6 @@ import Grid from "@material-ui/core/Grid";
 
 // core components
 import componentStyles from "../../assets/material-ui-style/componenets/auth-header";
-import Login from '../auth/Login';
 import Header from '../layout/Header';
 
 import CircelsHeader from '../layout/Header/CircelsHeader';

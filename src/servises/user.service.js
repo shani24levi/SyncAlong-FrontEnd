@@ -4,8 +4,7 @@ import { URL } from '../Utils/globalVaribals';
 import jwt_decode from 'jwt-decode';
 const USERS = 'api/users';
 
-const login = (userData) => {
-    console.log('userData', userData);
+const login = userData => {
     return axios
         .post(`${URL}/${USERS}/login`, userData)
         .then(user => {
@@ -34,26 +33,15 @@ const logout = () => {
     setAuthToken(false);
 }
 
-const register = (userData) => {
-    axios
+const register = userData => {
+    return axios
         .post(`${URL}/${USERS}`, userData)
-        .then(res => console.log('logged')) //history.push('/login')  chang to return element and push in the action
+        .then(user => { console.log(user); return user })
         .catch(err => {
             return Promise.reject(err.response.data);
         })
 }
 
-const okToken = (token) => {
-    // chack valid token for user 
-    axios
-        .get(`${URL}/${USERS}/auth`, token)
-        .then(res => { return res })
-        .catch(err => {
-            // Remove auth header for future requests
-            setAuthToken(false);
-            return Promise.reject(err.response.data);
-        })
-}
 
 export const userService = {
     login,

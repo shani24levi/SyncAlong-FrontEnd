@@ -1,21 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from "prop-types";
-import { useNavigate } from 'react-router-dom';
+// @material-ui/core components
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import {
     Grid, Paper, Avatar, TextField, Button, Typography, Link,
     Card, CardContent, CardHeader, Box, FormControlLabel, Checkbox,
 } from '@material-ui/core'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+//childs commponents
 import CircelsHeader from '../layout/Header/CircelsHeader';
 import TitleHeader from '../layout/Header/TitleHeader';
 //validations
 import isEmpty from '../../validation/isEmpty';
-
 //redux 
 import { connect } from 'react-redux';
 import { loginUser } from '../../Store/actions/authAction';
-
 //styling
 import componentStyles from "../../assets/material-ui-style/componenets/register";
 import buttonsStyles from "../../assets/theme/buttons";
@@ -27,16 +26,15 @@ const Login = (props) => {
     const btnClasses = buttonStyle();
     const theme = useTheme();
 
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     // console.log('login name', window.location.pathname);
 
     const [user, setUser] = useState('');
     const [pass, setPass] = useState('');
+    const [changed, setChaged] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [errors, setErorrs] = useState({});
 
-    const paperStyle = { padding: 20, margin: "20px auto", maxWidth: 500, position: "relative", background: "rgb(255 237 255 / 68%)" }
-    const avatarStyle = { backgroundColor: '#1bbd7e' }
     const btnstyle = { margin: '8px 0' }
 
     const userRef = useRef(null);
@@ -57,7 +55,8 @@ const Login = (props) => {
         if (props.errors === 'Password does not match') {
             errors["pass"] = "*Password does not match";
         }
-        setErorrs(errors);
+        if (!isEmpty(errors))
+            setErorrs(errors);
         return;
     }, [props.errors])
 
@@ -78,14 +77,13 @@ const Login = (props) => {
     const onsubmit = e => {
         e.preventDefault();
         setSubmitted(true);
+        setChaged(false);
 
         if (user && pass) {
             //chaks type of element
             let isEmail = false;
             emailList.map(email_type => {
                 if (user.includes(email_type)) {
-                    console.log(email_type);
-                    console.log(user.includes(email_type));
                     isEmail = true;
                 }
             })
@@ -111,9 +109,9 @@ const Login = (props) => {
             />
 
             <Grid>
-                <Paper elevation={10} style={paperStyle}>
+                <Paper elevation={10} className={classes.paperStyle2}>
                     <Grid align='center'>
-                        <Avatar style={avatarStyle}><LockOutlinedIcon /></Avatar>
+                        <Avatar className={classes.avatarStyle}><LockOutlinedIcon /></Avatar>
                         <h2>Sign In</h2>
                     </Grid>
                     <Card classes={{ root: classes.cardRoot }}>
@@ -186,31 +184,42 @@ const Login = (props) => {
                                     name="email"
                                     inputRef={userRef}
                                     onKeyDown={firstKeyDown}
-                                    onChange={(event) => { setUser(event.target.value) }}
+                                    onChange={(event) => { setUser(event.target.value); setChaged(true); }}
                                     autoComplete="on"
-                                    label='Username or Email'
-                                    placeholder='Enter username\email'
+                                    label='Username or email'
+                                    placeholder='Enter username or email'
                                     fullWidth
                                     required
                                     margin="normal"
                                     variant="outlined"
-                                // color="gray"
+                                    error={errors.user || (submitted && !user)}
                                 />
                                 {submitted && !user &&
-                                    <Typography color="error" component="p"> *Username\Email is required</Typography>
+                                    <Typography color="error" variant="body2" > *Username\Email is required</Typography>
                                 }
-                                {errors["user"] && <Typography color="error" component="p"> {errors["user"]}</Typography>}
+                                {errors["user"] && !changed && <Typography color="error" variant="body2" > {errors["user"]}</Typography>}
                                 <TextField
                                     inputRef={passRef}
                                     onKeyDown={secKeyDown}
-                                    onChange={(event) => { setPass(event.target.value) }}
+                                    onChange={(event) => { setPass(event.target.value); setChaged(true); }}
                                     autoComplete="current-password"
-                                    label='Password' placeholder='Enter password' type='password' fullWidth required
+                                    label='Password'
+                                    placeholder='Enter password'
+                                    type='password'
+                                    fullWidth required
+                                    margin="normal"
+                                    variant="outlined"
+                                    error={errors.pass || (submitted && !pass)}
+                                    helperText={
+                                        (submitted && !pass)
+                                            ? <Typography color="error" variant="body2"> *Password is required</Typography>
+                                            : errors["pass"] && !changed && <Typography color="error" variant="body2"> {errors["pass"]}</Typography>
+                                    }
                                 />
-                                {submitted && !pass &&
-                                    <Typography color="error" component="p"> *Username\Email is required</Typography>
-                                }
-                                {errors["pass"] && <Typography color="error" component="p"> {errors["pass"]}</Typography>}
+                                {/* {submitted && !pass &&
+                                    <Typography color="error" variant="body2"> *Password is required</Typography>
+                                } */}
+                                {/* {errors["pass"] && !changed && <Typography color="error" variant="body2"> {errors["pass"]}</Typography>} */}
                                 <FormControlLabel
                                     control={
                                         <Checkbox

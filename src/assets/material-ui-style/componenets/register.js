@@ -2,6 +2,9 @@
 import theme from "./../../theme/theme";
 
 const componentStyles = {
+    paperStyle2: { padding: 20, margin: "20px auto", maxWidth: 500, position: "relative", background: "rgb(255 237 255 / 68%)" },
+    avatarStyle: { backgroundColor: '#1bbd7e' },
+
     paperStyle: {
         padding: 20, height: '70vh', margin: "20px auto"
     },
