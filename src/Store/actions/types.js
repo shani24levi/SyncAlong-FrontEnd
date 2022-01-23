@@ -9,6 +9,16 @@ export const ALERT_SUCCESS = 'ALERT_SUCCESS';
 export const ALERT_ERROR = 'ALERT_ERROR';
 export const ALERT_CLEAR = 'ALERT_CLEAR';
 
-// export const  = '';
-// export const  = '';
+export const REGISTER_REQUEST = 'REGISTER_REQUEST';
+
+export const AUTH_LOADING = 'AUTH_LOADING';
+//export const  = '';
+//export const  = '';
+//export const  = '';
+//export const  = '';
+//export const  = '';
+//export const  = '';
+//export const  = '';
+//export const  = '';
+
 

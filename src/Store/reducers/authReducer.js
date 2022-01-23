@@ -1,25 +1,38 @@
-import { LOGIN_SUCCESS, GET_CURR_USER } from '../actions/types';
+import { LOGIN_SUCCESS, GET_CURR_USER, REGISTER_REQUEST, AUTH_LOADING } from '../actions/types';
 
-//console.log('local ', JSON.parse(localStorage.getItem('user')));
 let user = localStorage.getItem('user');
-const initialState = user ? { loggedIn: true, user } : {};
+const initialState = user ? { loggedIn: true, user, loading: false, resisterd: false } : { loading: false, resisterd: false, };
 
 // const initialState = {
 //   user: {},
-//   isAuthenticated: false,
-//   isAdmin: false,
+//   resisterd: false,
+//   loggedIn: false,
 // };
 
 export default function (state = initialState, action) {
   switch (action.type) {
+    case AUTH_LOADING:
+      return {
+        ...state,
+        loading: action.payload
+      };
     case LOGIN_SUCCESS:
       return {
         loggingIn: true,
-        user: action.payload
+        user: action.payload,
+        loading: false,
       };
     case GET_CURR_USER:
       return {
-        user: user
+        user: user,
+        loading: false
+      };
+    case REGISTER_REQUEST:
+      console.log('jjjjjj', state);
+      return {
+        ...state,
+        resisterd: true,
+        loading: false
       };
 
     default:

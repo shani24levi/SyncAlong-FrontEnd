@@ -44,6 +44,9 @@ const Login = (props) => {
     const emailList = [".com", ".co.il", ".org", ".co.uk"];
 
     useEffect(() => {
+        // chack for load
+        //set up an alrat it user registered first 
+        console.log('props.auth login ', props.auth);
         userRef.current?.focus();
     }, []);
 
@@ -100,6 +103,7 @@ const Login = (props) => {
         }
     }
 
+    console.log(props.loading);
     return (
         <Grid className="index-page">
             <CircelsHeader />
@@ -229,7 +233,10 @@ const Login = (props) => {
                                     }
                                     label="Remember me"
                                 />
-                                <Button ref={submitRef} onKeyDown={submitKeyDown} type="submit" color='primary' variant="contained" style={btnstyle} fullWidth>Login</Button>
+                                <Button ref={submitRef} onKeyDown={submitKeyDown} type="submit" color='primary' variant="contained" style={btnstyle} fullWidth disabled={props.loading}>
+                                    Login
+                                    {props.loading && <i className="fa fa-refresh fa-spin" style={{ marginRight: "5px" }} />}
+                                </Button>
                                 <Button className={btnClasses.purpleSimple} fullWidth>dkkdkd</Button>
                             </Box>
 
@@ -260,6 +267,7 @@ Login.propTypes = {
 function mapStateToProps(state) {
     return {
         auth: state.auth,
+        loading: state.auth.loading,
         errors: state.errors,
     };
 }

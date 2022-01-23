@@ -44,6 +44,9 @@ const Register = (props) => {
         if (props.errors === 'Duplicate field value entered of usename') {
             errors["nickname"] = "*nick name already exists";
         }
+        if (props.errors === 'Please add a valid email') {
+            errors["email"] = "*not valid email";
+        }
         if (!isEmpty(errors))
             setErorrs(errors);
         return;
@@ -270,8 +273,9 @@ const Register = (props) => {
                                         }}
                                     />
                                     <Box textAlign="center" marginTop="1.5rem" marginBottom="1.5rem">
-                                        <Button type="submit" color="primary" variant="contained">
+                                        <Button type="submit" color="primary" variant="contained" disabled={props.loading}>
                                             Create account
+                                            {props.loading && <i className="fa fa-refresh fa-spin" style={{ marginRight: "5px" }} />}
                                         </Button>
                                     </Box>
                                 </Box>
@@ -292,6 +296,7 @@ Register.propTypes = {
 function mapStateToProps(state) {
     return {
         auth: state.auth,
+        loading: state.auth.loading,
         errors: state.errors,
     };
 }
