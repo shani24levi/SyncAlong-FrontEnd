@@ -1,7 +1,7 @@
 import { LOGIN_SUCCESS, GET_CURR_USER, REGISTER_REQUEST, AUTH_LOADING } from '../actions/types';
 
 let user = localStorage.getItem('user');
-const initialState = user ? { loggedIn: true, user, loading: false, resisterd: false } : { loading: false, resisterd: false, };
+const initialState = user ? { loggedIn: true, user, loading: false } : { loading: false };
 
 // const initialState = {
 //   user: {},
@@ -25,14 +25,14 @@ export default function (state = initialState, action) {
     case GET_CURR_USER:
       return {
         user: user,
-        loading: false
+        loading: false,
       };
     case REGISTER_REQUEST:
       console.log('jjjjjj', state);
       return {
         ...state,
         resisterd: true,
-        loading: false
+        loading: false,
       };
 
     default:

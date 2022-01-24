@@ -12,7 +12,7 @@ export const ALERT_CLEAR = 'ALERT_CLEAR';
 export const REGISTER_REQUEST = 'REGISTER_REQUEST';
 
 export const AUTH_LOADING = 'AUTH_LOADING';
-//export const  = '';
+export const CLEAR_REDIRECT = 'CLEAR_REDIRECT';
 //export const  = '';
 //export const  = '';
 //export const  = '';

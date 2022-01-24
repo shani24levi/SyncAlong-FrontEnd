@@ -3,26 +3,15 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 // @material-ui/core components
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import AppBar from "@material-ui/core/AppBar";
-import Box from "@material-ui/core/Box";
-import Container from "@material-ui/core/Container";
-import Divider from "@material-ui/core/Divider";
-import Hidden from "@material-ui/core/Hidden";
-import IconButton from "@material-ui/core/IconButton";
-import ListItem from "@material-ui/core/ListItem";
-import Menu from "@material-ui/core/Menu";
-import Toolbar from "@material-ui/core/Toolbar";
+import { AppBar, Box, Container, Divider, Hidden, IconButton, ListItem, Menu, Toolbar } from "@material-ui/core";
 // @material-ui/icons components
 import Clear from "@material-ui/icons/Clear";
 import MenuIcon from "@material-ui/icons/Menu";
-
 //link component
 import PublicLinksNav from './PublicLinksNav'
 import LogedInLinksNav from './LogedInLinksNav'
-
 //redux 
 import { connect } from 'react-redux';
-
 // core components styling
 import componentStyles from "../../../assets/material-ui-style/componenets/auth-navbar";
 const useStyles = makeStyles(componentStyles);
@@ -129,12 +118,13 @@ const NavBar = (props) => {
                                     marginLeft="1.25rem!important"
                                     marginRight="1.25rem!important"
                                 />
-                                {props.auth.loggingIn ? <LogedInLinksNav handleMenuClose={handleMenuClose} /> : <PublicLinksNav handleMenuClose={handleMenuClose} />}
+                                {props.auth.loggingIn ? <LogedInLinksNav auth={props.auth} handleMenuClose={handleMenuClose} /> : <PublicLinksNav handleMenuClose={handleMenuClose} />}
                             </Menu>
                         </Hidden>
                         <Hidden mdDown implementation="css">
-                            {props.auth.loggingIn ? <LogedInLinksNav handleMenuClose={handleMenuClose} /> : <PublicLinksNav handleMenuClose={handleMenuClose} />}
+                            {props.auth.loggingIn ? <LogedInLinksNav auth={props.auth} handleMenuClose={handleMenuClose} /> : <PublicLinksNav handleMenuClose={handleMenuClose} />}
 
+                            {/* auth={props.auth} */}
                             {/* {props.auth.loggingIn ? LogedInUserListNav : PublicListNav} */}
                         </Hidden>
                     </Container>

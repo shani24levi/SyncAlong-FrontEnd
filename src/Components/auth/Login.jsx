@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom'
 import PropTypes from "prop-types";
 // @material-ui/core components
 import { makeStyles, useTheme } from "@material-ui/core/styles";
@@ -26,6 +27,9 @@ const Login = (props) => {
     const btnClasses = buttonStyle();
     const theme = useTheme();
 
+    const navigate = useNavigate()
+
+
     // const navigate = useNavigate();
     // console.log('login name', window.location.pathname);
 
@@ -51,6 +55,10 @@ const Login = (props) => {
     }, []);
 
     useEffect(() => {
+        if (!isEmpty(props.auth.user)) {
+            navigate('/home')
+        }
+
         let errors = {};
         if (props.errors === 'user not found') {
             errors["user"] = "*User not found";
@@ -61,7 +69,7 @@ const Login = (props) => {
         if (!isEmpty(errors))
             setErorrs(errors);
         return;
-    }, [props.errors])
+    }, [props.errors, props.auth.user])
 
     // Prassing "Enter" after fill the input and it contiue to the next input
     const firstKeyDown = e => {

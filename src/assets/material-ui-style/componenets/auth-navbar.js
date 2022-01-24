@@ -40,6 +40,9 @@ const componentStyles = {
             flexDirection: "column",
         },
     },
+    spacing: {
+        marginRight: ".5rem!important"
+    }
 };
 
 export default componentStyles;

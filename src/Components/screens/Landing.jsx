@@ -1,15 +1,22 @@
-//when un-login user
-import React from 'react';
+//when un-login user- first page in the app.
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'
+import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import { useTheme } from "@material-ui/core/styles";
 import Box from "@material-ui/core/Box";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
-
-// core components
+// core components style
 import componentStyles from "../../assets/material-ui-style/componenets/auth-header";
 import Header from '../layout/Header';
-
+//redux 
+import { connect } from 'react-redux';
+import { setCurrentUser } from '../../Store/actions/authAction';
+//utiles needed
+import setAuthToken from '../../Utils/setAuthToken';
+import jwt_decode from 'jwt-decode';
+// core components
 import CircelsHeader from '../layout/Header/CircelsHeader';
 import TitleHeader from '../layout/Header/TitleHeader';
 
@@ -18,6 +25,31 @@ const useStyles = makeStyles(componentStyles);
 const Landing = (props) => {
     const classes = useStyles();
     const theme = useTheme();
+    const navigate = useNavigate()
+
+    // useEffect(() => {
+    //     //chake for authrisiation and redirect to relevat page.
+    //     if (localStorage.user) {
+    //         setAuthToken(localStorage.user);
+    //         const decoded = jwt_decode(localStorage.user);
+    //         console.log('decoded', decoded);
+    //         props.setCurrentUser(decoded);
+
+    //         // Check for expired token - didnt set it as time expired in the server
+    //         const currentTime = Date.now() / 1000;
+    //         if (decoded.exp < currentTime) {
+    //             console.log('fff');
+    //             //store.dispatch(logoutUser());
+    //             //store.dispatch(clearCurrentProfile());
+    //             // Redirect to login
+    //             //window.location.href = '/login';
+    //             navigate('/auth/login')
+    //         }
+    //         else
+    //             navigate('/home')
+    //     }
+    // }, [])
+
     return (
         <>
             <Box
@@ -95,5 +127,16 @@ const Landing = (props) => {
         </>
     );
 }
+Landing.propTypes = {
+    setCurrentUser: PropTypes.func.isRequired,
+    auth: PropTypes.object.isRequired,
+};
 
-export default Landing;
+function mapStateToProps(state) {
+    return {
+        auth: state.auth,
+        loading: state.auth.loading,
+    };
+}
+
+export default connect(mapStateToProps, { setCurrentUser })(Landing);

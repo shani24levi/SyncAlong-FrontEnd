@@ -12,6 +12,8 @@ const login = userData => {
             // Save to localStorage
             const { token } = user.data;
             // Set token to ls
+            // if (localStorage.getItem('user'))
+            //     localStorage.removeItem('user');
             localStorage.setItem('user', token);
             // Set token to Auth header
             setAuthToken(token);

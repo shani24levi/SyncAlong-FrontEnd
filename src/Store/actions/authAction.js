@@ -10,7 +10,7 @@ export const loginUser = userData => dispatch => {
         .then(
             user => {
                 dispatch(success(user));
-                redirect('/home');
+                // redirect('/home')
             },
             error => {
                 dispatch(setLoading(false));
@@ -38,10 +38,7 @@ export const registerUser = userData => dispatch => {
                 // dispatch(alertActions.error(error.toString()));
             }
         );
-    // function success(user) { return { type: REGISTER_REQUEST, payload: user } }
-
     function success() { return { type: REGISTER_REQUEST } }
-    //  }
 }
 
 function failure(error) { return { type: GET_ERRORS, payload: error.error } }
