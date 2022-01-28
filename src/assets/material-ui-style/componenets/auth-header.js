@@ -1,3 +1,4 @@
+//Implemented in HomeContiner
 const componentStyles = {
     header: {
         background:
@@ -6,3 +7,5 @@ const componentStyles = {
 };
 
 export default componentStyles;
+
+//maybe:  "linear-gradient(-135deg, #899FD4 0%, #A389D4 100%)"

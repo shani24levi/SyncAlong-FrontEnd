@@ -3,7 +3,9 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 // @material-ui/core components
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import { AppBar, Box, Container, Divider, Hidden, IconButton, ListItem, Menu, Toolbar } from "@material-ui/core";
+import {
+    AppBar, Box, Container, Divider, Hidden, IconButton, ListItem, Menu, Toolbar
+} from "@material-ui/core";
 // @material-ui/icons components
 import Clear from "@material-ui/icons/Clear";
 import MenuIcon from "@material-ui/icons/Menu";
@@ -13,8 +15,9 @@ import LogedInLinksNav from './LogedInLinksNav'
 //redux 
 import { connect } from 'react-redux';
 // core components styling
-import componentStyles from "../../../assets/material-ui-style/componenets/auth-navbar";
+import componentStyles from "../../../../assets/material-ui-style/componenets/auth-navbar";
 const useStyles = makeStyles(componentStyles);
+
 
 const NavBar = (props) => {
     const classes = useStyles();
@@ -54,7 +57,7 @@ const NavBar = (props) => {
                                 height="90px"
                                 component="img"
                                 className={classes.headerImg}
-                                src={require("../../../assets/img/logo.png").default}
+                                src={require("./../../../../assets/img/logo.png").default}
                             />
                         </ListItem>
                         <Hidden lgUp implementation="css">
@@ -67,7 +70,7 @@ const NavBar = (props) => {
                             >
                                 <Box
                                     component={MenuIcon}
-                                    // color={theme.palette.white.main}
+                                    color={theme.palette.grey[100]}
                                     width="2rem!important"
                                     height="2rem!important"
                                 />
@@ -96,7 +99,7 @@ const NavBar = (props) => {
                                         height="76px"
                                         component="img"
                                         className={classes.headerImg}
-                                        src={require("../../../assets/img/logo-dark.png").default}
+                                        src={require("./../../../../assets/img/logo-dark.png").default}
                                     />
                                     <IconButton
                                         edge="start"
@@ -123,9 +126,6 @@ const NavBar = (props) => {
                         </Hidden>
                         <Hidden mdDown implementation="css">
                             {props.auth.loggingIn ? <LogedInLinksNav auth={props.auth} handleMenuClose={handleMenuClose} /> : <PublicLinksNav handleMenuClose={handleMenuClose} />}
-
-                            {/* auth={props.auth} */}
-                            {/* {props.auth.loggingIn ? LogedInUserListNav : PublicListNav} */}
                         </Hidden>
                     </Container>
                 </Toolbar>

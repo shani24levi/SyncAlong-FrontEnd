@@ -12,15 +12,17 @@ import { setCurrentUser } from './Store/actions/authAction';
 import setAuthToken from './Utils/setAuthToken';
 import jwt_decode from 'jwt-decode';
 
+import isEmpty from './validation/isEmpty';
+
 //call componenets
 import Login from './Components/auth/Login';
 import Register from './Components/auth/Register';
-import Header from './Components/layout/Header/NavBar';
+import Header from './Components/layout/Header/NavBar/NavBar';
 import Landing from './Components/screens/Landing';
+import Footer from './Components/layout/Footer';
 
 import PrivateRoute from './Components/routing/PrivateRoute';
 import Home from './Components/screens/Home';
-import isEmpty from './validation/isEmpty';
 
 
 // Remarks for me and ayman (clear before submiting)
@@ -41,7 +43,7 @@ const App = (props) => {
 
   useEffect(() => {
     //chake for authrisiation and redirect to relevat page.
-    if (props.auth.user?._id != undefined) {
+    if (props.auth.user?._id !== undefined) {
       console.log("!isEmpty(props.auth.user)", props.auth.user?._id);
       console.log("!isEmpty(props.auth.user)", !isEmpty(props.auth.user));
       return;
@@ -90,10 +92,10 @@ const App = (props) => {
               </Routes>
             </Fragment>
           </div>
+          <Footer />
         </div>
       </ThemeProvider>
     </>
-
   );
 }
 

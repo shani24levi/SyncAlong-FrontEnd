@@ -29,8 +29,8 @@ export const registerUser = userData => dispatch => {
         .then(
             user => {
                 dispatch(success());
-                // dispatch(alertActions.success('Registration successful'));
-                redirect('/auth/login')
+                dispatch(alertActions.success('Registration successful'));
+                //redirect('/auth/login')
             },
             error => {
                 dispatch(setLoading(false));

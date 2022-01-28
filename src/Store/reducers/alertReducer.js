@@ -1,6 +1,6 @@
-import { ALERT_SUCCESS, ALERT_ERROR, ALERT_CLEAR } from './types';
+import { ALERT_SUCCESS, ALERT_ERROR, ALERT_CLEAR } from '../actions/types';
 
-export function alert(state = {}, action) {
+export default function alert(state = {}, action) {
     switch (action.type) {
         case ALERT_SUCCESS:
             return {

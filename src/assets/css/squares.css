@@ -34,7 +34,6 @@
       padding: 0 15px;
       width: 100%;
       color: rgba(255, 255, 255, 0.5); } */
-  
       .index-page   .squares {
     animation: move-left-right 1s infinite;
     background: #ba54f5;

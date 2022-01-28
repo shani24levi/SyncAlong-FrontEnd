@@ -8,7 +8,7 @@ import VpnKey from "@material-ui/icons/VpnKey";
 
 // core components styling
 import { makeStyles } from "@material-ui/core/styles";
-import componentStyles from "../../../assets/material-ui-style/componenets/auth-navbar";
+import componentStyles from "../../../../assets/material-ui-style/componenets/auth-navbar";
 const useStyles = makeStyles(componentStyles);
 
 const PublicLinksNav = (props) => {

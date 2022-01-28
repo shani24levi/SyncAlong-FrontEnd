@@ -8,6 +8,7 @@ import {
     Card, CardContent, CardHeader, Box, FormControlLabel, Checkbox,
 } from '@material-ui/core'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import { Snackbar, Alert } from '@mui/material';
 //childs commponents
 import CircelsHeader from '../layout/Header/CircelsHeader';
 import TitleHeader from '../layout/Header/TitleHeader';
@@ -16,6 +17,7 @@ import isEmpty from '../../validation/isEmpty';
 //redux 
 import { connect } from 'react-redux';
 import { loginUser } from '../../Store/actions/authAction';
+
 //styling
 import componentStyles from "../../assets/material-ui-style/componenets/register";
 import buttonsStyles from "../../assets/theme/buttons";
@@ -26,20 +28,15 @@ const Login = (props) => {
     const classes = useStyles();
     const btnClasses = buttonStyle();
     const theme = useTheme();
-
     const navigate = useNavigate()
-
-
-    // const navigate = useNavigate();
-    // console.log('login name', window.location.pathname);
 
     const [user, setUser] = useState('');
     const [pass, setPass] = useState('');
     const [changed, setChaged] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [errors, setErorrs] = useState({});
-
-    const btnstyle = { margin: '8px 0' }
+    const [alert, setAlert] = useState(false);
+    const [open, setOpen] = React.useState(false);
 
     const userRef = useRef(null);
     const passRef = useRef(null);
@@ -48,7 +45,10 @@ const Login = (props) => {
     const emailList = [".com", ".co.il", ".org", ".co.uk"];
 
     useEffect(() => {
-        // chack for load
+        // chack if user cames from login page 
+        if (props.resisterd && props.alert) {
+            setAlert(true);
+        }
         //set up an alrat it user registered first 
         console.log('props.auth login ', props.auth);
         userRef.current?.focus();
@@ -111,14 +111,30 @@ const Login = (props) => {
         }
     }
 
-    console.log(props.loading);
+    const handleClick = () => { setAlert(true); };
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') { return; }
+        setAlert(false);
+    };
+
+    console.log(props.alert);
     return (
+
         <Grid className="index-page">
             <CircelsHeader />
             <TitleHeader
                 title='Welcome To SyncAlong!'
                 description='Joint physical activity and movement synchronized with positive energies.'
             />
+            <Snackbar
+                open={alert}
+                autoHideDuration={10000}
+                anchorOrigin={{ vertical: 'center', horizontal: 'center' }}
+                onClose={handleClose}>
+                <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+                    {props.alert.message}
+                </Alert>
+            </Snackbar>
 
             <Grid>
                 <Paper elevation={10} className={classes.paperStyle2}>
@@ -241,11 +257,10 @@ const Login = (props) => {
                                     }
                                     label="Remember me"
                                 />
-                                <Button ref={submitRef} onKeyDown={submitKeyDown} type="submit" color='primary' variant="contained" style={btnstyle} fullWidth disabled={props.loading}>
+                                <Button ref={submitRef} onKeyDown={submitKeyDown} type="submit" color='primary' variant="contained" className={btnClasses.purpleDefult} fullWidth disabled={props.loading}>
                                     Login
                                     {props.loading && <i className="fa fa-refresh fa-spin" style={{ marginRight: "5px" }} />}
                                 </Button>
-                                <Button className={btnClasses.purpleSimple} fullWidth>dkkdkd</Button>
                             </Box>
 
                             <Typography align='center'>
@@ -276,6 +291,8 @@ function mapStateToProps(state) {
     return {
         auth: state.auth,
         loading: state.auth.loading,
+        resisterd: state.auth.resisterd,
+        alert: state.alert,
         errors: state.errors,
     };
 }

@@ -6,14 +6,14 @@ export const alertActions = {
     clear
 };
 
-function success(message) {
+export function success(message) {
     return { type: ALERT_SUCCESS, message };
 }
 
-function error(message) {
+export function error(message) {
     return { type: ALERT_ERROR, message };
 }
 
-function clear() {
+export function clear() {
     return { type: ALERT_CLEAR };
 }

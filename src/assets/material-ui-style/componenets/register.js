@@ -4,12 +4,7 @@ import theme from "./../../theme/theme";
 const componentStyles = {
     paperStyle2: { padding: 20, margin: "20px auto", maxWidth: 500, position: "relative", background: "rgb(255 237 255 / 68%)" },
     avatarStyle: { backgroundColor: '#1bbd7e' },
-
-    paperStyle: {
-        padding: 20, height: '70vh', margin: "20px auto"
-    },
     cardRoot: {
-        // boxShadow: boxShadows.boxShadow + "!important",
         border: "0!important",
         backgroundColor: theme.palette.background.default,
         margin: 'auto'
@@ -29,31 +24,12 @@ const componentStyles = {
     buttonRoot: {
         backgroundColor: theme.palette.grey[100],
         color: theme.palette.primary.main,
-        // boxShadow: boxShadows.buttonBoxShadowNeutral,
         borderColor: theme.palette.grey[100] + "!important",
         "&:hover": {
             color: theme.palette.grey[600],
             borderColor: theme.palette.grey[100] + "!important",
             backgroundColor: theme.palette.grey[100],
         },
-    },
-    formControlLabelRoot: {
-        position: "relative",
-        display: "flex",
-        minHeight: "1.5rem",
-        WebkitPrintColorAdjust: "exact",
-    },
-    formControlLabelLabel: {
-        cursor: "pointer",
-        fontSize: ".875rem",
-        position: "relative",
-        verticalAlign: "top",
-        display: "inline-block",
-        color: theme.palette.grey[600],
-    },
-    footerLinks: {
-        olor: theme.palette.grey[400],
-        textDecoration: "none",
     },
 };
 

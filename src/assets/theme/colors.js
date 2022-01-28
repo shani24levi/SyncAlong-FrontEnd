@@ -14,6 +14,7 @@ const themeColors = {
         main: "transparent",
     },
     gray: {
+        0: "#FFFFFF",
         100: "#f6f9fc",
         200: "#e9ecef",
         300: "#dee2e6",

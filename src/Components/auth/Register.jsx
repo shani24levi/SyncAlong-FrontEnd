@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { useNavigate } from 'react-router-dom'
 // @material-ui/core components
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import {
@@ -21,12 +22,16 @@ import { connect } from 'react-redux';
 import { registerUser } from '../../Store/actions/authAction';
 // core styling components
 import componentStyles from "../../assets/material-ui-style/componenets/register";
+import buttonsStyles from "../../assets/theme/buttons";
 const useStyles = makeStyles(componentStyles);
-
+const buttonStyle = makeStyles(buttonsStyles);
 
 const Register = (props) => {
     const classes = useStyles();
+    const btnClasses = buttonStyle();
+
     const theme = useTheme();
+    const navigate = useNavigate()
 
     const [user, setUser] = useState('');
     const [nickname, setNickname] = useState('');
@@ -37,6 +42,10 @@ const Register = (props) => {
     const [errors, setErorrs] = useState({});
 
     useEffect(() => {
+        if (props.auth.resisterd) {
+            navigate('/auth/login');
+        }
+
         let errors = {};
         if (props.errors === 'Duplicate field value entered of email') {
             errors["email"] = "*email already exists";
@@ -50,7 +59,7 @@ const Register = (props) => {
         if (!isEmpty(errors))
             setErorrs(errors);
         return;
-    }, [props.errors])
+    }, [props.errors, props.auth.resisterd])
 
     const onsubmit = e => {
         e.preventDefault();
@@ -273,7 +282,7 @@ const Register = (props) => {
                                         }}
                                     />
                                     <Box textAlign="center" marginTop="1.5rem" marginBottom="1.5rem">
-                                        <Button type="submit" color="primary" variant="contained" disabled={props.loading}>
+                                        <Button type="submit" color="primary" variant="contained" className={btnClasses.purpleDefult} disabled={props.loading}>
                                             Create account
                                             {props.loading && <i className="fa fa-refresh fa-spin" style={{ marginRight: "5px" }} />}
                                         </Button>
