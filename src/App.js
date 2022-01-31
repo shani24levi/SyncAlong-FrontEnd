@@ -4,6 +4,7 @@ import { ThemeProvider } from "@material-ui/styles";
 import theme from "./assets/theme/theme";
 import PropTypes from "prop-types";
 import { useNavigate } from 'react-router-dom'
+import Container from '@mui/material/Container';
 
 //redux 
 import { connect } from 'react-redux';
@@ -11,18 +12,19 @@ import { setCurrentUser } from './Store/actions/authAction';
 //utiles needed
 import setAuthToken from './Utils/setAuthToken';
 import jwt_decode from 'jwt-decode';
-
+//validation
 import isEmpty from './validation/isEmpty';
-
 //call componenets
 import Login from './Components/auth/Login';
 import Register from './Components/auth/Register';
 import Header from './Components/layout/Header/NavBar/NavBar';
 import Landing from './Components/screens/Landing';
 import Footer from './Components/layout/Footer';
-
+//call privat components
 import PrivateRoute from './Components/routing/PrivateRoute';
 import Home from './Components/screens/Home';
+import Meetings from './Components/screens/Meetings';
+import VideoContext from './Components/Context/videoChat/VideoContext';
 
 
 // Remarks for me and ayman (clear before submiting)
@@ -82,9 +84,15 @@ const App = (props) => {
                 <Route exact path='/auth/login' element={<Login />} />
                 <Route exact path='/auth/register' element={<Register />} />
 
-                <Route exact path='/home' element={<Home />} />
-
                 {/* praivat routs -logedIn users only */}
+                <Route exact path='/home' element={<Home />} />
+                <Route exact path='/meetings' element={<Meetings />} />
+                <Route exact path='/video-room' element={<VideoContext />} />
+
+
+                {/* <Route path="/home">
+                  {!props.auth.user ? navigate('/auth/login') : <Home />}
+                </Route> */}
                 {/* <Route exact path='/home' element={<PrivateRoute />}>
                   <Route exact path='/home' element={<Home />} />
                 </Route> */}
@@ -92,6 +100,7 @@ const App = (props) => {
               </Routes>
             </Fragment>
           </div>
+
           <Footer />
         </div>
       </ThemeProvider>

@@ -10,6 +10,7 @@ const useStyles = makeStyles({
     },
 });
 
+//Trainer will have his data , graph and lists
 
 function TrainerHome(props) {
     const classes = useStyles(props);

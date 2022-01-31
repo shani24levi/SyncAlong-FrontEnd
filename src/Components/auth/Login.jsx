@@ -9,15 +9,15 @@ import {
 } from '@material-ui/core'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { Snackbar, Alert } from '@mui/material';
+import { CircularProgress } from "@material-ui/core";
 //childs commponents
 import CircelsHeader from '../layout/Header/CircelsHeader';
 import TitleHeader from '../layout/Header/TitleHeader';
 //validations
 import isEmpty from '../../validation/isEmpty';
 //redux 
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { loginUser } from '../../Store/actions/authAction';
-
 //styling
 import componentStyles from "../../assets/material-ui-style/componenets/register";
 import buttonsStyles from "../../assets/theme/buttons";
@@ -25,6 +25,7 @@ const useStyles = makeStyles(componentStyles);
 const buttonStyle = makeStyles(buttonsStyles);
 
 const Login = (props) => {
+    const dispatch = useDispatch();
     const classes = useStyles();
     const btnClasses = buttonStyle();
     const theme = useTheme();
@@ -107,6 +108,7 @@ const Login = (props) => {
             else data.username = user;
 
             console.log('data', data);
+            //dispatch(loginUser(data));
             props.loginUser(data);
         }
     }
@@ -119,7 +121,6 @@ const Login = (props) => {
 
     console.log(props.alert);
     return (
-
         <Grid className="index-page">
             <CircelsHeader />
             <TitleHeader
@@ -258,8 +259,13 @@ const Login = (props) => {
                                     label="Remember me"
                                 />
                                 <Button ref={submitRef} onKeyDown={submitKeyDown} type="submit" color='primary' variant="contained" className={btnClasses.purpleDefult} fullWidth disabled={props.loading}>
-                                    Login
-                                    {props.loading && <i className="fa fa-refresh fa-spin" style={{ marginRight: "5px" }} />}
+                                    {props.loading ? (
+                                        <CircularProgress color="white" size="20px" />
+                                    ) : (
+                                        "Login"
+                                    )}
+                                    {/* Login */}
+                                    {/* {props.loading && <i className="fa fa-refresh fa-spin" style={{ marginRight: "5px" }} />} */}
                                 </Button>
                             </Box>
 

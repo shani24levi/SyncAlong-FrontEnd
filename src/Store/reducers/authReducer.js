@@ -1,13 +1,10 @@
 import { LOGIN_SUCCESS, GET_CURR_USER, REGISTER_REQUEST, AUTH_LOADING } from '../actions/types';
+import { createContext } from "react";
 
 let user = localStorage.getItem('user');
 const initialState = user ? { loggedIn: true, user, loading: false, resisterd: false } : { loading: false, resisterd: false };
 
-// const initialState = {
-//   user: {},
-//   resisterd: false,
-//   loggedIn: false,
-// };
+export const AuthContext = createContext(initialState);
 
 export default function (state = initialState, action) {
   switch (action.type) {

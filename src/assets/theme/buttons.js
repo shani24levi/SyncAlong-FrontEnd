@@ -2,7 +2,7 @@ import theme from "./theme";
 
 const themeButtons = {
     purpleDefult: {
-        background: "#e14eca",
+        background: "#ffffff !important",
         backgroundImage: "linear-gradient(to bottom left, #e14eca, #ba54f5, #e14eca)",
         backgroundSize: "210% 210%",
         backgroundPosition: "top right",
@@ -20,10 +20,10 @@ const themeButtons = {
         },
     },
     purpleRound: {
-        color: "#ffffff",
+        color: "#ffffff !important",
         background: "linear-gradient(to bottom left, #e14eca, #ba54f5, #e14eca)",
         padding: "10px 20px",
-        borderRadius: 15,
+        borderRadius: 30,
         transition: "0.1s",
         boxShadow: "none",
         marginBottom: "10px",

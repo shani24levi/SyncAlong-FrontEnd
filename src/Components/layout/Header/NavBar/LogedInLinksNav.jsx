@@ -100,7 +100,7 @@ const LogedInLinksNav = (props) => {
             </ListItem>
             <ListItem
                 component={Link}
-                to="/auth/logout"
+                to="/meetings"
                 onClick={props.handleMenuClose}
                 classes={{
                     root: classes.listItemRoot,
@@ -112,6 +112,7 @@ const LogedInLinksNav = (props) => {
                     height="1.25rem!important"
                     marginRight=".5rem!important"
                 />
+                Chat
             </ListItem>
             <ListItem
                 component={Link}
@@ -127,17 +128,7 @@ const LogedInLinksNav = (props) => {
                     sx={{ width: 56, height: 56 }}
                     className={classes.spacing}
                 />
-
-
-                {/* <Box
-                    component={Person}
-                    width="1.25rem!important"
-                    height="1.25rem!important"
-                    marginRight=".5rem!important"
-                /> */}
-                {/* profole */}
                 {user.user}
-                {/* {props.auth.user} */}
             </ListItem>
             <ListItem
                 component={Link}
