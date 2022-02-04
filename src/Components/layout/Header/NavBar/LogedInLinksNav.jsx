@@ -10,8 +10,8 @@ import {
 import Dashboard from "@material-ui/icons/Dashboard";
 import Person from "@material-ui/icons/Person";
 import LogoutIcon from '@mui/icons-material/Logout';
-import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 
 // core components styling
 import { makeStyles } from "@material-ui/core/styles";
@@ -107,12 +107,13 @@ const LogedInLinksNav = (props) => {
                 }}
             >
                 <Box
-                    component={NotificationsNoneIcon}
+                    component={NotificationsIcon}
+                    color='#fff'
                     width="1.25rem!important"
                     height="1.25rem!important"
                     marginRight=".5rem!important"
                 />
-                Chat
+                Meetings
             </ListItem>
             <ListItem
                 component={Link}

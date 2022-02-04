@@ -15,7 +15,7 @@ export default function (state = initialState, action) {
       };
     case LOGIN_SUCCESS:
       return {
-        loggingIn: true,
+        loggedIn: true,
         user: action.payload,
         loading: false,
       };

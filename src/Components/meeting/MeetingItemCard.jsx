@@ -36,7 +36,7 @@ function MeetingItemCard(props) {
                 alt="..."
             />
             <CardContent >
-                <Typography gutterBottom variant="h5" component="div">
+                <Typography gutterBottom variant="h5" >
                     Lizard
                 </Typography>
                 <Typography variant="body2" color="text.secondary">

@@ -10,7 +10,7 @@ export const loginUser = userData => dispatch => {
         .then(
             user => {
                 dispatch(success(user));
-                // redirect('/home')
+                //redirect('/home')
             },
             error => {
                 dispatch(setLoading(false));

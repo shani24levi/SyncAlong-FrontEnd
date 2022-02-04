@@ -28,31 +28,32 @@ function Card(props) {
     ];
 
     return (
-        <CardUI className={classes.card}>
-            <CardMedia className={classes.cardHeader}
-                component="img"
-                height="140"
-                image="/avatar.png"
-                alt="..."
-            />
-            <CardContent >
-                <Typography gutterBottom variant="h5" component="div">
-                    Lizard
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                    Lizards are a widespread group of squamate reptiles, with over 6,000
-                    species, ranging across all continents except Antarctica
-                </Typography>
-                <Divider className={classes.divider} light />
-                {faces.map(face => (
-                    <Avatar className={classes.avatar} key={face} src={face} />
-                ))}
-            </CardContent>
-            <CardActions>
-                <Button className={btnClasses.purpleRound} fullWidth size="small">Connect</Button>
-                {/* <Button size="small">Learn More</Button> */}
-            </CardActions>
-        </CardUI>
+        <></>
+        // <CardUI className={classes.card}>
+        //     <CardMedia className={classes.cardHeader}
+        //         component="img"
+        //         height="140"
+        //         image="/avatar.png"
+        //         alt="..."
+        //     />
+        //     <CardContent >
+        //         <Typography gutterBottom variant="h5" >
+        //             Lizard
+        //         </Typography>
+        //         <Typography variant="body2" color="text.secondary">
+        //             Lizards are a widespread group of squamate reptiles, with over 6,000
+        //             species, ranging across all continents except Antarctica
+        //         </Typography>
+        //         <Divider className={classes.divider} light />
+        //         {faces.map(face => (
+        //             <Avatar className={classes.avatar} key={face} src={face} />
+        //         ))}
+        //     </CardContent>
+        //     <CardActions>
+        //         <Button className={btnClasses.purpleRound} fullWidth size="small">Connect</Button>
+        //         {/* <Button size="small">Learn More</Button> */}
+        //     </CardActions>
+        // </CardUI>
     );
 }
 

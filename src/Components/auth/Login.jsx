@@ -16,7 +16,7 @@ import TitleHeader from '../layout/Header/TitleHeader';
 //validations
 import isEmpty from '../../validation/isEmpty';
 //redux 
-import { connect, useDispatch } from 'react-redux';
+import { connect, useSelector, useDispatch } from 'react-redux';
 import { loginUser } from '../../Store/actions/authAction';
 //styling
 import componentStyles from "../../assets/material-ui-style/componenets/register";
@@ -25,6 +25,7 @@ const useStyles = makeStyles(componentStyles);
 const buttonStyle = makeStyles(buttonsStyles);
 
 const Login = (props) => {
+    const auth = useSelector(state => state.auth);
     const dispatch = useDispatch();
     const classes = useStyles();
     const btnClasses = buttonStyle();
@@ -269,16 +270,16 @@ const Login = (props) => {
                                 </Button>
                             </Box>
 
-                            <Typography align='center'>
+                            {/* <Typography align='center' component={'div'}>
                                 <Link href="#" >
                                     Forgot password ?
                                 </Link>
                             </Typography>
-                            <Typography align='center'> Do you have an account ?
+                            <Typography align='center' component={'div'}> Do you have an account ?
                                 <Link href="#" >
                                     Sign Up
                                 </Link>
-                            </Typography>
+                            </Typography> */}
                         </CardContent>
                     </Card>
                 </Paper>

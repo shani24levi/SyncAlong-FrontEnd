@@ -2,7 +2,6 @@ import theme from "./theme";
 
 const themeButtons = {
     purpleDefult: {
-        background: "#ffffff !important",
         backgroundImage: "linear-gradient(to bottom left, #e14eca, #ba54f5, #e14eca)",
         backgroundSize: "210% 210%",
         backgroundPosition: "top right",
@@ -10,7 +9,7 @@ const themeButtons = {
         transition: "0.1s",
         boxShadow: "none",
         padding: "10px 20px",
-        color: "#ffffff",
+        color: "#ffffff !important",
         marginBottom: "10px",
         marginTop: "10px",
         "&:hover": {
@@ -23,7 +22,7 @@ const themeButtons = {
         color: "#ffffff !important",
         background: "linear-gradient(to bottom left, #e14eca, #ba54f5, #e14eca)",
         padding: "10px 20px",
-        borderRadius: 30,
+        borderRadius: '30px !important',
         transition: "0.1s",
         boxShadow: "none",
         marginBottom: "10px",
@@ -39,7 +38,7 @@ const themeButtons = {
         background: "transparent",
         borderColor: "linear-gradient(to bottom left, #e14eca, #ba54f5, #e14eca)",
         border: "solid",
-        borderRadius: 30,
+        borderRadius: '30px',
         padding: "10px 20px",
         transition: "0.1s",
         marginBottom: "10px",

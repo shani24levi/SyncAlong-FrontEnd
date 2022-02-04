@@ -7,9 +7,6 @@ import Grid from "@material-ui/core/Grid";
 //redux 
 import { connect } from 'react-redux';
 import { setCurrentUser } from '../../Store/actions/authAction';
-// //utiles needed
-// import setAuthToken from '../../Utils/setAuthToken';
-// import jwt_decode from 'jwt-decode';
 // core components
 import CircelsHeader from '../layout/Header/CircelsHeader';
 import TitleHeader from '../layout/Header/TitleHeader';

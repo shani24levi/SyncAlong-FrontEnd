@@ -8,7 +8,6 @@ import PropTypes from 'prop-types';
 
 const PrivateRoute = (props) => {
     const auth = props.auth.loggedIn; // determine if authorized, from context or however you're doing it
-    console.log('props.auth.loggingIn', props.auth.loggedIn);
 
     console.log('auth', auth);
     // If authorized, return an outlet that will render child elements

@@ -21,7 +21,7 @@ function CardStats({ subtitle, title, footer, icon, color }) {
     return (
         <>
             <Card classes={{ root: classes.cardRoot }} elevation={0}>
-                <CardContent classes={{ root: classes.cardContentRoot }}>
+                {/* <CardContent classes={{ root: classes.cardContentRoot }}>
                     <Grid container component={Box} justifyContent="space-between">
                         <Grid item xs="auto">
                             <Box
@@ -85,7 +85,7 @@ function CardStats({ subtitle, title, footer, icon, color }) {
                             {footer}
                         </Box>
                     ) : null}
-                </CardContent>
+                </CardContent> */}
             </Card>
         </>
     );

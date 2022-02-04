@@ -1,6 +1,6 @@
 import axios from 'axios';
-import setAuthToken from '../Utils/setAuthToken';
-import { URL } from '../Utils/globalVaribals';
+import setAuthToken from '../utils/setAuthToken';
+import { URL } from '../utils/globalVaribals';
 import jwt_decode from 'jwt-decode';
 const USERS = 'api/users';
 

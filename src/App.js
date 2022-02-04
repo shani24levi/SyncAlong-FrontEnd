@@ -1,16 +1,19 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@material-ui/styles";
 import theme from "./assets/theme/theme";
 import PropTypes from "prop-types";
 import { useNavigate } from 'react-router-dom'
-import Container from '@mui/material/Container';
+//socket
+import { io } from 'socket.io-client';
+import { URL } from './utils/globalVaribals';
+import { ContextProvider } from './Components/Context/ContextProvider';
 
 //redux 
 import { connect } from 'react-redux';
 import { setCurrentUser } from './Store/actions/authAction';
 //utiles needed
-import setAuthToken from './Utils/setAuthToken';
+import setAuthToken from './utils/setAuthToken';
 import jwt_decode from 'jwt-decode';
 //validation
 import isEmpty from './validation/isEmpty';
@@ -25,35 +28,31 @@ import PrivateRoute from './Components/routing/PrivateRoute';
 import Home from './Components/screens/Home';
 import Meetings from './Components/screens/Meetings';
 import VideoContext from './Components/Context/videoChat/VideoContext';
-
-
-// Remarks for me and ayman (clear before submiting)
-// Srore and browserRoute called in index.js - raping all app.
-// using raping Routes becouse redux dosnt like jsx (es6 javacript) imports
-// seltion form stackOverFlow site. 
+import VideoRoom from './Components/screens/VidoeRoom';
 
 const App = (props) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const [socket, setSocket] = useState(null);
 
-  {/*   need to implimant this chacking token in app componnet becouse if not it does 
-        problams in the refrash setings and i need thet refash will set
-        the user staet agin for the props i have in nav commponent 
-        not the cleanst way i know....
-        but for now it will be that way 
-*/}
+  useEffect(() => {
+    setSocket(io(`${URL}`));
+    return () => { }
+  }, []);
 
+  useEffect(() => {
+    props.auth.user?._id && socket?.emit("addUser", props.auth.user?._id);
+    socket?.on("getUsers", usesr => console.log(usesr));
+  }, [props.auth.user]);
 
   useEffect(() => {
     //chake for authrisiation and redirect to relevat page.
     if (props.auth.user?._id !== undefined) {
-      console.log("!isEmpty(props.auth.user)", props.auth.user?._id);
-      console.log("!isEmpty(props.auth.user)", !isEmpty(props.auth.user));
+      console.log("props.auth.user", props.auth.user?._id);
       return;
     }
     if (localStorage.user) {
       setAuthToken(localStorage.user);
       const decoded = jwt_decode(localStorage.user);
-      //console.log('decoded', decoded);
       props.setCurrentUser(decoded);
 
       // Check for expired token - didnt set it as time expired in the server
@@ -71,33 +70,40 @@ const App = (props) => {
     }
   }, [])
 
+  console.log('socketAppppp ', socket);
 
   return (
     <>
       <ThemeProvider theme={theme}>
         <div className="body">
-          <Header />
+          <Header socket={socket} />
           <div className="continer">
             <Fragment>
-              <Routes>
-                <Route exact path="/" element={<Landing />} />
-                <Route exact path='/auth/login' element={<Login />} />
-                <Route exact path='/auth/register' element={<Register />} />
+              <ContextProvider socket={socket}>
+                {/* 
+                Wrapped in a store of variables used only by the component of the video
+                React doent let to wrap only one commponeent.......(???@#??#)
+                */}
+                <Routes>
+                  <Route exact path="/" element={<Landing />} />
+                  <Route exact path='/auth/login' element={<Login />} />
+                  <Route exact path='/auth/register' element={<Register />} />
 
-                {/* praivat routs -logedIn users only */}
-                <Route exact path='/home' element={<Home />} />
-                <Route exact path='/meetings' element={<Meetings />} />
-                <Route exact path='/video-room' element={<VideoContext />} />
+                  {/* praivat routs -logedIn users only */}
+                  <Route exact path='/home' element={<PrivateRoute />}>
+                    <Route exact path='/home' element={<Home />} />
+                  </Route>
 
+                  <Route exact path='/meetings' element={<PrivateRoute />}>
+                    <Route exact path='/meetings' element={<Meetings socket={socket} />} />
+                  </Route>
 
-                {/* <Route path="/home">
-                  {!props.auth.user ? navigate('/auth/login') : <Home />}
-                </Route> */}
-                {/* <Route exact path='/home' element={<PrivateRoute />}>
-                  <Route exact path='/home' element={<Home />} />
-                </Route> */}
+                  <Route exact path='/video-room' element={<PrivateRoute />}>
+                    <Route exact path='/video-room' element={<VideoRoom socket={socket} />} />
+                  </Route>
 
-              </Routes>
+                </Routes>
+              </ContextProvider>
             </Fragment>
           </div>
 
