@@ -40,8 +40,9 @@ const App = (props) => {
   }, []);
 
   useEffect(() => {
+    //when user login set his prminit socket id 
     props.auth.user?._id && socket?.emit("addUser", props.auth.user?._id);
-    socket?.on("getUsers", usesr => console.log(usesr));
+    // socket?.on("getNewUserAddToApp", usesr => console.log(usesr));
   }, [props.auth.user]);
 
   useEffect(() => {

@@ -57,7 +57,7 @@ const NavBar = (props) => {
                                 height="90px"
                                 component="img"
                                 className={classes.headerImg}
-                                src={require("./../../../../assets/img/logo.png").default}
+                                src={require("./../../../../assets/img/logo3.png").default}
                             />
                         </ListItem>
                         <Hidden lgUp implementation="css">
@@ -99,7 +99,7 @@ const NavBar = (props) => {
                                         height="76px"
                                         component="img"
                                         className={classes.headerImg}
-                                        src={require("./../../../../assets/img/logo-dark.png").default}
+                                        src={require("./../../../../assets/img/logo-dark3.png").default}
                                     />
                                     <IconButton
                                         edge="start"

@@ -9,13 +9,20 @@
       name="description"
       content="Web site created using create-react-app"
     />
-    <!-- <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" /> -->
+    <!-- clear latter lines 13-17 -->
     <link
       rel="stylesheet"
       href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css"
     />
-    
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    
+    <!-- dipandancis needed for mediaPipe lib  -->
+    <!-- sorce-link from mediapip docamidation: https://google.github.io/mediapipe/solutions/holistic.html -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/holistic/holistic.js" crossorigin="anonymous"></script>
+
     <title>SyncAlong</title>
   </head>
   <body>

@@ -1,6 +1,11 @@
-import React from 'react';
-import { Grid } from '@material-ui/core';
-import { makeStyles } from "@material-ui/core/styles";
+import React, { useContext, useEffect, useState } from 'react';
+import { SocketContext } from '../Context/ContextProvider';
+import { Grid, Container } from '@material-ui/core';
+import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { Alert } from '@mui/material';
+import { useSelector, useDispatch } from 'react-redux';
+import isEmpty from '../../validation/isEmpty';
+
 
 const useStyles = makeStyles({
     root: {
@@ -13,17 +18,31 @@ const useStyles = makeStyles({
 //Trainer will have his data , graph and lists
 
 function TrainerHome(props) {
-    const classes = useStyles(props);
+    const { traineeEntered } = useContext(SocketContext);
+    const classes = useStyles();
+    const theme = useTheme();
+    const profile = useSelector(state => state.profile.profile)
+    const [alart, setAlart] = useState(false);
+
+    useEffect(() => {
+        if (isEmpty(profile))
+            return setAlart(true);
+    }, []);
 
     return (
-        <Grid className={classes.root} id="basic-elements">
-            <img
+        <Container maxWidth="xl">
+            <Grid className={classes.root} id="basic-elements">
+                {/* <img
                 alt="..."
                 className="path"
                 src={require("../../assets/img/path1.png").default}
-            />
-            {/* code here! */}
-        </Grid>
+            /> */}
+                {/* code here! */}
+                {
+                    alart && <Alert severity="error">You have no profile for this accoun - please set acoount</Alert>
+                }
+            </Grid>
+        </Container>
 
     );
 }

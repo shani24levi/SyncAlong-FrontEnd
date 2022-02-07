@@ -8,7 +8,7 @@ import Sidebar from '../Context/videoChat/Sidebar';
 import Notifications from '../Context/videoChat/Notifications';
 
 function VidoeRoom({ socket }) {
-    const { setMySocketId, setYourSocketId, setMyName, setYourName } = useContext(SocketContext);
+    const { setMySocketId, setYourSocketId, setYourInfo, setMyName, setYourName } = useContext(SocketContext);
     const [me, setMe] = useState(null);
     const [you, setYou] = useState(null);
 
@@ -35,6 +35,8 @@ function VidoeRoom({ socket }) {
         //set elemets to pather of context
         me && setMyName(me?.user);
         you && setYourName(you?.user);
+        you && setYourInfo(you);
+
         //get my socket id
         //console.log(me?._id, you?._id);
         socket?.emit("getSocketId", me?._id, user => {

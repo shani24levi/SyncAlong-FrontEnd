@@ -265,8 +265,6 @@ const Login = (props) => {
                                     ) : (
                                         "Login"
                                     )}
-                                    {/* Login */}
-                                    {/* {props.loading && <i className="fa fa-refresh fa-spin" style={{ marginRight: "5px" }} />} */}
                                 </Button>
                             </Box>
 
