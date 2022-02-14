@@ -40,7 +40,7 @@ const Sidebar = (props) => {
   const classes = useStyles();
 
   return (
-    <Container className={classes.container}>
+    <Container maxWidth="xl" className={classes.container}>
       <Paper elevation={10} className={classes.paper}>
         <form className={classes.root} noValidate autoComplete="off">
           <Grid container className={classes.gridContainer}>

@@ -8,7 +8,7 @@ import Sidebar from '../Context/videoChat/Sidebar';
 import Notifications from '../Context/videoChat/Notifications';
 
 function VidoeRoom({ socket }) {
-    const { setMySocketId, setYourSocketId, setYourInfo, setMyName, setYourName } = useContext(SocketContext);
+    const { setMyRole, setRoomId, setMySocketId, setYourSocketId, setYourInfo, setMyName, setYourName } = useContext(SocketContext);
     const [me, setMe] = useState(null);
     const [you, setYou] = useState(null);
 
@@ -17,6 +17,8 @@ function VidoeRoom({ socket }) {
 
     useEffect(() => {
         if (!user) return;
+
+        setRoomId(location.state.meeting._id);
 
         if (user?._id === location.state.meeting.tariner._id) {
             setMe(location.state.meeting.tariner);
@@ -36,6 +38,7 @@ function VidoeRoom({ socket }) {
         me && setMyName(me?.user);
         you && setYourName(you?.user);
         you && setYourInfo(you);
+        me && setMyRole(me?.role);
 
         //get my socket id
         //console.log(me?._id, you?._id);
@@ -52,7 +55,7 @@ function VidoeRoom({ socket }) {
 
     return (
         <>
-            <VideoContext />
+            <VideoContext meeting={location.state.meeting} />
             <Sidebar>
                 <Notifications />
             </Sidebar>

@@ -27,7 +27,7 @@ function Meetings(props) {
             },
             date: Date.now(),
             time: '1:2 am',
-            activities: ['legs', 'nees'],
+            activities: ['swing-hands', 'right-hand-up'],
         },
     ]
 
@@ -39,9 +39,6 @@ function Meetings(props) {
         let roomId = meeting._id;
         let from = user._id;
         let to = meeting.tariner._id !== user._id ? meeting.tariner._id : meeting.trainee._id;
-
-        // props.socket?.emit("joinUser", from, to, roomId);
-        // props.socket?.on("getUsers", usesr => console.log(usesr))
 
         props.socket?.emit("joinUser", from, to, roomId, users => {
             console.log('getUsers', users);

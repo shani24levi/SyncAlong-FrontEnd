@@ -190,7 +190,7 @@ const Login = (props) => {
                                         variant="contained"
                                         classes={{ root: classes.buttonRoot }}
                                     >
-                                        <Box component="span" marginRight="4px">
+                                        {/* <Box component="span" marginRight="4px">
                                             <Box
                                                 alt="..."
                                                 component="img"
@@ -200,7 +200,7 @@ const Login = (props) => {
                                                 "https://freesvg.org/img/1534129544.png"
 
                                             ></Box>
-                                        </Box>
+                                        </Box> */}
                                         <Box component="span" marginLeft=".75rem">
                                             Google
                                         </Box>

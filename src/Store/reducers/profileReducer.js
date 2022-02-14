@@ -4,10 +4,10 @@ const initialState = {
     loading: false,
     is_profile_complited: false,
     profile: {
-        traineeOf: Array(
+        traineeOf: [
             "61f7a56542f3e116d721a7c6",
             "lflflfllf"
-        )
+        ]
     }
 };
 
