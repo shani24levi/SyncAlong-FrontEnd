@@ -8,10 +8,10 @@ import { useNavigate } from 'react-router-dom'
 import { io } from 'socket.io-client';
 import { URL } from './utils/globalVaribals';
 import { ContextProvider } from './Components/Context/ContextProvider';
-
 //redux 
 import { connect } from 'react-redux';
-import { setCurrentUser } from './Store/actions/authAction';
+import { setCurrentUser, logoutUser } from './Store/actions/authAction';
+import { futureMeetings } from './Store/actions/meetingActions';
 //utiles needed
 import setAuthToken from './utils/setAuthToken';
 import jwt_decode from 'jwt-decode';
@@ -29,10 +29,12 @@ import Home from './Components/screens/Home';
 import Meetings from './Components/screens/Meetings';
 import VideoContext from './Components/Context/videoChat/VideoContext';
 import VideoRoom from './Components/screens/VidoeRoom';
+import Profile from './Components/screens/Profile';
 
 const App = (props) => {
   const navigate = useNavigate();
   const [socket, setSocket] = useState(null);
+  const [upcamingMeeting, setUpcamingMeeting] = useState({});
 
   useEffect(() => {
     setSocket(io(`${URL}`));
@@ -40,38 +42,72 @@ const App = (props) => {
   }, []);
 
   useEffect(() => {
-    //when user login set his prminit socket id 
     props.auth.user?._id && socket?.emit("addUser", props.auth.user?._id);
-    // socket?.on("getNewUserAddToApp", usesr => console.log(usesr));
   }, [props.auth.user]);
+
+  // const scheduleMeetingPopUpCall = (upcomingMeeting) => {
+  //   return (
+  //     <PopUpCall upcomingMeeting={upcomingMeeting} />
+  //   )
+  // }
+
+  function meetingsListener() { // loop function
+    setTimeout(function () {   //  call a 60s setTimeout when the loop is called
+      let currentTime = new Date().setSeconds(0, 0)
+      console.log('a', currentTime, props.meetings.upcoming_meeting?.date);
+      const date = new Date(props.meetings.upcoming_meeting?.date?.slice(0, -1)) // delte z from date
+      let upcomingMeeting = date.getTime();
+      if (!upcomingMeeting) {
+        console.log('somthing is NOT OK with date meeting!!!!');
+        return;
+      }
+      // console.log('====================================');
+      // console.log('currentTime == upcomingMeeting.getTime()', currentTime, upcomingMeeting);
+      // console.log('====================================');
+      if (currentTime < upcomingMeeting) {
+        meetingsListener();
+      }
+      else if (currentTime == upcomingMeeting) {
+        console.log('meeting is NOW!!!!');
+        //scheduleMeetingPopUpCall(upcomingMeeting);
+        //set up next meeting timing....
+      }
+    }, 60000)
+  }
+
+  useEffect(() => {
+    console.log(props.meetings?.meetings);
+    if (props.meetings?.meetings?.length === 0) return;
+    setUpcamingMeeting(props.meetings.upcoming_meeting);
+    meetingsListener();
+  }, [props.meetings]);
+
 
   useEffect(() => {
     //chake for authrisiation and redirect to relevat page.
     if (props.auth.user?._id !== undefined) {
-      console.log("props.auth.user", props.auth.user?._id);
       return;
     }
     if (localStorage.user) {
       setAuthToken(localStorage.user);
       const decoded = jwt_decode(localStorage.user);
       props.setCurrentUser(decoded);
+      props.futureMeetings();
 
       // Check for expired token - didnt set it as time expired in the server
       const currentTime = Date.now() / 1000;
       if (decoded.exp < currentTime) {
         console.log('fff', decoded.exp < currentTime);
-        //store.dispatch(logoutUser());
-        //store.dispatch(clearCurrentProfile());
+        props.logoutUser();
+        // store.dispatch(clearCurrentProfile());
+        // store.dispatch(clearCurrentMeetings());
         // Redirect to login
-        //window.location.href = '/login';
         navigate('/auth/login')
       }
       else
         navigate('/home')
     }
   }, [])
-
-  console.log('socketAppppp ', socket);
 
   return (
     <>
@@ -81,10 +117,6 @@ const App = (props) => {
           <div className="continer">
             <Fragment>
               <ContextProvider socket={socket}>
-                {/* 
-                Wrapped in a store of variables used only by the component of the video
-                React doent let to wrap only one commponeent.......(???@#??#)
-                */}
                 <Routes>
                   <Route exact path="/" element={<Landing />} />
                   <Route exact path='/auth/login' element={<Login />} />
@@ -92,7 +124,7 @@ const App = (props) => {
 
                   {/* praivat routs -logedIn users only */}
                   <Route exact path='/home' element={<PrivateRoute />}>
-                    <Route exact path='/home' element={<Home />} />
+                    <Route exact path='/home' element={<Home upcamingMeeting={upcamingMeeting} />} />
                   </Route>
 
                   <Route exact path='/meetings' element={<PrivateRoute />}>
@@ -101,6 +133,10 @@ const App = (props) => {
 
                   <Route exact path='/video-room' element={<PrivateRoute />}>
                     <Route exact path='/video-room' element={<VideoRoom socket={socket} />} />
+                  </Route>
+
+                  <Route exact path='/profile' element={<PrivateRoute />}>
+                    <Route exact path='/profile' element={<Profile />} />
                   </Route>
 
                 </Routes>
@@ -120,13 +156,15 @@ const App = (props) => {
 App.propTypes = {
   setCurrentUser: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
+  meetings: PropTypes.object.isRequired,
 };
 
 function mapStateToProps(state) {
   return {
     auth: state.auth,
     loading: state.auth.loading,
+    meetings: state.meetings,
   };
 }
 
-export default connect(mapStateToProps, { setCurrentUser })(App);
+export default connect(mapStateToProps, { setCurrentUser, futureMeetings, logoutUser })(App);

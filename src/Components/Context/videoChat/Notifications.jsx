@@ -1,14 +1,20 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Button } from '@material-ui/core';
 
 import { SocketContext } from '../ContextProvider';
 
 function Notifications() {
-    const { answerCall, call, myName, yourName, callAccepted, isConnectedFriend } = useContext(SocketContext);
+    const { setIsModalVisible, answerCall, call, myName, yourName, callAccepted, isConnectedFriend } = useContext(SocketContext);
+
+    useEffect(() => {
+        if (call.isReceivingCall && !callAccepted) {
+            setIsModalVisible(true);
+            //setOtherUser(call.from);
+        } else setIsModalVisible(false);
+    }, [call.isReceivingCall]);
 
     return (
         <>
-            {/* {!isConnectedFriend && <h1>{yourName} is not connected to the system</h1>} */}
             {call.isReceivingCall && !callAccepted && (
                 <div style={{ display: 'flex', justifyContent: 'space-around' }}>
                     {

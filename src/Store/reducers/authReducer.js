@@ -1,4 +1,4 @@
-import { LOGIN_SUCCESS, GET_CURR_USER, REGISTER_REQUEST, AUTH_LOADING } from '../actions/types';
+import { LOGIN_SUCCESS, LOGOUT, GET_CURR_USER, REGISTER_REQUEST, AUTH_LOADING } from '../actions/types';
 
 let user = localStorage.getItem('user');
 const initialState = user ? { loggedIn: true, user, loading: false, resisterd: false } : { loading: false, resisterd: false };
@@ -9,6 +9,14 @@ export default function (state = initialState, action) {
       return {
         ...state,
         loading: action.payload
+      };
+    case LOGOUT:
+      return {
+        ...state,
+        user: {},
+        loggedIn: false,
+        loading: false,
+        resisterd: false
       };
     case LOGIN_SUCCESS:
       return {

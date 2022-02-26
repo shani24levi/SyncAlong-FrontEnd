@@ -13,6 +13,7 @@
   color: #8d94a7;
   line-height: 1.43;
   background-image: url(../img/dots.png);
+  background-position: 50% 8%;
   background-size: contain;
   overflow: hidden;
 }

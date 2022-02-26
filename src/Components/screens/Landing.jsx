@@ -15,30 +15,6 @@ import WelcomContainer from '../WelcomContainer';
 const Landing = (props) => {
     const theme = useTheme();
     const navigate = useNavigate()
-
-    // useEffect(() => {
-    //     //chake for authrisiation and redirect to relevat page.
-    //     if (localStorage.user) {
-    //         setAuthToken(localStorage.user);
-    //         const decoded = jwt_decode(localStorage.user);
-    //         console.log('decoded', decoded);
-    //         props.setCurrentUser(decoded);
-
-    //         // Check for expired token - didnt set it as time expired in the server
-    //         const currentTime = Date.now() / 1000;
-    //         if (decoded.exp < currentTime) {
-    //             console.log('fff');
-    //             //store.dispatch(logoutUser());
-    //             //store.dispatch(clearCurrentProfile());
-    //             // Redirect to login
-    //             //window.location.href = '/login';
-    //             navigate('/auth/login')
-    //         }
-    //         else
-    //             navigate('/home')
-    //     }
-    // }, [])
-
     return (
         <>
             <WelcomContainer />

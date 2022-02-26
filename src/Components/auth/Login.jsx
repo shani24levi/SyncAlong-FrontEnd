@@ -120,7 +120,6 @@ const Login = (props) => {
         setAlert(false);
     };
 
-    console.log(props.alert);
     return (
         <Grid className="index-page">
             <CircelsHeader />

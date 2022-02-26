@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import VideoContext from '../Context/videoChat/VideoContext';
 import Sidebar from '../Context/videoChat/Sidebar';
 import Notifications from '../Context/videoChat/Notifications';
+import PopUpCall from '../Context/videoChat/PopUpCall';
 
 function VidoeRoom({ socket }) {
     const { setMyRole, setRoomId, setMySocketId, setYourSocketId, setYourInfo, setMyName, setYourName } = useContext(SocketContext);
@@ -17,9 +18,7 @@ function VidoeRoom({ socket }) {
 
     useEffect(() => {
         if (!user) return;
-
         setRoomId(location.state.meeting._id);
-
         if (user?._id === location.state.meeting.tariner._id) {
             setMe(location.state.meeting.tariner);
             setYou(location.state.meeting.trainee);
@@ -59,6 +58,7 @@ function VidoeRoom({ socket }) {
             <Sidebar>
                 <Notifications />
             </Sidebar>
+            <PopUpCall />
         </>
     );
 }

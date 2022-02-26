@@ -1,6 +1,8 @@
 import React from 'react';
-import { Box, ListItem, List } from "@material-ui/core";
+import { useDispatch } from 'react-redux';
+import { logoutUser } from '../../../../Store/actions/authAction';
 import { Link } from "react-router-dom";
+import { Box, ListItem, List } from "@material-ui/core";
 // @material-ui/core components
 import { Avatar } from "@material-ui/core";
 import {
@@ -18,10 +20,10 @@ import { makeStyles } from "@material-ui/core/styles";
 import componentStyles from "../../../../assets/material-ui-style/componenets/auth-navbar";
 const useStyles = makeStyles(componentStyles);
 
-
 const LogedInLinksNav = (props) => {
     const classes = useStyles();
     const { user } = props.auth;
+    const dispatch = useDispatch();
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -31,6 +33,13 @@ const LogedInLinksNav = (props) => {
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    const onLogoutClick = (e) => {
+        e.preventDefault();
+        //props.clearCurrentProfile();
+        dispatch(logoutUser())
+        props.handleMenuClose();
+    }
 
     return (
         <Box
@@ -117,7 +126,7 @@ const LogedInLinksNav = (props) => {
             </ListItem>
             <ListItem
                 component={Link}
-                to="/user/profile"
+                to="/profile"
                 onClick={props.handleMenuClose}
                 classes={{
                     root: classes.listItemRoot,
@@ -125,7 +134,7 @@ const LogedInLinksNav = (props) => {
             >
                 <Avatar
                     alt="avatar"
-                    src="/avatar.png"
+                    src={user.avatar}
                     sx={{ width: 56, height: 56 }}
                     className={classes.spacing}
                 />
@@ -133,8 +142,8 @@ const LogedInLinksNav = (props) => {
             </ListItem>
             <ListItem
                 component={Link}
-                to="/auth/logout"
-                onClick={props.handleMenuClose}
+                to="auth/login"
+                onClick={onLogoutClick}
                 classes={{
                     root: classes.listItemRoot,
                 }}

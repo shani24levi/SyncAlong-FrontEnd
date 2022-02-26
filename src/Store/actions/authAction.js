@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { GET_ERRORS, LOGIN_SUCCESS, GET_CURR_USER, REGISTER_REQUEST, AUTH_LOADING } from './types';
+import { GET_ERRORS, LOGIN_SUCCESS, LOGOUT, GET_CURR_USER, REGISTER_REQUEST, AUTH_LOADING } from './types';
 import { userService } from '../../servises';
 import { redirect } from '../../helpers';
 import { alertActions } from './alertActions';
@@ -21,7 +21,13 @@ export const loginUser = userData => dispatch => {
 }
 
 export const setCurrentUser = user => { return { type: LOGIN_SUCCESS, payload: user } }
+export const setLogoutCurrentUser = user => { return { type: LOGOUT } }
 export const currentUser = () => { return { type: GET_CURR_USER } }
+
+export const logoutUser = () => dispatch => {
+    userService.logout();
+    dispatch(setLogoutCurrentUser())
+};
 
 export const registerUser = userData => dispatch => {
     dispatch(setLoading(true));

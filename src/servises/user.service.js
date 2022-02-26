@@ -44,7 +44,6 @@ const register = userData => {
         })
 }
 
-
 export const userService = {
     login,
     logout,

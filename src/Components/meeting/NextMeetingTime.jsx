@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid, Container } from '@material-ui/core';
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
-
+import moment from 'moment';
 import "./style.css";
 
 const minuteSeconds = 60;
@@ -30,12 +30,21 @@ const getTimeDays = (time) => (time / daySeconds) | 0;
 
 
 
-function NextMeetingTime(props) {
+function NextMeetingTime({ upcamingMeeting }) {
+    let upcomingMeetingTime = new Date(upcamingMeeting?.date);
+    var timeStamp = new Date(upcomingMeetingTime).valueOf()//(moment(upcomingMeetingTime).unix()) * 1
+
+    console.log('====================================');
+    console.log(timeStamp);
+    console.log('====================================');
+
     const stratTime = Date.now() / 1000; // use UNIX timestamp in seconds
-    const endTime = stratTime + 243248; // use UNIX timestamp in seconds
+    console.log(stratTime);
+    const endTime = stratTime + 2000; // use UNIX timestamp in seconds
     const remainingTime = endTime - stratTime;
     const days = Math.ceil(remainingTime / daySeconds);
     const daysDuration = days * daySeconds;
+
     return (
         <Container maxWidth="xl">
             <div className="App">

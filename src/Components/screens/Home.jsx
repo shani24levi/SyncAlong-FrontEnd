@@ -4,16 +4,16 @@ import { useSelector } from 'react-redux';
 import TrainerHome from '../home/TrainerHome';
 import TraineeHome from '../home/TraineeHome';
 
-const Home = () => {
+const Home = ({ upcamingMeeting }) => {
     const user = useSelector(state => state.auth.user)
     return (
         <>
             {
                 user.role === 'trainer'
                     ?
-                    <TrainerHome />
+                    <TrainerHome upcamingMeeting={upcamingMeeting} />
                     :
-                    <TraineeHome />
+                    <TraineeHome upcamingMeeting={upcamingMeeting} />
             }
         </>
     )

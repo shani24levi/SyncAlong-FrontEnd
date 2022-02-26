@@ -2,7 +2,7 @@ import theme from "./../../theme/theme";
 
 const componentStyles = {
     video: {
-        width: '550px',
+        width: '640px',
         //position: 'relative',
         [theme.breakpoints.down('xs')]: {
             width: '400px',
@@ -52,6 +52,16 @@ const componentStyles = {
         margin: "40px auto 0",
         textAlign: "center",
         fontSize: "16px"
+    },
+    emoji: {
+        position: "absolute",
+        marginLeft: "auto",
+        marginRight: "auto",
+        left: 400,
+        bottom: 500,
+        right: 0,
+        textAlign: "center",
+        height: 100,
     }
 };
 export default componentStyles;

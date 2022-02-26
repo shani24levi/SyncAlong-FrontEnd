@@ -3,12 +3,7 @@ import { GET_ERRORS, PROFILE_LOADING, GET_PROFILE, GET_CURR_PROFILE } from '../a
 const initialState = {
     loading: false,
     is_profile_complited: false,
-    profile: {
-        traineeOf: [
-            "61f7a56542f3e116d721a7c6",
-            "lflflfllf"
-        ]
-    }
+    profile: {}
 };
 
 export default function (state = initialState, action) {

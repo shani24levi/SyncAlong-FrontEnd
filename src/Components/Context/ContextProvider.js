@@ -40,6 +40,11 @@ function ContextProvider({ children, socket }) {
     const [startMeeting, setStartMeeting] = useState(false);
     const [posesArry, setPosesArry] = useState([]);
     const [myRole, setMyRole] = useState(null);
+    const [yourDataResived, setYourDataResived] = useState(null);
+    const [syncScore, setSyncScore] = useState(null);
+    const [isModalVisible, setIsModalVisible] = useState(true);
+    const [mediaPipeInitilaize, setMediaPipeInitilaize] = useState(false);
+
 
     const [emoji, setEmoji] = useState(null);
     const images = { thumbs_up: thumbs_up, victory: victory, stop: stop };
@@ -51,22 +56,21 @@ function ContextProvider({ children, socket }) {
     var camera = null;
     const myCanvasRef = useRef();
     const userCanvasRef = useRef();
+    const Audio = useRef();
 
-
+    //===================mediaPipe function inital==========================
     //mediaPipe function inital :onResults,setHolistic
     let arryof1sec = [];
-    let i = 0;
     let timeObject;
     let flagTime = true;
     let flagFeatch = true;
-    const [flagTime1, setFlagTime] = useState(true);
-    const [flagFeatch1, setFlagFeatch] = useState(true);
     const [timeOfColectionPose, setTimeOfColectionPose] = useState();
-    const [delayBetweenUsers, setDelayBetweenUsers] = useState(false);
+    const [myDelayOnConection, setMyDelayOnConection] = useState(null);
+    const [array_poses, setPosesArray] = useState([]);
 
     const onResults = async (results) => {
-        const videoWidth = 550;
-        const videoHeight = 550;
+        const videoWidth = 640;
+        const videoHeight = 480;
 
         // Set canvas width	
         myCanvasRef.current.width = videoWidth;
@@ -104,22 +108,23 @@ function ContextProvider({ children, socket }) {
         //when ther is a conection then start maser time and send data to server
         // console.log(flagTime);
         let currTime = new Date().getTime()
-
         if (flagTime) {
             timeObject = new Date();
-            timeObject = new Date(timeObject.getTime() + 1000 * 2).getTime(); //2 sec
+            timeObject = new Date(timeObject.getTime() + 1000 * 1).getTime(); //2 sec
             flagTime = false;
-            //setFlagTime(false);
-            //[4][4][4][[4]
         }
 
         if (currTime < timeObject && flagFeatch) {
             arryof1sec.push(results);
         }
         else if (currTime > timeObject && flagFeatch) {
+            let array_of_poses = arryof1sec.map(p => p.poseLandmarks);
+            let add = { time: new Date().toLocaleString(), poses: array_of_poses }
+            setPosesArray(array_poses => [...array_poses, add])
+
             setTimeOfColectionPose(new Date().toLocaleString())
-            setPosesArry(arryof1sec); //now......
-            // arr2.push(arryof1sec) ...[2,2,2,2,2,2,2,2,]20;
+            setPosesArry(array_of_poses); //now......
+
             arryof1sec = [];
             flagTime = true;
             flagFeatch = true;
@@ -159,8 +164,6 @@ function ContextProvider({ children, socket }) {
             minDetectionConfidence: 0.5,
             minTrackingConfidence: 0.5
         });
-        //console.log('video', video);
-        //console.log('onResults', onResults);
         faceMesh.onResults(onResults);
 
         if (
@@ -174,17 +177,18 @@ function ContextProvider({ children, socket }) {
                 width: 640,
                 height: 480,
             });
-
-            //console.log('camera', camera);
             camera.start();
+            setMediaPipeInitilaize(true)
         }
     }
 
+    //===================useEffects of states==========================
     useEffect(() => {
         lisiningForNewUsers();
         lisiningForCamingCalls();
         lisiningResivingPoses();
         lisiningResivingSyncScore();
+        lisiningMassagesInMyRoom();
     }, [socket]);
 
     useEffect(() => {
@@ -197,13 +201,40 @@ function ContextProvider({ children, socket }) {
         else setIsConnectedFriend(true);
     }, [yourSocketId]);
 
-
-    let timeOfColectionPose2;
     useEffect(() => {
-        console.log(timeOfColectionPose);
-        if (timeOfColectionPose) timeOfColectionPose2 = timeOfColectionPose;
-    }, [timeOfColectionPose]);
+        if (yourDataResived) {
+            let found_el = null;
+            console.log('yourDataResived.end_time_of_colection', yourDataResived.end_time_of_colection);
+            //get the same time of poses as you
+            found_el = array_poses.find(el => el.time === yourDataResived.end_time_of_colection);
+            //if its not colected at the same time
+            //get the next after  
+            if (!found_el || found_el === undefined) {
+                for (const el of array_poses) {
+                    if (el.time > yourDataResived.end_time_of_colection) {
+                        found_el = el;
+                        console.log('found_el undifiendddddd', found_el);
+                        break;
+                    }
+                }
+            }
 
+            console.log('posesArry now...found_el...', found_el);
+            //send me & you data to socket for sync calculation
+            found_el && socket.emit("sendOurPoses", { me: found_el, you: yourDataResived, activity: yourDataResived.activity, time: yourDataResived.end_time_of_colection, roomId });
+            setYourDataResived(null);
+        }
+    }, [array_poses]);
+
+    useEffect(() => {
+        if (isModalVisible) {
+            Audio?.current?.play();
+        } else Audio?.current?.pause();
+    }, [isModalVisible]);
+
+    //===============helpers func=========================//
+
+    //===============lisiners=========================//
     const lisiningForNewUsers = () => {
         //lisinig for changes in the array of users caming in to the app
         socket?.on("getNewUserAddToApp", user => {
@@ -231,29 +262,51 @@ function ContextProvider({ children, socket }) {
     }
 
     const lisiningForCamingCalls = () => {
-        console.time("timer2-answerCall-lising");
         socket?.on('callUser', ({ from, name: callerName, signal }) => {
             setCall({ isReceivingCall: true, from, name: callerName, signal });
         });
-        console.timeEnd("timer2-answerCall-lising");
     }
 
     const lisiningResivingPoses = () => {
+        //peer2 lisining to caming poses from peer1
         socket?.on("resivingPoses", (data) => {
-            var start = data.time;
-            console.log(data);
+            console.log(data, 'resiving time of your data:', new Date().toLocaleString());
+            setYourDataResived(data);
+            //send to sync calculation in useEffect[array_poses]
+            //call back to all in roomId after sync-alg response
+            //get number between 0 to 1.
+            //1 high sync
+            //0 no sync
         })
     }
 
-    const lisiningResivingSyncScore = () => { }
+    const lisiningMassagesInMyRoom = () => {
+        socket?.on('responsRoomId', (res) => {
+            console.log('user entered to this room you are allrady in!!!', res);
+        });
+    }
 
+    const lisiningResivingSyncScore = () => {
+        socket?.on('syncScore', sync_score => {
+            console.log('///...score.../// ', sync_score);
+            setSyncScore(sync_score);
+        });
+    }
+
+    const lisiningOurDelay = () => {
+        socket?.on("ourDelay", (data) => {
+            console.log(data, '..............my delay time ..........');
+            data && setMyDelayOnConection(data);
+            data && setStartMeeting(true);
+        })
+    }
+
+    //===================socket calls when user in room and whant to call============================//
     function answerCall() {
         setCallAccepted(true);
         setStartMeeting(true);
-
         //set me as a peer and difiend my data 
         const peer = new Peer({ initiator: false, trickle: false, stream });
-
         //when i get a signel that call is answered - i get data about the single 
         console.time("timer1-answerCall");
         peer.on('signal', (data) => {
@@ -261,7 +314,6 @@ function ContextProvider({ children, socket }) {
             console.timeEnd("timer1-answerCall");
             socket.emit('startMeeting', { signal: data, to: yourSocketId });
         });
-
         //i get the user stream and i set it in my web veiw
         console.time("timer1-stream");
         peer.on('stream', (currentStream) => {
@@ -269,11 +321,9 @@ function ContextProvider({ children, socket }) {
             console.timeEnd("timer1-stream");
             userVideo.current.srcObject = currentStream;
         });
-
         peer.signal(call.signal);
         connectionRef.current = peer;
     }
-
     const callUser = () => {
         console.log('isConnectedFriend', isConnectedFriend);
         if (!isConnectedFriend) { //sec user has no socketId - cant do connection
@@ -298,33 +348,40 @@ function ContextProvider({ children, socket }) {
         });
 
         let start1 = new Date().getTime();
-        socket.on('callAccepted', (signal) => {
-            console.log('signal eeee', signal);
+        socket.on('callAccepted', (signal, start_delay) => {
+            let start1 = start_delay;
+            var end = new Date().toString();
+            let delay = new Date(end).getSeconds() - new Date(start1).getSeconds();
+            console.log('my delay', delay, 'sec');
+            let data = {
+                to: yourSocketId,
+                delay
+            }
+            setMyDelayOnConection(delay);
             setCallAccepted(true);
             setStartMeeting(true);
-            console.log('my delay', new Date().getTime() - start1);
-            setDelayBetweenUsers(true); ///who is sending singel poses
-
             peer.signal(signal);
         });
-
         connectionRef.current = peer;
     }
-    const leaveCall = () => { }
 
-    const sendMyPoses = async () => {
+    const leaveCall = () => { }
+    //===================socket calls when meeting in now============================//
+    //===================pop up to bouth===========================//
+
+
+    //===================socket for sync func============================//
+    const sendMyPoses = async (time, poses, activity) => {
         var start = new Date().toLocaleString();
-        console.log('timeOfColectionPose', timeOfColectionPose2, ":: -2 sec");
         let data = {
             from: mySocketId,
             to: yourSocketId,
-            time_of_colection: timeOfColectionPose2,
+            end_time_of_colection: time, //-2 sec to peer2 
             time_of_sending: start,
-            poses: posesArry
+            poses: poses,
+            activity
         }
-        console.log('sending my data to trainee', new Date().toLocaleString());
-        socket.emit("sendPoses", data);
-        console.log('Request took for sending my-pose:', (new Date() - start) / 1000, 'sec');
+        socket.emit("sendPoses", data); //peer1 send his poses to peer2 
     }
 
     return (
@@ -358,12 +415,16 @@ function ContextProvider({ children, socket }) {
             posesArry,
             myRole,
             setMyRole,
-            setFlagTime,
-            setFlagFeatch,
             sendMyPoses,
-            delayBetweenUsers,
+            myDelayOnConection,
             timeOfColectionPose,
-
+            array_poses,
+            setPosesArray,
+            syncScore,
+            setIsModalVisible,
+            isModalVisible,
+            Audio,
+            mediaPipeInitilaize
         }}
         >
             {children}

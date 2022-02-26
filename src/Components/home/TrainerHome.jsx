@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import isEmpty from '../../validation/isEmpty';
 import NextMeetingTime from '../meeting/NextMeetingTime';
 import Timer from '../Context/videoChat/timer/Timer';
-import { delay } from '../../helpers';
+import { Helmet } from "react-helmet";
 
 
 const useStyles = makeStyles({
@@ -29,7 +29,7 @@ const useStyles = makeStyles({
 
 
 //Trainer will have his data , graph and lists
-function TrainerHome(props) {
+function TrainerHome({ upcamingMeeting }) {
     const { traineeEntered } = useContext(SocketContext);
     const classes = useStyles();
     const theme = useTheme();
@@ -64,7 +64,7 @@ function TrainerHome(props) {
 
             <Container maxWidth="xl">
                 <Grid className={classes.root} id="basic-elements">
-                    <NextMeetingTime />
+                    <NextMeetingTime upcamingMeeting={upcamingMeeting} />
                     {/* code here! */}
                     {
                         alart && <Alert severity="error">You have no profile for this accoun - please set acoount</Alert>
