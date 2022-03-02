@@ -36,7 +36,7 @@ function ProfileForm(props) {
             <Card
                 className={classes.card}
             >
-                <CardContent className={classes.cardContent}>
+                <CardContent >
                     <Typography component="h1" variant="h5" className={classes.text} >
                         Craete Profile
                     </Typography>
@@ -80,6 +80,7 @@ function ProfileForm(props) {
                                     name="Email"
                                     defaultValue={user.email} />
                             </Grid>
+
                             <Grid item xs={12}>
                                 <TextField
                                     fullWidth
@@ -89,7 +90,6 @@ function ProfileForm(props) {
                                     id="Address"
                                 />
                             </Grid>
-
                             <Grid item xs={6} sm={4}>
                                 <TextField
                                     color="secondary"
@@ -118,7 +118,6 @@ function ProfileForm(props) {
                                     name="Age"
                                 />
                             </Grid>
-
                             <Grid item xs={12} sm={12} md={12}>
                                 <TextField
                                     multiline={true}

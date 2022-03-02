@@ -50,7 +50,7 @@ const NavBar = (props) => {
                     >
                         <ListItem
                             component={Link}
-                            to="/"
+                            to="/home"
                         >
                             <Box
                                 alt="..."

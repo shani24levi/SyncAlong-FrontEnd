@@ -13,15 +13,16 @@ const Profile = (props) => {
     console.log(profile.profile);
     return (
         <>
-            <Container>
-                {
+            <>
+                <ProfileView />
+                {/* {
                     !isEmpty(profile.profile)
                         ?
                         <ProfileView />
                         :
                         <CreateProfile />
-                }
-            </Container>
+                } */}
+            </>
         </>
     );
 }

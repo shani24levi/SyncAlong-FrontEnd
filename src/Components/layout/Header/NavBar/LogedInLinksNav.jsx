@@ -93,7 +93,7 @@ const LogedInLinksNav = (props) => {
             </ListItem>
             <ListItem
                 component={Link}
-                to="/home"
+                to="/schedule/meetings"
                 onClick={props.handleMenuClose}
                 classes={{
                     root: classes.listItemRoot,
