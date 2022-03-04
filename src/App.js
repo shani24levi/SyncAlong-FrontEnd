@@ -11,6 +11,7 @@ import { ContextProvider } from './Components/Context/ContextProvider';
 //redux 
 import { connect } from 'react-redux';
 import { setCurrentUser, logoutUser } from './Store/actions/authAction';
+import { setCurrentProfile } from './Store/actions/profileAction';
 import { futureMeetings } from './Store/actions/meetingActions';
 //utiles needed
 import setAuthToken from './utils/setAuthToken';
@@ -92,7 +93,9 @@ const App = (props) => {
     if (localStorage.user) {
       setAuthToken(localStorage.user);
       const decoded = jwt_decode(localStorage.user);
+      console.log(decoded);
       props.setCurrentUser(decoded);
+      props.setCurrentProfile();
       props.futureMeetings();
 
       // Check for expired token - didnt set it as time expired in the server
@@ -160,6 +163,7 @@ const App = (props) => {
 
 App.propTypes = {
   setCurrentUser: PropTypes.func.isRequired,
+  setCurrentProfile: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   meetings: PropTypes.object.isRequired,
 };
@@ -172,4 +176,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, { setCurrentUser, futureMeetings, logoutUser })(App);
+export default connect(mapStateToProps, { setCurrentUser, futureMeetings, logoutUser, setCurrentProfile })(App);

@@ -1,7 +1,17 @@
-import axios from 'axios';
-import { GET_ERRORS, LOGIN_SUCCESS, LOGOUT, GET_CURR_USER, REGISTER_REQUEST, AUTH_LOADING } from './types';
+import {
+    GET_ERRORS,
+    LOGIN_SUCCESS,
+    LOGOUT,
+    GET_CURR_USER,
+    REGISTER_REQUEST,
+    AUTH_LOADING,
+    TRAINEE_CREATE_SUCCESS,
+    TRAINEE_UPDATE_SUCCESS,
+    TRAINEE_DELETE,
+    UPDATE_AVATAR,
+    UPDATE_USER,
+} from './types';
 import { userService } from '../../servises';
-import { redirect } from '../../helpers';
 import { alertActions } from './alertActions';
 
 export const loginUser = userData => dispatch => {
@@ -31,20 +41,98 @@ export const logoutUser = () => dispatch => {
 
 export const registerUser = userData => dispatch => {
     dispatch(setLoading(true));
+    console.log(userData);
     userService.register(userData)
         .then(
             user => {
                 dispatch(success());
                 dispatch(alertActions.success('Registration successful'));
-                //redirect('/auth/login')
             },
             error => {
                 dispatch(setLoading(false));
                 dispatch(failure(error));
-                // dispatch(alertActions.error(error.toString()));
             }
         );
     function success() { return { type: REGISTER_REQUEST } }
+}
+
+export const updateUser = userData => dispatch => {
+    dispatch(setLoading(true));
+    console.log('userData', userData);
+    userService.updateUser(userData)
+        .then(
+            user => {
+                dispatch(success(userData));
+            },
+            error => {
+                dispatch(setLoading(false));
+                dispatch(failure(error));
+            }
+        );
+    function success() { return { type: UPDATE_USER, payload: userData } }
+}
+
+export const createTraineeUser = userData => dispatch => {
+    dispatch(setLoading(true));
+    userService.createTraineeUser(userData)
+        .then(
+            user => {
+                dispatch(success());
+                dispatch(alertActions.success('Trainee user created successfuly'));
+            },
+            error => {
+                dispatch(setLoading(false));
+                dispatch(failure(error));
+            }
+        );
+    function success() { return { type: TRAINEE_CREATE_SUCCESS } }
+}
+
+export const updateTraineeUser = (id, userData) => dispatch => {
+    dispatch(setLoading(true));
+    userService.updateTraineeUser(id, userData)
+        .then(
+            user => {
+                dispatch(success());
+            },
+            error => {
+                dispatch(setLoading(false));
+                dispatch(failure(error));
+            }
+        );
+    function success() { return { type: TRAINEE_UPDATE_SUCCESS } }
+}
+
+export const deletTrainee = (id) => dispatch => {
+    dispatch(setLoading(true));
+    userService.deletTrainee(id)
+        .then(
+            user => {
+                dispatch(success());
+                dispatch(alertActions.success('Trainee user deleted successfuly'));
+            },
+            error => {
+                dispatch(setLoading(false));
+                dispatch(failure(error));
+            }
+        );
+    function success() { return { type: TRAINEE_DELETE } }
+}
+
+export const updateAvatarPic = (data) => dispatch => {
+    dispatch(setLoading(true));
+    userService.updateAvatarPic(data)
+        .then(
+            user => {
+                dispatch(success());
+                dispatch(currentUser());
+            },
+            error => {
+                dispatch(setLoading(false));
+                dispatch(failure(error));
+            }
+        );
+    function success() { return { type: UPDATE_AVATAR } }
 }
 
 function failure(error) { return { type: GET_ERRORS, payload: error.error } }

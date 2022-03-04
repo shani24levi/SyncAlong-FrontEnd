@@ -18,7 +18,7 @@ function ViewProfileHeader(props) {
     return (
         <Box sx={{ width: '100%' }} className={classes.haederView}>
             <Container>
-                <Grid container spacing={3}>
+                <Grid container spacing={3} alignItems='center'>
                     <Grid item xs={12} sm={8} md={8} >
                         <Grid container spacing={2} >
                             <Grid item xs={12} sm={12}>
@@ -33,7 +33,7 @@ function ViewProfileHeader(props) {
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Grid item xs={12} sm={4} md={4} alignItems='center'>
+                    <Grid item xs={12} sm={4} md={4} >
                         <Avatar
                             alt="avatar"
                             src={user.avatar}

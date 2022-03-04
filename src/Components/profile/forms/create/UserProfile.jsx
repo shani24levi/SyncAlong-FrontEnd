@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Typography,
     Button,
@@ -15,7 +15,7 @@ import { useSelector } from 'react-redux';
 import componentStyles from "../../../../assets/material-ui-style/componenets/profile";
 const useStyles = makeStyles(componentStyles);
 
-function UserProfile(props) {
+function UserProfile({ fullname, setFullName, setUserName, username, setEmail, email, setAvatar, avatar, setChaged, changed, errors, submitted, setPass, pass }) {
     const user = useSelector(state => state.auth.user);
     const classes = useStyles();
 
@@ -23,6 +23,7 @@ function UserProfile(props) {
         display: 'none',
     });
 
+    console.log(fullname);
     return (
         <Box sx={{ mx: 'auto', textAlign: 'center', fontSize: '0.875rem', fontWeight: '700' }}>
             <Typography variant="subtitle1" sx={{ mt: 2 }}>Please tell us more about yourself</Typography>
@@ -33,14 +34,14 @@ function UserProfile(props) {
                 autoComplete="off"
                 onSubmit={onsubmit}
             >
-                <Grid container spacing={1}>
-                    <Grid item xs={12} sm={4} md={4} alignItems='center'>
+                <Grid container spacing={1} alignItems='center'>
+                    <Grid item xs={12} sm={4} md={4} >
                         <label htmlFor="contained-button-file">
                             <Input accept="image/*" id="contained-button-file" multiple type="file" />
                             <Button component="span">
                                 <Avatar
                                     alt="avatar"
-                                    src={user.avatar}
+                                    src={avatar}
                                     className={classes.large}
                                 />
                             </Button>
@@ -54,10 +55,12 @@ function UserProfile(props) {
                                 <TextField
                                     fullWidth
                                     color="secondary"
-                                    id="firstName"
+                                    defaultValue={fullname}
+                                    onChange={(event) => { setFullName(event.target.value); setChaged(true); }}
+                                    autoComplete="current-password"
+                                    label='firstName'
                                     label="firstName"
                                     name="firstName"
-                                    defaultValue={user.name}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={12}>
@@ -68,7 +71,15 @@ function UserProfile(props) {
                                     id="UserName"
                                     label="UserName"
                                     name="UserName"
-                                    defaultValue={user.user}
+                                    disabled
+                                    onChange={(event) => { setUserName(event.target.value); setChaged(true); }}
+                                    defaultValue={username}
+                                    error={errors?.username || (submitted && !username)}
+                                    helperText={
+                                        (submitted && !username)
+                                            ? <Typography color="error" variant="body2"> *username is required</Typography>
+                                            : errors && errors["username"] && !changed && <Typography color="error" variant="body2"> {errors["username"]}</Typography>
+                                    }
                                 />
                             </Grid>
                         </Grid>
@@ -76,15 +87,42 @@ function UserProfile(props) {
                     </Grid>
                 </Grid>
                 <Box sx={{ flexGrow: 1, my: 2 }}>
-                    <Grid xs={12} sm={12} >
+                    <Grid >
                         <TextField
                             required
+                            disabled
                             fullWidth
                             color="secondary"
                             id="email"
                             label="email"
                             name="email"
-                            defaultValue={user.email}
+                            onChange={(event) => { setEmail(event.target.value); setChaged(true); }}
+                            defaultValue={email}
+                            error={errors?.email || (submitted && !email)}
+                            helperText={
+                                (submitted && !email)
+                                    ? <Typography color="error" variant="body2"> *email is required</Typography>
+                                    : errors && errors["email"] && !changed && <Typography color="error" variant="body2"> {errors["email"]}</Typography>
+                            }
+                        />
+                    </Grid>
+                    <Grid >
+                        <TextField
+                            required
+                            fullWidth
+                            disabled
+                            color="secondary"
+                            id="pass"
+                            label="pass"
+                            name="pass"
+                            onChange={(event) => { setPass(event.target.value); setChaged(true); }}
+                            defaultValue={pass}
+                            error={errors?.pass || (submitted && !pass)}
+                            helperText={
+                                (submitted && !pass)
+                                    ? <Typography color="error" variant="body2"> *pass is required</Typography>
+                                    : errors && errors["pass"] && !changed && <Typography color="error" variant="body2"> {errors["pass"]}</Typography>
+                            }
                         />
                     </Grid>
                 </Box>

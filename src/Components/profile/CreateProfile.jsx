@@ -1,4 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { createProfile } from '../../Store/actions/profileAction';
+// import { updateAvatarPic, updateUser } from '../../Store/actions/authAction';
+
 import { styled } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 import UserCard from './UserCard';
@@ -25,6 +29,8 @@ import buttonsStyles from "../../assets/theme/buttons";
 import UserProfile from './forms/create/UserProfile';
 import About from './forms/create/About';
 import Limitations from './forms/create/Limitations';
+import isValidEmail from '../../validation/isValidEmail';
+import isEmpty from '../../validation/isEmpty';
 const buttonStyle = makeStyles(buttonsStyles);
 
 const steps = ['User', 'About', 'Limitations'];
@@ -96,24 +102,144 @@ ColorlibStepIcon.propTypes = {
     icon: PropTypes.node,
 };
 
-function getStepContent(step) {
-    switch (step) {
-        case 0:
-            return <UserProfile />;
-        case 1:
-            return <About />;
-        case 2:
-            return <Limitations />;
-        default:
-            throw new Error('Unknown step');
-    }
-}
 
 const CreateProfile = (props) => {
+    const dispatch = useDispatch();
     const btnClasses = buttonStyle();
     const [activeStep, setActiveStep] = React.useState(0);
-    const handleNext = () => { setActiveStep(activeStep + 1); };
+    const user = useSelector(state => state.auth.user);
+    const profile = useSelector(state => state.profile);
+    const password = 'hashed..';
+    const err = useSelector(state => state.errors);
+    //1 page elements
+    const [fullname, setFullName] = useState(user.name);
+    const [username, setUserName] = useState(user.user);
+    const [email, setEmail] = useState(user.email);
+    const [avatar, setAvatar] = useState(user.avatar);
+    const [pass, setPass] = useState(password);
+    //2 page elements
+    const [address, setAddress] = useState('');
+    const [phone, setPhone] = useState('');
+    const [city, setCity] = useState('');
+    const [contry, setContry] = useState('');
+    const [age, setAge] = useState('');
+    const [gender, setGender] = useState('');
+    const [hobbies, setHobbies] = useState('');
+    const [about, setAbout] = useState('');
+    //3 Page
+    const [limitations, setLimitations] = useState([]);
+
+    const [changed, setChaged] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
+    const [errors, setErorrs] = useState({});
+
+    useEffect(() => {
+        let errors = {};
+        console.log('err', err);
+        if (props.errors === 'user not found') {
+            errors["user"] = "*User not found";
+        }
+        if (props.errors === 'Password does not match') {
+            errors["pass"] = "*Password does not match";
+        }
+        if (!isEmpty(errors))
+            setErorrs(errors);
+        return;
+    }, [err])
+
+    // useEffect(() => {
+    //     console.log(profile);
+    //     if (!isEmpty(profile?.profile?._id)) {
+    //         console.log('move to profile page');
+    //         //navigate('/profile')
+    //     }
+    // }, [profile])
+
+    const handleNext = () => {
+        let errors = {}
+        setChaged(false);
+        setSubmitted(false);
+        //handel 1 page move
+        if (!username || !email || !isValidEmail(email) || !pass) {
+            setSubmitted(true);
+            if (!username) errors["username"] = "*User name required"
+            if (!email) errors["email"] = "*email required"
+            if (!isValidEmail(email)) errors["email"] = "*email not valid"
+            if (!pass) errors["pass"] = "*pass"
+        }
+
+        console.log(isEmpty(errors));
+        console.log(activeStep);
+
+        if (isEmpty(errors) && activeStep == 0 && fullname) {
+            console.log('upadte call need fix the server - gets {} in body...?');
+            //do api call to update user data
+            //dispatch(updateUser({ user: fullname }))
+        }
+        // 2-3 page has no requied elemebnts 
+        !isEmpty(errors) && setErorrs(errors);
+
+        if (activeStep == 2) {
+            //do api call to update user data
+            let data = {}
+            if (address) data.address = address;
+            if (phone) data.phone = phone;
+            if (city) data.city = city;
+            if (contry) data.contry = contry
+            if (age) data.age = age
+            if (gender) data.gender = gender
+            if (hobbies) data.hobbies = hobbies
+            if (about) data.about = about
+            if (limitations.length !== 0) data.limitations = limitations
+            console.log(data);
+            dispatch(createProfile(data))
+        }
+
+        isEmpty(errors) && setActiveStep(activeStep + 1);
+    };
     const handleBack = () => { setActiveStep(activeStep - 1); };
+
+    function getStepContent(step) {
+        switch (step) {
+            case 0:
+                return <UserProfile
+                    setFullName={setFullName}
+                    fullname={fullname}
+                    setUserName={setUserName}
+                    username={username}
+                    setEmail={setEmail}
+                    email={email}
+                    setAvatar={setAvatar}
+                    avatar={avatar}
+                    setChaged={setChaged}
+                    changed={changed}
+                    submitted={submitted}
+                    setPass={setPass}
+                    pass={pass}
+                />;
+            case 1:
+                return <About
+                    address={address} setAddress={setAddress}
+                    phone={phone} setPhone={setPhone}
+                    city={city} setCity={setCity}
+                    contry={contry} setContry={setContry}
+                    age={age} setAge={setAge}
+                    gender={gender} setGender={setGender}
+                    hobbies={hobbies} setHobbies={setHobbies}
+                    about={about} setAbout={setAbout}
+                    setChaged={setChaged}
+                    changed={changed}
+                    submitted={submitted}
+                />;
+            case 2:
+                return <Limitations
+                    limitations={limitations} setLimitations={setLimitations}
+                />;
+            default:
+                throw new Error('Unknown step');
+        }
+    }
+
 
     return (
         <>
@@ -174,8 +300,4 @@ const CreateProfile = (props) => {
     );
 }
 
-{/* <Grid container spacing={1}>
-                <UserCard />
-                <ProfileForm />
-            </Grid> */}
 export default CreateProfile;

@@ -11,11 +11,17 @@ import {
 import TextField from '@mui/material/TextField';
 import Select from '@mui/material/Select';
 
-
-
-function About(props) {
-    const [gender, setGender] = useState('');
-
+function About({
+    address, setAddress,
+    phone, setPhone,
+    city, setCity,
+    contry, setContry,
+    age, setAge,
+    gender, setGender,
+    hobbies, setHobbies,
+    about, setAbout,
+    setChaged
+}) {
     return (
         <Box sx={{ mx: 'auto', textAlign: 'center', fontSize: '0.875rem', fontWeight: '700' }}>
             <Typography variant="subtitle1" sx={{ mt: 2 }}>Please tell us more about yourself</Typography>
@@ -34,6 +40,8 @@ function About(props) {
                             name="Address"
                             label="Address"
                             id="Address"
+                            defaultValue={address}
+                            onChange={(event) => { setAddress(event.target.value); setChaged(true); }}
                         />
                     </Grid>
                     <Grid item xs={6} sm={6}>
@@ -43,6 +51,8 @@ function About(props) {
                             name="Phone"
                             label="Phone"
                             id="Phone"
+                            defaultValue={phone}
+                            onChange={(event) => { setPhone(event.target.value); setChaged(true); }}
                         />
                     </Grid>
                     <Grid item xs={6} sm={4}>
@@ -52,6 +62,8 @@ function About(props) {
                             label="City"
                             name="City"
                             autoComplete="family-name"
+                            defaultValue={city}
+                            onChange={(event) => { setCity(event.target.value); setChaged(true); }}
                         />
                     </Grid>
                     <Grid item xs={6} sm={4} >
@@ -62,6 +74,8 @@ function About(props) {
                             label="Contry"
                             name="Contry"
                             autoComplete="family-name"
+                            defaultValue={contry}
+                            onChange={(event) => { setContry(event.target.value); setChaged(true); }}
                         />
                     </Grid>
                     <Grid item xs={12} sm={4}>
@@ -71,6 +85,8 @@ function About(props) {
                             label="Age"
                             type="Age"
                             name="Age"
+                            defaultValue={age}
+                            onChange={(event) => { setAge(event.target.value); setChaged(true); }}
                         />
                     </Grid>
 
@@ -103,6 +119,8 @@ function About(props) {
                             id="about"
                             label="About Me"
                             name="about"
+                            defaultValue={about}
+                            onChange={(event) => { setAbout(event.target.value); setChaged(true); }}
                         />
                     </Grid>
                     <Grid item xs={12} sm={12} md={12}>
@@ -114,6 +132,8 @@ function About(props) {
                             id="Hobbies"
                             label="Hobbies"
                             name="Hobbies"
+                            defaultValue={hobbies}
+                            onChange={(event) => { setHobbies(event.target.value); setChaged(true); }}
                         />
                     </Grid>
                 </Grid>

@@ -14,7 +14,7 @@ const theme = createTheme({
         },
     },
     palette: {
-        mode: "light",
+        mode: deepPurple[50],
         primary: {
             ...themeColors,
             light: indigo[50],
@@ -28,6 +28,9 @@ const theme = createTheme({
             dark: deepPurple[800],
             contrastText: '#000',
         },
+        text: {
+            secondary: deepPurple[50]
+        }
     },
     typography: {
         body1: {

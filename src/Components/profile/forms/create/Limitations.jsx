@@ -18,7 +18,7 @@ import TextField from '@mui/material/TextField';
 import LimitationItem from './LimitationItem';
 
 
-function Limitations(props) {
+function Limitations({ limitations, setLimitations }) {
     const limits_areas = ['arms', 'abdomen', 'legs_knees', 'lower_back', 'upper_back', 'none'];
 
     return (
@@ -35,8 +35,8 @@ function Limitations(props) {
                     <Grid container spacing={2}>
                         {
                             limits_areas.map(area => (
-                                <Grid item xs={6} sm={4}>
-                                    <LimitationItem area={area} />
+                                <Grid item xs={6} sm={4} key={area}>
+                                    <LimitationItem key={area} area={area} limitations={limitations} setLimitations={setLimitations} />
                                 </Grid>
                             ))
                         }

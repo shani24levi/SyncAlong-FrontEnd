@@ -70,6 +70,7 @@ const Register = (props) => {
         if (user && nickname && email && pass) {
             if (pass.length < 6 || nickname.length < 2 || user.length < 2 || !(/\S+@\S+\.\S+/.test(email))) return;
             let data = { user, username: nickname, email, password: pass } //named as in servre side
+            console.log(data);
             props.registerUser(data);
         }
     }

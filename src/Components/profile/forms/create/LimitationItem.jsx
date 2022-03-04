@@ -18,7 +18,7 @@ import FormLabel from '@mui/material/FormLabel';
 import componentStyles from "../../../../assets/material-ui-style/componenets/profile";
 const useStyles = makeStyles(componentStyles);
 
-function LimitationItem({ area }) {
+function LimitationItem({ area, limitations, setLimitations }) {
     const classes = useStyles();
 
     function iconsProps(area) {
@@ -59,11 +59,24 @@ function LimitationItem({ area }) {
         }
     }
 
+    const hadelLimits = (e) => {
+        if (limitations.length === 0 || !limitations.find(i => i === e)) {
+            limitations.push(e);
+        }
+        //fillter out from list
+        else {
+            limitations = limitations.filter((item) => item !== e);
+        }
+        setLimitations(limitations);
+    }
+
     return (<>
         <Card className={classes.cardCheckbox}>
             <FormControlLabel
                 value="top"
-                control={<Checkbox color='secondary' icon={iconsProps(area)} checkedIcon={iconsCheckedProps(area)} />}
+                control={<Checkbox color='secondary' icon={iconsProps(area)} checkedIcon={iconsCheckedProps(area)}
+                    onClick={() => hadelLimits(area)}
+                />}
                 label={area}
                 labelPlacement="top"
             />
