@@ -98,20 +98,13 @@ function TrainerHome({ upcamingMeeting }) {
                         </Grid>
 
                         <Grid item xs={12} md={12}> <StartCard title={'title'} subtitle={'subtitle'} /> </Grid>
-                        <Grid item xs={12} md={12}><CardContiner title="Your up caming meeting" >
-                            <NextMeetingTime upcamingMeeting={upcamingMeeting} />
-                        </CardContiner>
+                        <Grid item xs={12} md={12}>
+                            <CardContiner title="Your up caming meeting" >
+                                <NextMeetingTime upcamingMeeting={upcamingMeeting} />
+                            </CardContiner>
                         </Grid>
                     </Grid>
                 </Box>
-
-                {/* <Grid container alignItems='center' alignContent='center' spacing={2}>
-                    <Grid item xs={12} md={12}> <StartCard title={'title'} subtitle={'subtitle'} /> </Grid>
-                    <Grid item xs={12} md={12}><CardContiner title="Your up caming meeting" >
-                        <NextMeetingTime upcamingMeeting={upcamingMeeting} />
-                    </CardContiner>
-                    </Grid>
-                </Grid> */}
 
 
                 <Grid container spacing={3}>

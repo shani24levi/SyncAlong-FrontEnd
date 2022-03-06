@@ -72,12 +72,14 @@ export const updateUser = userData => dispatch => {
     function success() { return { type: UPDATE_USER, payload: userData } }
 }
 
-export const createTraineeUser = userData => dispatch => {
+export const createTrainee = userData => dispatch => {
     dispatch(setLoading(true));
     userService.createTraineeUser(userData)
         .then(
             user => {
-                dispatch(success());
+                console.log('user retuen from db', user);
+                dispatch(success(user));
+                dispatch(setLoading(false));
                 dispatch(alertActions.success('Trainee user created successfuly'));
             },
             error => {
@@ -85,7 +87,8 @@ export const createTraineeUser = userData => dispatch => {
                 dispatch(failure(error));
             }
         );
-    function success() { return { type: TRAINEE_CREATE_SUCCESS } }
+    //upadte my trinees in the profils state and not in user state
+    function success(user) { return { type: TRAINEE_CREATE_SUCCESS, payload: user } }
 }
 
 export const updateTraineeUser = (id, userData) => dispatch => {

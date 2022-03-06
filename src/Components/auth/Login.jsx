@@ -120,6 +120,10 @@ const Login = (props) => {
         setAlert(false);
     };
 
+    console.log('====================================');
+    console.log('pass', pass);
+    console.log('====================================');
+
     return (
         <Grid className="index-page">
             <CircelsHeader />
@@ -249,23 +253,12 @@ const Login = (props) => {
                                 />
                                 <Button ref={submitRef} onKeyDown={submitKeyDown} type="submit" color='primary' variant="contained" className={btnClasses.purpleDefult} fullWidth disabled={props.loading}>
                                     {props.loading ? (
-                                        <CircularProgress color="white" size="20px" />
+                                        <CircularProgress color="secondary" size="20px" />
                                     ) : (
                                         "Login"
                                     )}
                                 </Button>
                             </Box>
-
-                            {/* <Typography align='center' component={'div'}>
-                                <Link href="#" >
-                                    Forgot password ?
-                                </Link>
-                            </Typography>
-                            <Typography align='center' component={'div'}> Do you have an account ?
-                                <Link href="#" >
-                                    Sign Up
-                                </Link>
-                            </Typography> */}
                         </CardContent>
                     </Card>
                 </Paper>

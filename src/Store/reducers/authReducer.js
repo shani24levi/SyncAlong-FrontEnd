@@ -55,12 +55,6 @@ export default function (state = initialState, action) {
         loading: false,
       };
 
-    case TRAINEE_CREATE_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        trainees: [...action.payload._id] //list of my tariness 
-      };
     case TRAINEE_UPDATE_SUCCESS:
       return {
         ...state,

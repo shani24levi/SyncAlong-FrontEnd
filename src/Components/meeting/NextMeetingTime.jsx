@@ -34,12 +34,12 @@ function NextMeetingTime({ upcamingMeeting }) {
     let upcomingMeetingTime = new Date(upcamingMeeting?.date);
     var timeStamp = new Date(upcomingMeetingTime).valueOf()//(moment(upcomingMeetingTime).unix()) * 1
 
-    console.log('====================================');
-    console.log(timeStamp);
-    console.log('====================================');
+    // console.log('====================================');
+    // console.log(timeStamp);
+    // console.log('====================================');
 
     const stratTime = Date.now() / 1000; // use UNIX timestamp in seconds
-    console.log(stratTime);
+    //console.log(stratTime);
     const endTime = stratTime + 2000; // use UNIX timestamp in seconds
     const remainingTime = endTime - stratTime;
     const days = Math.ceil(remainingTime / daySeconds);

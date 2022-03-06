@@ -58,7 +58,7 @@ const updateUser = userData => {
 const createTraineeUser = (userData) => {
     return axios
         .post(`${URL}/${USERS}/trainee`, userData)
-        .then(user => { return user })
+        .then(user => { return user.data })
         .catch(err => {
             return Promise.reject(err.response.data);
         })

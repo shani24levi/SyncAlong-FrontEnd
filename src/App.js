@@ -31,6 +31,7 @@ import Meetings from './Components/screens/Meetings';
 import VideoContext from './Components/Context/videoChat/VideoContext';
 import VideoRoom from './Components/screens/VidoeRoom';
 import Profile from './Components/screens/Profile';
+import AddTrainee from './Components/profile/addTrainee/AddTrainee';
 import ScheduleMeetings from './Components/screens/ScheduleMeetings';
 
 const App = (props) => {
@@ -45,6 +46,7 @@ const App = (props) => {
 
   useEffect(() => {
     props.auth.user?._id && socket?.emit("addUser", props.auth.user?._id);
+    props.auth.user && props.setCurrentProfile();
   }, [props.auth.user]);
 
   // const scheduleMeetingPopUpCall = (upcomingMeeting) => {
@@ -141,6 +143,10 @@ const App = (props) => {
 
                   <Route exact path='/profile' element={<PrivateRoute />}>
                     <Route exact path='/profile' element={<Profile />} />
+                  </Route>
+
+                  <Route exact path='/profile/adduser' element={<PrivateRoute />}>
+                    <Route exact path='/profile/adduser' element={<AddTrainee />} />
                   </Route>
 
                   <Route exact path='/schedule/meetings' element={<PrivateRoute />}>

@@ -12,10 +12,16 @@ const createProfile = (data) => {
         })
 }
 
+// return fetch(`${URL}/${PROFILES}`, {
+//     body: JSON.stringify(data),
+//     headers: { 'content-type': 'application/json', Authorization: 'Bearer ' + localStorage.getItem('user') },
+//     method: 'PUT'
+// })
+
 const update = (data) => {
     return axios
         .put(`${URL}/${PROFILES}`, data)
-        .then(profile => { return profile })
+        .then(profile => { return profile.data }) //returns only what has been uptadted ant not all data
         .catch(err => {
             return Promise.reject(err.response.data);
         })
@@ -32,7 +38,7 @@ const getProfile = () => {
 
 const createTraineeProfile = (trinee_id, data) => {
     return axios
-        .post(`${URL}/${PROFILES}/${trinee_id}`, data)
+        .post(`${URL}/${PROFILES}/trainee/${trinee_id}`, data)
         .then(profile => { console.log(profile); return profile.data })
         .catch(err => {
             return Promise.reject(err.response.data);

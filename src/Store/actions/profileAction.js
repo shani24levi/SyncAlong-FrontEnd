@@ -3,6 +3,7 @@ import {
     PROFILE_LOADING,
     SET_CURR_PROFILE,
     PROFILE_CREATE,
+    UPDATE_PROFILE,
     TRINEE_PROFILE_CREATE,
     UPDATE_TRAINEES_LIST,
     DELETE_TRAINEE
@@ -27,23 +28,22 @@ export const createProfile = data => dispatch => {
     function success(profile) { return { type: PROFILE_CREATE, payload: profile } }
 };
 
-
-
-// export const updateProfile = (data) => dispatch => {
-//     dispatch(setLoading(true));
-//     profileService.update(data)
-//         .then(
-//             profile => {
-//                 dispatch(setCurrentProfile());
-//                 dispatch(alertActions.success('Profile updated successfuly'));
-//                 return profile
-//             },
-//             error => {
-//                 dispatch(setLoading(false));
-//                 dispatch(failure(error));
-//             }
-//         );
-// };
+export const updateProfile = (data) => dispatch => {
+    dispatch(setLoading(true));
+    profileService.update(data)
+        .then(
+            profile => {
+                dispatch(success(profile));
+                dispatch(alertActions.success('Profile updated successfuly'));
+                return profile
+            },
+            error => {
+                dispatch(setLoading(false));
+                dispatch(failure(error));
+            }
+        );
+    function success(profile) { return { type: UPDATE_PROFILE, payload: profile } }
+};
 
 // export const setCurrentProfile = user => { return { type: SET_CURR_PROFILE, payload: user } }
 
@@ -63,21 +63,21 @@ export const setCurrentProfile = () => dispatch => {
     function success(profile) { return { type: SET_CURR_PROFILE, payload: profile } }
 };
 
-// export const createTraineeProfile = (id, data) => dispatch => {
-//     dispatch(setLoading(true));
-//     profileService.createTraineeProfile(id, data)
-//         .then(
-//             profile => {
-//                 dispatch(success(profile, id));
-//                 dispatch(alertActions.success('Profile created successfuly'));
-//             },
-//             error => {
-//                 dispatch(setLoading(false));
-//                 dispatch(failure(error));
-//             }
-//         );
-//     function success(profile, id) { return { type: TRINEE_PROFILE_CREATE, payload: { profile, id } } }
-// };
+export const createTraineeProfile = (id, data) => dispatch => {
+    dispatch(setLoading(true));
+    profileService.createTraineeProfile(id, data)
+        .then(
+            profile => {
+                dispatch(success(profile));
+                dispatch(alertActions.success('Profile created successfuly'));
+            },
+            error => {
+                dispatch(setLoading(false));
+                dispatch(failure(error));
+            }
+        );
+    function success(profile) { return { type: TRINEE_PROFILE_CREATE, payload: profile } }
+};
 // export const setTraineesProfiles = (trainees_arr) => dispatch => {
 //     for (const id in trainees_arr) {
 //         dispatch(setLoading(true));

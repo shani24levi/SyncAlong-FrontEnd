@@ -29,11 +29,11 @@ function ProgressBarVals({
             </Grid>
             {text !== '' && (
                 <Grid item xs={text ? 4 : false}>
-                    <Typography color={color}>
-                        <Typography sx={{ color: coloredText ? '' : 'red' }}>
-                            {text}
-                        </Typography>
-                    </Typography>
+                    {/* <Typography color={color}>
+                        <Typography sx={{ color: coloredText ? '' : 'red' }}> */}
+                    {text}
+                    {/* </Typography>
+                    </Typography> */}
                 </Grid>
             )}
         </Grid>

@@ -56,10 +56,10 @@ const componentStyles = (theme) => ({
     },
     haederView: {
         borderColor: "#8c3db9",
-        padding: "50px 0",
+        padding: "20px 5px",
         borderBottom: "3px solid #8c3db9",
         // background: "radial-gradient(ellipse at bottom, #292D61 30%, #171941 80%)",
-        marginBottom: '3%'
+        //  marginBottom: '3%'
     },
 
     cardCheckbox: {

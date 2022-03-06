@@ -8,7 +8,6 @@ import { useSelector } from 'react-redux';
 
 import { makeStyles } from "@material-ui/core/styles";
 import componentStyles from "../../../assets/material-ui-style/componenets/profile";
-import { width } from '@mui/system';
 const useStyles = makeStyles(componentStyles);
 
 function ViewProfileHeader(props) {
@@ -21,19 +20,29 @@ function ViewProfileHeader(props) {
                 <Grid container spacing={3} alignItems='center'>
                     <Grid item xs={12} sm={8} md={8} >
                         <Grid container spacing={2} >
-                            <Grid item xs={12} sm={12}>
-                                <Typography variant="h6" gutterBottom >
-                                    {user.user}
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={12} sm={12}>
-                                <Typography variant="subtitle1">
-                                    You will be transferred to your profile in a few seconds
-                                </Typography>
-                            </Grid>
+                            <Box sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                '& > *': {
+                                    m: 1,
+                                },
+                            }}
+                            >
+                                <Grid item xs={12} sm={12}>
+                                    <Typography variant="h6" gutterBottom >
+                                        {user.user}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={12} sm={12}>
+                                    <Typography variant="subtitle1">
+                                        You will be transferred to your profile in a few seconds
+                                    </Typography>
+                                </Grid>
+                            </Box>
                         </Grid>
                     </Grid>
-                    <Grid item xs={12} sm={4} md={4} >
+                    <Grid item xs={4} sm={4} md={4} >
                         <Avatar
                             alt="avatar"
                             src={user.avatar}

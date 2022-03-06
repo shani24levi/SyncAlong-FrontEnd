@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import {
     Typography,
     Button,
@@ -11,13 +11,9 @@ import {
 } from "@material-ui/core";
 import TextField from '@mui/material/TextField';
 import Select from '@mui/material/Select';
-import EditIcon from '@mui/icons-material/Edit';
-import CircularProgress from '@mui/material/CircularProgress';
+import LimitationItem from '../../profile/forms/create/LimitationItem';
 
-import buttonsStyles from "../../../../assets/theme/buttons";
-const buttonStyle = makeStyles(buttonsStyles);
-
-function About({
+function CreateTraineeProfile({
     address, setAddress,
     phone, setPhone,
     city, setCity,
@@ -27,14 +23,15 @@ function About({
     hobbies, setHobbies,
     about, setAbout,
     setChaged,
-    editProfile, handelEditeAbout //for use in a edit call also
+    limitations, setLimitations
 }) {
-    const btnClasses = buttonStyle();
-    const profile = useSelector(state => state.profile)
+    const dispatch = useDispatch();
+    const profile = useSelector(state => state.profile);
+    const limits_areas = ['arms', 'abdomen', 'legs_knees', 'lower_back', 'upper_back', 'none'];
 
     return (
         <Box sx={{ mx: 'auto', textAlign: 'center', fontSize: '0.875rem', fontWeight: '700' }}>
-            <Typography variant="subtitle1" sx={{ mt: 2 }}>Please tell us more about yourself</Typography>
+            <Typography variant="subtitle1" sx={{ mt: 2 }}>{profile.trinee_added?.username} has been created seccsfuly, Please set profile for futcher sport activitied with {profile.trinee_added?.username} </Typography>
             <Box
                 sx={{ mt: 3, m: 1 }}
                 component="form"
@@ -42,6 +39,18 @@ function About({
                 autoComplete="off"
                 onSubmit={onsubmit}
             >
+                <FormControl component="fieldset">
+                    <Grid container spacing={2}>
+                        {
+                            limits_areas.map(area => (
+                                <Grid item xs={6} sm={4} key={area}>
+                                    <LimitationItem key={area} area={area} limitations={limitations} setLimitations={setLimitations} />
+                                </Grid>
+                            ))
+                        }
+                    </Grid>
+                </FormControl>
+
                 <Grid container spacing={1}>
                     <Grid item xs={6} sm={6}>
                         <TextField
@@ -147,25 +156,9 @@ function About({
                         />
                     </Grid>
                 </Grid>
-
-                {editProfile &&
-                    <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                        <Button startIcon={<EditIcon />} disabled={profile.loading}
-                            className={btnClasses.purpleRound}
-                            variant="contained"
-                            onClick={handelEditeAbout}
-                        >
-                            {profile.loading ? (
-                                <CircularProgress color="secondary" />
-                            ) : (
-                                "Confirm"
-                            )}
-
-                        </Button></Box>
-                }
             </Box>
         </Box>
     );
 }
 
-export default About;
+export default CreateTraineeProfile;
