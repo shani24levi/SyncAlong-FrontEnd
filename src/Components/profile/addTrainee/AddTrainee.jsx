@@ -129,7 +129,7 @@ function AddTrainee(props) {
         if (profile.trinee_added) {
             setActiveStep(activeStep + 1)
         }
-        if (profile.trinee_profile_created) {
+        if (profile.trainee_profile_success) {
             navigate('/profile')
         }
 
@@ -146,7 +146,7 @@ function AddTrainee(props) {
         if (!isEmpty(errors))
             setErorrs(errors);
         return;
-    }, [err, profile.trinee_added, profile.trinee_profile_created])
+    }, [err, profile.trinee_added, profile.trainee_profile_success])
 
 
     const handleNext = () => {

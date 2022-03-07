@@ -11,7 +11,8 @@ import {
 const initialState = {
     loading: false,
     profile: null,
-    trainees_profiles: []
+    trainees_profiles: [],
+    trainee_profile_success: false
 };
 
 export default function (state = initialState, action) {
@@ -50,21 +51,23 @@ export default function (state = initialState, action) {
                 loading: false,
             };
 
+
         case TRAINEE_CREATE_SUCCESS:
-            state.profile.trainerOf.push(action.payload.data?._id) //add to the caurr list state
+            state.profile?.trainerOf?.push(action.payload.data?._id) //add to the caurr list state
             return {
                 ...state,
                 loading: false,
-                trinee_added: action.payload.data
+                trinee_added: action.payload.data,
+                trainee_profile_success: false,
+            };
+        case TRINEE_PROFILE_CREATE:
+            return {
+                ...state,
+                loading: false,
+                trainees_profiles: !state.trainees_profiles ? [action.payload] : [...state.trainees_profiles, action.payload],
+                trainee_profile_success: true,
             };
 
-        case TRINEE_PROFILE_CREATE:
-            state.profile.trainees_profiles.push(action.payload.data)
-            return {
-                ...state,
-                loading: false,
-                trinee_profile_created: action.payload.data
-            };
 
         case UPDATE_TRAINEES_LIST:
             let new_trainees = state.trainees_profiles?.map(i => {

@@ -39,7 +39,7 @@ const getProfile = () => {
 const createTraineeProfile = (trinee_id, data) => {
     return axios
         .post(`${URL}/${PROFILES}/trainee/${trinee_id}`, data)
-        .then(profile => { console.log(profile); return profile.data })
+        .then(profile => { console.log(profile); return profile.data.data })
         .catch(err => {
             return Promise.reject(err.response.data);
         })

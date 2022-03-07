@@ -1,10 +1,13 @@
 import React, { createContext, useState, useRef, useEffect } from 'react';
+import { useLocation } from "react-router-dom";
 import Peer from 'simple-peer';
 import { Holistic } from "@mediapipe/holistic";
 import * as holistic from "@mediapipe/holistic";
 import * as cam from "@mediapipe/camera_utils";
 import { useSelector } from 'react-redux';
 import isEmpty from '../../validation/isEmpty';
+import mediaPipeLandmarks from './mediaPipeLandmarks';
+
 ///////// NEW STUFF IMPORTS
 import * as fp from "fingerpose";
 import victory from "../../assets/signs/victory.png"
@@ -43,7 +46,10 @@ function ContextProvider({ children, socket }) {
     const [yourDataResived, setYourDataResived] = useState(null);
     const [syncScore, setSyncScore] = useState(null);
     const [isModalVisible, setIsModalVisible] = useState(true);
-    const [mediaPipeInitilaize, setMediaPipeInitilaize] = useState(false);
+    const [mediaPipeInitilaize, setMediaPipeInitilaize] = useState('');
+
+    //for first step - user enters the roonm - need to stap away for the camaea.
+    const [settingUserInFrame, setSettingUserInFrame] = useState(false);
 
 
     const [emoji, setEmoji] = useState(null);
@@ -56,10 +62,17 @@ function ContextProvider({ children, socket }) {
     var camera = null;
     const myCanvasRef = useRef();
     const userCanvasRef = useRef();
+    let userPoseAngle = null;
+    let repsCounter = 0;
     const Audio = useRef();
+
+    let location = useLocation();
 
     //===================mediaPipe function inital==========================
     //mediaPipe function inital :onResults,setHolistic
+    // *** z index from mediaPipe is not usebal becous the model is'nt fully trained to predict depth
+    // its described in the docs on: ->outpue -> POSE_LANDMARKS -> z index.
+    //mediaPipe docs-link: https://google.github.io/mediapipe/solutions/holistic.html
     let arryof1sec = [];
     let timeObject;
     let flagTime = true;
@@ -68,49 +81,13 @@ function ContextProvider({ children, socket }) {
     const [myDelayOnConection, setMyDelayOnConection] = useState(null);
     const [array_poses, setPosesArray] = useState([]);
 
-    const onResults = async (results) => {
-        const videoWidth = 640;
-        const videoHeight = 480;
-
-        // Set canvas width	
-        myCanvasRef.current.width = videoWidth;
-        myCanvasRef.current.height = videoHeight;
-        const canvasElement = myCanvasRef.current;
-
-        const canvasCtx = canvasElement.getContext("2d");
-        canvasCtx.save();
-        canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-        canvasCtx.drawImage(
-            results.image,
-            0,
-            0,
-            canvasElement.width,
-            canvasElement.height
-        );
-        // //hand mark ....
-        // if (results?.leftHandLandmarks) {
-        //     console.log('.........left hend ......');
-        //     const GE = new fp.GestureEstimator([
-        //         fp.Gestures.VictoryGesture,
-        //         fp.Gestures.ThumbsUpGesture,
-        //         fp.Gestures.StopGesrure,
-        //     ]);
-        //     const gesture = await GE.estimate(results.leftHandLandmarks, 5);
-        //     if (gesture.gestures !== undefined && gesture.gestures.length > 0) {
-        //         console.log(gesture.gestures);
-        //         setEmoji(gesture.gestures[0].name);
-        //         console.log('@@@@@@@@@ ', emoji);
-        //     }
-        // }
-        // else setEmoji(null);
-
-        //handel pose colection
-        //when ther is a conection then start maser time and send data to server
-        // console.log(flagTime);
+    const collectionUserPose = (results) => {
+        //calls inside of the midiapipe loop thets runs fer frams
+        //colect 1 sec and set it in the start array of posess
         let currTime = new Date().getTime()
         if (flagTime) {
             timeObject = new Date();
-            timeObject = new Date(timeObject.getTime() + 1000 * 1).getTime(); //2 sec
+            timeObject = new Date(timeObject.getTime() + 1000 * 1).getTime(); //1 sec
             flagTime = false;
         }
 
@@ -129,6 +106,73 @@ function ContextProvider({ children, socket }) {
             flagTime = true;
             flagFeatch = true;
         }
+    }
+
+    const calculatingUserInFrame = (results) => {
+        let inframe = true;
+        if (settingUserInFrame) return inframe;
+        if (!results.poseLandmarks || results.poseLandmarks?.length == 0) return inframe;
+
+        results.poseLandmarks.map((i, body_index) => {
+            if (i.visibility < 0.6 && (
+                mediaPipeLandmarks('RIGHR_WRIST') === body_index || mediaPipeLandmarks('LEFT_WRIST') === body_index ||
+                mediaPipeLandmarks('RIGHR_ELBOW') === body_index || mediaPipeLandmarks('LEFT_ELBOW') === body_index ||
+                mediaPipeLandmarks('RIGHR_SHOULDER') === body_index || mediaPipeLandmarks('LEFT_SHOULDER') === body_index ||
+                mediaPipeLandmarks('RIGHR_HIP') === body_index || mediaPipeLandmarks('LEFT_HIP') === body_index ||
+                mediaPipeLandmarks('RIGHR_KNEE') === body_index || mediaPipeLandmarks('LEFT_KNEE') === body_index ||
+                mediaPipeLandmarks('RIGHR_ANKLE') === body_index || mediaPipeLandmarks('LEFT_ANKLE') === body_index
+            )) {
+                inframe = false;
+            }
+        });
+
+        if (inframe) {
+            console.log('inframe', inframe);
+            setSettingUserInFrame(inframe)
+        }
+        return inframe;
+    }
+
+    const onResults = async (results) => {
+        const videoWidth = 640;
+        const videoHeight = 480;
+
+        setMediaPipeInitilaize('none')
+
+        // Set canvas width	
+        myCanvasRef.current.width = videoWidth;
+        myCanvasRef.current.height = videoHeight;
+        const canvasElement = myCanvasRef.current;
+
+        const canvasCtx = canvasElement.getContext("2d");
+        canvasCtx.save();
+        canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+        canvasCtx.drawImage(
+            results.image,
+            0,
+            0,
+            canvasElement.width,
+            canvasElement.height
+        );
+
+
+        collectionUserPose(results);
+        let inframe = calculatingUserInFrame(results);
+
+        // Only overwrite existing pixels when user is out of the frame 
+        if (!inframe) {
+            canvasCtx.globalCompositeOperation = 'source-in';
+            canvasCtx.fillStyle = 'rgba(255, 0, 0, 0.6)';
+            canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
+            // Only overwrite missing pixels.
+            canvasCtx.globalCompositeOperation = 'destination-atop';
+            canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+            //drow only when seting modal is initilize and when not user in fram
+            canvasCtx.globalCompositeOperation = 'source-over';
+        }
+
+        console.log('settingUserInFrame', settingUserInFrame);
+        //land mark...
 
         if (results) {
             connect(canvasCtx, results.poseLandmarks, holistic.POSE_CONNECTIONS,
@@ -150,13 +194,14 @@ function ContextProvider({ children, socket }) {
     }
 
     const setHolistic = (video) => {
-        const faceMesh = new Holistic({
+        console.log('video', video);
+        const userPose = new Holistic({
             locateFile: (file) => {
                 return `https://cdn.jsdelivr.net/npm/@mediapipe/holistic/${file}`;
             },
         });
-        faceMesh.setOptions({
-            modelComplexity: 1,
+        userPose.setOptions({
+            modelComplexity: 1,  //accuracy is 1 
             smoothLandmarks: true,
             enableSegmentation: true,
             smoothSegmentation: true,
@@ -164,21 +209,23 @@ function ContextProvider({ children, socket }) {
             minDetectionConfidence: 0.5,
             minTrackingConfidence: 0.5
         });
-        faceMesh.onResults(onResults);
+        userPose.onResults(onResults);
 
         if (
             typeof video.current !== "undefined" &&
-            video.current !== null
+            video.current !== null &&
+            location.pathname === '/video-room'
         ) {
             camera = new cam.Camera(video.current.video, {
                 onFrame: async () => {
-                    await faceMesh.send({ image: video.current.video });
+                    await userPose.send({ image: video?.current?.video });
                 },
                 width: 640,
                 height: 480,
             });
+            console.log('camera', camera);
             camera.start();
-            setMediaPipeInitilaize(true)
+            // setMediaPipeInitilaize(true)
         }
     }
 
@@ -192,8 +239,13 @@ function ContextProvider({ children, socket }) {
     }, [socket]);
 
     useEffect(() => {
+        if (location.pathname !== '/video-room') {
+            console.log('stream return');
+            return;
+        }
         if (myVideo.current) myVideo.current.srcObject = stream;
-        setHolistic(myVideo);
+        //console.log('stream', stream);
+        myVideo?.current?.srcObject && setHolistic(myVideo);
     }, [stream]);
 
     useEffect(() => {
@@ -424,7 +476,8 @@ function ContextProvider({ children, socket }) {
             setIsModalVisible,
             isModalVisible,
             Audio,
-            mediaPipeInitilaize
+            mediaPipeInitilaize,
+            settingUserInFrame
         }}
         >
             {children}

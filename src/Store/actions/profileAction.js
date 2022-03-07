@@ -68,7 +68,7 @@ export const createTraineeProfile = (id, data) => dispatch => {
     profileService.createTraineeProfile(id, data)
         .then(
             profile => {
-                dispatch(success(profile));
+                dispatch(success(id, profile));
                 dispatch(alertActions.success('Profile created successfuly'));
             },
             error => {
@@ -76,7 +76,7 @@ export const createTraineeProfile = (id, data) => dispatch => {
                 dispatch(failure(error));
             }
         );
-    function success(profile) { return { type: TRINEE_PROFILE_CREATE, payload: profile } }
+    function success(id, profile) { return { type: TRINEE_PROFILE_CREATE, payload: { id, profile } } }
 };
 // export const setTraineesProfiles = (trainees_arr) => dispatch => {
 //     for (const id in trainees_arr) {
