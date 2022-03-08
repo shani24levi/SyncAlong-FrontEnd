@@ -47,10 +47,12 @@ function ContextProvider({ children, socket }) {
     const [syncScore, setSyncScore] = useState(null);
     const [isModalVisible, setIsModalVisible] = useState(true);
     const [mediaPipeInitilaize, setMediaPipeInitilaize] = useState('');
+    const [peer, setMeAsPeer] = useState(null);
+    const [recognition, setRecognition] = useState('stop');
 
     //for first step - user enters the roonm - need to stap away for the camaea.
-    const [settingUserInFrame, setSettingUserInFrame] = useState(false);
-
+    const [peer1inFrame, setSettingUserInFrame] = useState(false);
+    const [peer2inFrame, setPeer2inFrame] = useState(false);
 
     const [emoji, setEmoji] = useState(null);
     const images = { thumbs_up: thumbs_up, victory: victory, stop: stop };
@@ -110,7 +112,7 @@ function ContextProvider({ children, socket }) {
 
     const calculatingUserInFrame = (results) => {
         let inframe = true;
-        if (settingUserInFrame) return inframe;
+        if (peer1inFrame) return inframe;
         if (!results.poseLandmarks || results.poseLandmarks?.length == 0) return inframe;
 
         results.poseLandmarks.map((i, body_index) => {
@@ -127,7 +129,6 @@ function ContextProvider({ children, socket }) {
         });
 
         if (inframe) {
-            console.log('inframe', inframe);
             setSettingUserInFrame(inframe)
         }
         return inframe;
@@ -171,8 +172,9 @@ function ContextProvider({ children, socket }) {
             canvasCtx.globalCompositeOperation = 'source-over';
         }
 
-        console.log('settingUserInFrame', settingUserInFrame);
+        //console.log('settingUserInFrame', peer1inFrame);
         //land mark...
+
 
         if (results) {
             connect(canvasCtx, results.poseLandmarks, holistic.POSE_CONNECTIONS,
@@ -225,7 +227,6 @@ function ContextProvider({ children, socket }) {
             });
             console.log('camera', camera);
             camera.start();
-            // setMediaPipeInitilaize(true)
         }
     }
 
@@ -236,6 +237,8 @@ function ContextProvider({ children, socket }) {
         lisiningResivingPoses();
         lisiningResivingSyncScore();
         lisiningMassagesInMyRoom();
+        lisiningNotifications();
+        lisiningPeer2InFrame();
     }, [socket]);
 
     useEffect(() => {
@@ -244,7 +247,7 @@ function ContextProvider({ children, socket }) {
             return;
         }
         if (myVideo.current) myVideo.current.srcObject = stream;
-        //console.log('stream', stream);
+        console.log('stream1', stream);
         myVideo?.current?.srcObject && setHolistic(myVideo);
     }, [stream]);
 
@@ -283,6 +286,27 @@ function ContextProvider({ children, socket }) {
             Audio?.current?.play();
         } else Audio?.current?.pause();
     }, [isModalVisible]);
+
+    useEffect(() => {
+        //set notificatiion to peer2 that peer1(me speeking...) said somethong....
+        if (recognition) {
+            console.log('recognition', recognition);
+            let data = {
+                from: mySocketId,
+                to: yourSocketId,
+                notification: recognition,
+                time: new Date().toLocaleString(),
+                roomId
+            }
+            socket?.emit('sendNotification', data);
+        }
+    }, [recognition]);
+
+    useEffect(() => {
+        if (peer1inFrame && roomId) {
+            socket?.emit('peer1inFrame', roomId);
+        }
+    }, [peer1inFrame]);
 
     //===============helpers func=========================//
 
@@ -345,6 +369,19 @@ function ContextProvider({ children, socket }) {
         });
     }
 
+    const lisiningNotifications = () => {
+        socket?.on('notification', notification => {
+            //console.log('notification..notification..notification ', notification);
+            setRecognition(notification);
+        });
+    }
+
+    const lisiningPeer2InFrame = () => {
+        socket?.on('peer1inFrame', roomId => {
+            setPeer2inFrame(true);
+        });
+    }
+
     const lisiningOurDelay = () => {
         socket?.on("ourDelay", (data) => {
             console.log(data, '..............my delay time ..........');
@@ -357,8 +394,16 @@ function ContextProvider({ children, socket }) {
     function answerCall() {
         setCallAccepted(true);
         setStartMeeting(true);
-        //set me as a peer and difiend my data 
+        //set me as a peer and difiend my data
+
+        // console.log('stream ', stream);
+        // console.log('myCanvasRef ', myCanvasRef);
+        // let canvasStream = myCanvasRef.captureStream(25);
+        // console.log('canvasStream ', canvasStream);
+
         const peer = new Peer({ initiator: false, trickle: false, stream });
+        setMeAsPeer(peer);
+
         //when i get a signel that call is answered - i get data about the single 
         console.time("timer1-answerCall");
         peer.on('signal', (data) => {
@@ -367,10 +412,10 @@ function ContextProvider({ children, socket }) {
             socket.emit('startMeeting', { signal: data, to: yourSocketId });
         });
         //i get the user stream and i set it in my web veiw
-        console.time("timer1-stream");
+        //  console.time("timer1-stream");
         peer.on('stream', (currentStream) => {
             //outer person stream
-            console.timeEnd("timer1-stream");
+            // console.timeEnd("timer1-stream");
             userVideo.current.srcObject = currentStream;
         });
         peer.signal(call.signal);
@@ -381,7 +426,14 @@ function ContextProvider({ children, socket }) {
         if (!isConnectedFriend) { //sec user has no socketId - cant do connection
             return;
         }
+
+        // console.log('stream ', stream);
+        // console.log('myCanvasRef ', myCanvasRef);
+        // let canvasStream = myCanvasRef.captureStream(25);
+        // console.log('canvasStream ', canvasStream);
+
         const peer = new Peer({ initiator: true, trickle: false, stream });
+        setMeAsPeer(peer);
 
         console.time("timer2-callUser");
         peer.on('signal', (data) => {
@@ -416,12 +468,15 @@ function ContextProvider({ children, socket }) {
         });
         connectionRef.current = peer;
     }
+    const sendPosesPeer2Peer = () => {
+        //Sends my data through webRTC 
+        //An alternative solution for canvas transfer that the peer library does not support 
+
+    }
 
     const leaveCall = () => { }
     //===================socket calls when meeting in now============================//
     //===================pop up to bouth===========================//
-
-
     //===================socket for sync func============================//
     const sendMyPoses = async (time, poses, activity) => {
         var start = new Date().toLocaleString();
@@ -477,7 +532,8 @@ function ContextProvider({ children, socket }) {
             isModalVisible,
             Audio,
             mediaPipeInitilaize,
-            settingUserInFrame
+            peer2inFrame, peer1inFrame,
+            recognition, setRecognition,
         }}
         >
             {children}
