@@ -111,9 +111,9 @@ function About({
                                 label="Gender"
                                 onChange={(e) => setGender(e.target.value)}
                             >
-                                <MenuItem value={10}>Male</MenuItem>
-                                <MenuItem value={20}>Woman</MenuItem>
-                                <MenuItem value={30}>Mixed</MenuItem>
+                                <MenuItem value={"Male"}>Male</MenuItem>
+                                <MenuItem value={"Female"}>Famale</MenuItem>
+                                <MenuItem value={"Mixed"}>Mixed</MenuItem>
                             </Select>
                         </FormControl>
                     </Grid>

@@ -1,5 +1,5 @@
 import isEmpty from '../../validation/isEmpty';
-import { CREATE_MEETING, GET_ERRORS, GET_MEETINGS, GET_FUTURE_MEETINGS, MEETINGS_LOADING } from '../actions/types';
+import { CREATE_MEETING, GET_ERRORS, GET_MEETINGS,  GET_FUTURE_MEETINGS, MEETINGS_LOADING, GET_CURR_ACTIVITIES } from '../actions/types';
 
 const initialState = {
     loading: false,
@@ -25,7 +25,13 @@ export default function (state = initialState, action) {
                 meetings: [action.payload, ...state.meetings],
                 loading: false,
             };
-
+        case GET_CURR_ACTIVITIES:
+            console.log("GET_CURR_ACTIVITIES", action.payload);
+            return {
+               ...state,
+               loading: false,
+               activities: action.payload 
+            }
         default:
             return state;
     }

@@ -10,7 +10,7 @@ import CreateProfile from '../profile/CreateProfile';
 const Profile = (props) => {
     const profile = useSelector(state => state.profile);
 
-    console.log(profile.profile);
+    console.log(profile);
     return (
         <>
             <>

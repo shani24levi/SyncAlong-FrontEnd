@@ -18,7 +18,10 @@ import TraineesUsers from './views/links/TraineesUsers';
 
 const ProfileView = (props) => {
     const dispatch = useDispatch();
+    const user = useSelector(state => state.auth.user);
     const profile = useSelector(state => state.profile.profile);
+    const profileT = useSelector(state => state.profile);
+    console.log("profileT",profileT);
     const [link, setLink] = useState('about');
     const [modalIsOpen, setModalIsOpen] = useState(false);
 
@@ -67,7 +70,7 @@ const ProfileView = (props) => {
         if (gender) data.gender = gender
         if (hobbies) data.hobbies = hobbies
         if (about) data.about = about
-        console.log(data);
+        console.log("data after edit",data);
         dispatch(updateProfile(data))
 
         console.log('====================================');

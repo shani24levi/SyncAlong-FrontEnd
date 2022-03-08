@@ -1,6 +1,6 @@
 import axios from 'axios';
-import setAuthToken from '../utils/setAuthToken';
-import { URL } from '../utils/globalVaribals';
+import setAuthToken from '../Utils/setAuthToken';
+import { URL } from '../Utils/globalVaribals';
 import jwt_decode from 'jwt-decode';
 const USERS = 'api/users';
 
@@ -72,9 +72,9 @@ const updateTraineeUser = (id, userData) => {
             return Promise.reject(err.response.data);
         })
 }
-const deletTrainee = (id) => {
+const deleteTrainee = (id) => {
     return axios
-        .delete(`${URL}/${USERS}/${id}`)
+        .delete(`${URL}/${USERS}/trainee/${id}`)
         .then(user => { return user })
         .catch(err => {
             return Promise.reject(err.response.data);
@@ -97,7 +97,7 @@ export const userService = {
     updateUser,
     createTraineeUser,
     updateTraineeUser,
-    deletTrainee,
+    deleteTrainee,
 
     updateAvatarPic,
 };

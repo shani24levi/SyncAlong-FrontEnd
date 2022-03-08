@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { URL } from '../utils/globalVaribals';
+import { URL } from '../Utils/globalVaribals';
 const MEETINGS = 'api/meetings';
 
 const futureMeetings = () => {
@@ -58,7 +58,14 @@ const getMeetingsById = (id) => {
             return Promise.reject(err.response.data);
         })
 }
-
+const getActivities = (id) => {
+    return axios
+        .get(`${URL}/${MEETINGS}/ouractivities/${id}`)
+        .then(data => { return data })
+        .catch(err => {
+            return Promise.reject(err.response.data);
+        })
+}
 export const meetingsService = {
     futureMeetings,
     craete,
@@ -66,4 +73,5 @@ export const meetingsService = {
     deleteMeeting,
     getallMeetings,
     getMeetingsById,
+    getActivities
 };

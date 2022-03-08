@@ -2,6 +2,7 @@ import {
     PROFILE_LOADING,
     SET_CURR_PROFILE,
     PROFILE_CREATE,
+    SET_CURR_TRAINEES,
     TRINEE_PROFILE_CREATE,
     UPDATE_TRAINEES_LIST,
     DELETE_TRAINEE, UPDATE_PROFILE,
@@ -12,7 +13,7 @@ const initialState = {
     loading: false,
     profile: null,
     trainees_profiles: [],
-    trainee_profile_success: false
+    trainee_profile_success: false,
 };
 
 export default function (state = initialState, action) {
@@ -36,22 +37,28 @@ export default function (state = initialState, action) {
             };
         case UPDATE_PROFILE:
             console.log('action.payload', action.payload);
-            if (action.payload.address) state.profile.address = action.payload.address;
-            if (action.payload.phone) state.profile.phone = action.payload.phone
-            if (action.payload.city) state.profile.city = action.payload.city
-            if (action.payload.contry) state.profile.contry = action.payload.contry
-            if (action.payload.age) state.profile.age = action.payload.age
-            if (action.payload.gender) state.profile.gender = action.payload.gender
-            if (action.payload.hobbies) state.profile.hobbies = action.payload.hobbies
-            if (action.payload.about) state.profile.about = action.payload.about
-            console.log(')state.profile', state.profile);
+            if (action.payload.data.address) state.profile.address = action.payload.data.address;
+            if (action.payload.data.phone) state.profile.phone = action.payload.data.phone
+            if (action.payload.data.city) state.profile.city = action.payload.data.city
+            if (action.payload.data.contry) state.profile.contry = action.payload.data.contry
+            if (action.payload.data.age) state.profile.age = action.payload.data.age
+            if (action.payload.data.gender) state.profile.gender = action.payload.data.gender
+            if (action.payload.data.hobbies) state.profile.hobbies = action.payload.data.hobbies
+            if (action.payload.data.about) state.profile.about = action.payload.data.about
+            console.log('state.profile', state.profile);
 
             return {
                 ...state,
                 loading: false,
             };
 
-
+        case SET_CURR_TRAINEES:
+            console.log("SET_CURR_TRAINEES", action.payload);
+            return {
+                ...state,
+                loading: false,
+                trainees_profiles: !state.trainees_profiles ? [action.payload] : [...state.trainees_profiles, action.payload],
+            }
         case TRAINEE_CREATE_SUCCESS:
             state.profile?.trainerOf?.push(action.payload.data?._id) //add to the caurr list state
             return {

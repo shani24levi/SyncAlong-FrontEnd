@@ -4,6 +4,7 @@ import {
     SET_CURR_PROFILE,
     PROFILE_CREATE,
     UPDATE_PROFILE,
+    SET_CURR_TRAINEES,
     TRINEE_PROFILE_CREATE,
     UPDATE_TRAINEES_LIST,
     DELETE_TRAINEE
@@ -78,22 +79,25 @@ export const createTraineeProfile = (id, data) => dispatch => {
         );
     function success(id, profile) { return { type: TRINEE_PROFILE_CREATE, payload: { id, profile } } }
 };
-// export const setTraineesProfiles = (trainees_arr) => dispatch => {
-//     for (const id in trainees_arr) {
-//         dispatch(setLoading(true));
-//         profileService.getTraineeProfile(id)
-//             .then(
-//                 profile => {
-//                     dispatch(success(id, profile));
-//                 },
-//                 error => {
-//                     dispatch(setLoading(false));
-//                     dispatch(failure(error));
-//                 }
-//             );
-//     }
-//     function success(id, profile) { return { type: TRINEE_PROFILE_CREATE, payload: { id, profile } } }
-// }
+export const getTraineesProfiles = (trainees_arr) => dispatch => {
+    console.log("getTraineesProfiles", "here");
+    for (const id in trainees_arr) {
+        dispatch(setLoading(true));
+        console.log(id, trainees_arr[id])
+        profileService.getTraineeProfile(trainees_arr[id])
+            .then(
+                profile => {
+                    console.log(id, profile);
+                    dispatch(success(trainees_arr[id], profile));
+                },
+                error => {
+                    dispatch(setLoading(false));
+                    dispatch(failure(error));
+                }
+            );
+    }
+    function success(id, profile) { return { type: SET_CURR_TRAINEES, payload: { id, profile } } }
+}
 // export const setTraineeProfileById = (id, data) => dispatch => {
 //     return { type: UPDATE_TRAINEES_LIST, payload: { id, profile } }
 // }

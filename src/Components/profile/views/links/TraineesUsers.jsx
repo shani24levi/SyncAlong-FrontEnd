@@ -8,11 +8,21 @@ import componentStyles from "../../../../assets/theme/buttons";
 import UserCard from '../../UserCard';
 import CardContiner from '../../../card/CardContiner';
 import { Link } from 'react-router-dom';
+
+import { getTraineesProfiles } from '../../../../Store/actions/profileAction';
+import { useEffect } from 'react';
+
 const useStyles = makeStyles(componentStyles);
 
 function TraineesUsers({ profile }) {
+    const dispatch = useDispatch();
     const classesBtn = useStyles();
     const user = useSelector(state => state.auth.user);
+    const trainees = useSelector(state => state.profile.trainees_profiles);
+    useEffect(()=>{ 
+        dispatch(getTraineesProfiles([profile?.trainerOf]));
+    },[])
+    console.log("profile", trainees);
     const navigate = useNavigate();
 
     return (
@@ -28,9 +38,10 @@ function TraineesUsers({ profile }) {
                     <>
                         <Button onClick={() => { navigate('/profile/adduser') }} className={classesBtn.blueRound}> Add User</Button>
                         {
-                            profile?.trainerOf.map(trainee => {
+                            trainees && trainees.map(trainee => {
+                                console.log("trainee", trainee);
                                 return (
-                                    <UserCard key={trainee} trainee={trainee} />
+                                   <UserCard key={trainee} trainee={trainee} />
                                 )
                             })
                         }

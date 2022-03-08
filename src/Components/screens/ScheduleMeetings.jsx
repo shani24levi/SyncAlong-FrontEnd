@@ -6,7 +6,10 @@ import ScheduleHeader from '../meeting/scheduleMeetings/ScheduleHeader';
 
 const ScheduleMeetings = (props) => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
-    const [modalData, setModalData] = useState({ start: new Date() });
+    const [modalData, setModalData] = useState({ 
+        title: "",
+        start: new Date() 
+    });
     const [modalCreate, setModalCreate] = useState(false);
 
     const handleSelectSlot = (start) => {

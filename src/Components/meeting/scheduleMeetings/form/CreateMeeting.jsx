@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import {
     Typography,
     Button,
@@ -19,13 +20,45 @@ import TimePicker from '@mui/lab/TimePicker';
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker'
 
 import buttonsStyles from "../../../../assets/theme/buttons";
+import { getTraineesProfiles } from '../../../../Store/actions/profileAction';
+import { getActivities } from '../../../../Store/actions/meetingActions';
 const buttonStyle = makeStyles(buttonsStyles);
 
 function CreateMeeting({ modalData, modalCreate }) {
+    const dispatch = useDispatch();
+    const profile = useSelector(state => state.profile.profile);
+    const trainees = useSelector(state => state.profile.trainees_profiles);
+    const activities = useSelector(state => state.meetings.activities?.data?.data);
+    useEffect(()=>{
+        dispatch(getTraineesProfiles([profile?.trainerOf]));
+    },[]);
+    
     const btnClasses = buttonStyle();
 
-    const [member, setMember] = useState('');
+    const [trainee, setTrainee] = useState(0);
+    const [array_activities, setActivities] = useState([]);
     const [value, setValue] = React.useState(modalData?.start);
+    
+    const fromObectToArray = async(object) => {
+        object.abdomen.map(objStr => {
+            setActivities([objStr]);
+        });
+        console.log(array_activities);
+        object.arms.map(objStr => {
+            setActivities([objStr]);
+        });
+        console.log(array_activities);
+        //object.legs_knees
+        //object.lower_back
+        //object.upper_back
+    }
+    useEffect(()=>{
+        activities && fromObectToArray(activities);
+    },[]);
+    useEffect(()=>{
+        console.log("id trainee", trainee);
+        dispatch(getActivities(trainee));
+    },[trainee]);
 
     useEffect(() => {
         setValue(modalData?.start)
@@ -34,7 +67,7 @@ function CreateMeeting({ modalData, modalCreate }) {
     const handleChange = (newValue) => {
         setValue(newValue);
     };
-
+    
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
             <Box
@@ -45,34 +78,16 @@ function CreateMeeting({ modalData, modalCreate }) {
                 onSubmit={onsubmit}
             >
                 <Grid container spacing={3}>
-                    <Grid item xs={8} sm={8}>
+                    <Grid item xs={12} sm={12}>
                         <TextField
                             fullWidth
-                            value={modalData?.title ? modalData?.title : ''}
+                            value={modalData?.title}
                             color="secondary"
                             id="MeetingName"
                             label="MeetingName"
                             name="MeetingName"
                         />
                     </Grid>
-                    <Grid item xs={4} sm={4}>
-                        <FormControl fullWidth>
-                            <InputLabel>Member</InputLabel>
-                            <Select
-                                color="secondary"
-                                labelId="Member"
-                                id="Member"
-                                value={member}
-                                label="Member"
-                                onChange={(e) => setMember(e.target.value)}
-                            >
-                                <MenuItem value={10}>gram1</MenuItem>
-                                <MenuItem value={20}>gram2</MenuItem>
-                                <MenuItem value={30}>gram3</MenuItem>
-                            </Select>
-                        </FormControl>
-                    </Grid>
-
                     <Grid item xs={6} sm={6}>
                         <DesktopDatePicker
                             color="secondary"
@@ -93,8 +108,47 @@ function CreateMeeting({ modalData, modalCreate }) {
                         />
                     </Grid>
 
-
                     <Grid item xs={12} sm={12}>
+                    <FormControl fullWidth>
+                        <InputLabel id="trainee-select-label">Trainee</InputLabel>
+                        <Select
+                            labelId="trainee-select-label"
+                            id="trainee-simple-select"
+                            value={trainee}
+                            label="Trainee"
+                            onChange={e => setTrainee(e.target.value)}
+                        >
+                            {trainees && trainees.map((trainee) =>{
+                                console.log(trainee.id[0],trainee.profile.data.name);
+                                return <MenuItem value={trainee.id[0]}>{trainee.profile.data.name}</MenuItem>
+                            })
+                            }
+                        </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={12} sm={12}>
+                    <FormControl fullWidth>
+                        <InputLabel id="activities-select-label">Trainee</InputLabel>
+                        <Select
+                            labelId="activites-select-label"
+                            id="trainee-simple-select"
+                            value={trainee}
+                            label="Trainee"
+                            onChange={e => setTrainee(e.target.value)}
+                        >
+                            {trainees && trainees.map((trainee) =>{
+                                console.log(trainee.id[0],trainee.profile.data.name);
+                                return <MenuItem value={trainee.id[0]}>{trainee.profile.data.name}</MenuItem>
+                            })
+                            }
+                            <MenuItem value={10}>Ten</MenuItem>
+                            <MenuItem value={20}>Twenty</MenuItem>
+                            <MenuItem value={30}>Thirty</MenuItem>
+                        </Select>
+                        </FormControl>
+                    </Grid>
+
+                    {/* <Grid item xs={12} sm={12}>
                         <FormControl fullWidth>
                             <InputLabel>Member</InputLabel>
                             <Select
@@ -110,7 +164,7 @@ function CreateMeeting({ modalData, modalCreate }) {
                                 <MenuItem value={30}>activ3</MenuItem>
                             </Select>
                         </FormControl>
-                    </Grid>
+                    </Grid> */}
                 </Grid>
 
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>

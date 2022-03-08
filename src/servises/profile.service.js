@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { URL } from '../utils/globalVaribals';
+import { URL } from '../Utils/globalVaribals';
 const PROFILES = 'api/profiles';
 
 const createProfile = (data) => {
@@ -47,7 +47,7 @@ const createTraineeProfile = (trinee_id, data) => {
 
 const updateTraineeProfile = (trinee_id, data) => {
     return axios
-        .put(`${URL}/${PROFILES}/${trinee_id}`, data)
+        .put(`${URL}/${PROFILES}/trainee/${trinee_id}`, data)
         .then(profile => { return profile })
         .catch(err => {
             return Promise.reject(err.response.data);
@@ -55,8 +55,9 @@ const updateTraineeProfile = (trinee_id, data) => {
 }
 
 const getTraineeProfile = (trinee_id) => {
+    console.log("get trainee profile");
     return axios
-        .get(`${URL}/${PROFILES}/${trinee_id}`)
+        .get(`${URL}/${PROFILES}/trainee/${trinee_id}`)
         .then(profile => { return profile.data })
         .catch(err => {
             return Promise.reject(err.response.data);
@@ -64,7 +65,7 @@ const getTraineeProfile = (trinee_id) => {
 }
 const deleteTraineeProfile = (trinee_id) => {
     return axios
-        .put(`${URL}/${PROFILES}/${trinee_id}`)
+        .put(`${URL}/${PROFILES}/trainee/${trinee_id}`)
         .then(profile => { return profile.data })
         .catch(err => {
             return Promise.reject(err.response.data);

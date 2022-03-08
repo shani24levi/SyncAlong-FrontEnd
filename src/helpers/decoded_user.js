@@ -1,4 +1,4 @@
-import setAuthToken from '../utils/setAuthToken';
+import setAuthToken from '../Utils/setAuthToken';
 import jwt_decode from 'jwt-decode';
 
 export const decoded = () => {

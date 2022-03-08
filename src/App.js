@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import { useNavigate } from 'react-router-dom'
 //socket
 import { io } from 'socket.io-client';
-import { URL } from './utils/globalVaribals';
+import { URL } from './Utils/globalVaribals';
 import { ContextProvider } from './Components/Context/ContextProvider';
 //redux 
 import { connect } from 'react-redux';
@@ -14,7 +14,7 @@ import { setCurrentUser, logoutUser } from './Store/actions/authAction';
 import { setCurrentProfile } from './Store/actions/profileAction';
 import { futureMeetings } from './Store/actions/meetingActions';
 //utiles needed
-import setAuthToken from './utils/setAuthToken';
+import setAuthToken from './Utils/setAuthToken';
 import jwt_decode from 'jwt-decode';
 //validation
 import isEmpty from './validation/isEmpty';

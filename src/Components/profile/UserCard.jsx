@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
     Card,
     CardMedia,
@@ -25,8 +25,9 @@ const useStyles = makeStyles(componentStyles);
 const UserCard = (props) => {
     const auth = useSelector(state => state.auth);
     const profile = useSelector(state => state.profile.profile);
+    const trainee = props.trainee.profile.data;
+    console.log("profile trainee", trainee);
     const classes = useStyles();
-
     return (
         <Grid
             item
@@ -41,7 +42,7 @@ const UserCard = (props) => {
                     <div className={classes.brand} ></div>
                     <Avatar
                         alt="avatar"
-                        src={auth.user.avatar}
+                        src={trainee.avatar}
                         className={classes.large}
                     />
                 </CardMedia>
@@ -52,7 +53,7 @@ const UserCard = (props) => {
                         variant="h6"
                         align="center"
                     >
-                        {auth.user.user}
+                        {trainee.name}
                     </Typography>
                     <Typography
                         className={classes.text}
@@ -61,7 +62,7 @@ const UserCard = (props) => {
                         align="center"
                     >
                         <AlternateEmailIcon className={classes.avatar} fontSize="small" />
-                        {auth.user.email}
+                        {trainee.email}
                     </Typography>{" "}
                     <Typography
                         className={classes.text}
@@ -70,7 +71,7 @@ const UserCard = (props) => {
                         align="center"
                     >
                         <PhoneIcon className={classes.avatar} fontSize="small" />
-                        054.....
+                        {trainee.phone}
                     </Typography>{" "}
                     <Typography
                         className={classes.text}
@@ -79,7 +80,7 @@ const UserCard = (props) => {
                         align="center"
                     >
                         <LocationOnIcon className={classes.avatar} fontSize="small" />
-                        ciry
+                        {trainee.city}
                     </Typography>{" "}
                 </CardContent>
             </Card>
