@@ -17,6 +17,7 @@ import ListBoxTop from '../listBox/ListBoxTop';
 import DoughnutChart from '../charts/DoughnutChart';
 import ProgressUserView from './trainer/ProgressUserView';
 import CardContiner from '../card/CardContiner';
+import CoolTextH1 from '../Context/videoChat/coolText/CoolTextH1';
 const buttonStyle = makeStyles(buttonsStyles);
 
 
