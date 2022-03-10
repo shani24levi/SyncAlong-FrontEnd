@@ -16,13 +16,13 @@ function Meetings(props) {
         {
             _id: '1',
             tariner: {
-                "_id": '61f41299f214dbc605e23778',
-                "user": 'shani-trainer',
+                "_id": '61fb3faeda4187d089e3ef35',
+                "user": 'Ayman Wahbani',
                 "role": "trainer"
             },
             trainee: {
-                "_id": '61f7a56542f3e116d721a7c6',
-                "user": "grma-trainee of shani",
+                "_id": '61fb40e88a41538c5e3f4923',
+                "user": "tamheed",
                 "role": "trainee"
             },
             date: Date.now(),

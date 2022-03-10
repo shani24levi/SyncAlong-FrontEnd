@@ -56,7 +56,10 @@ const draw = (ctx, canvas, results, flag = 0, x = 0, y = 0) => {
       ctx.lineTo(line.endX, line.endY);
       ctx.strokeStyle = line.color;
       ctx.stroke();
-    } 
+    }
+  } else if (flag == 4) {
+    ctx.bezierCurveTo()
+    ctx.stroke();
   }
 };
 
