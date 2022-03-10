@@ -251,7 +251,7 @@ function ContextProvider({ children, socket }) {
     // Only overwrite existing pixels when user is out of the frame
     if (!inframe) {
       canvasCtx.globalCompositeOperation = 'source-in';
-      canvasCtx.fillStyle = 'rgba(255, 0, 0, 0.6)';
+      // canvasCtx.fillStyle = 'rgba(255, 0, 0, 0.6)';
       canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
       // Only overwrite missing pixels.
       canvasCtx.globalCompositeOperation = 'destination-atop';
@@ -270,22 +270,22 @@ function ContextProvider({ children, socket }) {
     //land mark...
 
     if (results) {
-      if (syncScore?.current && syncScore?.current >= 0.85) results.poseLandmarks && draw(canvasCtx, canvasElement, results, 3);
+      results.poseLandmarks && draw(canvasCtx, canvasElement, results, 3);
 
-      connect(canvasCtx, results.poseLandmarks, holistic.POSE_CONNECTIONS,
-        { color: '#00FF00', lineWidth: 4 });
-      connect(canvasCtx, results.poseLandmarks,
-        { color: '#FF0000', lineWidth: 2 });
-      connect(canvasCtx, results.faceLandmarks, holistic.FACEMESH_TESSELATION,
-        { color: '#C0C0C070', lineWidth: 1 });
-      connect(canvasCtx, results.leftHandLandmarks, holistic.HAND_CONNECTIONS,
-        { color: '#CC0000', lineWidth: 5 });
-      connect(canvasCtx, results.leftHandLandmarks,
-        { color: '#00FF00', lineWidth: 2 });
-      connect(canvasCtx, results.rightHandLandmarks, holistic.HAND_CONNECTIONS,
-        { color: '#00CC00', lineWidth: 5 });
-      connect(canvasCtx, results.rightHandLandmarks,
-        { color: '#FF0000', lineWidth: 2 });
+      // connect(canvasCtx, results.poseLandmarks, holistic.POSE_CONNECTIONS,
+      //   { color: '#00FF00', lineWidth: 4 });
+      // connect(canvasCtx, results.poseLandmarks,
+      //   { color: '#FF0000', lineWidth: 2 });
+      // connect(canvasCtx, results.faceLandmarks, holistic.FACEMESH_TESSELATION,
+      //   { color: '#C0C0C070', lineWidth: 1 });
+      // connect(canvasCtx, results.leftHandLandmarks, holistic.HAND_CONNECTIONS,
+      //   { color: '#CC0000', lineWidth: 5 });
+      // connect(canvasCtx, results.leftHandLandmarks,
+      //   { color: '#00FF00', lineWidth: 2 });
+      // connect(canvasCtx, results.rightHandLandmarks, holistic.HAND_CONNECTIONS,
+      //   { color: '#00CC00', lineWidth: 5 });
+      // connect(canvasCtx, results.rightHandLandmarks,
+      //   { color: '#FF0000', lineWidth: 2 });
     }
     canvasCtx.restore();
   };
