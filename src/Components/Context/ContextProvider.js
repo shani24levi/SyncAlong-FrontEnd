@@ -51,7 +51,10 @@ function ContextProvider({ children, socket }) {
   const [isModalVisible, setIsModalVisible] = useState(true);
   const [mediaPipeInitilaize, setMediaPipeInitilaize] = useState('');
   const [peer, setMeAsPeer] = useState(null);
-  const [recognition, setRecognition] = useState('stop');
+  const [recognition, setRecognition] = useState(null);
+
+  const syncScoreRef = useRef(syncScore);
+  syncScoreRef.current = syncScore;
 
   //for first step - user enters the roonm - need to stap away for the camaea.
   const [peer1inFrame, setSettingUserInFrame] = useState(false);
@@ -78,6 +81,8 @@ function ContextProvider({ children, socket }) {
   // *** z index from mediaPipe is not usebal becous the model is'nt fully trained to predict depth
   // its described in the docs on: ->outpue -> POSE_LANDMARKS -> z index.
   //mediaPipe docs-link: https://google.github.io/mediapipe/solutions/holistic.html
+  //mediaPipe Working on a Graph-based framework, MP is tremendously faster than TensorFlow, especially so on the browser.
+  //data for webGL with midiapipe(see GPU!!!!): https://google.github.io/mediapipe/framework_concepts/framework_concepts.html  
   let arryof1sec = [];
   let timeObject;
   let flagTime = true;
@@ -166,13 +171,20 @@ function ContextProvider({ children, socket }) {
       canvasElement.height
     );
 
+    // console.log('canvasCtx', canvasCtx);
+    // var mediaStream = canvasCtx.captureStream(25);
+    // var videoTracks = mediaStream.getVideoTracks();
+    // //setVideoTracks(videoTracks);
+    // console.log('mediaStream', mediaStream);
+    // console.log('videoTracks', videoTracks);
+
     collectionUserPose(results);
     let inframe = calculatingUserInFrame(results);
-    inframe = true;
+
     // Only overwrite existing pixels when user is out of the frame
     if (!inframe) {
       canvasCtx.globalCompositeOperation = 'source-in';
-      // canvasCtx.fillStyle = 'rgba(255, 0, 0, 0.6)';
+      canvasCtx.fillStyle = 'rgba(255, 0, 0, 0.6)';
       canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
       // Only overwrite missing pixels.
       canvasCtx.globalCompositeOperation = 'destination-atop';
@@ -191,21 +203,22 @@ function ContextProvider({ children, socket }) {
     //land mark...
 
     if (results) {
-      results.poseLandmarks && draw(canvasCtx, canvasElement, results, 3);
-      // connect(canvasCtx, results.poseLandmarks, holistic.POSE_CONNECTIONS,
-      //     { color: '#00FF00', lineWidth: 4 });
-      // connect(canvasCtx, results.poseLandmarks,
-      //     { color: '#FF0000', lineWidth: 2 });
-      // connect(canvasCtx, results.faceLandmarks, holistic.FACEMESH_TESSELATION,
-      //     { color: '#C0C0C070', lineWidth: 1 });
-      // connect(canvasCtx, results.leftHandLandmarks, holistic.HAND_CONNECTIONS,
-      //     { color: '#CC0000', lineWidth: 5 });
-      // connect(canvasCtx, results.leftHandLandmarks,
-      //     { color: '#00FF00', lineWidth: 2 });
-      // connect(canvasCtx, results.rightHandLandmarks, holistic.HAND_CONNECTIONS,
-      //     { color: '#00CC00', lineWidth: 5 });
-      // connect(canvasCtx, results.rightHandLandmarks,
-      //     { color: '#FF0000', lineWidth: 2 });
+      if (syncScore?.current && syncScore?.current >= 0.85) results.poseLandmarks && draw(canvasCtx, canvasElement, results, 3);
+
+      connect(canvasCtx, results.poseLandmarks, holistic.POSE_CONNECTIONS,
+        { color: '#00FF00', lineWidth: 4 });
+      connect(canvasCtx, results.poseLandmarks,
+        { color: '#FF0000', lineWidth: 2 });
+      connect(canvasCtx, results.faceLandmarks, holistic.FACEMESH_TESSELATION,
+        { color: '#C0C0C070', lineWidth: 1 });
+      connect(canvasCtx, results.leftHandLandmarks, holistic.HAND_CONNECTIONS,
+        { color: '#CC0000', lineWidth: 5 });
+      connect(canvasCtx, results.leftHandLandmarks,
+        { color: '#00FF00', lineWidth: 2 });
+      connect(canvasCtx, results.rightHandLandmarks, holistic.HAND_CONNECTIONS,
+        { color: '#00CC00', lineWidth: 5 });
+      connect(canvasCtx, results.rightHandLandmarks,
+        { color: '#FF0000', lineWidth: 2 });
     }
     canvasCtx.restore();
   };
@@ -240,11 +253,9 @@ function ContextProvider({ children, socket }) {
         width: 640,
         height: 480
       });
-      console.log('camera', camera);
       camera.start();
     }
   };
-
   //===================useEffects of states==========================
   useEffect(() => {
     lisiningForNewUsers();
@@ -253,7 +264,7 @@ function ContextProvider({ children, socket }) {
     lisiningResivingSyncScore();
     lisiningMassagesInMyRoom();
     lisiningNotifications();
-    lisiningPeer2InFrame();
+    !peer2inFrame && lisiningPeer2InFrame();
   }, [socket]);
 
   useEffect(() => {
@@ -261,8 +272,7 @@ function ContextProvider({ children, socket }) {
       console.log('stream return');
       return;
     }
-    if (myVideo.current) myVideo.current.srcObject = stream;
-    console.log('stream1', stream);
+    myVideo.current.srcObject = stream;
     myVideo?.current?.srcObject && setHolistic(myVideo);
   }, [stream]);
 
@@ -279,6 +289,7 @@ function ContextProvider({ children, socket }) {
         yourDataResived.end_time_of_colection
       );
       //get the same time of poses as you
+      console.log('my_array_poses', array_poses);
       found_el = array_poses.find(
         (el) => el.time === yourDataResived.end_time_of_colection
       );
@@ -379,11 +390,6 @@ function ContextProvider({ children, socket }) {
         new Date().toLocaleString()
       );
       setYourDataResived(data);
-      //send to sync calculation in useEffect[array_poses]
-      //call back to all in roomId after sync-alg response
-      //get number between 0 to 1.
-      //1 high sync
-      //0 no sync
     });
   };
 
@@ -424,7 +430,6 @@ function ContextProvider({ children, socket }) {
   //===================socket calls when user in room and whant to call============================//
   function answerCall() {
     setCallAccepted(true);
-    setStartMeeting(true);
     //set me as a peer and difiend my data
 
     // console.log('stream ', stream);
@@ -436,11 +441,11 @@ function ContextProvider({ children, socket }) {
     setMeAsPeer(peer);
 
     //when i get a signel that call is answered - i get data about the single
-    console.time('timer1-answerCall');
+    // console.time('timer1-answerCall');
     peer.on('signal', (data) => {
       socket.emit('answerCall', { signal: data, to: yourSocketId });
-      console.timeEnd('timer1-answerCall');
-      socket.emit('startMeeting', { signal: data, to: yourSocketId });
+      // console.timeEnd('timer1-answerCall');
+      //  socket.emit('startMeeting', { signal: data, to: yourSocketId });
     });
     //i get the user stream and i set it in my web veiw
     //  console.time("timer1-stream");
@@ -448,16 +453,20 @@ function ContextProvider({ children, socket }) {
       //outer person stream
       // console.timeEnd("timer1-stream");
       userVideo.current.srcObject = currentStream;
+      console.log(currentStream);
+      console.log('userVideo', userVideo);
+
     });
     peer.signal(call.signal);
     connectionRef.current = peer;
   }
+
   const callUser = () => {
-    console.log('isConnectedFriend', isConnectedFriend);
-    if (!isConnectedFriend) {
-      //sec user has no socketId - cant do connection
-      return;
-    }
+    // console.log('isConnectedFriend', isConnectedFriend);
+    // if (!isConnectedFriend) {
+    //   //sec user has no socketId - cant do connection
+    //   return;
+    // }
 
     // console.log('stream ', stream);
     // console.log('myCanvasRef ', myCanvasRef);
@@ -467,7 +476,7 @@ function ContextProvider({ children, socket }) {
     const peer = new Peer({ initiator: true, trickle: false, stream });
     setMeAsPeer(peer);
 
-    console.time('timer2-callUser');
+    // console.time('timer2-callUser');
     peer.on('signal', (data) => {
       // console.log('signal', data);
       socket.emit('callUser', {
@@ -476,7 +485,7 @@ function ContextProvider({ children, socket }) {
         from: mySocketId,
         name: myName
       });
-      console.timeEnd('timer2-callUser');
+      // console.timeEnd('timer2-callUser');
     });
 
     console.time('timer2-stream');
@@ -485,7 +494,8 @@ function ContextProvider({ children, socket }) {
       console.timeEnd('timer2-stream');
       console.log('Request took:', (new Date() - start) / 1000, 'sec');
       userVideo.current.srcObject = currentStream;
-      console.log(userVideo);
+      console.log(currentStream);
+      console.log('userVideo', userVideo);
     });
 
     let start1 = new Date().getTime();
@@ -500,17 +510,20 @@ function ContextProvider({ children, socket }) {
       };
       setMyDelayOnConection(delay);
       setCallAccepted(true);
-      setStartMeeting(true);
+      // setStartMeeting(true);
       peer.signal(signal);
     });
     connectionRef.current = peer;
   };
+
   const sendPosesPeer2Peer = () => {
     //Sends my data through webRTC
     //An alternative solution for canvas transfer that the peer library does not support
   };
 
-  const leaveCall = () => {};
+  const leaveCall = () => {
+
+  };
   //===================socket calls when meeting in now============================//
   //===================pop up to bouth===========================//
   //===================socket for sync func============================//
@@ -573,7 +586,8 @@ function ContextProvider({ children, socket }) {
         peer2inFrame,
         peer1inFrame,
         recognition,
-        setRecognition
+        setRecognition,
+        setSettingUserInFrame, setPeer2inFrame
       }}
     >
       {children}
