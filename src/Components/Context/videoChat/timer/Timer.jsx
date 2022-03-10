@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Grid, Typography, makeStyles } from '@material-ui/core';
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
 
@@ -6,9 +6,16 @@ import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import componentStyles from "../../../../assets/material-ui-style/componenets/video";
 const useStyles = makeStyles(componentStyles);
 
-function Timer({ time, title_start = '', title_end }) {
+function Timer({ time, title_start = '', title_end, stop = false }) {
     const [key, setKey] = useState(0);
     const classes = useStyles();
+    const [puseTime, setPuseTime] = useState(false);
+
+    useEffect(() => {
+        if (stop)
+            setPuseTime(true)
+    }, [stop])
+
 
     const renderTime = ({ remainingTime }) => {
         if (remainingTime === 0) {
@@ -23,6 +30,16 @@ function Timer({ time, title_start = '', title_end }) {
         );
     };
 
+    const onCompleteTime = () => {
+        if (!puseTime) {
+            console.log('====================================');
+            console.log('puseTime', puseTime);
+            console.log('====================================');
+            return [true, 1000]
+        }
+        return [false]
+    }
+
     const timerProps = {
         isPlaying: true,
         size: 120,
@@ -36,7 +53,7 @@ function Timer({ time, title_start = '', title_end }) {
                 key={key}
                 colors="#218380"
                 duration={time}
-                onComplete={() => [true, 1000]}
+                onComplete={onCompleteTime}
             >
                 {renderTime}
             </CountdownCircleTimer>

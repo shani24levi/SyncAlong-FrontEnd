@@ -1,17 +1,22 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { SocketContext } from '../ContextProvider';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 
 function SpeachRecognition(props) {
     const { setRecognition } = useContext(SocketContext);
 
+    useEffect(() => {
+        startListening(); //start as 'on'
+    }, [])
+
+
     const commands = [
         {
             command: ['אוקיי', 'אתחיל', 'התחיל', 'התחל', 'גו', 'start', 'go', 'ok'],
-            callback: () => { setRecognition('continue') }
+            callback: () => { setRecognition('start') }
         },
         {
-            command: ['עצור', 'תעצור', 'לעצור', 'stop'],
+            command: ['עצור', 'תעצור', 'לעצור', 'stop', 'עצוב'],
             callback: () => { setRecognition('stop') }
         },
         {

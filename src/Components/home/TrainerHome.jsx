@@ -18,6 +18,8 @@ import DoughnutChart from '../charts/DoughnutChart';
 import ProgressUserView from './trainer/ProgressUserView';
 import CardContiner from '../card/CardContiner';
 import CoolTextH1 from '../Context/videoChat/coolText/CoolTextH1';
+import FunQuestionPopUp from '../Context/videoChat/funQuestionPopUp/FunQuestionPopUp';
+
 const buttonStyle = makeStyles(buttonsStyles);
 
 
@@ -89,6 +91,12 @@ function TrainerHome({ upcamingMeeting }) {
             />
 
             <Container maxWidth="xl">
+                {/* <img src='activities\swing-hands.gif' alt="description of gif" />
+                <video width="540" height="310" controls>
+                    <source src="https://syncalong-v1.s3.eu-west-1.amazonaws.com/demo/ef496157-3c75-413d-aee6-c0977d8ab43e.mp4" type="video/mp4" />
+                </video> */}
+                {/* <FunQuestionPopUp name={'myName'} /> */}
+
                 <Box sx={{ justifyContent: 'center' }}>
                     <Grid container alignItems='center' alignContent='center' spacing={2}>
                         <Grid item xs={4} md={2}>
