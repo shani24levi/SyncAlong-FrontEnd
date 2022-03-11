@@ -11,7 +11,7 @@ import { ContextProvider } from './Components/Context/ContextProvider';
 //redux 
 import { connect } from 'react-redux';
 import { setCurrentUser, logoutUser } from './Store/actions/authAction';
-import { setCurrentProfile } from './Store/actions/profileAction';
+import { setCurrentProfile, getTraineesProfiles } from './Store/actions/profileAction';
 import { futureMeetings } from './Store/actions/meetingActions';
 //utiles needed
 import setAuthToken from './Utils/setAuthToken';
@@ -49,42 +49,48 @@ const App = (props) => {
     props.auth.user && props.setCurrentProfile();
   }, [props.auth.user]);
 
+
+  useEffect(() => {
+    props.profile?.profile?.trainerOf.length != 0 && props.getTraineesProfiles(props.profile?.profile?.trainerOf);
+  }, [props.profile.profile]);
+
+
   // const scheduleMeetingPopUpCall = (upcomingMeeting) => {
   //   return (
   //     <PopUpCall upcomingMeeting={upcomingMeeting} />
   //   )
   // }
 
-  function meetingsListener() { // loop function
-    setTimeout(function () {   //  call a 60s setTimeout when the loop is called
-      let currentTime = new Date().setSeconds(0, 0)
-      console.log('a', currentTime, props.meetings.upcoming_meeting?.date);
-      const date = new Date(props.meetings.upcoming_meeting?.date?.slice(0, -1)) // delte z from date
-      let upcomingMeeting = date.getTime();
-      if (!upcomingMeeting) {
-        console.log('somthing is NOT OK with date meeting!!!!');
-        return;
-      }
-      // console.log('====================================');
-      // console.log('currentTime == upcomingMeeting.getTime()', currentTime, upcomingMeeting);
-      // console.log('====================================');
-      if (currentTime < upcomingMeeting) {
-        meetingsListener();
-      }
-      else if (currentTime == upcomingMeeting) {
-        console.log('meeting is NOW!!!!');
-        //scheduleMeetingPopUpCall(upcomingMeeting);
-        //set up next meeting timing....
-      }
-    }, 60000)
-  }
+  // function meetingsListener() { // loop function
+  //   setTimeout(function () {   //  call a 60s setTimeout when the loop is called
+  //     let currentTime = new Date().setSeconds(0, 0)
+  //     console.log('a', currentTime, props.meetings.upcoming_meeting?.date);
+  //     const date = new Date(props.meetings.upcoming_meeting?.date?.slice(0, -1)) // delte z from date
+  //     let upcomingMeeting = date.getTime();
+  //     if (!upcomingMeeting) {
+  //       console.log('somthing is NOT OK with date meeting!!!!');
+  //       return;
+  //     }
+  //     // console.log('====================================');
+  //     // console.log('currentTime == upcomingMeeting.getTime()', currentTime, upcomingMeeting);
+  //     // console.log('====================================');
+  //     if (currentTime < upcomingMeeting) {
+  //       meetingsListener();
+  //     }
+  //     else if (currentTime == upcomingMeeting) {
+  //       console.log('meeting is NOW!!!!');
+  //       //scheduleMeetingPopUpCall(upcomingMeeting);
+  //       //set up next meeting timing....
+  //     }
+  //   }, 60000)
+  // }
 
-  useEffect(() => {
-    console.log(props.meetings?.meetings);
-    if (props.meetings?.meetings?.length === 0) return;
-    setUpcamingMeeting(props.meetings.upcoming_meeting);
-    meetingsListener();
-  }, [props.meetings]);
+  // useEffect(() => {
+  //   console.log(props.meetings?.meetings);
+  //   if (props.meetings?.meetings?.length === 0) return;
+  //   setUpcamingMeeting(props.meetings.upcoming_meeting);
+  //   meetingsListener();
+  // }, [props.meetings]);
 
 
   useEffect(() => {
@@ -107,7 +113,6 @@ const App = (props) => {
         props.logoutUser();
         // store.dispatch(clearCurrentProfile());
         // store.dispatch(clearCurrentMeetings());
-        // Redirect to login
         navigate('/auth/login')
       }
       else
@@ -165,9 +170,8 @@ const App = (props) => {
   );
 }
 
-// export default App;
-
 App.propTypes = {
+  getTraineesProfiles: PropTypes.func.isRequired,
   setCurrentUser: PropTypes.func.isRequired,
   setCurrentProfile: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
@@ -178,8 +182,9 @@ function mapStateToProps(state) {
   return {
     auth: state.auth,
     loading: state.auth.loading,
+    profile: state.profile,
     meetings: state.meetings,
   };
 }
 
-export default connect(mapStateToProps, { setCurrentUser, futureMeetings, logoutUser, setCurrentProfile })(App);
+export default connect(mapStateToProps, { setCurrentUser, futureMeetings, logoutUser, setCurrentProfile, getTraineesProfiles })(App);

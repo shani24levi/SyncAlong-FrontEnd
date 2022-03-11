@@ -19,7 +19,7 @@ const localizer = dateFnsLocalizer({
     locales,
 });
 
-function CalendarMeetings({ events, handleSelectSlot, handleSelectEvent }) {
+function CalendarMeetings({ events, handleSelectSlot, handleSelectEvent, handelClose }) {
     return (
         <Calendar
             selectable={true}

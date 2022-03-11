@@ -55,7 +55,6 @@ const updateTraineeProfile = (trinee_id, data) => {
 }
 
 const getTraineeProfile = (trinee_id) => {
-    console.log("get trainee profile");
     return axios
         .get(`${URL}/${PROFILES}/trainee/${trinee_id}`)
         .then(profile => { return profile.data })
@@ -63,6 +62,7 @@ const getTraineeProfile = (trinee_id) => {
             return Promise.reject(err.response.data);
         })
 }
+
 const deleteTraineeProfile = (trinee_id) => {
     return axios
         .put(`${URL}/${PROFILES}/trainee/${trinee_id}`)

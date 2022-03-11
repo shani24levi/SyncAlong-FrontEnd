@@ -13,6 +13,18 @@ const futureMeetings = () => {
             return Promise.reject(err.response.data);
         })
 }
+const allMeetings = () => {
+    return axios
+        .get(`${URL}/${MEETINGS}`)
+        .then(meetings => {
+            console.log('meetings', meetings);
+            return meetings.data;
+        })
+        .catch(err => {
+            console.log('eeee', err);
+            return Promise.reject(err.response.data);
+        })
+}
 
 const craete = (data) => {
     return axios
@@ -67,7 +79,7 @@ const getActivities = (id) => {
         })
 }
 export const meetingsService = {
-    futureMeetings,
+    futureMeetings, allMeetings,
     craete,
     updateMeeting,
     deleteMeeting,

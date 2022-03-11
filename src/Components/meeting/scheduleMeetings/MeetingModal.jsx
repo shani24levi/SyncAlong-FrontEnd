@@ -34,7 +34,7 @@ function MeetingModal({ modalIsOpen, modalCreate, modalData, handelClose }) {
                 <Typography id="modal-modal-title" variant="h6" component="h2">
                     {modalCreate ? 'New Meeting' : 'Edit Meeting'}
                 </Typography>
-                <CreateMeeting modalData={modalData} modalCreate={modalCreate} />
+                <CreateMeeting modalData={modalData} modalCreate={modalCreate} handelClose={() => handelClose} />
             </Box>
         </Modal>
     );

@@ -1,7 +1,6 @@
 import { createTheme } from "@material-ui/core/styles";
 import { indigo, deepPurple } from "@material-ui/core/colors";
 import themeColors from "./colors";
-import hexToRgb from "./hex-to-rgb";
 
 const theme = createTheme({
     breakpoints: {

@@ -53,7 +53,6 @@ export const setCurrentProfile = () => dispatch => {
     profileService.getProfile()
         .then(
             profile => {
-                console.log(profile);
                 dispatch(success(profile.data));
             },
             error => {
@@ -80,11 +79,9 @@ export const createTraineeProfile = (id, data) => dispatch => {
     function success(id, profile) { return { type: TRINEE_PROFILE_CREATE, payload: { id, profile } } }
 };
 export const getTraineesProfiles = (trainees_arr) => dispatch => {
-    console.log("getTraineesProfiles", "here");
     for (const id in trainees_arr) {
         dispatch(setLoading(true));
-        console.log(id, trainees_arr[id])
-        profileService.getTraineeProfile(trainees_arr[id])
+        profileService.getTraineeProfile(trainees_arr[id]._id)
             .then(
                 profile => {
                     console.log(id, profile);
@@ -98,6 +95,8 @@ export const getTraineesProfiles = (trainees_arr) => dispatch => {
     }
     function success(id, profile) { return { type: SET_CURR_TRAINEES, payload: { id, profile } } }
 }
+
+
 // export const setTraineeProfileById = (id, data) => dispatch => {
 //     return { type: UPDATE_TRAINEES_LIST, payload: { id, profile } }
 // }

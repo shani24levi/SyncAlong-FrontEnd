@@ -1,18 +1,48 @@
-import React, { useState } from 'react';
+import { Container } from '@material-ui/core';
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { getAllMeetings } from '../../Store/actions/meetingActions';
+
+import isEmpty from '../../validation/isEmpty';
 import CalendarMeetings from '../meeting/scheduleMeetings/CalendarMeetings';
 import MeetingModal from '../meeting/scheduleMeetings/MeetingModal';
 import ScheduleHeader from '../meeting/scheduleMeetings/ScheduleHeader';
 
 
 const ScheduleMeetings = (props) => {
+    const dispatch = useDispatch();
     const [modalIsOpen, setModalIsOpen] = useState(false);
-    const [modalData, setModalData] = useState({ 
+    const [modalData, setModalData] = useState({
         title: "",
-        start: new Date() 
+        start: new Date()
     });
     const [modalCreate, setModalCreate] = useState(false);
+    const [meetingEvents, setMeetingEvents] = useState(null);
+
+    const profile = useSelector(state => state.profile);
+    const meetings = useSelector(state => state.meetings);
+
+    useEffect(() => {
+        if (!meetings.all_meetings || isEmpty(meetings.all_meetings)) {
+            dispatch(getAllMeetings());
+        }
+    }, [])
+
+    useEffect(() => {
+        if (isEmpty(meetings.all_meetings)) {
+            console.log('ther is no meetings selcteted');
+        }
+        else if (meetings.all_meetings.length > 0) {
+            const newState = meetings.all_meetings.map(obj =>
+                obj.date ? { ...obj, date: new Date(obj.date), start: new Date(obj.date), end: new Date(obj.date) } : obj
+            );
+            setMeetingEvents(newState);
+        }
+
+    }, [meetings])
 
     const handleSelectSlot = (start) => {
+        //handel create new meeting 
         console.log(start);
         setModalCreate(true);
         setModalIsOpen(true);
@@ -56,11 +86,14 @@ const ScheduleMeetings = (props) => {
         },
     ];
 
+    console.log(meetingEvents);
     return (
         <>
             <MeetingModal modalIsOpen={modalIsOpen} modalCreate={modalCreate} modalData={modalData} handelClose={handelClose} />
-            <ScheduleHeader month={month} newMeeting={newMeeting} />
-            <CalendarMeetings events={events} handleSelectSlot={handleSelectSlot} handleSelectEvent={handleSelectEvent} />
+            <Container>
+                <ScheduleHeader month={month} newMeeting={newMeeting} />
+                <CalendarMeetings events={events} handleSelectSlot={handleSelectSlot} handleSelectEvent={handleSelectEvent} handelClose={handelClose} />
+            </Container>
         </>
     );
 }

@@ -29,14 +29,13 @@ export default function (state = initialState, action) {
                 profile: action.payload
             };
         case PROFILE_CREATE:
-
             return {
                 ...state,
                 loading: false,
                 profile: action.payload,
             };
         case UPDATE_PROFILE:
-            console.log('action.payload', action.payload);
+            // console.log('action.payload', action.payload);
             if (action.payload.data.address) state.profile.address = action.payload.data.address;
             if (action.payload.data.phone) state.profile.phone = action.payload.data.phone
             if (action.payload.data.city) state.profile.city = action.payload.data.city
@@ -45,7 +44,7 @@ export default function (state = initialState, action) {
             if (action.payload.data.gender) state.profile.gender = action.payload.data.gender
             if (action.payload.data.hobbies) state.profile.hobbies = action.payload.data.hobbies
             if (action.payload.data.about) state.profile.about = action.payload.data.about
-            console.log('state.profile', state.profile);
+            // console.log('state.profile', state.profile);
 
             return {
                 ...state,
@@ -53,7 +52,7 @@ export default function (state = initialState, action) {
             };
 
         case SET_CURR_TRAINEES:
-            console.log("SET_CURR_TRAINEES", action.payload);
+            //console.log("SET_CURR_TRAINEES", action.payload);
             return {
                 ...state,
                 loading: false,

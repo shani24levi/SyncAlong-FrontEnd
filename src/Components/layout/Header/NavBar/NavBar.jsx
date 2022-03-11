@@ -10,8 +10,8 @@ import {
 import Clear from "@material-ui/icons/Clear";
 import MenuIcon from "@material-ui/icons/Menu";
 //link component
-import PublicLinksNav from './PublicLinksNav';
-import LogedInLinksNav from './LogedInLinksNav';
+import PublicLinksNav from './PublicLinksNav'
+import LogedInLinksNav from './LogedInLinksNav'
 //redux 
 import { connect } from 'react-redux';
 // core components styling
@@ -57,7 +57,8 @@ const NavBar = (props) => {
                                 height="90px"
                                 component="img"
                                 className={classes.headerImg}
-                                src={require("../../../../assets/img/logo3.png").default}
+                                src={"/logo3.png"}
+                            // src={require("./../../../../assets/img/logo3.png").default}
                             />
                         </ListItem>
                         <Hidden lgUp implementation="css">
@@ -99,7 +100,8 @@ const NavBar = (props) => {
                                         height="76px"
                                         component="img"
                                         className={classes.headerImg}
-                                        src={require("../../../../assets/img/logo-dark3.png").default}
+                                        src={"/logo-dark3.png"}
+                                    // src={require("./../../../../assets/img/logo-dark3.png").default}
                                     />
                                     <IconButton
                                         edge="start"

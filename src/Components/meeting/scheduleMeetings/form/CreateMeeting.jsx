@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { craeteMeetings } from '../../../../Store/actions/meetingActions';
 import {
     Typography,
     Button,
@@ -7,8 +8,9 @@ import {
     Avatar, Box,
     Grid,
     InputLabel,
-    MenuItem, FormControl
+    MenuItem, FormControl,
 } from "@material-ui/core";
+import { CircularProgress } from "@material-ui/core";
 import TextField from '@mui/material/TextField';
 import Select from '@mui/material/Select';
 import CheckIcon from '@mui/icons-material/Check';
@@ -20,54 +22,69 @@ import TimePicker from '@mui/lab/TimePicker';
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker'
 
 import buttonsStyles from "../../../../assets/theme/buttons";
-import { getTraineesProfiles } from '../../../../Store/actions/profileAction';
-import { getActivities } from '../../../../Store/actions/meetingActions';
+import isEmpty from '../../../../validation/isEmpty';
 const buttonStyle = makeStyles(buttonsStyles);
 
-function CreateMeeting({ modalData, modalCreate }) {
+function CreateMeeting({ modalData, modalCreate, handelClose }) {
     const dispatch = useDispatch();
-    const profile = useSelector(state => state.profile.profile);
+    const profile = useSelector(state => state.profile);
+    const err = useSelector(state => state.errors);
+    const loading = useSelector(state => state.meetings.loading);
     const trainees = useSelector(state => state.profile.trainees_profiles);
-    const activities = useSelector(state => state.meetings.activities?.data?.data);
-    useEffect(()=>{
-        dispatch(getTraineesProfiles([profile?.trainerOf]));
-    },[]);
-    
+
     const btnClasses = buttonStyle();
 
     const [trainee, setTrainee] = useState(0);
-    const [array_activities, setActivities] = useState([]);
-    const [value, setValue] = React.useState(modalData?.start);
-    
-    const fromObectToArray = async(object) => {
-        object.abdomen.map(objStr => {
-            setActivities([objStr]);
-        });
-        console.log(array_activities);
-        object.arms.map(objStr => {
-            setActivities([objStr]);
-        });
-        console.log(array_activities);
-        //object.legs_knees
-        //object.lower_back
-        //object.upper_back
-    }
-    useEffect(()=>{
-        activities && fromObectToArray(activities);
-    },[]);
-    useEffect(()=>{
-        console.log("id trainee", trainee);
-        dispatch(getActivities(trainee));
-    },[trainee]);
+    const [title, setTitle] = useState(modalData?.title ? modalData?.title : '');
+    const [value, setValue] = useState(modalData?.start ? modalData?.start : new Date());
+    const [time, setTime] = useState(modalData?.start ? modalData?.start : new Date());
+    const [activities, setActivities] = useState([]);
+    const [errors, setErorrs] = useState({});
 
     useEffect(() => {
-        setValue(modalData?.start)
-    }, [modalData])
+        if (profile.trainees_profiles.length == 0) {
+            console.log('NO trainees here');
+        }
+    }, []);
+
+
+    useEffect(() => {
+        let errors = {};
+        if (err === 'title not found') {
+            errors["title"] = "*title not found";
+        }
+        if (!isEmpty(errors))
+            setErorrs(errors);
+        else handelClose(); //close model 
+        return;
+
+    }, [err]);
+
+    const onConfirm = (e) => {
+        e.preventDefault();
+        let errors = {}
+        //add new ....
+        if (modalCreate) {
+            if (!title || !trainee || !value) return;
+            let data = {
+                title,
+                trainee: trainee.toString(),
+                date: value,
+            }
+            if (activities.length != 0) data.activities = activities;
+            dispatch(craeteMeetings(data));
+        }
+        //edit
+        else {
+
+        }
+    }
+    console.log(trainee);
 
     const handleChange = (newValue) => {
         setValue(newValue);
     };
-    
+
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
             <Box
@@ -81,11 +98,18 @@ function CreateMeeting({ modalData, modalCreate }) {
                     <Grid item xs={12} sm={12}>
                         <TextField
                             fullWidth
-                            value={modalData?.title}
+                            value={title}
+                            onChange={(event) => { setTitle(event.target.value); }}
                             color="secondary"
                             id="MeetingName"
                             label="MeetingName"
                             name="MeetingName"
+                            error={errors.title}
+                            helperText={
+                                (!title)
+                                    ? <Typography color="error" variant="body2"> *title is required</Typography>
+                                    : errors["title"] && <Typography color="error" variant="body2"> {errors["title"]}</Typography>
+                            }
                         />
                     </Grid>
                     <Grid item xs={6} sm={6}>
@@ -109,62 +133,51 @@ function CreateMeeting({ modalData, modalCreate }) {
                     </Grid>
 
                     <Grid item xs={12} sm={12}>
-                    <FormControl fullWidth>
-                        <InputLabel id="trainee-select-label">Trainee</InputLabel>
-                        <Select
-                            labelId="trainee-select-label"
-                            id="trainee-simple-select"
-                            value={trainee}
-                            label="Trainee"
-                            onChange={e => setTrainee(e.target.value)}
-                        >
-                            {trainees && trainees.map((trainee) =>{
-                                console.log(trainee.id[0],trainee.profile.data.name);
-                                return <MenuItem value={trainee.id[0]}>{trainee.profile.data.name}</MenuItem>
-                            })
-                            }
-                        </Select>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={12} sm={12}>
-                    <FormControl fullWidth>
-                        <InputLabel id="activities-select-label">Trainee</InputLabel>
-                        <Select
-                            labelId="activites-select-label"
-                            id="trainee-simple-select"
-                            value={trainee}
-                            label="Trainee"
-                            onChange={e => setTrainee(e.target.value)}
-                        >
-                            {trainees && trainees.map((trainee) =>{
-                                console.log(trainee.id[0],trainee.profile.data.name);
-                                return <MenuItem value={trainee.id[0]}>{trainee.profile.data.name}</MenuItem>
-                            })
-                            }
-                            <MenuItem value={10}>Ten</MenuItem>
-                            <MenuItem value={20}>Twenty</MenuItem>
-                            <MenuItem value={30}>Thirty</MenuItem>
-                        </Select>
-                        </FormControl>
-                    </Grid>
-
-                    {/* <Grid item xs={12} sm={12}>
                         <FormControl fullWidth>
-                            <InputLabel>Member</InputLabel>
+                            <InputLabel id="trainee-select-label">Trainee</InputLabel>
                             <Select
-                                color="secondary"
-                                labelId="Activity for meeting"
-                                id="Activity"
-                                value={member}
-                                label="Activity for meeting"
-                                onChange={(e) => setMember(e.target.value)}
+                                labelId="trainee-select-label"
+                                id="trainee-simple-select"
+                                value={trainee}
+                                label="Trainee"
+                                onChange={e => setTrainee(e.target.value)}
+                                error={errors.trainee}
                             >
-                                <MenuItem value={10}>activ1</MenuItem>
-                                <MenuItem value={20}>activ2</MenuItem>
-                                <MenuItem value={30}>activ3</MenuItem>
+                                {profile.trainees_profiles.map((trainee, i) => {
+                                    return <MenuItem value={trainee.id._id} key={i}>
+                                        <Avatar
+                                            alt="avatar"
+                                            src={trainee.id.avatar}
+                                            sx={{ width: 56, height: 56 }}
+                                        />
+                                        {trainee.id.username}</MenuItem>
+                                })
+                                }
                             </Select>
                         </FormControl>
-                    </Grid> */}
+                    </Grid>
+                    {
+                        trainee != 0 ?
+                            <Grid item xs={12} sm={12}>
+                                <FormControl fullWidth>
+                                    <InputLabel id="activities-select-label">Activities</InputLabel>
+                                    <Select
+                                        labelId="activites-select-label"
+                                        id="trainee-simple-select"
+                                        value={trainee}
+                                        label="Trainee"
+                                        onChange={e => setTrainee(e.target.value)}
+                                    >
+                                        <MenuItem value={10}>Ten</MenuItem>
+                                        <MenuItem value={20}>Twenty</MenuItem>
+                                        <MenuItem value={30}>Thirty</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                            :
+                            <></>
+                    }
+
                 </Grid>
 
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -183,9 +196,17 @@ function CreateMeeting({ modalData, modalCreate }) {
                     <Button startIcon={<CheckIcon />}
                         className={btnClasses.purpleRound}
                         variant="contained"
+                        onClick={onConfirm}
+                        disabled={loading}
                     // sx={{ mt: 3, ml: 1 }}
                     >
-                        Confirm
+                        {
+                            loading ?
+                                <CircularProgress color="secondary" size="20px" />
+                                :
+                                'Confirm'
+                        }
+
                     </Button>
                 </Box>
             </Box>

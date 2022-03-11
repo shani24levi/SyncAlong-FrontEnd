@@ -1,6 +1,7 @@
 import {
     GET_ERRORS, GET_MEETINGS, GET_FUTURE_MEETINGS, MEETINGS_LOADING
-    , CREATE_MEETING, GET_CURR_ACTIVITIES
+    , CREATE_MEETING, GET_CURR_ACTIVITIES,
+    GET_ALL_MEETINGS
 } from './types';
 import { meetingsService } from '../../servises';
 import { redirect } from '../../helpers';
@@ -33,6 +34,29 @@ export const futureMeetings = () => dispatch => {
         );
 };
 
+export const getAllMeetings = () => dispatch => {
+    // dispatch(setLoading(true));
+    console.log('meetings');
+    meetingsService.allMeetings()
+        .then(
+            meetings => {
+                console.log(meetings);
+                dispatch({
+                    type: GET_ALL_MEETINGS,
+                    payload: meetings.data
+                })
+            },
+            error => {
+                console.log('erer');
+                dispatch(setLoading(false));
+                dispatch({
+                    type: GET_ALL_MEETINGS,
+                    payload: {}
+                })
+            }
+        );
+};
+
 export const craeteMeetings = (data) => dispatch => {
     dispatch(setLoading(true));
     meetingsService.craete(data)
@@ -47,6 +71,7 @@ export const craeteMeetings = (data) => dispatch => {
         );
     function success(meetings) { return { type: CREATE_MEETING, payload: meetings } }
 };
+
 
 export const getActivities = (id) => dispatch => {
     dispatch(setLoading(true));
