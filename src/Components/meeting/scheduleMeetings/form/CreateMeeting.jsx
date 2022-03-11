@@ -42,7 +42,7 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
     const [errors, setErorrs] = useState({});
 
     useEffect(() => {
-        if (profile.trainees_profiles.length == 0) {
+        if (profile?.trainees_profiles && profile?.trainees_profiles?.length == 0) {
             console.log('NO trainees here');
         }
     }, []);
@@ -143,15 +143,16 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
                                 onChange={e => setTrainee(e.target.value)}
                                 error={errors.trainee}
                             >
-                                {profile.trainees_profiles.map((trainee, i) => {
-                                    return <MenuItem value={trainee.id._id} key={i}>
-                                        <Avatar
-                                            alt="avatar"
-                                            src={trainee.id.avatar}
-                                            sx={{ width: 56, height: 56 }}
-                                        />
-                                        {trainee.id.username}</MenuItem>
-                                })
+                                {
+                                    profile.trainees_profiles && profile.trainees_profiles?.map((trainee, i) => {
+                                        return <MenuItem value={trainee.id._id} key={i}>
+                                            <Avatar
+                                                alt="avatar"
+                                                src={trainee.id.avatar}
+                                                sx={{ width: 56, height: 56 }}
+                                            />
+                                            {trainee.id.username}</MenuItem>
+                                    })
                                 }
                             </Select>
                         </FormControl>
