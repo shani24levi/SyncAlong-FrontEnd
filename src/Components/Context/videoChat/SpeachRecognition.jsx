@@ -5,9 +5,9 @@ import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognitio
 function SpeachRecognition(props) {
     const { setRecognition } = useContext(SocketContext);
 
-    useEffect(() => {
-        startListening(); //start as 'on'
-    }, [])
+    // useEffect(() => {
+    //     startListening(); //start as 'on'
+    // }, [])
 
 
     const commands = [

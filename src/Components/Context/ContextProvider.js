@@ -33,7 +33,6 @@ function ContextProvider({ children, socket }) {
   const [callAccepted, setCallAccepted] = useState(false);
   const [callEnded, setCallEnded] = useState(false);
   const [stream, setStream] = useState();
-  const [userStream, setUserStream] = useState();
   const [myName, setMyName] = useState('');
   const [yourName, setYourName] = useState('');
   const [call, setCall] = useState({});
@@ -150,74 +149,7 @@ function ContextProvider({ children, socket }) {
     return inframe;
   };
 
-  const onResultsYou = async (results) => {
-    console.log('your result', results);
-    const videoWidth = 640;
-    const videoHeight = 480;
-
-    setMediaPipeInitilaize('none');
-
-    // Set canvas width
-    userCanvasRef.current.width = videoWidth;
-    userCanvasRef.current.height = videoHeight;
-    const canvasElement = userCanvasRef.current;
-    const canvasCtx = canvasElement.getContext('2d');
-    canvasCtx.save();
-    canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-    canvasCtx.drawImage(
-      results.image,
-      0,
-      0,
-      canvasElement.width,
-      canvasElement.height
-    );
-
-    collectionUserPose(results);
-    let inframe = calculatingUserInFrame(results);
-    inframe = true;
-    // Only overwrite existing pixels when user is out of the frame
-    if (!inframe) {
-      canvasCtx.globalCompositeOperation = 'source-in';
-      // canvasCtx.fillStyle = 'rgba(255, 0, 0, 0.6)';
-      canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
-      // Only overwrite missing pixels.
-      canvasCtx.globalCompositeOperation = 'destination-atop';
-      canvasCtx.drawImage(
-        results.image,
-        0,
-        0,
-        canvasElement.width,
-        canvasElement.height
-      );
-      //drow only when seting modal is initilize and when not user in fram
-      canvasCtx.globalCompositeOperation = 'source-over';
-    }
-
-    // console.log('settingUserInFrame', settingUserInFrame);
-    //land mark...
-
-    if (results) {
-      results.poseLandmarks && draw(canvasCtx, canvasElement, results, 3);
-      // connect(canvasCtx, results.poseLandmarks, holistic.POSE_CONNECTIONS,
-      //     { color: '#00FF00', lineWidth: 4 });
-      // connect(canvasCtx, results.poseLandmarks,
-      //     { color: '#FF0000', lineWidth: 2 });
-      // connect(canvasCtx, results.faceLandmarks, holistic.FACEMESH_TESSELATION,
-      //     { color: '#C0C0C070', lineWidth: 1 });
-      // connect(canvasCtx, results.leftHandLandmarks, holistic.HAND_CONNECTIONS,
-      //     { color: '#CC0000', lineWidth: 5 });
-      // connect(canvasCtx, results.leftHandLandmarks,
-      //     { color: '#00FF00', lineWidth: 2 });
-      // connect(canvasCtx, results.rightHandLandmarks, holistic.HAND_CONNECTIONS,
-      //     { color: '#00CC00', lineWidth: 5 });
-      // connect(canvasCtx, results.rightHandLandmarks,
-      //     { color: '#FF0000', lineWidth: 2 });
-    }
-    canvasCtx.restore();
-  };
-
-  const onResultsMe = async (results) => {
-    console.log('my result', results);
+  const onResults = async (results) => {
     const videoWidth = 640;
     const videoHeight = 480;
 
@@ -227,6 +159,7 @@ function ContextProvider({ children, socket }) {
     myCanvasRef.current.width = videoWidth;
     myCanvasRef.current.height = videoHeight;
     const canvasElement = myCanvasRef.current;
+
     const canvasCtx = canvasElement.getContext('2d');
     canvasCtx.save();
     canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
@@ -251,7 +184,7 @@ function ContextProvider({ children, socket }) {
     // Only overwrite existing pixels when user is out of the frame
     if (!inframe) {
       canvasCtx.globalCompositeOperation = 'source-in';
-      // canvasCtx.fillStyle = 'rgba(255, 0, 0, 0.6)';
+      canvasCtx.fillStyle = 'rgba(255, 0, 0, 0.6)';
       canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
       // Only overwrite missing pixels.
       canvasCtx.globalCompositeOperation = 'destination-atop';
@@ -270,60 +203,27 @@ function ContextProvider({ children, socket }) {
     //land mark...
 
     if (results) {
-      results.poseLandmarks && draw(canvasCtx, canvasElement, results, 3);
+      if (syncScore?.current && syncScore?.current >= 0.85) results.poseLandmarks && draw(canvasCtx, canvasElement, results, 3);
 
-      // connect(canvasCtx, results.poseLandmarks, holistic.POSE_CONNECTIONS,
-      //   { color: '#00FF00', lineWidth: 4 });
-      // connect(canvasCtx, results.poseLandmarks,
-      //   { color: '#FF0000', lineWidth: 2 });
-      // connect(canvasCtx, results.faceLandmarks, holistic.FACEMESH_TESSELATION,
-      //   { color: '#C0C0C070', lineWidth: 1 });
-      // connect(canvasCtx, results.leftHandLandmarks, holistic.HAND_CONNECTIONS,
-      //   { color: '#CC0000', lineWidth: 5 });
-      // connect(canvasCtx, results.leftHandLandmarks,
-      //   { color: '#00FF00', lineWidth: 2 });
-      // connect(canvasCtx, results.rightHandLandmarks, holistic.HAND_CONNECTIONS,
-      //   { color: '#00CC00', lineWidth: 5 });
-      // connect(canvasCtx, results.rightHandLandmarks,
-      //   { color: '#FF0000', lineWidth: 2 });
+      connect(canvasCtx, results.poseLandmarks, holistic.POSE_CONNECTIONS,
+        { color: '#00FF00', lineWidth: 4 });
+      connect(canvasCtx, results.poseLandmarks,
+        { color: '#FF0000', lineWidth: 2 });
+      connect(canvasCtx, results.faceLandmarks, holistic.FACEMESH_TESSELATION,
+        { color: '#C0C0C070', lineWidth: 1 });
+      connect(canvasCtx, results.leftHandLandmarks, holistic.HAND_CONNECTIONS,
+        { color: '#CC0000', lineWidth: 5 });
+      connect(canvasCtx, results.leftHandLandmarks,
+        { color: '#00FF00', lineWidth: 2 });
+      connect(canvasCtx, results.rightHandLandmarks, holistic.HAND_CONNECTIONS,
+        { color: '#00CC00', lineWidth: 5 });
+      connect(canvasCtx, results.rightHandLandmarks,
+        { color: '#FF0000', lineWidth: 2 });
     }
     canvasCtx.restore();
   };
 
   const setHolistic = (video) => {
-    const userPose = new Holistic({
-      locateFile: (file) => {
-        return `https://cdn.jsdelivr.net/npm/@mediapipe/holistic/${file}`;
-      }
-    });
-    userPose.setOptions({
-      modelComplexity: 1, //accuracy is 1
-      smoothLandmarks: true,
-      enableSegmentation: true,
-      smoothSegmentation: true,
-      refineFaceLandmarks: true,
-      minDetectionConfidence: 0.5,
-      minTrackingConfidence: 0.5
-    });
-    userPose.onResults(onResultsMe);
-
-    if (
-      typeof video.current !== 'undefined' &&
-      video.current !== null &&
-      location.pathname === '/video-room'
-    ) {
-      camera = new cam.Camera(video.current.video, {
-        onFrame: async () => {
-          await userPose.send({ image: video?.current?.video });
-        },
-        width: 640,
-        height: 480
-      });
-      camera.start();
-    }
-  };
-
-  const setHolistic2 = (video) => {
     console.log('video', video);
     const userPose = new Holistic({
       locateFile: (file) => {
@@ -339,7 +239,7 @@ function ContextProvider({ children, socket }) {
       minDetectionConfidence: 0.5,
       minTrackingConfidence: 0.5
     });
-    userPose.onResults(onResultsYou);
+    userPose.onResults(onResults);
 
     if (
       typeof video.current !== 'undefined' &&
@@ -353,10 +253,10 @@ function ContextProvider({ children, socket }) {
         width: 640,
         height: 480
       });
-      console.log('camera', camera);
       camera.start();
     }
   };
+
   //===================useEffects of states==========================
   useEffect(() => {
     lisiningForNewUsers();
@@ -374,18 +274,8 @@ function ContextProvider({ children, socket }) {
       return;
     }
     myVideo.current.srcObject = stream;
-    myVideo?.current?.srcObject && setHolistic(myVideo);
+    myVideo.current?.srcObject && setHolistic(myVideo);
   }, [stream]);
-
-  useEffect(() => {
-    if (location.pathname !== '/video-room') {
-      console.log('stream return');
-      return;
-    }
-    if (userVideo.current) userVideo.current.srcObject = userStream;
-    console.log('stream2', userStream);
-    userVideo?.current?.srcObject && setHolistic2(userVideo);
-  }, [userStream]);
 
   useEffect(() => {
     if (!yourSocketId) setIsConnectedFriend(false);
@@ -563,8 +453,10 @@ function ContextProvider({ children, socket }) {
     peer.on('stream', (currentStream) => {
       //outer person stream
       // console.timeEnd("timer1-stream");
-      // userVideo.current.srcObject = currentStream;
-      setUserStream(currentStream);
+      userVideo.current.srcObject = currentStream;
+      // console.log(currentStream);
+      // console.log('userVideo', userVideo);
+
     });
     peer.signal(call.signal);
     connectionRef.current = peer;
@@ -602,9 +494,9 @@ function ContextProvider({ children, socket }) {
     peer.on('stream', (currentStream) => {
       console.timeEnd('timer2-stream');
       console.log('Request took:', (new Date() - start) / 1000, 'sec');
-      //userVideo.current.srcObject = currentStream;
-      setUserStream(currentStream);
-      // console.log(userVideo);
+      userVideo.current.srcObject = currentStream;
+      // console.log(currentStream);
+      // console.log('userVideo', userVideo);
     });
 
     let start1 = new Date().getTime();

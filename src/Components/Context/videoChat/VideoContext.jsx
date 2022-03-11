@@ -42,8 +42,6 @@ function VideoContext({ meeting }) {
         navigator.mediaDevices.getUserMedia({ video: true, audio: true })
             .then((currentStream) => {
                 setStream(currentStream);
-
-                myVideo.current.srcObject = currentStream;
             });
 
         // navigator.getMedia = (
@@ -229,9 +227,9 @@ function VideoContext({ meeting }) {
                         <Grid item xs={12} md={6} style={{ textAlign: "center" }}>
                             <Typography variant="h5" gutterBottom>{myName || 'Name'}</Typography>
                             <Webcam
-                                style={{ display: mediaPipeInitilaize }} hidden
-                                playsInline muted ref={myVideo} autoPlay className={classes.video} >
-                            </Webcam>
+                                style={{ display: mediaPipeInitilaize }}
+                                playsInline muted ref={myVideo} autoPlay className={classes.video} />
+
                             {
                                 mediaPipeInitilaize !== 'none' ?
                                     <CircularProgress style={{ position: 'absolute', zIndex: '1' }} color="secondary" size="50px" />
@@ -247,15 +245,9 @@ function VideoContext({ meeting }) {
                     <Paper className={classes.paper}>
                         <Grid item xs={12} md={6}>
                             <Typography variant="h5" gutterBottom>{yourName || 'Name'}</Typography>
-                            <Webcam style={{ mediaPipeInitilaize }} hidden playsInline muted ref={userVideo} autoPlay className={classes.video} />
-                            {
-                                mediaPipeInitilaize !== 'none' ?
-                                    <CircularProgress style={{ position: 'absolute', zIndex: '1' }} color="secondary" size="50px" />
-                                    :
-                                    <canvas
-                                        style={{ transform: 'scaleX(-1)' }}
-                                        ref={userCanvasRef} className={classes.video}></canvas>
-                            }
+                            <video style={{ transform: 'scaleX(-1)' }} playsInline ref={userVideo} autoPlay className={classes.video} />
+                            {/* <Webcam style={{ mediaPipeInitilaize }} hidden playsInline muted ref={userVideo} autoPlay className={classes.video} /> */}
+                            {/* <canvas style={{ transform: 'scaleX(-1)' }} ref={userCanvasRef} className={classes.video}></canvas> */}
                         </Grid>
                     </Paper>
                 )}

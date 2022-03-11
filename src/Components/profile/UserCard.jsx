@@ -53,7 +53,7 @@ const UserCard = (props) => {
                         variant="h6"
                         align="center"
                     >
-                        {trainee.user}
+                        {trainee.name}
                     </Typography>
                     <Typography
                         className={classes.text}
