@@ -16,8 +16,6 @@ import { futureMeetings } from './Store/actions/meetingActions';
 //utiles needed
 import setAuthToken from './Utils/setAuthToken';
 import jwt_decode from 'jwt-decode';
-//validation
-import isEmpty from './validation/isEmpty';
 //call componenets
 import Login from './Components/auth/Login';
 import Register from './Components/auth/Register';
@@ -28,7 +26,6 @@ import Footer from './Components/layout/Footer';
 import PrivateRoute from './Components/routing/PrivateRoute';
 import Home from './Components/screens/Home';
 import Meetings from './Components/screens/Meetings';
-import VideoContext from './Components/Context/videoChat/VideoContext';
 import VideoRoom from './Components/screens/VidoeRoom';
 import Profile from './Components/screens/Profile';
 import AddTrainee from './Components/profile/addTrainee/AddTrainee';
@@ -44,14 +41,15 @@ const App = (props) => {
     return () => { }
   }, []);
 
+  ///call to set state of user and profile 
   useEffect(() => {
     props.auth.user?._id && socket?.emit("addUser", props.auth.user?._id);
-    props.auth.user && props.setCurrentProfile();
+    props.auth.user?._id && props.profile?.profile === null && props.setCurrentProfile();
   }, [props.auth.user]);
 
-
+  ///call to set state profile of trainess listaed in this user profile 
   useEffect(() => {
-    props.profile?.profile?.trainerOf.length != 0 && props.getTraineesProfiles(props.profile?.profile?.trainerOf);
+    props.auth.user?.role === 'trainer' && props.profile?.profile?.trainerOf.length !== 0 && !props.profile?.trainee_profile_called && props.getTraineesProfiles(props.profile?.profile?.trainerOf);
   }, [props.profile.profile]);
 
 
@@ -85,12 +83,13 @@ const App = (props) => {
   //   }, 60000)
   // }
 
-  // useEffect(() => {
-  //   console.log(props.meetings?.meetings);
-  //   if (props.meetings?.meetings?.length === 0) return;
-  //   setUpcamingMeeting(props.meetings.upcoming_meeting);
-  //   meetingsListener();
-  // }, [props.meetings]);
+  useEffect(() => {
+    console.log(props.meetings?.meetings);
+    console.log(props.meetings?.meetings?.length);
+    if (props.meetings?.meetings?.length === undefined || props.meetings?.meetings?.length === 0) return;
+    setUpcamingMeeting(props.meetings.upcoming_meeting);
+    //meetingsListener();
+  }, [props.meetings?.meetings]);
 
 
   useEffect(() => {
@@ -111,8 +110,6 @@ const App = (props) => {
       if (decoded.exp < currentTime) {
         console.log('fff', decoded.exp < currentTime);
         props.logoutUser();
-        // store.dispatch(clearCurrentProfile());
-        // store.dispatch(clearCurrentMeetings());
         navigate('/auth/login')
       }
       else

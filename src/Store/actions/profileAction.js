@@ -1,5 +1,6 @@
 import {
     GET_ERRORS,
+    CLEAR_ERRORS,
     PROFILE_LOADING,
     SET_CURR_PROFILE,
     PROFILE_CREATE,
@@ -20,6 +21,7 @@ export const createProfile = data => dispatch => {
             profile => {
                 dispatch(success(profile));
                 dispatch(alertActions.success('Profile created successfuly'));
+                dispatch(clear());
             },
             error => {
                 dispatch(setLoading(false));
@@ -36,6 +38,7 @@ export const updateProfile = (data) => dispatch => {
             profile => {
                 dispatch(success(profile));
                 dispatch(alertActions.success('Profile updated successfuly'));
+                dispatch(clear());
                 return profile
             },
             error => {
@@ -54,6 +57,7 @@ export const setCurrentProfile = () => dispatch => {
         .then(
             profile => {
                 dispatch(success(profile.data));
+                dispatch(clear());
             },
             error => {
                 dispatch(setLoading(false));
@@ -70,6 +74,7 @@ export const createTraineeProfile = (id, data) => dispatch => {
             profile => {
                 dispatch(success(id, profile));
                 dispatch(alertActions.success('Profile created successfuly'));
+                dispatch(clear());
             },
             error => {
                 dispatch(setLoading(false));
@@ -79,13 +84,13 @@ export const createTraineeProfile = (id, data) => dispatch => {
     function success(id, profile) { return { type: TRINEE_PROFILE_CREATE, payload: { id, profile } } }
 };
 export const getTraineesProfiles = (trainees_arr) => dispatch => {
+    dispatch(setLoading(true));
     for (const id in trainees_arr) {
-        dispatch(setLoading(true));
         profileService.getTraineeProfile(trainees_arr[id]._id)
             .then(
                 profile => {
-                    console.log(id, profile);
                     dispatch(success(trainees_arr[id], profile));
+                    dispatch(clear());
                 },
                 error => {
                     dispatch(setLoading(false));
@@ -130,6 +135,7 @@ export const getTraineesProfiles = (trainees_arr) => dispatch => {
 //     function success(id) { return { type: DELETE_TRAINEE, payload: id } }
 // };
 function failure(error) { return { type: GET_ERRORS, payload: error.error } }
+function clear(eror) { return { type: CLEAR_ERRORS } }
 
 export const setLoading = (val) => {
     return {

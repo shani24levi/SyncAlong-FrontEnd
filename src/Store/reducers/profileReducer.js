@@ -14,6 +14,7 @@ const initialState = {
     profile: null,
     trainees_profiles: [],
     trainee_profile_success: false,
+    trainee_profile_called: false,
 };
 
 export default function (state = initialState, action) {
@@ -57,6 +58,7 @@ export default function (state = initialState, action) {
                 ...state,
                 loading: false,
                 trainees_profiles: !state.trainees_profiles ? [action.payload] : [...state.trainees_profiles, action.payload],
+                trainee_profile_called: true,
             }
         case TRAINEE_CREATE_SUCCESS:
             state.profile?.trainerOf?.push(action.payload.data?._id) //add to the caurr list state
@@ -77,7 +79,7 @@ export default function (state = initialState, action) {
 
         case UPDATE_TRAINEES_LIST:
             let new_trainees = state.trainees_profiles?.map(i => {
-                if (action.payload.id == i.id) {
+                if (action.payload.id === i.id) {
                     i.profile = action.payload.profile;
                 }
             })

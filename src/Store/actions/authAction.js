@@ -1,5 +1,6 @@
 import {
     GET_ERRORS,
+    CLEAR_ERRORS,
     LOGIN_SUCCESS,
     LOGOUT,
     GET_CURR_USER,
@@ -20,7 +21,7 @@ export const loginUser = userData => dispatch => {
         .then(
             user => {
                 dispatch(success(user));
-                //redirect('/home')
+                dispatch(clear());
             },
             error => {
                 dispatch(setLoading(false));
@@ -47,6 +48,7 @@ export const registerUser = userData => dispatch => {
             user => {
                 dispatch(success());
                 dispatch(alertActions.success('Registration successful'));
+                dispatch(clear());
             },
             error => {
                 dispatch(setLoading(false));
@@ -63,6 +65,7 @@ export const updateUser = userData => dispatch => {
         .then(
             user => {
                 dispatch(success(userData));
+                dispatch(clear());
             },
             error => {
                 dispatch(setLoading(false));
@@ -81,6 +84,7 @@ export const createTrainee = userData => dispatch => {
                 dispatch(success(user));
                 dispatch(setLoading(false));
                 dispatch(alertActions.success('Trainee user created successfuly'));
+                dispatch(clear());
             },
             error => {
                 dispatch(setLoading(false));
@@ -97,6 +101,7 @@ export const updateTraineeUser = (id, userData) => dispatch => {
         .then(
             user => {
                 dispatch(success());
+                dispatch(clear());
             },
             error => {
                 dispatch(setLoading(false));
@@ -113,6 +118,7 @@ export const deletTrainee = (id) => dispatch => {
             user => {
                 dispatch(success());
                 dispatch(alertActions.success('Trainee user deleted successfuly'));
+                dispatch(clear());
             },
             error => {
                 dispatch(setLoading(false));
@@ -129,6 +135,7 @@ export const updateAvatarPic = (data) => dispatch => {
             user => {
                 dispatch(success());
                 dispatch(currentUser());
+                dispatch(clear());
             },
             error => {
                 dispatch(setLoading(false));
@@ -139,6 +146,7 @@ export const updateAvatarPic = (data) => dispatch => {
 }
 
 function failure(error) { return { type: GET_ERRORS, payload: error.error } }
+function clear(eror) { return { type: CLEAR_ERRORS } }
 
 export const setLoading = (val) => {
     return {
