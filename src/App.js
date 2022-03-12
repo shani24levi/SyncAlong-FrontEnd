@@ -11,7 +11,7 @@ import { ContextProvider } from './Components/Context/ContextProvider';
 //redux 
 import { connect } from 'react-redux';
 import { setCurrentUser, logoutUser } from './Store/actions/authAction';
-import { setCurrentProfile, getTraineesProfiles } from './Store/actions/profileAction';
+import { setCurrentProfile, getTraineesProfiles, getAllTraineesProfiles } from './Store/actions/profileAction';
 import { futureMeetings } from './Store/actions/meetingActions';
 //utiles needed
 import setAuthToken from './Utils/setAuthToken';
@@ -47,9 +47,11 @@ const App = (props) => {
     props.auth.user?._id && props.profile?.profile === null && props.setCurrentProfile();
   }, [props.auth.user]);
 
-  ///call to set state profile of trainess listaed in this user profile 
+  //call to set state profile of trainess listaed in this user profile 
   useEffect(() => {
-    props.auth.user?.role === 'trainer' && props.profile?.profile?.trainerOf.length !== 0 && !props.profile?.trainee_profile_called && props.getTraineesProfiles(props.profile?.profile?.trainerOf);
+    //props.auth.user?.role === 'trainer' && props.profile?.profile?.trainerOf.length !== 0 && !props.profile?.trainee_profile_called && props.getTraineesProfiles(props.profile?.profile?.trainerOf);
+    props.auth.user?.role === 'trainer' && props.profile?.profile?.trainerOf.length !== 0 && !props.profile?.trainee_profile_called && props.getAllTraineesProfiles();
+
   }, [props.profile.profile]);
 
 
@@ -168,6 +170,7 @@ const App = (props) => {
 }
 
 App.propTypes = {
+  getAllTraineesProfiles: PropTypes.func.isRequired,
   getTraineesProfiles: PropTypes.func.isRequired,
   setCurrentUser: PropTypes.func.isRequired,
   setCurrentProfile: PropTypes.func.isRequired,
@@ -184,4 +187,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, { setCurrentUser, futureMeetings, logoutUser, setCurrentProfile, getTraineesProfiles })(App);
+export default connect(mapStateToProps, { setCurrentUser, futureMeetings, logoutUser, setCurrentProfile, getTraineesProfiles, getAllTraineesProfiles })(App);

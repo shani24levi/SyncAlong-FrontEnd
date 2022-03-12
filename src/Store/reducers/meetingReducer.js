@@ -37,7 +37,8 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 all_meetings: [action.payload, ...state.all_meetings],
-                meetings: [action.payload, ...state.meetings],
+                meetings: !state.meetings ? [action.payload] : [...state.meetings, action.payload],
+                // [action.payload, ...state.meetings],
                 loading: false,
             };
         case GET_CURR_ACTIVITIES:

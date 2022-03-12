@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import {
     Card,
     CardMedia,
@@ -25,7 +25,7 @@ const useStyles = makeStyles(componentStyles);
 const UserCard = (props) => {
     const auth = useSelector(state => state.auth);
     const profile = useSelector(state => state.profile.profile);
-    const trainee = props.trainee.profile.data;
+    const trainee = props.trainee;
     console.log("profile trainee", trainee);
     const classes = useStyles();
     return (

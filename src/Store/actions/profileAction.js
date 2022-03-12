@@ -8,7 +8,8 @@ import {
     SET_CURR_TRAINEES,
     TRINEE_PROFILE_CREATE,
     UPDATE_TRAINEES_LIST,
-    DELETE_TRAINEE
+    DELETE_TRAINEE,
+    SET_ALL_TRAINEES
 } from './types';
 import { profileService } from '../../servises';
 import { alertActions } from './alertActions';
@@ -100,6 +101,23 @@ export const getTraineesProfiles = (trainees_arr) => dispatch => {
     }
     function success(id, profile) { return { type: SET_CURR_TRAINEES, payload: { id, profile } } }
 }
+
+export const getAllTraineesProfiles = () => dispatch => {
+    dispatch(setLoading(true));
+    profileService.getAllTraineesProfiles()
+        .then(
+            profile => {
+                dispatch(success(profile));
+                dispatch(clear());
+            },
+            error => {
+                dispatch(setLoading(false));
+                dispatch(failure(error));
+            }
+        );
+    function success(profile) { return { type: SET_ALL_TRAINEES, payload: profile } }
+}
+
 
 
 // export const setTraineeProfileById = (id, data) => dispatch => {

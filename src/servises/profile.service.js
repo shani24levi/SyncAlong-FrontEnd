@@ -36,6 +36,16 @@ const getProfile = () => {
         })
 }
 
+const getAllTraineesProfiles = () => {
+    return axios
+        .get(`${URL}/${PROFILES}/trinees/all`)
+        .then(profile => { return profile.data })
+        .catch(err => {
+            return Promise.reject(err.response.data);
+        })
+}
+
+
 const createTraineeProfile = (trinee_id, data) => {
     return axios
         .post(`${URL}/${PROFILES}/trainee/${trinee_id}`, data)
@@ -48,7 +58,7 @@ const createTraineeProfile = (trinee_id, data) => {
 const updateTraineeProfile = (trinee_id, data) => {
     return axios
         .put(`${URL}/${PROFILES}/trainee/${trinee_id}`, data)
-        .then(profile => { return profile })
+        .then(profile => { return profile.data })
         .catch(err => {
             return Promise.reject(err.response.data);
         })
@@ -77,6 +87,7 @@ export const profileService = {
     update,
     // deleteProfile,
     getProfile,
+    getAllTraineesProfiles,
 
     getTraineeProfile,
     updateTraineeProfile,

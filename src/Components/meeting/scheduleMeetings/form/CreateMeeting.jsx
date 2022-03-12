@@ -30,6 +30,7 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
     const profile = useSelector(state => state.profile);
     const err = useSelector(state => state.errors);
     const loading = useSelector(state => state.meetings.loading);
+    const all_meetings = useSelector(state => state.meetings.all_meetings);
     const trainees = useSelector(state => state.profile.trainees_profiles);
 
     const btnClasses = buttonStyle();
@@ -40,6 +41,8 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
     const [time, setTime] = useState(modalData?.start ? modalData?.start : new Date());
     const [activities, setActivities] = useState([]);
     const [errors, setErorrs] = useState({});
+    const [close, setClose] = useState(false);
+
 
     useEffect(() => {
         if (profile?.trainees_profiles && profile?.trainees_profiles?.length == 0) {
@@ -55,10 +58,15 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
         }
         if (!isEmpty(errors))
             setErorrs(errors);
-        else handelClose(); //close model 
-        return;
 
+        else {
+            console.log('//close model ');
+            setClose(true)
+            //handelClose(); //close model 
+        }
+        return;
     }, [err]);
+
 
     const onConfirm = (e) => {
         e.preventDefault();
@@ -86,132 +94,148 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
     };
 
     return (
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <Box
-                sx={{ mt: 3, m: 1 }}
-                component="form"
-                noValidate
-                autoComplete="off"
-                onSubmit={onsubmit}
-            >
-                <Grid container spacing={3}>
-                    <Grid item xs={12} sm={12}>
-                        <TextField
-                            fullWidth
-                            value={title}
-                            onChange={(event) => { setTitle(event.target.value); }}
-                            color="secondary"
-                            id="MeetingName"
-                            label="MeetingName"
-                            name="MeetingName"
-                            error={errors.title}
-                            helperText={
-                                (!title)
-                                    ? <Typography color="error" variant="body2"> *title is required</Typography>
-                                    : errors["title"] && <Typography color="error" variant="body2"> {errors["title"]}</Typography>
-                            }
-                        />
-                    </Grid>
-                    <Grid item xs={6} sm={6}>
-                        <DesktopDatePicker
-                            color="secondary"
-                            label="Date desktop"
-                            inputFormat="dd/MM/yyyy"
-                            value={value}
-                            onChange={handleChange}
-                            renderInput={(params) => <TextField {...params} />}
-                        />
-                    </Grid>
-                    <Grid item xs={6} sm={6} >
-                        <TimePicker
-                            color="secondary"
-                            label="Time"
-                            value={value}
-                            onChange={handleChange}
-                            renderInput={(params) => <TextField {...params} />}
-                        />
-                    </Grid>
+        <>{
+            close ?
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <Box
+                        sx={{ mt: 3, m: 1 }}
+                        component="form"
+                        noValidate
+                        autoComplete="off"
+                        onSubmit={onsubmit}
+                    >
+                        <Grid container spacing={3}>
+                            <Grid item xs={12} sm={12}>
+                                <TextField
+                                    fullWidth
+                                    value={title}
+                                    onChange={(event) => { setTitle(event.target.value); }}
+                                    color="secondary"
+                                    id="MeetingName"
+                                    label="MeetingName"
+                                    name="MeetingName"
+                                    error={errors.title}
+                                    helperText={
+                                        (!title)
+                                            ? <Typography color="error" variant="body2"> *title is required</Typography>
+                                            : errors["title"] && <Typography color="error" variant="body2"> {errors["title"]}</Typography>
+                                    }
+                                />
+                            </Grid>
+                            <Grid item xs={6} sm={6}>
+                                <DesktopDatePicker
+                                    color="secondary"
+                                    label="Date desktop"
+                                    inputFormat="dd/MM/yyyy"
+                                    value={value}
+                                    onChange={handleChange}
+                                    renderInput={(params) => <TextField {...params} />}
+                                />
+                            </Grid>
+                            <Grid item xs={6} sm={6} >
+                                <TimePicker
+                                    color="secondary"
+                                    label="Time"
+                                    value={value}
+                                    onChange={handleChange}
+                                    renderInput={(params) => <TextField {...params} />}
+                                />
+                            </Grid>
 
-                    <Grid item xs={12} sm={12}>
-                        <FormControl fullWidth>
-                            <InputLabel id="trainee-select-label">Trainee</InputLabel>
-                            <Select
-                                labelId="trainee-select-label"
-                                id="trainee-simple-select"
-                                value={trainee}
-                                label="Trainee"
-                                onChange={e => setTrainee(e.target.value)}
-                                error={errors.trainee}
-                            >
-                                {
-                                    profile.trainees_profiles && profile.trainees_profiles?.map((trainee, i) => {
-                                        return <MenuItem value={trainee.id._id} key={i}>
-                                            <Avatar
-                                                alt="avatar"
-                                                src={trainee.id.avatar}
-                                                sx={{ width: 56, height: 56 }}
-                                            />
-                                            {trainee.id.username}</MenuItem>
-                                    })
-                                }
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                    {
-                        trainee != 0 ?
                             <Grid item xs={12} sm={12}>
                                 <FormControl fullWidth>
-                                    <InputLabel id="activities-select-label">Activities</InputLabel>
+                                    <InputLabel id="trainee-select-label">Trainee</InputLabel>
                                     <Select
-                                        labelId="activites-select-label"
+                                        labelId="trainee-select-label"
                                         id="trainee-simple-select"
                                         value={trainee}
                                         label="Trainee"
                                         onChange={e => setTrainee(e.target.value)}
+                                        error={errors.trainee}
                                     >
-                                        <MenuItem value={10}>Ten</MenuItem>
-                                        <MenuItem value={20}>Twenty</MenuItem>
-                                        <MenuItem value={30}>Thirty</MenuItem>
+                                        {
+                                            profile.trainees_profiles && profile.trainees_profiles?.map((trainee, i) => {
+                                                return <MenuItem value={trainee.user._id} key={i}>
+                                                    <Avatar
+                                                        alt="avatar"
+                                                        src={trainee.user.avatar}
+                                                        sx={{ width: 56, height: 56 }}
+                                                    />
+                                                    {trainee.user.username}</MenuItem>
+                                            })
+                                        }
                                     </Select>
                                 </FormControl>
                             </Grid>
-                            :
-                            <></>
-                    }
+                            {
+                                trainee != 0 ?
+                                    <Grid item xs={12} sm={12}>
+                                        <FormControl fullWidth>
+                                            <InputLabel id="activities-select-label">Activities</InputLabel>
+                                            <Select
+                                                labelId="activites-select-label"
+                                                id="trainee-simple-select"
+                                                value={trainee}
+                                                label="Trainee"
+                                                onChange={e => setTrainee(e.target.value)}
+                                            >
+                                                <MenuItem value={10}>Ten</MenuItem>
+                                                <MenuItem value={20}>Twenty</MenuItem>
+                                                <MenuItem value={30}>Thirty</MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                    :
+                                    <></>
+                            }
 
-                </Grid>
+                        </Grid>
 
-                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                    {
-                        !modalCreate &&
-                        <Button startIcon={<DeleteOutlineIcon />}
-                            className={btnClasses.purpleRoundEmpty}
-                            variant="contained"
-                        // sx={{ mt: 3, ml: 1 }}
-                        //modalData.id
-                        >
-                            Delete
-                        </Button>
-                    }
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                            {
+                                !modalCreate &&
+                                <Button startIcon={<DeleteOutlineIcon />}
+                                    className={btnClasses.purpleRoundEmpty}
+                                    variant="contained"
+                                // sx={{ mt: 3, ml: 1 }}
+                                //modalData.id
+                                >
+                                    Delete
+                                </Button>
+                            }
 
-                    <Button startIcon={<CheckIcon />}
-                        className={btnClasses.purpleRound}
+                            <Button startIcon={<CheckIcon />}
+                                className={btnClasses.purpleRound}
+                                variant="contained"
+                                onClick={onConfirm}
+                                disabled={loading}
+                            // sx={{ mt: 3, ml: 1 }}
+                            >
+                                {
+                                    loading ?
+                                        <CircularProgress color="secondary" size="20px" />
+                                        :
+                                        'Confirm'
+                                }
+
+                            </Button>
+                        </Box>
+                    </Box>
+                </LocalizationProvider>
+                : <>
+                    <Button startIcon={<DeleteOutlineIcon />}
+                        className={btnClasses.purpleRoundEmpty}
                         variant="contained"
-                        onClick={onConfirm}
-                        disabled={loading}
-                    // sx={{ mt: 3, ml: 1 }}
+                        onClick={() => {
+                            handelClose();
+                            setClose(false)
+                        }}
                     >
-                        {
-                            loading ?
-                                <CircularProgress color="secondary" size="20px" />
-                                :
-                                'Confirm'
-                        }
-
+                        Close
                     </Button>
-                </Box>
-            </Box>
-        </LocalizationProvider>
+                </>
+        }
+        </>
     );
 }
 

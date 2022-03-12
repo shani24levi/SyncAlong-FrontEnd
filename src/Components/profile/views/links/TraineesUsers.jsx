@@ -19,16 +19,16 @@ function TraineesUsers({ profile }) {
     const classesBtn = useStyles();
     const user = useSelector(state => state.auth.user);
     const trainees = useSelector(state => state.profile.trainees_profiles);
-    useEffect(()=>{ 
-        dispatch(getTraineesProfiles([profile?.trainerOf]));
-    },[])
+    // useEffect(()=>{ 
+    //     dispatch(getTraineesProfiles([profile?.trainerOf]));
+    // },[])
     console.log("profile", trainees);
     const navigate = useNavigate();
 
     return (
         <Grid container>
             {
-                profile?.trainerOf?.length == 0
+                trainees?.length == 0
                     ?
                     <CardContiner title="No Trainees listed...">
                         {/* <Typography>No Trainees listed...</Typography> */}
@@ -41,7 +41,7 @@ function TraineesUsers({ profile }) {
                             trainees && trainees.map(trainee => {
                                 console.log("trainee", trainee);
                                 return (
-                                   <UserCard key={trainee} trainee={trainee} />
+                                    <UserCard key={trainee.user._id} trainee={trainee.user} />
                                 )
                             })
                         }
