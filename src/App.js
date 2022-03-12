@@ -49,9 +49,7 @@ const App = (props) => {
 
   //call to set state profile of trainess listaed in this user profile 
   useEffect(() => {
-    //props.auth.user?.role === 'trainer' && props.profile?.profile?.trainerOf.length !== 0 && !props.profile?.trainee_profile_called && props.getTraineesProfiles(props.profile?.profile?.trainerOf);
     props.auth.user?.role === 'trainer' && props.profile?.profile?.trainerOf.length !== 0 && !props.profile?.trainee_profile_called && props.getAllTraineesProfiles();
-
   }, [props.profile.profile]);
 
 

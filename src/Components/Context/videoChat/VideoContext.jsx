@@ -73,8 +73,6 @@ function VideoContext({ meeting }) {
         if (currData && myDelayOnConection && !stop) {
             console.log('timeOfColectionPose', timeOfColectionPose);
             console.log('posesArry', posesArry);
-            //await sendMyPoses(timeOfColectionPose, posesArry, meeting.activities[1])
-            //if(!stop)
             await sendMyPoses(timeOfColectionPose, posesArry, meeting.activities[currActivity])
         }
     }, [posesArry]);
@@ -258,16 +256,26 @@ function VideoContext({ meeting }) {
                     {showDemo && !stop && <video width="480" controls poster={`activities\\${meeting.activities[currActivity]}.gif`} ></video>}
                     {activityTime && !stop && <Timer time={20} title_end='Stop...' />}
                 </Grid>
+
+                {sync && <>
+                    <HorizontalGauge height={100} width={300} min={0} max={10} value={syncScore * 10} />
+                    <Button onClick={() => {
+                        setSettingUserInFrame(true)
+                        setPeer2inFrame(true)
+                        //stream.getTracks().forEach(track => track.stop())
+                    }}>Stop Stream</Button>
+                </>}
+
             </Grid>
 
-            {sync && <>
+            {/* {sync && <>
                 <HorizontalGauge height={100} width={300} min={0} max={10} value={syncScore * 10} />
                 <Button onClick={() => {
                     setSettingUserInFrame(true)
                     setPeer2inFrame(true)
                     //stream.getTracks().forEach(track => track.stop())
                 }}>Stop Stream</Button>
-            </>}
+            </>} */}
 
             <SpeachRecognition />
         </>

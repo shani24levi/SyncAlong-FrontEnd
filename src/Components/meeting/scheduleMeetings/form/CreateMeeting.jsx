@@ -50,26 +50,32 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
         }
     }, []);
 
+    console.log(err)
 
     useEffect(() => {
+        console.log(close, isEmpty(err));
         let errors = {};
         if (err === 'title not found') {
             errors["title"] = "*title not found";
         }
-        if (!isEmpty(errors))
+        if (!isEmpty(errors)) {
+            setClose(false)
             setErorrs(errors);
-
-        else {
+        }
+        else if (close && isEmpty(err)) {
             console.log('//close model ');
-            setClose(true)
-            //handelClose(); //close model 
+            //setClose(true)
+            handelClose(); //close model 
         }
         return;
-    }, [err]);
+    }, [err, all_meetings]);
+
+
 
 
     const onConfirm = (e) => {
         e.preventDefault();
+        setClose(true)
         let errors = {}
         //add new ....
         if (modalCreate) {
@@ -94,147 +100,137 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
     };
 
     return (
-        <>{
-            close ?
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <Box
-                        sx={{ mt: 3, m: 1 }}
-                        component="form"
-                        noValidate
-                        autoComplete="off"
-                        onSubmit={onsubmit}
-                    >
-                        <Grid container spacing={3}>
-                            <Grid item xs={12} sm={12}>
-                                <TextField
-                                    fullWidth
-                                    value={title}
-                                    onChange={(event) => { setTitle(event.target.value); }}
-                                    color="secondary"
-                                    id="MeetingName"
-                                    label="MeetingName"
-                                    name="MeetingName"
-                                    error={errors.title}
-                                    helperText={
-                                        (!title)
-                                            ? <Typography color="error" variant="body2"> *title is required</Typography>
-                                            : errors["title"] && <Typography color="error" variant="body2"> {errors["title"]}</Typography>
-                                    }
-                                />
-                            </Grid>
-                            <Grid item xs={6} sm={6}>
-                                <DesktopDatePicker
-                                    color="secondary"
-                                    label="Date desktop"
-                                    inputFormat="dd/MM/yyyy"
-                                    value={value}
-                                    onChange={handleChange}
-                                    renderInput={(params) => <TextField {...params} />}
-                                />
-                            </Grid>
-                            <Grid item xs={6} sm={6} >
-                                <TimePicker
-                                    color="secondary"
-                                    label="Time"
-                                    value={value}
-                                    onChange={handleChange}
-                                    renderInput={(params) => <TextField {...params} />}
-                                />
-                            </Grid>
-
-                            <Grid item xs={12} sm={12}>
-                                <FormControl fullWidth>
-                                    <InputLabel id="trainee-select-label">Trainee</InputLabel>
-                                    <Select
-                                        labelId="trainee-select-label"
-                                        id="trainee-simple-select"
-                                        value={trainee}
-                                        label="Trainee"
-                                        onChange={e => setTrainee(e.target.value)}
-                                        error={errors.trainee}
-                                    >
-                                        {
-                                            profile.trainees_profiles && profile.trainees_profiles?.map((trainee, i) => {
-                                                return <MenuItem value={trainee.user._id} key={i}>
-                                                    <Avatar
-                                                        alt="avatar"
-                                                        src={trainee.user.avatar}
-                                                        sx={{ width: 56, height: 56 }}
-                                                    />
-                                                    {trainee.user.username}</MenuItem>
-                                            })
-                                        }
-                                    </Select>
-                                </FormControl>
-                            </Grid>
-                            {
-                                trainee != 0 ?
-                                    <Grid item xs={12} sm={12}>
-                                        <FormControl fullWidth>
-                                            <InputLabel id="activities-select-label">Activities</InputLabel>
-                                            <Select
-                                                labelId="activites-select-label"
-                                                id="trainee-simple-select"
-                                                value={trainee}
-                                                label="Trainee"
-                                                onChange={e => setTrainee(e.target.value)}
-                                            >
-                                                <MenuItem value={10}>Ten</MenuItem>
-                                                <MenuItem value={20}>Twenty</MenuItem>
-                                                <MenuItem value={30}>Thirty</MenuItem>
-                                            </Select>
-                                        </FormControl>
-                                    </Grid>
-                                    :
-                                    <></>
-                            }
-
+        <>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <Box
+                    sx={{ mt: 3, m: 1 }}
+                    component="form"
+                    noValidate
+                    autoComplete="off"
+                    onSubmit={onsubmit}
+                >
+                    <Grid container spacing={3}>
+                        <Grid item xs={12} sm={12}>
+                            <TextField
+                                fullWidth
+                                value={title}
+                                onChange={(event) => { setTitle(event.target.value); }}
+                                color="secondary"
+                                id="MeetingName"
+                                label="MeetingName"
+                                name="MeetingName"
+                                error={errors.title}
+                                helperText={
+                                    (!title)
+                                        ? <Typography color="error" variant="body2"> *title is required</Typography>
+                                        : errors["title"] && <Typography color="error" variant="body2"> {errors["title"]}</Typography>
+                                }
+                            />
+                        </Grid>
+                        <Grid item xs={6} sm={6}>
+                            <DesktopDatePicker
+                                color="secondary"
+                                label="Date desktop"
+                                inputFormat="dd/MM/yyyy"
+                                value={value}
+                                onChange={handleChange}
+                                renderInput={(params) => <TextField {...params} />}
+                            />
+                        </Grid>
+                        <Grid item xs={6} sm={6} >
+                            <TimePicker
+                                color="secondary"
+                                label="Time"
+                                value={value}
+                                onChange={handleChange}
+                                renderInput={(params) => <TextField {...params} />}
+                            />
                         </Grid>
 
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                            {
-                                !modalCreate &&
-                                <Button startIcon={<DeleteOutlineIcon />}
-                                    className={btnClasses.purpleRoundEmpty}
-                                    variant="contained"
-                                // sx={{ mt: 3, ml: 1 }}
-                                //modalData.id
+                        <Grid item xs={12} sm={12}>
+                            <FormControl fullWidth>
+                                <InputLabel id="trainee-select-label">Trainee</InputLabel>
+                                <Select
+                                    labelId="trainee-select-label"
+                                    id="trainee-simple-select"
+                                    value={trainee}
+                                    label="Trainee"
+                                    onChange={e => {
+                                        console.log(e.target.value)
+                                        setTrainee(e.target.value)
+                                    }}
+                                    error={errors.trainee}
                                 >
-                                    Delete
-                                </Button>
+                                    {
+                                        profile.trainees_profiles && profile.trainees_profiles?.map((trainee, i) => {
+
+                                            return <MenuItem value={trainee.user._id} key={i}>
+                                                <Avatar
+                                                    alt="avatar"
+                                                    src={trainee.user.avatar}
+                                                    sx={{ width: 56, height: 56 }}
+                                                />
+                                                {trainee.user.username}</MenuItem>
+                                        })
+                                    }
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        {
+                            trainee != 0 ?
+                                <Grid item xs={12} sm={12}>
+                                    <FormControl fullWidth>
+                                        <InputLabel id="activities-select-label">Activities</InputLabel>
+                                        <Select
+                                            labelId="activites-select-label"
+                                            id="trainee-simple-select"
+                                            value={trainee}
+                                            label="Trainee"
+                                            onChange={e => setTrainee(e.target.value)}
+                                        >
+                                            <MenuItem value={1}>Ten</MenuItem>
+                                            <MenuItem value={20}>Twenty</MenuItem>
+                                            <MenuItem value={30}>Thirty</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                </Grid>
+                                :
+                                <></>
+                        }
+
+                    </Grid>
+
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                        {
+                            !modalCreate &&
+                            <Button startIcon={<DeleteOutlineIcon />}
+                                className={btnClasses.purpleRoundEmpty}
+                                variant="contained"
+                            // sx={{ mt: 3, ml: 1 }}
+                            //modalData.id
+                            >
+                                Delete
+                            </Button>
+                        }
+
+                        <Button startIcon={<CheckIcon />}
+                            className={btnClasses.purpleRound}
+                            variant="contained"
+                            onClick={onConfirm}
+                            disabled={loading}
+                        // sx={{ mt: 3, ml: 1 }}
+                        >
+                            {
+                                loading ?
+                                    <CircularProgress color="secondary" size="20px" />
+                                    :
+                                    'Confirm'
                             }
 
-                            <Button startIcon={<CheckIcon />}
-                                className={btnClasses.purpleRound}
-                                variant="contained"
-                                onClick={onConfirm}
-                                disabled={loading}
-                            // sx={{ mt: 3, ml: 1 }}
-                            >
-                                {
-                                    loading ?
-                                        <CircularProgress color="secondary" size="20px" />
-                                        :
-                                        'Confirm'
-                                }
-
-                            </Button>
-                        </Box>
+                        </Button>
                     </Box>
-                </LocalizationProvider>
-                : <>
-                    <Button startIcon={<DeleteOutlineIcon />}
-                        className={btnClasses.purpleRoundEmpty}
-                        variant="contained"
-                        onClick={() => {
-                            handelClose();
-                            setClose(false)
-                        }}
-                    >
-                        Close
-                    </Button>
-                </>
-        }
+                </Box>
+            </LocalizationProvider>
         </>
     );
 }

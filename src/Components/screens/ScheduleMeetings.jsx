@@ -30,7 +30,7 @@ const ScheduleMeetings = (props) => {
 
     useEffect(() => {
         console.log('meetings.all_meetings', meetings.all_meetings);
-        if (meetingEvents && meetings.all_meetings.length !== meetingEvents) {
+        if (meetingEvents && meetings.all_meetings.length !== meetingEvents.length) {
             const newState = meetings.all_meetings.map(obj =>
                 obj.date ? { ...obj, date: new Date(obj.date), start: new Date(obj.date), end: new Date(obj.date) } : obj
             );
@@ -100,7 +100,7 @@ const ScheduleMeetings = (props) => {
             <MeetingModal modalIsOpen={modalIsOpen} modalCreate={modalCreate} modalData={modalData} handelClose={handelClose} />
             <Container>
                 <ScheduleHeader month={month} newMeeting={newMeeting} />
-                <CalendarMeetings events={meetingEvents} handleSelectSlot={handleSelectSlot} handleSelectEvent={handleSelectEvent} handelClose={handelClose} />
+                <CalendarMeetings events={meetingEvents} handleSelectSlot={handleSelectSlot} handleSelectEvent={handleSelectEvent} />
             </Container>
         </>
     );
