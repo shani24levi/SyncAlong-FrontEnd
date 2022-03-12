@@ -77,6 +77,7 @@ export default function (state = initialState, action) {
                 trainee_profile_success: false,
             };
         case TRINEE_PROFILE_CREATE:
+            console.log(action.payload);
             return {
                 ...state,
                 loading: false,

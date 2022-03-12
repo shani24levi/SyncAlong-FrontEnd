@@ -126,10 +126,10 @@ function AddTrainee(props) {
     const [errors, setErorrs] = useState({});
 
     useEffect(() => {
-        if (profile.trinee_added) {
+        if (profile.trinee_added && activeStep == 0) {
             setActiveStep(activeStep + 1)
         }
-        if (profile.trainee_profile_success) {
+        if (profile.trainee_profile_success && activeStep == 2) {
             navigate('/profile')
         }
 
@@ -189,7 +189,7 @@ function AddTrainee(props) {
             if (about) data.about = about
             if (limitations.length !== 0) data.limitations = limitations
             console.log(profile.trinee_added?._id, data);
-            dispatch(createTraineeProfile(profile.trinee_added?._id, data))
+            dispatch(createTraineeProfile(profile.trinee_added, data))
             //no requiers to creating a profile threfor no chacking inputs
             //maybe TODO - add chacking for valid phone number...
             setActiveStep(activeStep + 1)
@@ -232,6 +232,9 @@ function AddTrainee(props) {
                 throw new Error('Unknown step');
         }
     }
+
+    console.log(activeStep, steps.length);
+
     return (
         <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
             <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>

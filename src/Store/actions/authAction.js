@@ -30,7 +30,6 @@ export const loginUser = userData => dispatch => {
         );
     function success(user) { return { type: LOGIN_SUCCESS, payload: user } }
 }
-
 export const setCurrentUser = user => { return { type: LOGIN_SUCCESS, payload: user } }
 export const setLogoutCurrentUser = user => { return { type: LOGOUT } }
 export const currentUser = () => { return { type: GET_CURR_USER } }

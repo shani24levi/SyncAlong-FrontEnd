@@ -68,12 +68,12 @@ export const setCurrentProfile = () => dispatch => {
     function success(profile) { return { type: SET_CURR_PROFILE, payload: profile } }
 };
 
-export const createTraineeProfile = (id, data) => dispatch => {
+export const createTraineeProfile = (user, data) => dispatch => {
     dispatch(setLoading(true));
-    profileService.createTraineeProfile(id, data)
+    profileService.createTraineeProfile(user._id, data)
         .then(
             profile => {
-                dispatch(success(id, profile));
+                dispatch(success(user, profile));
                 dispatch(alertActions.success('Profile created successfuly'));
                 dispatch(clear());
             },
@@ -82,7 +82,7 @@ export const createTraineeProfile = (id, data) => dispatch => {
                 dispatch(failure(error));
             }
         );
-    function success(id, profile) { return { type: TRINEE_PROFILE_CREATE, payload: { id, profile } } }
+    function success(user, profile) { return { type: TRINEE_PROFILE_CREATE, payload: { user, profile } } }
 };
 export const getTraineesProfiles = (trainees_arr) => dispatch => {
     dispatch(setLoading(true));
