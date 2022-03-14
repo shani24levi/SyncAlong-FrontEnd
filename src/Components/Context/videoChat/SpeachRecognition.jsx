@@ -16,7 +16,7 @@ function SpeachRecognition(props) {
             callback: () => { setRecognition('start') }
         },
         {
-            command: ['עצור', 'תעצור', 'לעצור', 'stop', 'עצוב'],
+            command: ['עצור', 'תעצור', 'לעצור', 'stop', 'עצוב', 'צור'],
             callback: () => { setRecognition('stop') }
         },
         {
@@ -24,7 +24,7 @@ function SpeachRecognition(props) {
             callback: () => { setRecognition('continue') }
         },
         {
-            command: ['אחורה', 'back', 'prev', 'בחורה'],
+            command: ['אחורה', 'back', 'prev', 'בחורה', 'חורה'],
             callback: () => { setRecognition('prev') }
         },
         {

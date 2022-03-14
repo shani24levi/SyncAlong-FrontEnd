@@ -117,7 +117,7 @@ function VideoContext({ meeting }) {
             if (stopRef.current) return false;
             setSendCurrPoses(true);
             setActivityTime(true);
-            await delay(60000);
+            await delay(30000);
             setPosesArray([]); //clear poses array after finishing 1 activity
             console.log('stop sending.......');
             setSendCurrPoses(false);
@@ -144,7 +144,7 @@ function VideoContext({ meeting }) {
             setCurrActivity(currActivity - 1);
             //setRecognition('');
             setStop(false);
-            activitiesSession(); //contineu the activities
+            //activitiesSession(); //contineu the activities
         }
     }
 
@@ -158,7 +158,7 @@ function VideoContext({ meeting }) {
             setCurrActivity(currActivity + 1);
             //setRecognition('continue');
             setStop(false);
-            activitiesSession(); //contineu the activities
+            //activitiesSession(); //contineu the activities
         }
     }
 
@@ -245,7 +245,7 @@ function VideoContext({ meeting }) {
                                     :
                                     <canvas
                                         style={{ transform: 'scaleX(-1)' }}
-                                        ref={myCanvasRef} className={classes.video}></canvas>
+                                        ref={myCanvasRef} className={classes.video}> </canvas>
                             }
                         </Grid>
                     </Paper>
@@ -254,9 +254,8 @@ function VideoContext({ meeting }) {
                     <Paper className={classes.paper}>
                         <Grid item xs={12} md={6}>
                             <Typography variant="h5" gutterBottom>{yourName || 'Name'}</Typography>
-                            <video style={{ transform: 'scaleX(-1)' }} playsInline ref={userVideo} autoPlay className={classes.video} />
-                            {/* <Webcam style={{ mediaPipeInitilaize }} hidden playsInline muted ref={userVideo} autoPlay className={classes.video} /> */}
-                            {/* <canvas style={{ transform: 'scaleX(-1)' }} ref={userCanvasRef} className={classes.video}></canvas> */}
+                            <video style={{ transform: 'scaleX(-1)' }} playsInline ref={userVideo} autoPlay className={classes.video}> </video>
+                            {/* {syncScore >= 0.75 && <img width="100" src={`img/emojyGIF/emojy-1.gif`} alt="emojy gif" style={{ height: '100px' }} />} */}
                         </Grid>
                     </Paper>
                 )}
@@ -265,8 +264,7 @@ function VideoContext({ meeting }) {
                 <Grid className={classes.wraperMiddleContiner} >
                     {callAccepted && !callEnded && start && !stop && <Timer time={3} title_start='Ready?' title_end='Start...' stop={stop} />}
                     {showDemo && !stop && <img width="400" src={`activities\\${meeting.activities[currActivity]}.gif`} alt="description of gif" style={{ borderRadius: '50%', height: '400px' }} />}
-                    {/* <video width="480" controls poster={`activities\\${meeting.activities[currActivity]}.gif`} ></video> */}
-                    {activityTime && !stop && <Timer time={60} title_end='Stop...' />}
+                    {activityTime && !stop && <Timer time={30} title_end='Stop...' />}
                 </Grid>
             </Grid>
 

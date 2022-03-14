@@ -105,10 +105,10 @@ function ContextProvider({ children, socket }) {
       arryof1sec.push(results);
     } else if (currTime > timeObject && flagFeatch) {
       let array_of_poses = arryof1sec.map((p) => p.poseLandmarks);
-      let add = { time: new Date().toLocaleString(), poses: array_of_poses };
+      let add = { time: new Date().toLocaleString("en-GB"), poses: array_of_poses };
       setPosesArray((array_poses) => [...array_poses, add]);
 
-      setTimeOfColectionPose(new Date().toLocaleString());
+      setTimeOfColectionPose(new Date().toLocaleString("en-GB"));
       setPosesArry(array_of_poses); //now......
 
       arryof1sec = [];
@@ -126,10 +126,11 @@ function ContextProvider({ children, socket }) {
     results.poseLandmarks.map((i, body_index) => {
       if (
         i.visibility < 0.6 &&
-        (mediaPipeLandmarks('RIGHR_WRIST') === body_index ||
-          mediaPipeLandmarks('LEFT_WRIST') === body_index ||
-          mediaPipeLandmarks('RIGHR_ELBOW') === body_index ||
-          mediaPipeLandmarks('LEFT_ELBOW') === body_index ||
+        (
+          // mediaPipeLandmarks('RIGHR_WRIST') === body_index ||
+          // mediaPipeLandmarks('LEFT_WRIST') === body_index ||
+          // mediaPipeLandmarks('RIGHR_ELBOW') === body_index ||
+          // mediaPipeLandmarks('LEFT_ELBOW') === body_index ||
           mediaPipeLandmarks('RIGHR_SHOULDER') === body_index ||
           mediaPipeLandmarks('LEFT_SHOULDER') === body_index ||
           mediaPipeLandmarks('RIGHR_HIP') === body_index ||
@@ -180,6 +181,41 @@ function ContextProvider({ children, socket }) {
     let inframe = calculatingUserInFrame(results);
     let syncing = is_sync();
 
+
+    if (syncScoreRef?.current < 0.75) {
+      canvasCtx.globalCompositeOperation = 'source-in';
+      canvasCtx.fillStyle = 'rgba(255,0,0,0.1)';
+      canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
+      // Only overwrite missing pixels.
+      canvasCtx.globalCompositeOperation = 'destination-atop';
+      canvasCtx.drawImage(
+        results.image,
+        0,
+        0,
+        canvasElement.width,
+        canvasElement.height
+      );
+      //drow only when seting modal is initilize and when not user in fram
+      canvasCtx.globalCompositeOperation = 'source-over';
+    }
+
+    if (syncScoreRef?.current >= 0.75) {
+      canvasCtx.globalCompositeOperation = 'source-in';
+      canvasCtx.fillStyle = 'rgba(0,255,0,0.1)';
+      canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
+      // Only overwrite missing pixels.
+      canvasCtx.globalCompositeOperation = 'destination-atop';
+      canvasCtx.drawImage(
+        results.image,
+        0,
+        0,
+        canvasElement.width,
+        canvasElement.height
+      );
+      //drow only when seting modal is initilize and when not user in fram
+      canvasCtx.globalCompositeOperation = 'source-over';
+    }
+
     // Only overwrite existing pixels when user is out of the frame
     if (!inframe) {
       canvasCtx.globalCompositeOperation = 'source-in';
@@ -197,6 +233,7 @@ function ContextProvider({ children, socket }) {
       //drow only when seting modal is initilize and when not user in fram
       canvasCtx.globalCompositeOperation = 'source-over';
     }
+
 
     if (results) {
       if (syncing)
@@ -293,6 +330,7 @@ function ContextProvider({ children, socket }) {
 
       //get the same time of poses as you
       console.log('my_array_poses', array_poses);
+
       found_el = array_poses.find(
         (el) => el.time === yourDataResived.end_time_of_colection
       );
@@ -302,10 +340,17 @@ function ContextProvider({ children, socket }) {
         for (const el of array_poses) {
           if (el.time > yourDataResived.end_time_of_colection) {
             found_el = el;
-            console.log('found_el undifiendddddd', found_el);
             break;
           }
         }
+      }
+
+      if (!found_el || found_el === undefined) {
+        ///whan you computer is faster then me
+        //you send time of: 00:00:02 , i get it in 00:00:01 
+        //and my last colection is in 00:00:00
+        //the get my last one in the array .
+        found_el = array_poses[array_poses.length - 1]; //set it to the last 
       }
 
       console.log('posesArry now...found_el...', found_el);
@@ -390,7 +435,7 @@ function ContextProvider({ children, socket }) {
       console.log(
         data,
         'resiving time of your data:',
-        new Date().toLocaleString()
+        new Date().toLocaleString("en-GB")
       );
       setYourDataResived(data);
     });
@@ -531,7 +576,7 @@ function ContextProvider({ children, socket }) {
   //===================pop up to bouth===========================//
   //===================socket for sync func============================//
   const sendMyPoses = async (time, poses, activity) => {
-    var start = new Date().toLocaleString();
+    var start = new Date().toLocaleString("en-GB");
     let data = {
       from: mySocketId,
       to: yourSocketId,
