@@ -62,6 +62,14 @@ const componentStyles = {
         right: 0,
         textAlign: "center",
         height: 100,
+    },
+    activityList: {
+        bgcolor: 'background.paper',
+        borderColor: 'text.primary',
+        m: 1,
+        border: 1,
+        width: '5rem',
+        height: '5rem',
     }
 };
 export default componentStyles;

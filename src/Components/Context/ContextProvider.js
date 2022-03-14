@@ -87,7 +87,7 @@ function ContextProvider({ children, socket }) {
   let timeObject;
   let flagTime = true;
   let flagFeatch = true;
-  const [timeOfColectionPose, setTimeOfColectionPose] = useState();
+  const [timeOfColectionPose, setTimeOfColectionPose] = useState(new Date());
   const [myDelayOnConection, setMyDelayOnConection] = useState(null);
   const [array_poses, setPosesArray] = useState([]);
 
@@ -149,6 +149,12 @@ function ContextProvider({ children, socket }) {
     return inframe;
   };
 
+  const is_sync = () => {
+    if (syncScoreRef?.current >= 0.75)
+      return true
+    return false;
+  }
+
   const onResults = async (results) => {
     const videoWidth = 640;
     const videoHeight = 480;
@@ -170,16 +176,9 @@ function ContextProvider({ children, socket }) {
       canvasElement.width,
       canvasElement.height
     );
-
-    // console.log('canvasCtx', canvasCtx);
-    // var mediaStream = canvasCtx.captureStream(25);
-    // var videoTracks = mediaStream.getVideoTracks();
-    // //setVideoTracks(videoTracks);
-    // console.log('mediaStream', mediaStream);
-    // console.log('videoTracks', videoTracks);
-
     collectionUserPose(results);
     let inframe = calculatingUserInFrame(results);
+    let syncing = is_sync();
 
     // Only overwrite existing pixels when user is out of the frame
     if (!inframe) {
@@ -199,26 +198,26 @@ function ContextProvider({ children, socket }) {
       canvasCtx.globalCompositeOperation = 'source-over';
     }
 
-    // console.log('settingUserInFrame', settingUserInFrame);
-    //land mark...
-
     if (results) {
-      if (syncScore?.current && syncScore?.current >= 0.85) results.poseLandmarks && draw(canvasCtx, canvasElement, results, 3);
+      if (syncing)
+        results.poseLandmarks && draw(canvasCtx, canvasElement, results, 3);
 
-      connect(canvasCtx, results.poseLandmarks, holistic.POSE_CONNECTIONS,
-        { color: '#00FF00', lineWidth: 4 });
-      connect(canvasCtx, results.poseLandmarks,
-        { color: '#FF0000', lineWidth: 2 });
-      connect(canvasCtx, results.faceLandmarks, holistic.FACEMESH_TESSELATION,
-        { color: '#C0C0C070', lineWidth: 1 });
-      connect(canvasCtx, results.leftHandLandmarks, holistic.HAND_CONNECTIONS,
-        { color: '#CC0000', lineWidth: 5 });
-      connect(canvasCtx, results.leftHandLandmarks,
-        { color: '#00FF00', lineWidth: 2 });
-      connect(canvasCtx, results.rightHandLandmarks, holistic.HAND_CONNECTIONS,
-        { color: '#00CC00', lineWidth: 5 });
-      connect(canvasCtx, results.rightHandLandmarks,
-        { color: '#FF0000', lineWidth: 2 });
+      if (!inframe) {
+        connect(canvasCtx, results.poseLandmarks, holistic.POSE_CONNECTIONS,
+          { color: '#00FF00', lineWidth: 4 });
+        connect(canvasCtx, results.poseLandmarks,
+          { color: '#FF0000', lineWidth: 2 });
+        connect(canvasCtx, results.faceLandmarks, holistic.FACEMESH_TESSELATION,
+          { color: '#C0C0C070', lineWidth: 1 });
+        connect(canvasCtx, results.leftHandLandmarks, holistic.HAND_CONNECTIONS,
+          { color: '#CC0000', lineWidth: 5 });
+        connect(canvasCtx, results.leftHandLandmarks,
+          { color: '#00FF00', lineWidth: 2 });
+        connect(canvasCtx, results.rightHandLandmarks, holistic.HAND_CONNECTIONS,
+          { color: '#00CC00', lineWidth: 5 });
+        connect(canvasCtx, results.rightHandLandmarks,
+          { color: '#FF0000', lineWidth: 2 });
+      }
     }
     canvasCtx.restore();
   };
@@ -283,12 +282,15 @@ function ContextProvider({ children, socket }) {
   }, [yourSocketId]);
 
   useEffect(() => {
+    //The one who receives the points of the other and is responsible for sending to the server the request for synchronization
     if (yourDataResived) {
       let found_el = null;
       console.log(
         'yourDataResived.end_time_of_colection',
-        yourDataResived.end_time_of_colection
+        yourDataResived.end_time_of_colection,
+        typeof yourDataResived.end_time_of_colection
       );
+
       //get the same time of poses as you
       console.log('my_array_poses', array_poses);
       found_el = array_poses.find(
@@ -318,7 +320,7 @@ function ContextProvider({ children, socket }) {
         });
       setYourDataResived(null);
     }
-  }, [array_poses]);
+  }, [array_poses, yourDataResived]);
 
   useEffect(() => {
     if (isModalVisible) {
@@ -538,6 +540,7 @@ function ContextProvider({ children, socket }) {
       poses: poses,
       activity
     };
+    console.log('data im sending ..', data);
     socket.emit('sendPoses', data); //peer1 send his poses to peer2
   };
 
@@ -588,7 +591,9 @@ function ContextProvider({ children, socket }) {
         peer1inFrame,
         recognition,
         setRecognition,
-        setSettingUserInFrame, setPeer2inFrame
+        setSettingUserInFrame, setPeer2inFrame,
+
+        setSyncScore
       }}
     >
       {children}

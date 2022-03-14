@@ -24,7 +24,7 @@ function SpeachRecognition(props) {
             callback: () => { setRecognition('continue') }
         },
         {
-            command: ['אחורה', 'back', 'prev'],
+            command: ['אחורה', 'back', 'prev', 'בחורה'],
             callback: () => { setRecognition('prev') }
         },
         {

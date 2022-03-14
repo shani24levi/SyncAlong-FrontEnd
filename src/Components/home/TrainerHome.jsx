@@ -91,8 +91,8 @@ function TrainerHome({ upcamingMeeting }) {
             />
 
             <Container maxWidth="xl">
-                {/* <img src='activities\swing-hands.gif' alt="description of gif" />
-                <video width="540" height="310" controls>
+                {/* <img width="400" src='activities\swing-hands.gif' alt="description of gif" style={{ borderRadius: '50%', height: '400px' }} /> */}
+                {/* <video width="540" height="310" controls>
                     <source src="https://syncalong-v1.s3.eu-west-1.amazonaws.com/demo/ef496157-3c75-413d-aee6-c0977d8ab43e.mp4" type="video/mp4" />
                 </video> */}
                 {/* <FunQuestionPopUp name={'myName'} /> */}

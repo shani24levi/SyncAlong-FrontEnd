@@ -27,7 +27,8 @@ function Meetings(props) {
             },
             date: Date.now(),
             time: '1:2 am',
-            activities: ['swing-hands', 'right-hand-up'],
+            activities: ['hands-x', 'hands-y', 'swing-hands', 'swim-hands',
+                'gamp', 'legs-gumping', 'open-close'],
         },
     ]
 

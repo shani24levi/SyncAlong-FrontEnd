@@ -1,7 +1,8 @@
 import React, { useContext, useEffect, useState, useRef } from 'react';
 import { SocketContext } from '../ContextProvider';
-import { Grid, Typography, Paper, makeStyles, useTheme, Button } from '@material-ui/core';
+import { Grid, Typography, Paper, makeStyles, useTheme, Button, Box } from '@material-ui/core';
 import Webcam from "react-webcam";
+import Swal from 'sweetalert2';
 import { CircularProgress } from "@material-ui/core";
 import { delay } from '../../../helpers';
 import Timer from './timer/Timer';
@@ -18,7 +19,7 @@ import FunQuestionPopUp from './funQuestionPopUp/FunQuestionPopUp';
 const useStyles = makeStyles(componentStyles);
 
 function VideoContext({ meeting }) {
-    const { setSettingUserInFrame, setPeer2inFrame, peer2inFrame, peer1inFrame, recognition, mediaPipeInitilaize, syncScore, myDelayOnConection, setPosesArray, array_poses, timeOfColectionPose, delayBetweenUsers, setFlagTime, setFlagFeatch, myRole, emoji, startMeeting, setStream, myName, yourName, callAccepted, myVideo, userVideo, callEnded, stream, call, myCanvasRef, userCanvasRef, me, posesArry, you, sendPoses, sendMyPoses, socket } = useContext(SocketContext);
+    const { setSyncScore, setRecognition, setSettingUserInFrame, setPeer2inFrame, peer2inFrame, peer1inFrame, recognition, mediaPipeInitilaize, syncScore, myDelayOnConection, setPosesArray, array_poses, timeOfColectionPose, delayBetweenUsers, setFlagTime, setFlagFeatch, myRole, emoji, startMeeting, setStream, myName, yourName, callAccepted, myVideo, userVideo, callEnded, stream, call, myCanvasRef, userCanvasRef, me, posesArry, you, sendPoses, sendMyPoses, socket } = useContext(SocketContext);
     const classes = useStyles();
     const [start, setStartActivity] = useState(false);
     const [showDemo, setDemo] = useState(false);
@@ -70,6 +71,7 @@ function VideoContext({ meeting }) {
     }, []);
 
     useEffect(async () => {
+        //Whoever it is in the Daily sends his points every second collected
         if (currData && myDelayOnConection && !stop) {
             console.log('timeOfColectionPose', timeOfColectionPose);
             console.log('posesArry', posesArry);
@@ -79,7 +81,7 @@ function VideoContext({ meeting }) {
 
     useEffect(async () => {
         setSync(true);
-        if (syncScore >= 0.85) {
+        if (syncScore >= 0.75) {
             console.log('sync.....', syncScore);
         }
         else {
@@ -92,13 +94,12 @@ function VideoContext({ meeting }) {
         for (let i = currActivity; i < meeting.activities.length; i++) {
             //for (const i in meeting.activities) {
             setCurrActivity(i);
-            console.log('this activity is ....', meeting.activities[i]);
-            console.log('Starting now/.....', new Date().toLocaleString());
+            console.log(i, ' this activity is ....', meeting.activities[i]);
             //whait for 5 sec to garenty thet the bouth video loaded
-            await delay(5000);
+            recognition === 'start' && await delay(5000);
             //set the start activity to display
 
-            if (stop) return false;
+            if (stopRef.current) return false;
             setStartActivity(true);
             await delay(4000); //wait for the timer will end
             setStartActivity(false);
@@ -112,13 +113,11 @@ function VideoContext({ meeting }) {
             console.log('stop1', stop);
             console.log('stopRef1', stopRef.current);
             console.log('recognition1', recognition);
-            if (stopRef.current) {
-                return false;
-            }
 
+            if (stopRef.current) return false;
             setSendCurrPoses(true);
             setActivityTime(true);
-            await delay(20000);
+            await delay(60000);
             setPosesArray([]); //clear poses array after finishing 1 activity
             console.log('stop sending.......');
             setSendCurrPoses(false);
@@ -128,10 +127,7 @@ function VideoContext({ meeting }) {
             console.log('recognition2', recognition);
             console.log('stopRef1', stopRef.current);
 
-            if (stopRef.current) {
-                return false;
-            }
-
+            if (stopRef.current) return false;
             console.log('end time of settings/.....', new Date().toLocaleString());
         }
         setActivitiesEnded(true);
@@ -141,10 +137,12 @@ function VideoContext({ meeting }) {
     const prevActivitySession = () => {
         if (currActivity === 0) {
             setDisplayErrorMessage('No prev activity to go back to.... whold you like to contine?');
+            swalAlret();
             return;
         }
         else {
             setCurrActivity(currActivity - 1);
+            //setRecognition('');
             setStop(false);
             activitiesSession(); //contineu the activities
         }
@@ -153,19 +151,18 @@ function VideoContext({ meeting }) {
     const nextActivitySession = () => {
         if (currActivity === meeting.activities.length - 1) { //the last activiry in the list . ther is no next ....
             setDisplayErrorMessage('No next activity to go to.... whold you like to contine this activity?');
+            swalAlret();
             return;
         }
         else {
             setCurrActivity(currActivity + 1);
+            //setRecognition('continue');
             setStop(false);
             activitiesSession(); //contineu the activities
         }
     }
 
     useEffect(async () => {
-        console.log('====================================');
-        console.log('recognition', recognition, 'peer2inFrame', peer2inFrame);
-        console.log('====================================');
         if (session && peer2inFrame && (recognition === 'start' || recognition === 'continue')) {
             console.log('recognition', recognition);
             let status = await activitiesSession();
@@ -192,7 +189,7 @@ function VideoContext({ meeting }) {
             setStop(false);
             console.log('continue,,,,');
             if (activitiesEnded) console.log('Activity ENDED yoo can go back or restart');
-            else activitiesSession();
+            //else activitiesSession();
 
         }
         else if (recognition == 'stop') {
@@ -211,7 +208,21 @@ function VideoContext({ meeting }) {
         }
     }, [recognition]);
 
-    // console.log('userVideouserVideo', userVideo);
+    const swalAlret = () => {
+        Swal.fire({
+            title: displayErrorMessage,
+            width: 600,
+            padding: '3em',
+            confirmButtonText: 'OK1',
+            showCancelButton: true,
+            preConfirm: () => { displayErrorMessage(null); },
+            background: '#fff',
+            backdrop: `
+                      rgba(0,0,123,0.4)
+                      url("/img/emojyGIF/fall_stars.gif")`
+        })
+    }
+
     return (
         <>
             {
@@ -252,30 +263,39 @@ function VideoContext({ meeting }) {
 
                 {/* loop over activities in the meeting  */}
                 <Grid className={classes.wraperMiddleContiner} >
-                    {callAccepted && !callEnded && start && !stop && <Timer time={10} title_start='Ready?' title_end='Start...' stop={stop} />}
-                    {showDemo && !stop && <video width="480" controls poster={`activities\\${meeting.activities[currActivity]}.gif`} ></video>}
-                    {activityTime && !stop && <Timer time={20} title_end='Stop...' />}
+                    {callAccepted && !callEnded && start && !stop && <Timer time={3} title_start='Ready?' title_end='Start...' stop={stop} />}
+                    {showDemo && !stop && <img width="400" src={`activities\\${meeting.activities[currActivity]}.gif`} alt="description of gif" style={{ borderRadius: '50%', height: '400px' }} />}
+                    {/* <video width="480" controls poster={`activities\\${meeting.activities[currActivity]}.gif`} ></video> */}
+                    {activityTime && !stop && <Timer time={60} title_end='Stop...' />}
                 </Grid>
-
-                {sync && <>
-                    <HorizontalGauge height={100} width={300} min={0} max={10} value={syncScore * 10} />
-                    <Button onClick={() => {
-                        setSettingUserInFrame(true)
-                        setPeer2inFrame(true)
-                        //stream.getTracks().forEach(track => track.stop())
-                    }}>Stop Stream</Button>
-                </>}
-
             </Grid>
 
-            {/* {sync && <>
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                {meeting.activities.map(i => {
+                    return (
+                        <Box sx={{ borderRadius: '16px' }} className={classes.activityList} style={{ color: meeting.activities[currActivity] === i ? 'blue' : 'black' }}>{i}</Box>
+                    )
+                })
+                }
+            </Box>
+
+            {sync && <>
                 <HorizontalGauge height={100} width={300} min={0} max={10} value={syncScore * 10} />
                 <Button onClick={() => {
                     setSettingUserInFrame(true)
                     setPeer2inFrame(true)
                     //stream.getTracks().forEach(track => track.stop())
                 }}>Stop Stream</Button>
-            </>} */}
+
+                <Button onClick={() => {
+                    setRecognition('start')
+                }}>Ok</Button>
+
+
+                <Button onClick={() => {
+                    setSyncScore(0.8)
+                }}>sync</Button>
+            </>}
 
             <SpeachRecognition />
         </>
