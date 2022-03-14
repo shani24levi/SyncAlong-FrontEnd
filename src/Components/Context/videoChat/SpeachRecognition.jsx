@@ -12,7 +12,7 @@ function SpeachRecognition(props) {
 
     const commands = [
         {
-            command: ['אוקיי', 'אתחיל', 'התחיל', 'התחל', 'גו', 'start', 'go', 'ok'],
+            command: ['אוקיי', 'אתחיל', 'התחיל', 'התחל', 'גו', 'start', 'go', 'ok', 'okay', 'start'],
             callback: () => { setRecognition('start') }
         },
         {

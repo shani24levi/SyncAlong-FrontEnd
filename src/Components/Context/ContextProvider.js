@@ -104,9 +104,21 @@ function ContextProvider({ children, socket }) {
     if (currTime < timeObject && flagFeatch) {
       arryof1sec.push(results);
     } else if (currTime > timeObject && flagFeatch) {
-      let array_of_poses = arryof1sec.map((p) => p.poseLandmarks);
+      let array_of_poses = arryof1sec.map((p) => {
+        const { innerWidth: width, innerHeight: height } = window;
+        console.log("p.poseLandmarks",p.poseLandmarks, width, height);
+
+        for(var i =0; i < p.poseLandmarks.length; i++){
+          p.poseLandmarks[i].x = p.poseLandmarks[i].x * width;
+          p.poseLandmarks[i].y = p.poseLandmarks[i].y * height; 
+        }
+        console.log("new poseLandmarks", p.poseLandmarks);
+        return p.poseLandmarks;
+      });
       let add = { time: new Date().toLocaleString("en-GB"), poses: array_of_poses };
+      console.log("add", add);
       setPosesArray((array_poses) => [...array_poses, add]);
+
 
       setTimeOfColectionPose(new Date().toLocaleString("en-GB"));
       setPosesArry(array_of_poses); //now......
@@ -331,6 +343,7 @@ function ContextProvider({ children, socket }) {
       //get the same time of poses as you
       console.log('my_array_poses', array_poses);
 
+      
       found_el = array_poses.find(
         (el) => el.time === yourDataResived.end_time_of_colection
       );
