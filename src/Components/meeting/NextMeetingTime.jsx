@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { SocketContext } from '../Context/ContextProvider';
+import { useSelector } from 'react-redux';
 import { Grid, Container } from '@material-ui/core';
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import moment from 'moment';
@@ -10,11 +12,12 @@ const daySeconds = 86400;
 
 const timerProps = {
     isPlaying: true,
-    size: 120,
-    strokeWidth: 6
+    size: 140,
+    strokeWidth: 10
 };
 
 const renderTime = (dimension, time) => {
+    //upcamingMeeting
     return (
         <div className="time-wrapper">
             <div className="time">{time}</div>
@@ -30,17 +33,21 @@ const getTimeDays = (time) => (time / daySeconds) | 0;
 
 
 
-function NextMeetingTime({ upcamingMeeting }) {
-    let upcomingMeetingTime = new Date(upcamingMeeting?.date);
-    var timeStamp = new Date(upcomingMeetingTime).valueOf()//(moment(upcomingMeetingTime).unix()) * 1
+function NextMeetingTime({ date }) {
+    const { scheduleMeetingPopUpCall, upcamingMeeting } = useContext(SocketContext);
+    const [stratTime, setStratTime] = useState(Date.now() / 1000);
+    const [time, setTime] = useState(date === 0 ? parseInt(Date.now() / 1000 - stratTime) : parseInt(date - stratTime));
+    const meetings = useSelector(state => state.meetings);
 
-    // console.log('====================================');
-    // console.log(timeStamp);
-    // console.log('====================================');
+    useEffect(() => {
+        console.log('====================================');
+        console.log('datew', date);
+        console.log('====================================');
+        setStratTime(Date.now() / 1000);
+        setTime(parseInt(date - stratTime))
+    }, [date])
 
-    const stratTime = Date.now() / 1000; // use UNIX timestamp in seconds
-    //console.log(stratTime);
-    const endTime = stratTime + 2000; // use UNIX timestamp in seconds
+    const endTime = stratTime + time
     const remainingTime = endTime - stratTime;
     const days = Math.ceil(remainingTime / daySeconds);
     const daysDuration = days * daySeconds;
@@ -106,6 +113,7 @@ function NextMeetingTime({ upcamingMeeting }) {
                     )}
                 </CountdownCircleTimer>
             </div>
+
         </Container>
     );
 }

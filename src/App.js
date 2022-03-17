@@ -34,63 +34,11 @@ import ScheduleMeetings from './Components/screens/ScheduleMeetings';
 const App = (props) => {
   const navigate = useNavigate();
   const [socket, setSocket] = useState(null);
-  const [upcamingMeeting, setUpcamingMeeting] = useState({});
 
   useEffect(() => {
     setSocket(io(`${URL}`));
     return () => { }
   }, []);
-
-  ///call to set state of user and profile 
-  useEffect(() => {
-    props.auth.user?._id && socket?.emit("addUser", props.auth.user?._id);
-    props.auth.user?._id && props.profile?.profile === null && props.setCurrentProfile();
-  }, [props.auth.user]);
-
-  //call to set state profile of trainess listaed in this user profile 
-  useEffect(() => {
-    props.auth.user?.role === 'trainer' && props.profile?.profile?.trainerOf.length !== 0 && !props.profile?.trainee_profile_called && props.getAllTraineesProfiles();
-  }, [props.profile.profile]);
-
-
-  // const scheduleMeetingPopUpCall = (upcomingMeeting) => {
-  //   return (
-  //     <PopUpCall upcomingMeeting={upcomingMeeting} />
-  //   )
-  // }
-
-  // function meetingsListener() { // loop function
-  //   setTimeout(function () {   //  call a 60s setTimeout when the loop is called
-  //     let currentTime = new Date().setSeconds(0, 0)
-  //     console.log('a', currentTime, props.meetings.upcoming_meeting?.date);
-  //     const date = new Date(props.meetings.upcoming_meeting?.date?.slice(0, -1)) // delte z from date
-  //     let upcomingMeeting = date.getTime();
-  //     if (!upcomingMeeting) {
-  //       console.log('somthing is NOT OK with date meeting!!!!');
-  //       return;
-  //     }
-  //     // console.log('====================================');
-  //     // console.log('currentTime == upcomingMeeting.getTime()', currentTime, upcomingMeeting);
-  //     // console.log('====================================');
-  //     if (currentTime < upcomingMeeting) {
-  //       meetingsListener();
-  //     }
-  //     else if (currentTime == upcomingMeeting) {
-  //       console.log('meeting is NOW!!!!');
-  //       //scheduleMeetingPopUpCall(upcomingMeeting);
-  //       //set up next meeting timing....
-  //     }
-  //   }, 60000)
-  // }
-
-  useEffect(() => {
-    console.log(props.meetings?.meetings);
-    console.log(props.meetings?.meetings?.length);
-    if (props.meetings?.meetings?.length === undefined || props.meetings?.meetings?.length === 0) return;
-    setUpcamingMeeting(props.meetings.upcoming_meeting);
-    //meetingsListener();
-  }, [props.meetings?.meetings]);
-
 
   useEffect(() => {
     //chake for authrisiation and redirect to relevat page.
@@ -102,8 +50,6 @@ const App = (props) => {
       const decoded = jwt_decode(localStorage.user);
       console.log(decoded);
       props.setCurrentUser(decoded);
-      props.setCurrentProfile();
-      props.futureMeetings();
 
       // Check for expired token - didnt set it as time expired in the server
       const currentTime = Date.now() / 1000;
@@ -132,7 +78,7 @@ const App = (props) => {
 
                   {/* praivat routs -logedIn users only */}
                   <Route exact path='/home' element={<PrivateRoute />}>
-                    <Route exact path='/home' element={<Home upcamingMeeting={upcamingMeeting} />} />
+                    <Route exact path='/home' element={<Home socket={socket} />} />
                   </Route>
 
                   <Route exact path='/meetings' element={<PrivateRoute />}>

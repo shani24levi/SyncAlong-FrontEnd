@@ -106,11 +106,11 @@ function ContextProvider({ children, socket }) {
     } else if (currTime > timeObject && flagFeatch) {
       let array_of_poses = arryof1sec.map((p) => {
         const { innerWidth: width, innerHeight: height } = window;
-        console.log("p.poseLandmarks",p.poseLandmarks, width, height);
+        console.log("p.poseLandmarks", p.poseLandmarks, width, height);
 
-        for(var i =0; i < p.poseLandmarks.length; i++){
+        for (var i = 0; i < p.poseLandmarks.length; i++) {
           p.poseLandmarks[i].x = p.poseLandmarks[i].x * width;
-          p.poseLandmarks[i].y = p.poseLandmarks[i].y * height; 
+          p.poseLandmarks[i].y = p.poseLandmarks[i].y * height;
         }
         console.log("new poseLandmarks", p.poseLandmarks);
         return p.poseLandmarks;
@@ -343,7 +343,7 @@ function ContextProvider({ children, socket }) {
       //get the same time of poses as you
       console.log('my_array_poses', array_poses);
 
-      
+
       found_el = array_poses.find(
         (el) => el.time === yourDataResived.end_time_of_colection
       );
@@ -407,7 +407,49 @@ function ContextProvider({ children, socket }) {
     }
   }, [peer1inFrame]);
 
-  //===============helpers func=========================//
+  //======================helpers func==============================//
+  //===============FOR POP UP MEETING IS NOW=========================//
+  //===== It's here because it wraps the interface and all the pages ... 
+  //==== although in fact it can be on a home page and move it from redux====//
+  //==========================================================================================//
+  // I need it here because a yes or no click should go through the socket and start a session//
+  //==========================================================================================// 
+  const meetings = useSelector(state => state.meetings);
+  const [upcamingMeeting, setUpcamingMeeting] = useState({});
+  const [scheduleMeetingPopUpCall, setScheduleMeetingPopUpCall] = useState({});
+
+  useEffect(() => {
+    console.log(meetings?.meetings);
+    console.log(meetings?.meetings?.length);
+    if (!meetings?.meetings || meetings?.meetings?.length === 0) {
+      return;
+    }
+    setUpcamingMeeting(meetings.upcoming_meeting);
+    meetingsListener();
+  }, [meetings?.meetings]);
+
+  function meetingsListener() { // loop function
+    setTimeout(function () {   //  call a 60s setTimeout when the loop is called
+      let currentTime = new Date().setSeconds(0, 0)
+      const date = new Date(meetings.upcoming_meeting?.date?.slice(0, -1)) // delte z from date
+      let upcomingMeeting = date.getTime();
+      // console.log('a', currentTime, upcomingMeeting, currentTime < upcomingMeeting);
+      if (!upcomingMeeting) {
+        //set new upcamong meeting or brack from loop
+        console.log('somthing is NOT OK with date meeting!!!!');
+        return;
+      }
+      if (currentTime < upcomingMeeting) {
+        meetingsListener();
+      }
+      else if (currentTime === upcomingMeeting) {
+        console.log('meeting is NOW!!!!');
+        setScheduleMeetingPopUpCall(upcamingMeeting);
+        //set up next meeting timing....
+        return;
+      }
+    }, 60000)
+  }
 
   //===============lisiners=========================//
   const lisiningForNewUsers = () => {
@@ -650,6 +692,8 @@ function ContextProvider({ children, socket }) {
         recognition,
         setRecognition,
         setSettingUserInFrame, setPeer2inFrame,
+        scheduleMeetingPopUpCall,
+        upcamingMeeting,
 
         setSyncScore
       }}

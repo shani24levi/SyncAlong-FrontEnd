@@ -19,6 +19,7 @@ import ProgressUserView from './trainer/ProgressUserView';
 import CardContiner from '../card/CardContiner';
 import CoolTextH1 from '../Context/videoChat/coolText/CoolTextH1';
 import FunQuestionPopUp from '../Context/videoChat/funQuestionPopUp/FunQuestionPopUp';
+import PopUpCall from '../popup-call/PopUpCall';
 
 const buttonStyle = makeStyles(buttonsStyles);
 
@@ -41,8 +42,6 @@ const useStyles = makeStyles({
     },
 });
 
-
-
 const Title = styled('span')(() => ({
     fontSize: '1rem',
     fontWeight: '500',
@@ -56,31 +55,25 @@ const SubTitle = styled('span')(({ theme }) => ({
 
 
 //Trainer will have his data , graph and lists
-function TrainerHome({ upcamingMeeting }) {
-    const { traineeEntered } = useContext(SocketContext);
+function TrainerHome({ }) {
+    const { scheduleMeetingPopUpCall, upcamingMeeting, traineeEntered } = useContext(SocketContext);
     const classes = useStyles();
     const btnClasses = buttonStyle();
     const theme = useTheme();
     const profile = useSelector(state => state.profile.profile)
     const [alart, setAlart] = useState(false);
+    const meetings = useSelector(state => state.meetings);
+    const [meeting, setMeeting] = useState(false);
+    const [date, setDate] = useState(0);
 
-    // let i = 1;
-    // function myLoop() {         //  create a loop function
-    //     setTimeout(function () {   //  call a 3s setTimeout when the loop is called
-    //         console.log('hello', new Date().toLocaleString());   //  your code here
-    //         i++;                    //  increment the counter
-    //         if (i < 10) {           //  if the counter < 10, call the loop function
-    //             myLoop();             //  ..  again which will trigger another 
-    //         }                       //  ..  setTimeout()
-    //     }, 3000)
-    // }
-
-
-    // useEffect(async () => {
-    //     // myLoop()
-    //     console.log(isEmpty(profile));
-    //     if (isEmpty(profile)) setAlart(true);
-    // }, [profile]);
+    useEffect(() => {
+        if (upcamingMeeting) {
+            const t = new Date(meetings.upcoming_meeting?.date?.slice(0, -1));
+            setDate(t.getTime() / 1000)
+            setMeeting(true)
+        }
+        else setMeeting(false)
+    }, [upcamingMeeting])
 
     return (
         <>
@@ -91,29 +84,28 @@ function TrainerHome({ upcamingMeeting }) {
             />
 
             <Container maxWidth="xl">
-                {/* <img width="400" src='activities\swing-hands.gif' alt="description of gif" style={{ borderRadius: '50%', height: '400px' }} /> */}
-                {/* <video width="540" height="310" controls>
-                    <source src="https://syncalong-v1.s3.eu-west-1.amazonaws.com/demo/ef496157-3c75-413d-aee6-c0977d8ab43e.mp4" type="video/mp4" />
-                </video> */}
-                {/* <FunQuestionPopUp name={'myName'} /> */}
-
-                <Box sx={{ justifyContent: 'center' }}>
-                    <Grid container alignItems='center' alignContent='center' spacing={2}>
-                        <Grid item xs={4} md={2}>
-                            <QuickStartBtn />
-                        </Grid>
-                        <Grid item xs={12} md={8}>
-                            <Search />
-                        </Grid>
-
-                        <Grid item xs={12} md={12}> <StartCard title={'title'} subtitle={'subtitle'} /> </Grid>
-                        <Grid item xs={12} md={12}>
-                            <CardContiner title="Your up caming meeting" >
-                                <NextMeetingTime upcamingMeeting={upcamingMeeting} />
-                            </CardContiner>
-                        </Grid>
+                {
+                    !isEmpty(scheduleMeetingPopUpCall) && <PopUpCall />
+                }
+                <Grid container alignItems='center' justifyContent='center' spacing={1} >
+                    <Grid item xs={3} md={4}>
+                        <QuickStartBtn />
                     </Grid>
-                </Box>
+                    <Grid item xs={9} md={8}>
+                        <Search />
+                    </Grid>
+                </Grid>
+
+
+                <Grid container alignItems='center' alignContent='center' spacing={2}>
+
+                    <Grid item xs={12} md={12}> <StartCard title={'title'} subtitle={'subtitle'} /> </Grid>
+                    <Grid item xs={12} md={12}>
+                        <CardContiner title="Your up caming meeting" >
+                            {meeting && <NextMeetingTime upcamingMeeting={upcamingMeeting} date={date} />}
+                        </CardContiner>
+                    </Grid>
+                </Grid>
 
 
                 <Grid container spacing={3}>
@@ -125,7 +117,6 @@ function TrainerHome({ upcamingMeeting }) {
                             <Title>your sessions</Title>
                             <SubTitle>Last 30 days</SubTitle>
                             <DoughnutChart
-                                // data={data}
                                 height="300px"
                             />
                         </Card>
@@ -138,8 +129,7 @@ function TrainerHome({ upcamingMeeting }) {
 
 
                 <Grid className={classes.root} id="basic-elements">
-                    <NextMeetingTime upcamingMeeting={upcamingMeeting} />
-                    {/* code here! */}
+                    {meeting && <NextMeetingTime upcamingMeeting={upcamingMeeting} date={date} />}
                     {
                         alart && <Alert severity="error">You have no profile for this accoun - please set acoount</Alert>
                     }
