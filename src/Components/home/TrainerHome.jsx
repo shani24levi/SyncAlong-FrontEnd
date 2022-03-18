@@ -19,11 +19,9 @@ import ProgressUserView from './trainer/ProgressUserView';
 import CardContiner from '../card/CardContiner';
 import CoolTextH1 from '../Context/videoChat/coolText/CoolTextH1';
 import FunQuestionPopUp from '../Context/videoChat/funQuestionPopUp/FunQuestionPopUp';
-import PopUpCall from '../popup-call/PopUpCall';
+import SeccsesAlert from '../alrets/SeccsesAlert';
 
 const buttonStyle = makeStyles(buttonsStyles);
-
-
 
 const useStyles = makeStyles({
     root: {
@@ -53,9 +51,8 @@ const SubTitle = styled('span')(({ theme }) => ({
     //color: theme.palette.text.secondary,
 }))
 
-
 //Trainer will have his data , graph and lists
-function TrainerHome({ }) {
+function TrainerHome({ meeting, date }) {
     const { scheduleMeetingPopUpCall, upcamingMeeting, traineeEntered } = useContext(SocketContext);
     const classes = useStyles();
     const btnClasses = buttonStyle();
@@ -63,17 +60,10 @@ function TrainerHome({ }) {
     const profile = useSelector(state => state.profile.profile)
     const [alart, setAlart] = useState(false);
     const meetings = useSelector(state => state.meetings);
-    const [meeting, setMeeting] = useState(false);
-    const [date, setDate] = useState(0);
 
-    useEffect(() => {
-        if (upcamingMeeting) {
-            const t = new Date(meetings.upcoming_meeting?.date?.slice(0, -1));
-            setDate(t.getTime() / 1000)
-            setMeeting(true)
-        }
-        else setMeeting(false)
-    }, [upcamingMeeting])
+    console.log('====================================');
+    console.log(traineeEntered);
+    console.log('====================================');
 
     return (
         <>
@@ -82,11 +72,10 @@ function TrainerHome({ }) {
                 className={classes.imgBackground}
                 src={require("../../assets/img/path1.png").default}
             />
-
+            {
+                traineeEntered && <SeccsesAlert title="${traineeEntered} is online" />
+            }
             <Container maxWidth="xl">
-                {
-                    !isEmpty(scheduleMeetingPopUpCall) && <PopUpCall />
-                }
                 <Grid container alignItems='center' justifyContent='center' spacing={1} >
                     <Grid item xs={3} md={4}>
                         <QuickStartBtn />

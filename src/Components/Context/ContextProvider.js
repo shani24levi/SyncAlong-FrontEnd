@@ -29,7 +29,7 @@ import draw from './DrawAnimation/draw';
 const SocketContext = createContext();
 
 function ContextProvider({ children, socket }) {
-  const profile = useSelector((state) => state.profile.profile);
+  const profile = useSelector((state) => state.profile);
   const [callAccepted, setCallAccepted] = useState(false);
   const [callEnded, setCallEnded] = useState(false);
   const [stream, setStream] = useState();
@@ -362,7 +362,7 @@ function ContextProvider({ children, socket }) {
         ///whan you computer is faster then me
         //you send time of: 00:00:02 , i get it in 00:00:01 
         //and my last colection is in 00:00:00
-        //the get my last one in the array .
+        //then get my last one in the array .
         found_el = array_poses[array_poses.length - 1]; //set it to the last 
       }
 
@@ -417,6 +417,7 @@ function ContextProvider({ children, socket }) {
   const meetings = useSelector(state => state.meetings);
   const [upcamingMeeting, setUpcamingMeeting] = useState({});
   const [scheduleMeetingPopUpCall, setScheduleMeetingPopUpCall] = useState({});
+  const [MeetingIsNOW, setMeetingIsNOW] = useState(false);
 
   useEffect(() => {
     console.log(meetings?.meetings);
@@ -445,6 +446,7 @@ function ContextProvider({ children, socket }) {
       else if (currentTime === upcomingMeeting) {
         console.log('meeting is NOW!!!!');
         setScheduleMeetingPopUpCall(upcamingMeeting);
+        setMeetingIsNOW(true)
         //set up next meeting timing....
         return;
       }
@@ -456,23 +458,32 @@ function ContextProvider({ children, socket }) {
     //lisinig for changes in the array of users caming in to the app
     socket?.on('getNewUserAddToApp', (user) => {
       console.log('new user enter to app', user);
-      console.log('yourInfo._id', yourInfo.userId);
+      console.log('yourInfo', yourInfo);
       console.log('yourSocketId', yourSocketId); //yor socket id camming form meeting conect page / else its undidiend
 
-      console.log(profile);
+      if (MeetingIsNOW && !yourSocketId && yourInfo) {
+        if (user.userId === yourInfo._id)
+          setYourSocketId(user.socketId)
+      }
+
+      console.log(profile.profile);
       //when i'm in home page and i have list of trainee i what  to lisin to them
-      if (!isEmpty(profile) && profile?.traineeOf) {
+      if (!isEmpty(profile.profile) && profile.profile?.trainerOf) {
         console.log('lisinig whos is enterd ....');
-        profile?.traineeOf.map((trainee) => {
-          if (trainee === user.userId) setMyTraineeEntered(trainee);
+        profile.profile?.trainerOf.map((trainee) => {
+          if (trainee === user.userId) {
+            console.log(trainee, user.userId);
+            setMyTraineeEntered(trainee);
+            return;
+          }
         });
         //TODO: move start to home page ... mybe to all pages
       }
       //when i'm in a meeting only and i have a partner to the meeting
-      if (!yourSocketId && user.userId === yourInfo._id) {
-        console.log('added ');
-        setYourSocketId(user?.socketId);
-      }
+      // if (!yourSocketId && user.userId === yourInfo._id) {
+      //   console.log('added ');
+      //   setYourSocketId(user?.socketId);
+      // }
     });
     //close lisining to event when your socket exists
     yourSocketId && socket.off('getNewUserAddToApp');
@@ -521,15 +532,6 @@ function ContextProvider({ children, socket }) {
       setPeer2inFrame(true);
     });
   };
-
-  const lisiningOurDelay = () => {
-    socket?.on('ourDelay', (data) => {
-      console.log(data, '..............my delay time ..........');
-      data && setMyDelayOnConection(data);
-      data && setStartMeeting(true);
-    });
-  };
-
   //===================socket calls when user in room and whant to call============================//
   function answerCall() {
     setCallAccepted(true);
@@ -692,7 +694,7 @@ function ContextProvider({ children, socket }) {
         recognition,
         setRecognition,
         setSettingUserInFrame, setPeer2inFrame,
-        scheduleMeetingPopUpCall,
+        scheduleMeetingPopUpCall, setScheduleMeetingPopUpCall,
         upcamingMeeting,
 
         setSyncScore

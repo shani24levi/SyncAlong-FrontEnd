@@ -19,7 +19,7 @@ import FunQuestionPopUp from './funQuestionPopUp/FunQuestionPopUp';
 const useStyles = makeStyles(componentStyles);
 
 function VideoContext({ meeting }) {
-    const { setSyncScore, setRecognition, setSettingUserInFrame, setPeer2inFrame, peer2inFrame, peer1inFrame, recognition, mediaPipeInitilaize, syncScore, myDelayOnConection, setPosesArray, array_poses, timeOfColectionPose, delayBetweenUsers, setFlagTime, setFlagFeatch, myRole, emoji, startMeeting, setStream, myName, yourName, callAccepted, myVideo, userVideo, callEnded, stream, call, myCanvasRef, userCanvasRef, me, posesArry, you, sendPoses, sendMyPoses, socket } = useContext(SocketContext);
+    const { yourSocketId, setSyncScore, setRecognition, setSettingUserInFrame, setPeer2inFrame, peer2inFrame, peer1inFrame, recognition, mediaPipeInitilaize, syncScore, myDelayOnConection, setPosesArray, array_poses, timeOfColectionPose, delayBetweenUsers, setFlagTime, setFlagFeatch, myRole, emoji, startMeeting, setStream, myName, yourName, callAccepted, myVideo, userVideo, callEnded, stream, call, myCanvasRef, userCanvasRef, me, posesArry, you, sendPoses, sendMyPoses, socket } = useContext(SocketContext);
     const classes = useStyles();
     const [start, setStartActivity] = useState(false);
     const [showDemo, setDemo] = useState(false);
@@ -230,6 +230,9 @@ function VideoContext({ meeting }) {
                 <FunQuestionPopUp name={myName} />
             }
 
+            {/* {
+    !yourSocketId && <ErrorAlart />
+} */}
             <Grid container className={classes.gridContainer}>
                 {stream && (
                     <Paper className={classes.paper}>

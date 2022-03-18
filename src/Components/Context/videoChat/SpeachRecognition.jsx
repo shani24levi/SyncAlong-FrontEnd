@@ -3,12 +3,12 @@ import { SocketContext } from '../ContextProvider';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 
 function SpeachRecognition(props) {
-    const { setRecognition } = useContext(SocketContext);
+    const { setRecognition, mediaPipeInitilaize } = useContext(SocketContext);
 
-    // useEffect(() => {
-    //     startListening(); //start as 'on'
-    // }, [])
-
+    useEffect(() => {
+        if (mediaPipeInitilaize)
+            startListening(); //start as 'on'
+    }, [mediaPipeInitilaize])
 
     const commands = [
         {

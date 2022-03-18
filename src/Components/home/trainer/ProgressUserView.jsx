@@ -13,7 +13,6 @@ function ProgressUserView(props) {
     const theme = useTheme()
     const secondary = theme.palette.mode
 
-
     return (
         <CardContiner title="Campaigns">
             <Typography sx={{ color: secondary }}>Today</Typography>

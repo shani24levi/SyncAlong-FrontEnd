@@ -7,7 +7,7 @@ import componentStyles from "../../assets/material-ui-style/componenets/auth-hea
 const useStyles = makeStyles(componentStyles);
 
 
-function TraineeHome(props) {
+function TraineeHome({ meeting, date }) {
     const classes = useStyles();
     const theme = useTheme();
 

@@ -34,6 +34,7 @@ import ScheduleMeetings from './Components/screens/ScheduleMeetings';
 const App = (props) => {
   const navigate = useNavigate();
   const [socket, setSocket] = useState(null);
+  const [mySocketId, setMe] = useState(null);
 
   useEffect(() => {
     setSocket(io(`${URL}`));
@@ -49,6 +50,9 @@ const App = (props) => {
       setAuthToken(localStorage.user);
       const decoded = jwt_decode(localStorage.user);
       console.log(decoded);
+      decoded._id && socket?.emit("addUser", decoded._id);
+      socket?.on('me', (id) => { console.log(id); setMe(id) });
+      decoded.socketId = mySocketId;
       props.setCurrentUser(decoded);
 
       // Check for expired token - didnt set it as time expired in the server
