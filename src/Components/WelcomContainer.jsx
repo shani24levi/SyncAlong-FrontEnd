@@ -34,7 +34,7 @@ const WelcomContainer = () => {
                                 lineHeight="1.7"
                                 fontSize="1rem"
                             >
-                                <p>Join Us For ...</p>
+                                {/* <p>Join Us For ...</p> */}
                                 physical activities and synchronized movements with positive energies.
                             </Box>
                         </Grid>

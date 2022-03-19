@@ -53,17 +53,13 @@ const SubTitle = styled('span')(({ theme }) => ({
 
 //Trainer will have his data , graph and lists
 function TrainerHome({ meeting, date }) {
-    const { scheduleMeetingPopUpCall, upcamingMeeting, traineeEntered } = useContext(SocketContext);
+    const { scheduleMeetingPopUpCall, upcamingMeeting } = useContext(SocketContext);
     const classes = useStyles();
     const btnClasses = buttonStyle();
     const theme = useTheme();
     const profile = useSelector(state => state.profile.profile)
     const [alart, setAlart] = useState(false);
     const meetings = useSelector(state => state.meetings);
-
-    console.log('====================================');
-    console.log(traineeEntered);
-    console.log('====================================');
 
     return (
         <>
@@ -72,9 +68,6 @@ function TrainerHome({ meeting, date }) {
                 className={classes.imgBackground}
                 src={require("../../assets/img/path1.png").default}
             />
-            {
-                traineeEntered && <SeccsesAlert title="${traineeEntered} is online" />
-            }
             <Container maxWidth="xl">
                 <Grid container alignItems='center' justifyContent='center' spacing={1} >
                     <Grid item xs={3} md={4}>
@@ -87,11 +80,10 @@ function TrainerHome({ meeting, date }) {
 
 
                 <Grid container alignItems='center' alignContent='center' spacing={2}>
-
                     <Grid item xs={12} md={12}> <StartCard title={'title'} subtitle={'subtitle'} /> </Grid>
                     <Grid item xs={12} md={12}>
                         <CardContiner title="Your up caming meeting" >
-                            {meeting && <NextMeetingTime upcamingMeeting={upcamingMeeting} date={date} />}
+                            {meeting && <NextMeetingTime upcamingMeeting={upcamingMeeting} date={!date ? 0 : date} />}
                         </CardContiner>
                     </Grid>
                 </Grid>
@@ -110,18 +102,7 @@ function TrainerHome({ meeting, date }) {
                             />
                         </Card>
                         <ProgressUserView />
-                        {/* <UpgradeCard />
-                        <Campaigns /> */}
                     </Grid>
-
-                </Grid>
-
-
-                <Grid className={classes.root} id="basic-elements">
-                    {meeting && <NextMeetingTime upcamingMeeting={upcamingMeeting} date={date} />}
-                    {
-                        alart && <Alert severity="error">You have no profile for this accoun - please set acoount</Alert>
-                    }
                 </Grid>
             </Container>
         </>

@@ -34,10 +34,11 @@ export default function (state = initialState, action) {
 
 
         case CREATE_MEETING:
+            console.log(action.payload.data);
             return {
                 ...state,
                 all_meetings: [action.payload, ...state.all_meetings],
-                meetings: !state.meetings ? [action.payload] : [...state.meetings, action.payload],
+                meetings: !state.meetings ? [action.payload] : [...state.meetings, action.payload.data.data],
                 // [action.payload, ...state.meetings],
                 loading: false,
             };

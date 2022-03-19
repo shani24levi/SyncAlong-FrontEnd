@@ -50,9 +50,6 @@ const App = (props) => {
       setAuthToken(localStorage.user);
       const decoded = jwt_decode(localStorage.user);
       console.log(decoded);
-      decoded._id && socket?.emit("addUser", decoded._id);
-      socket?.on('me', (id) => { console.log(id); setMe(id) });
-      decoded.socketId = mySocketId;
       props.setCurrentUser(decoded);
 
       // Check for expired token - didnt set it as time expired in the server
@@ -74,7 +71,7 @@ const App = (props) => {
           <Header socket={socket} />
           <div className="continer">
             <Fragment>
-              <ContextProvider socket={socket}>
+              <ContextProvider socket={socket} profile={props.profile}>
                 <Routes>
                   <Route exact path="/" element={<Landing />} />
                   <Route exact path='/auth/login' element={<Login />} />

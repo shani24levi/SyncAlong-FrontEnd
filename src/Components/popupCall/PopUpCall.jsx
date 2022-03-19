@@ -24,16 +24,18 @@ const Transition = forwardRef(function Transition(props, ref) {
 
 function PopUpCall(props) {
     const { socket, scheduleMeetingPopUpCall, setScheduleMeetingPopUpCall, setIsModalVisible, isModalVisible, Audio, answerCall, call, callAccepted } = useContext(SocketContext);
+    // const scheduleMeetingPopUpCall = { id: 'ddd', trainee: { user: 'nam2', avatar: '22' }, trainer: { user: 'name1', avatar: '233' } }
+
     const user = useSelector(state => state.auth.user);
     const navigate = useNavigate();
 
-    //const scheduleMeetingPopUpCall = { id: '555', tariner: { _id: "61f41299f214dbc605e23778z", user: 'trainer' }, trainee: { _id: "61f41299f214dbc605e23778", user: 'trainee' } }
+    useEffect(() => {
+        if (isModalVisible) {
+            Audio?.current?.play();
+        } else Audio?.current?.pause();
+    }, [isModalVisible])
 
     const showModal = (showVal) => {
-        setScheduleMeetingPopUpCall({});
-        setIsModalVisible(showVal);
-        Audio.current.pause();
-        setAccseptScheduleMeetingCall();
         let roomId = scheduleMeetingPopUpCall._id;
         let from = user._id;
         let to = scheduleMeetingPopUpCall.tariner._id !== user._id ? scheduleMeetingPopUpCall.tariner._id : scheduleMeetingPopUpCall.trainee._id;
@@ -42,6 +44,11 @@ function PopUpCall(props) {
             console.log('getUsers', users);
         });
         socket?.off("joinUser");
+
+        setScheduleMeetingPopUpCall({});
+        setIsModalVisible(showVal);
+        Audio.current.pause();
+        // setAccseptScheduleMeetingCall();
         navigate('/video-room', { state: { meeting: scheduleMeetingPopUpCall } });
     };
 
@@ -52,6 +59,17 @@ function PopUpCall(props) {
         //declineCall
     };
 
+    //     activities: (3) ['squats', 'center body area and upper-body moves to right-left side on X-axis', 'stretching hands up 90 degrees without moving']
+    // date: "2022-03-19T15:02:00.000Z"
+    // status: false
+    // tariner: {_id: '61f41299f214dbc605e23778', user: 'xxx1', role: 'trainer'}
+    // trainee: {_id: '6214b44405ebc47e36303a6b', user: 'g122.2', role: 'trainee'}
+    // __v: 0
+    // _id: "6235d3e3f556f618668c617b"
+
+    console.log('scheduleMeetingPopUpCall', scheduleMeetingPopUpCall);
+    console.log('isModalVisible', isModalVisible);
+    console.log('user.role', user.role);
 
     return (
         <>
@@ -69,9 +87,9 @@ function PopUpCall(props) {
                         <DialogContent>
                             <DialogContentText id="alert-dialog-slide-description">
                                 Your Meeting with {" "}
-                                {user.role === 'trainer'
+                                {user.role === 'trainer' //trainer
                                     ? scheduleMeetingPopUpCall.trainee.user
-                                    : scheduleMeetingPopUpCall.trainer.user
+                                    : scheduleMeetingPopUpCall.tariner.user ////erroreee text 
                                 }
                                 {" "} is NOW ! !
                                 <img
@@ -80,29 +98,30 @@ function PopUpCall(props) {
                                     style={{ display: "inline-block", height: "4rem", }}
                                 />
                             </DialogContentText>
+
                             <Grid container spacing={1} justifyContent='center' sx={{ padingTop: '30px' }}>
                                 <Grid item>
                                     <Avatar
                                         alt="avatar"
-                                        src={user.avatar}
+                                        src={scheduleMeetingPopUpCall.trainee.avatar}
                                         sx={{ width: 70, height: 70 }}
                                     >{user.user}</Avatar>
                                 </Grid>
                                 <Grid item>
                                     <Avatar
                                         alt="avatar"
-                                        src={user.avatar}
+                                        src={scheduleMeetingPopUpCall.tariner.avatar}
                                         sx={{ width: 70, height: 70 }}
                                     />
                                 </Grid>
                             </Grid>
-
                         </DialogContent>
                         <DialogActions>
                             <Button onClick={() => handleClose(false)}>Disagree</Button>
                             <Button onClick={() => showModal(false)}>Agree</Button>
                         </DialogActions>
-                    </Dialog> </>
+                    </Dialog>
+                </>
             )}
         </>
     );

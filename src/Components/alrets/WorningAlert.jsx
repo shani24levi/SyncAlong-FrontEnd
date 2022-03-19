@@ -7,7 +7,7 @@ function WorningAlert({ title }) {
         notify()
     }, [])
 
-    const notify = () => toast.warning({ title },
+    const notify = () => toast.warning(title,
         { autoClose: 10000 });
 
     return (

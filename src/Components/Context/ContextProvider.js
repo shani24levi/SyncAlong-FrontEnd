@@ -28,8 +28,8 @@ import draw from './DrawAnimation/draw';
 
 const SocketContext = createContext();
 
-function ContextProvider({ children, socket }) {
-  const profile = useSelector((state) => state.profile);
+function ContextProvider({ children, socket, profile }) {
+  // const profile = useSelector((state) => state.profile);
   const [callAccepted, setCallAccepted] = useState(false);
   const [callEnded, setCallEnded] = useState(false);
   const [stream, setStream] = useState();
@@ -59,6 +59,9 @@ function ContextProvider({ children, socket }) {
   //for first step - user enters the roonm - need to stap away for the camaea.
   const [peer1inFrame, setSettingUserInFrame] = useState(false);
   const [peer2inFrame, setPeer2inFrame] = useState(false);
+
+  //
+  const [userEnteredNow, setUserEnteredNow] = useState({});
 
   const [emoji, setEmoji] = useState(null);
   const images = { thumbs_up: thumbs_up, victory: victory, stop: stop };
@@ -407,6 +410,22 @@ function ContextProvider({ children, socket }) {
     }
   }, [peer1inFrame]);
 
+  //for lisiner of user entered now 
+  useEffect(() => {
+    if (!isEmpty(userEnteredNow)) {
+      if (!isEmpty(profile.profile) && profile.profile.role === 'trainer' && profile.profile?.trainerOf) {
+        console.log('lisinig whos is enterd ....');
+        profile.profile?.trainerOf.map((trainee) => {
+          if (trainee === userEnteredNow.userId) {
+            console.log(trainee, userEnteredNow.userId);
+            setMyTraineeEntered(trainee);
+            return;
+          }
+        });
+      }
+    }
+  }, [userEnteredNow]);
+
   //======================helpers func==============================//
   //===============FOR POP UP MEETING IS NOW=========================//
   //===== It's here because it wraps the interface and all the pages ... 
@@ -430,11 +449,12 @@ function ContextProvider({ children, socket }) {
   }, [meetings?.meetings]);
 
   function meetingsListener() { // loop function
-    setTimeout(function () {   //  call a 60s setTimeout when the loop is called
+    setTimeout(function () {   //  call a 30s setTimeout when the loop is called
       let currentTime = new Date().setSeconds(0, 0)
       const date = new Date(meetings.upcoming_meeting?.date?.slice(0, -1)) // delte z from date
       let upcomingMeeting = date.getTime();
       // console.log('a', currentTime, upcomingMeeting, currentTime < upcomingMeeting);
+      //console.log(currentTime === upcomingMeeting, meetings.upcoming_meeting);
       if (!upcomingMeeting) {
         //set new upcamong meeting or brack from loop
         console.log('somthing is NOT OK with date meeting!!!!');
@@ -444,46 +464,29 @@ function ContextProvider({ children, socket }) {
         meetingsListener();
       }
       else if (currentTime === upcomingMeeting) {
-        console.log('meeting is NOW!!!!');
-        setScheduleMeetingPopUpCall(upcamingMeeting);
+        console.log('meeting is NOW!!!!', meetings.upcoming_meeting);
+        setScheduleMeetingPopUpCall(meetings.upcoming_meeting);
         setMeetingIsNOW(true)
         //set up next meeting timing....
         return;
       }
-    }, 60000)
+    }, 30000)
   }
 
   //===============lisiners=========================//
+
   const lisiningForNewUsers = () => {
     //lisinig for changes in the array of users caming in to the app
     socket?.on('getNewUserAddToApp', (user) => {
       console.log('new user enter to app', user);
       console.log('yourInfo', yourInfo);
       console.log('yourSocketId', yourSocketId); //yor socket id camming form meeting conect page / else its undidiend
+      setUserEnteredNow(user);
 
       if (MeetingIsNOW && !yourSocketId && yourInfo) {
         if (user.userId === yourInfo._id)
           setYourSocketId(user.socketId)
       }
-
-      console.log(profile.profile);
-      //when i'm in home page and i have list of trainee i what  to lisin to them
-      if (!isEmpty(profile.profile) && profile.profile?.trainerOf) {
-        console.log('lisinig whos is enterd ....');
-        profile.profile?.trainerOf.map((trainee) => {
-          if (trainee === user.userId) {
-            console.log(trainee, user.userId);
-            setMyTraineeEntered(trainee);
-            return;
-          }
-        });
-        //TODO: move start to home page ... mybe to all pages
-      }
-      //when i'm in a meeting only and i have a partner to the meeting
-      // if (!yourSocketId && user.userId === yourInfo._id) {
-      //   console.log('added ');
-      //   setYourSocketId(user?.socketId);
-      // }
     });
     //close lisining to event when your socket exists
     yourSocketId && socket.off('getNewUserAddToApp');
@@ -671,7 +674,7 @@ function ContextProvider({ children, socket }) {
         myCanvasRef,
         userCanvasRef,
         socket,
-        traineeEntered,
+        traineeEntered, setMyTraineeEntered,
         setRoomId,
         allUsersInRoom,
         startMeeting,

@@ -9,9 +9,13 @@ import ErrorAlert from '../alrets/ErrorAlert';
 import TrainerHome from '../home/TrainerHome';
 import TraineeHome from '../home/TraineeHome';
 import WorningAlert from '../alrets/WorningAlert';
+import isEmpty from '../../validation/isEmpty';
+import SeccsesAlert from '../alrets/SeccsesAlert';
+import { delay } from '../../helpers';
 
 const Home = ({ socket }) => {
-    const { scheduleMeetingPopUpCall, upcamingMeeting } = useContext(SocketContext);
+    const { upcamingMeeting, traineeEntered, setMyTraineeEntered, scheduleMeetingPopUpCall } = useContext(SocketContext);
+    // const scheduleMeetingPopUpCall = { id: 'ddd', trainee: { user: 'nam2', avatar: '22' }, trainer: { user: 'name1', avatar: '233' } }
     const dispatch = useDispatch();
     const user = useSelector(state => state.auth.user);
     const profile = useSelector(state => state.profile);
@@ -19,6 +23,8 @@ const Home = ({ socket }) => {
 
     const [meeting, setMeeting] = useState(false);
     const [date, setDate] = useState(0);
+
+    const [trineeOnline, setTrineeOnline] = useState({});
 
     ///call to set state of user and profile 
     useEffect(() => {
@@ -35,8 +41,23 @@ const Home = ({ socket }) => {
         }
     }, [profile.profile]);
 
+    useEffect(async () => {
+        if (traineeEntered) {
+            let user_entered = profile.trainees_profiles.find(trinee => {
+                if (trinee.user._id === traineeEntered) return trinee.user;
+            })
+            if (user_entered) {
+                setTrineeOnline(user_entered);
+                await delay(10000);
+                setMyTraineeEntered(null)
+                setTrineeOnline({});
+            }
+        }
+    }, [traineeEntered]);
+
+
     useEffect(() => {
-        if (upcamingMeeting) {
+        if (!isEmpty(upcamingMeeting)) {
             const t = new Date(meetings.upcoming_meeting?.date?.slice(0, -1));
             setDate(t.getTime() / 1000)
             setMeeting(true)
@@ -44,11 +65,15 @@ const Home = ({ socket }) => {
         else setMeeting(false)
     }, [upcamingMeeting])
 
+    //const scheduleMeetingPopUpCall = { id: 'ddd', trainee: { user: 'nam2', avatar: '22' }, trainer: { user: 'name1', avatar: '233' } }
+    console.log('scheduleMeetingPopUpCall', scheduleMeetingPopUpCall);
+
     return (
         <>
-            <PopUpCall />
-            {!user?.profile_id && <ErrorAlert title="Please set up profile details" />}
-            {!upcamingMeeting && <WorningAlert title="No futuer meetings found" />}
+            {!isEmpty(scheduleMeetingPopUpCall) && <PopUpCall />}
+            {user?._id && !user?.profile_id && <ErrorAlert title="Please set up profile details" />}
+            {(isEmpty(upcamingMeeting) || !upcamingMeeting) && <WorningAlert title="No futuer meetings found" />}
+            {!isEmpty(trineeOnline.user) && <SeccsesAlert name={trineeOnline.user.user} title=' is online' />}
             {
                 user.role === 'trainer'
                     ?

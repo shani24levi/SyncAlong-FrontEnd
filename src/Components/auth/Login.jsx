@@ -8,7 +8,7 @@ import {
     Card, CardContent, CardHeader, Box, FormControlLabel, Checkbox,
 } from '@material-ui/core'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import { Snackbar, Alert } from '@mui/material';
+// import { Snackbar, Alert } from '@mui/material';
 import { CircularProgress } from "@material-ui/core";
 //childs commponents
 import CircelsHeader from '../layout/Header/CircelsHeader';
@@ -131,7 +131,9 @@ const Login = (props) => {
                 title='Welcome To SyncAlong!'
                 description='Joint physical activity and movement synchronized with positive energies.'
             />
-            <Snackbar
+
+            {/* ///display error on chrom */}
+            {/* <Snackbar
                 open={alert}
                 autoHideDuration={10000}
                 anchorOrigin={{ vertical: 'center', horizontal: 'center' }}
@@ -139,7 +141,7 @@ const Login = (props) => {
                 <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
                     {props.alert.message}
                 </Alert>
-            </Snackbar>
+            </Snackbar> */}
 
             <Grid>
                 <Paper elevation={10} className={classes.paperStyle2}>

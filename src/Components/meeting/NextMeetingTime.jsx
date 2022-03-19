@@ -36,21 +36,12 @@ const getTimeDays = (time) => (time / daySeconds) | 0;
 function NextMeetingTime({ date }) {
     const { scheduleMeetingPopUpCall, upcamingMeeting } = useContext(SocketContext);
     const [stratTime, setStratTime] = useState(Date.now() / 1000);
-    const [time, setTime] = useState(date === 0 ? parseInt(Date.now() / 1000 - stratTime) : parseInt(date - stratTime));
-    const meetings = useSelector(state => state.meetings);
+    const [time, setTime] = useState(date !== 0 ? date - stratTime : 0);
 
-    useEffect(() => {
-        console.log('====================================');
-        console.log('datew', date);
-        console.log('====================================');
-        setStratTime(Date.now() / 1000);
-        setTime(parseInt(date - stratTime))
-    }, [date])
-
-    const endTime = stratTime + time
-    const remainingTime = endTime - stratTime;
-    const days = Math.ceil(remainingTime / daySeconds);
-    const daysDuration = days * daySeconds;
+    let endTime = stratTime + time
+    let remainingTime = endTime - stratTime;
+    let days = Math.ceil(remainingTime / daySeconds);
+    let daysDuration = days * daySeconds
 
     return (
         <Container maxWidth="xl">
@@ -113,7 +104,6 @@ function NextMeetingTime({ date }) {
                     )}
                 </CountdownCircleTimer>
             </div>
-
         </Container>
     );
 }
