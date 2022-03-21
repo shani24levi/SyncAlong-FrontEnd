@@ -62,6 +62,8 @@ function ContextProvider({ children, socket, profile }) {
 
   //
   const [userEnteredNow, setUserEnteredNow] = useState({});
+  const [accseptScheduleMeetingCall, setAccseptScheduleMeetingCall] = useState(false);
+
 
   const [emoji, setEmoji] = useState(null);
   const images = { thumbs_up: thumbs_up, victory: victory, stop: stop };
@@ -699,6 +701,7 @@ function ContextProvider({ children, socket, profile }) {
         setSettingUserInFrame, setPeer2inFrame,
         scheduleMeetingPopUpCall, setScheduleMeetingPopUpCall,
         upcamingMeeting,
+        setAccseptScheduleMeetingCall, accseptScheduleMeetingCall,
 
         setSyncScore
       }}

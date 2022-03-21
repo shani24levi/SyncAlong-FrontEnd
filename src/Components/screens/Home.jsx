@@ -72,7 +72,7 @@ const Home = ({ socket }) => {
         <>
             {!isEmpty(scheduleMeetingPopUpCall) && <PopUpCall />}
             {user?._id && !user?.profile_id && <ErrorAlert title="Please set up profile details" />}
-            {(isEmpty(upcamingMeeting) || !upcamingMeeting) && <WorningAlert title="No futuer meetings found" />}
+            {!meetings.meetings && (isEmpty(upcamingMeeting) || !upcamingMeeting) && <WorningAlert title="No futuer meetings found" />}
             {!isEmpty(trineeOnline.user) && <SeccsesAlert name={trineeOnline.user.user} title=' is online' />}
             {
                 user.role === 'trainer'

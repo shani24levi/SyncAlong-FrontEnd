@@ -12,6 +12,7 @@ import Search from '../search/Search';
 
 import buttonsStyles from "../../assets/theme/buttons";
 import QuickStartBtn from './QuickStartBtn';
+import QuickStartBtn2 from './quickStartBtn/QuickStartBtn';
 import StartCard from '../card/StartCard';
 import ListBoxTop from '../listBox/ListBoxTop';
 import DoughnutChart from '../charts/DoughnutChart';
@@ -20,6 +21,7 @@ import CardContiner from '../card/CardContiner';
 import CoolTextH1 from '../Context/videoChat/coolText/CoolTextH1';
 import FunQuestionPopUp from '../Context/videoChat/funQuestionPopUp/FunQuestionPopUp';
 import SeccsesAlert from '../alrets/SeccsesAlert';
+import LoadingModal from '../modal/LoadingModal';
 
 const buttonStyle = makeStyles(buttonsStyles);
 
@@ -72,6 +74,8 @@ function TrainerHome({ meeting, date }) {
                 <Grid container alignItems='center' justifyContent='center' spacing={1} >
                     <Grid item xs={3} md={4}>
                         <QuickStartBtn />
+                        {/* <QuickStartBtn2 /> */}
+                        <LoadingModal />
                     </Grid>
                     <Grid item xs={9} md={8}>
                         <Search />

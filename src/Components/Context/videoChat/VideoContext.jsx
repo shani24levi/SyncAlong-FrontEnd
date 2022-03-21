@@ -16,10 +16,11 @@ import stop from "../../../assets/signs/stop.png"
 import componentStyles from "../../../assets/material-ui-style/componenets/video";
 import SpeachRecognition from './SpeachRecognition';
 import FunQuestionPopUp from './funQuestionPopUp/FunQuestionPopUp';
+import ErrorAlert from '../../alrets/ErrorAlert';
 const useStyles = makeStyles(componentStyles);
 
 function VideoContext({ meeting }) {
-    const { yourSocketId, setSyncScore, setRecognition, setSettingUserInFrame, setPeer2inFrame, peer2inFrame, peer1inFrame, recognition, mediaPipeInitilaize, syncScore, myDelayOnConection, setPosesArray, array_poses, timeOfColectionPose, delayBetweenUsers, setFlagTime, setFlagFeatch, myRole, emoji, startMeeting, setStream, myName, yourName, callAccepted, myVideo, userVideo, callEnded, stream, call, myCanvasRef, userCanvasRef, me, posesArry, you, sendPoses, sendMyPoses, socket } = useContext(SocketContext);
+    const { accseptScheduleMeetingCall, yourSocketId, setSyncScore, setRecognition, setSettingUserInFrame, setPeer2inFrame, peer2inFrame, peer1inFrame, recognition, mediaPipeInitilaize, syncScore, myDelayOnConection, setPosesArray, array_poses, timeOfColectionPose, delayBetweenUsers, setFlagTime, setFlagFeatch, myRole, emoji, startMeeting, setStream, myName, yourName, callAccepted, myVideo, userVideo, callEnded, stream, call, myCanvasRef, userCanvasRef, me, posesArry, you, sendPoses, sendMyPoses, socket } = useContext(SocketContext);
     const classes = useStyles();
     const [start, setStartActivity] = useState(false);
     const [showDemo, setDemo] = useState(false);
@@ -31,11 +32,12 @@ function VideoContext({ meeting }) {
     const [session, setSession] = useState(false);
     const [question, setQuestion] = useState(false);
     const [activitiesEnded, setActivitiesEnded] = useState(false);
+    const [isPeerHere, setIsPeerHere] = useState(yourSocketId ? true : false);
+
 
     const [stop, setStop] = useState(false);
     const stopRef = useRef(stop);
     stopRef.current = stop;
-
 
     const images = { thumbs_up: thumbs_up, victory: victory, stop: stop };
 
@@ -222,17 +224,23 @@ function VideoContext({ meeting }) {
                       url("/img/emojyGIF/fall_stars.gif")`
         })
     }
+    useEffect(() => {
+        if (accseptScheduleMeetingCall && !yourSocketId) setIsPeerHere(false);
+        else if (accseptScheduleMeetingCall && yourSocketId) setIsPeerHere(true);;
+    }, [accseptScheduleMeetingCall, yourSocketId]);
 
     return (
         <>
             {
+                !isPeerHere && <>
+                    <ErrorAlert name={yourName} title=" is not online" />
+                    <ErrorAlert title="Sorry , cant conect... " />
+                </>
+            }
+            {
                 callAccepted && !callEnded && question && session &&
                 <FunQuestionPopUp name={myName} />
             }
-
-            {/* {
-    !yourSocketId && <ErrorAlart />
-} */}
             <Grid container className={classes.gridContainer}>
                 {stream && (
                     <Paper className={classes.paper}>

@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState, forwardRef } from 'react';
 import { SocketContext } from '../Context/ContextProvider';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { setActiveMeeting } from '../../Store/actions/meetingActions';
 import { useNavigate } from 'react-router-dom';
 import PhoneCallbackIcon from '@mui/icons-material/PhoneCallback';
 import Calling from "../../assets/sounds/calling.mp3";
@@ -23,11 +24,16 @@ const Transition = forwardRef(function Transition(props, ref) {
 });
 
 function PopUpCall(props) {
-    const { socket, scheduleMeetingPopUpCall, setScheduleMeetingPopUpCall, setIsModalVisible, isModalVisible, Audio, answerCall, call, callAccepted } = useContext(SocketContext);
+    const { socket, setAccseptScheduleMeetingCall, scheduleMeetingPopUpCall, setScheduleMeetingPopUpCall, setIsModalVisible, isModalVisible, Audio, answerCall, call, callAccepted } = useContext(SocketContext);
     // const scheduleMeetingPopUpCall = { id: 'ddd', trainee: { user: 'nam2', avatar: '22' }, trainer: { user: 'name1', avatar: '233' } }
-
     const user = useSelector(state => state.auth.user);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        isModalVisible(true);
+        Audio?.current?.play();
+    }, [])
 
     useEffect(() => {
         if (isModalVisible) {
@@ -45,10 +51,11 @@ function PopUpCall(props) {
         });
         socket?.off("joinUser");
 
+        dispatch(setActiveMeeting(scheduleMeetingPopUpCall, { status: true }));
         setScheduleMeetingPopUpCall({});
         setIsModalVisible(showVal);
         Audio.current.pause();
-        // setAccseptScheduleMeetingCall();
+        setAccseptScheduleMeetingCall(true);
         navigate('/video-room', { state: { meeting: scheduleMeetingPopUpCall } });
     };
 

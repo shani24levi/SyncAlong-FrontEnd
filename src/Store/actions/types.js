@@ -37,8 +37,8 @@ export const GET_CURR_ACTIVITIES = 'GET_CURR_ACTIVITIES'
 //export const UPDATE_AVATAR = 'UPDATE_AVATAR';
 export const GET_ALL_MEETINGS = 'GET_ALL_MEETINGS';
 export const SET_ALL_TRAINEES = 'SET_ALL_TRAINEES';
-//export const  = '';
-//export const  = '';
+export const SET_ACTIVE_MEETING = 'SET_ACTIVE_MEETING';
+export const GET_ACTIVE_MEETING = 'GET_ACTIVE_MEETING';
 //export const  = '';
 
 

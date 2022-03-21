@@ -2,6 +2,8 @@ import isEmpty from '../../validation/isEmpty';
 import {
     CREATE_MEETING, GET_ERRORS, GET_MEETINGS, GET_FUTURE_MEETINGS,
     MEETINGS_LOADING, GET_CURR_ACTIVITIES, GET_ALL_MEETINGS,
+    SET_ACTIVE_MEETING,
+    GET_ACTIVE_MEETING,
 } from '../actions/types';
 
 const initialState = {
@@ -9,6 +11,7 @@ const initialState = {
     all_meetings: null,
     meetings: null,
     upcoming_meeting: null,
+    active_meeting: null,
 }
 
 export default function (state = initialState, action) {
@@ -32,7 +35,6 @@ export default function (state = initialState, action) {
                 loading: false,
             };
 
-
         case CREATE_MEETING:
             console.log(action.payload.data);
             return {
@@ -49,6 +51,24 @@ export default function (state = initialState, action) {
                 loading: false,
                 activities: action.payload
             }
+        case SET_ACTIVE_MEETING:
+            console.log("SET_ACTIVE_MEETING", action.payload);
+            return {
+                ...state,
+                loading: false,
+                active_meeting: (!action.payload && action.payload?.status) ? action.payload : null
+            }
+
+        case GET_ACTIVE_MEETING:
+            console.log("GET_ACTIVE_MEETING", action.payload);
+            return {
+                ...state,
+                loading: false,
+                active_meeting: action.payload
+            }
+
+
+
         default:
             return state;
     }

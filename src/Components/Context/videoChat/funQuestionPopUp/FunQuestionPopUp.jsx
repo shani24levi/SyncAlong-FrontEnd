@@ -2,7 +2,7 @@ import { Grid, Typography } from '@material-ui/core';
 import React from 'react';
 import "./style.css";
 
-function FunQuestionPopUp({ name = 'YPOU' }) {
+function FunQuestionPopUp({ name = 'YOU' }) {
     return (
         <>
             <div>

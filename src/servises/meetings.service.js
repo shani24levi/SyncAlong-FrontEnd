@@ -78,6 +78,25 @@ const getActivities = (id) => {
             return Promise.reject(err.response.data);
         })
 }
+
+const setActiveMeeting = (id, status) => {
+    return axios
+        .put(`${URL}/${MEETINGS}/${id}`, status)
+        .then(meetings => { return meetings })
+        .catch(err => {
+            return Promise.reject(err.response.data);
+        })
+}
+
+const getActiveMeeting = () => {
+    return axios
+        .get(`${URL}/${MEETINGS}/meeting/active`)
+        .then(meetings => { return meetings })
+        .catch(err => {
+            return Promise.reject(err.response.data);
+        })
+}
+
 export const meetingsService = {
     futureMeetings, allMeetings,
     craete,
@@ -85,5 +104,7 @@ export const meetingsService = {
     deleteMeeting,
     getallMeetings,
     getMeetingsById,
-    getActivities
+    getActivities,
+    setActiveMeeting,
+    getActiveMeeting
 };

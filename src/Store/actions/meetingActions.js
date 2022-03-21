@@ -1,7 +1,9 @@
 import {
     GET_ERRORS, GET_MEETINGS, GET_FUTURE_MEETINGS, MEETINGS_LOADING
     , CREATE_MEETING, GET_CURR_ACTIVITIES,
-    GET_ALL_MEETINGS
+    GET_ALL_MEETINGS,
+    SET_ACTIVE_MEETING,
+    GET_ACTIVE_MEETING,
 } from './types';
 import { meetingsService } from '../../servises';
 import { redirect } from '../../helpers';
@@ -87,5 +89,43 @@ export const getActivities = (id) => dispatch => {
         );
     function success(activities) { return { type: GET_CURR_ACTIVITIES, payload: activities } }
 };
+
+export const setActiveMeeting = (meeting, status) => dispatch => {
+    console.log('status', status);
+    dispatch(setLoading(true));
+    if (status) {
+        meetingsService.setActiveMeeting(meeting._id, status)
+            .then(
+                meetings => {
+                    meeting.status = status;
+                    dispatch(success(meeting))
+                },
+                error => {
+                    dispatch(success(null));
+                }
+            );
+    }
+    else {
+        dispatch(success(null))
+    }
+    function success(activities) { return { type: SET_ACTIVE_MEETING, payload: meeting } }
+}
+
+
+export const getActiveMeeting = () => dispatch => {
+    dispatch(setLoading(true));
+    meetingsService.getActiveMeeting()
+        .then(
+            meetings => {
+                dispatch(success(meetings))
+            },
+            error => {
+                dispatch(success(null));
+            }
+        );
+    function success(activities) { return { type: GET_ACTIVE_MEETING, payload: meeting } }
+}
+
+
 
 function failure(error) { return { type: GET_ERRORS, payload: error.error } }
