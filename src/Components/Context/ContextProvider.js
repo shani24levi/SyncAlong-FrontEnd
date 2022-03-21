@@ -29,7 +29,7 @@ import draw from './DrawAnimation/draw';
 const SocketContext = createContext();
 
 function ContextProvider({ children, socket, profile }) {
-  // const profile = useSelector((state) => state.profile);
+  const user = useSelector((state) => state.auth.user);
   const [callAccepted, setCallAccepted] = useState(false);
   const [callEnded, setCallEnded] = useState(false);
   const [stream, setStream] = useState();
@@ -414,8 +414,9 @@ function ContextProvider({ children, socket, profile }) {
 
   //for lisiner of user entered now 
   useEffect(() => {
+    console.log('userEnteredNow', profile.profile, user);
     if (!isEmpty(userEnteredNow)) {
-      if (!isEmpty(profile.profile) && profile.profile.role === 'trainer' && profile.profile?.trainerOf) {
+      if (!isEmpty(profile.profile) && user.role === 'trainer' && profile.profile?.trainerOf) {
         console.log('lisinig whos is enterd ....');
         profile.profile?.trainerOf.map((trainee) => {
           if (trainee === userEnteredNow.userId) {
