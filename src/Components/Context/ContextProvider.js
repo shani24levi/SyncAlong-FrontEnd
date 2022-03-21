@@ -1,6 +1,6 @@
 import React, { createContext, useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import Peer from 'simple-peer';
+import Peer from 'simple-peer/simplepeer.min.js';
 import { Holistic } from '@mediapipe/holistic';
 import * as holistic from '@mediapipe/holistic';
 import * as cam from '@mediapipe/camera_utils';
@@ -81,6 +81,8 @@ function ContextProvider({ children, socket, profile }) {
 
   let location = useLocation();
 
+  const poseLandmarks_ref = useRef(null);
+
   //===================mediaPipe function inital==========================
   //mediaPipe function inital :onResults,setHolistic
   // *** z index from mediaPipe is not usebal becous the model is'nt fully trained to predict depth
@@ -95,6 +97,7 @@ function ContextProvider({ children, socket, profile }) {
   const [timeOfColectionPose, setTimeOfColectionPose] = useState(new Date());
   const [myDelayOnConection, setMyDelayOnConection] = useState(null);
   const [array_poses, setPosesArray] = useState([]);
+  const [pose_results, setPose_Results] = useState([]);
 
   const collectionUserPose = (results) => {
     //calls inside of the midiapipe loop thets runs fer frams
@@ -108,20 +111,22 @@ function ContextProvider({ children, socket, profile }) {
 
     if (currTime < timeObject && flagFeatch) {
       arryof1sec.push(results);
+      setPose_Results(results);
     } else if (currTime > timeObject && flagFeatch) {
       let array_of_poses = arryof1sec.map((p) => {
-        const { innerWidth: width, innerHeight: height } = window;
-        console.log("p.poseLandmarks", p.poseLandmarks, width, height);
+        const width = 640;
+        const height = 480;
+        // console.log("p.poseLandmarks", p.poseLandmarks, width, height);
 
-        for (var i = 0; i < p.poseLandmarks.length; i++) {
+        for (var i = 0; p.poseLandmarks && i < p.poseLandmarks.length; i++) {
           p.poseLandmarks[i].x = p.poseLandmarks[i].x * width;
           p.poseLandmarks[i].y = p.poseLandmarks[i].y * height;
         }
-        console.log("new poseLandmarks", p.poseLandmarks);
+        // console.log("new poseLandmarks", p.poseLandmarks);
         return p.poseLandmarks;
       });
       let add = { time: new Date().toLocaleString("en-GB"), poses: array_of_poses };
-      console.log("add", add);
+      // console.log("add", add);
       setPosesArray((array_poses) => [...array_poses, add]);
 
 
@@ -173,28 +178,37 @@ function ContextProvider({ children, socket, profile }) {
     return false;
   }
 
-  const onResults = async (results) => {
+  useEffect(()=> {
+    if(pose_results){
+      console.log("Pose_Results ", pose_results)
+      if(peer) {
+        poseLandmarks_ref.current = pose_results.poseLandmarks
+        console.log("peer is connect");
+        peer?.emit("connect");
+      } else console.log("peer is not connect");
+    }
+   }, [pose_results])
+
+
+  const onResults2 = async (results) => {
     const videoWidth = 640;
     const videoHeight = 480;
 
     setMediaPipeInitilaize('none');
 
     // Set canvas width
-    myCanvasRef.current.width = videoWidth;
-    myCanvasRef.current.height = videoHeight;
-    const canvasElement = myCanvasRef.current;
+    userCanvasRef.current.width = videoWidth;
+    userCanvasRef.current.height = videoHeight;
+    const canvasElement = userCanvasRef.current;
 
     const canvasCtx = canvasElement.getContext('2d');
     canvasCtx.save();
     canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-    canvasCtx.drawImage(
-      results.image,
-      0,
-      0,
+    canvasCtx.drawImage(userVideo.current,0,0,
       canvasElement.width,
       canvasElement.height
     );
-    collectionUserPose(results);
+    // collectionUserPose(results);
     let inframe = calculatingUserInFrame(results);
     let syncing = is_sync();
 
@@ -206,7 +220,7 @@ function ContextProvider({ children, socket, profile }) {
       // Only overwrite missing pixels.
       canvasCtx.globalCompositeOperation = 'destination-atop';
       canvasCtx.drawImage(
-        results.image,
+        userVideo.current,
         0,
         0,
         canvasElement.width,
@@ -223,7 +237,7 @@ function ContextProvider({ children, socket, profile }) {
       // Only overwrite missing pixels.
       canvasCtx.globalCompositeOperation = 'destination-atop';
       canvasCtx.drawImage(
-        results.image,
+        userVideo.current,
         0,
         0,
         canvasElement.width,
@@ -241,7 +255,7 @@ function ContextProvider({ children, socket, profile }) {
       // Only overwrite missing pixels.
       canvasCtx.globalCompositeOperation = 'destination-atop';
       canvasCtx.drawImage(
-        results.image,
+        userVideo.current,
         0,
         0,
         canvasElement.width,
@@ -255,22 +269,86 @@ function ContextProvider({ children, socket, profile }) {
     if (results) {
       if (syncing)
         results.poseLandmarks && draw(canvasCtx, canvasElement, results, 3);
+    }
+    canvasCtx.restore();
+    
+  };
+
+
+  const onResults = async (results) => {
+    const videoWidth = 640;
+    const videoHeight = 480;
+
+    setMediaPipeInitilaize('none');
+
+    // Set canvas width
+    myCanvasRef.current.width = videoWidth;
+    myCanvasRef.current.height = videoHeight;
+    const canvasElement = myCanvasRef.current;
+
+    const canvasCtx = canvasElement.getContext('2d');
+    canvasCtx.save();
+    canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+    canvasCtx.drawImage( results.image, 0, 0, canvasElement.width, canvasElement.height);
+    collectionUserPose(results);
+    let inframe = calculatingUserInFrame(results);
+    let syncing = is_sync();
+
+
+    if (syncScoreRef?.current < 0.75) {
+      canvasCtx.globalCompositeOperation = 'source-in';
+      canvasCtx.fillStyle = 'rgba(255,0,0,0.1)';
+      canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
+      // Only overwrite missing pixels.
+      canvasCtx.globalCompositeOperation = 'destination-atop';
+      canvasCtx.drawImage( results.image, 0, 0, canvasElement.width, canvasElement.height);
+      //drow only when seting modal is initilize and when not user in fram
+      canvasCtx.globalCompositeOperation = 'source-over';
+    }
+
+    if (syncScoreRef?.current >= 0.75) {
+      canvasCtx.globalCompositeOperation = 'source-in';
+      canvasCtx.fillStyle = 'rgba(0,255,0,0.1)';
+      canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
+      // Only overwrite missing pixels.
+      canvasCtx.globalCompositeOperation = 'destination-atop';
+      canvasCtx.drawImage( results.image, 0, 0, canvasElement.width, canvasElement.height);
+      //drow only when seting modal is initilize and when not user in fram
+      canvasCtx.globalCompositeOperation = 'source-over';
+    }
+
+    // Only overwrite existing pixels when user is out of the frame
+    if (!inframe) {
+      canvasCtx.globalCompositeOperation = 'source-in';
+      canvasCtx.fillStyle = 'rgba(255, 0, 0, 0.6)';
+      canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
+      // Only overwrite missing pixels.
+      canvasCtx.globalCompositeOperation = 'destination-atop';
+      canvasCtx.drawImage( results.image, 0, 0, canvasElement.width, canvasElement.height);
+      //drow only when seting modal is initilize and when not user in fram
+      canvasCtx.globalCompositeOperation = 'source-over';
+    }
+
+
+    if (results) {
+      if (syncing)
+        results.poseLandmarks && draw(canvasCtx, canvasElement, results, 3);
 
       if (!inframe) {
-        connect(canvasCtx, results.poseLandmarks, holistic.POSE_CONNECTIONS,
-          { color: '#00FF00', lineWidth: 4 });
-        connect(canvasCtx, results.poseLandmarks,
-          { color: '#FF0000', lineWidth: 2 });
-        connect(canvasCtx, results.faceLandmarks, holistic.FACEMESH_TESSELATION,
-          { color: '#C0C0C070', lineWidth: 1 });
-        connect(canvasCtx, results.leftHandLandmarks, holistic.HAND_CONNECTIONS,
-          { color: '#CC0000', lineWidth: 5 });
-        connect(canvasCtx, results.leftHandLandmarks,
-          { color: '#00FF00', lineWidth: 2 });
-        connect(canvasCtx, results.rightHandLandmarks, holistic.HAND_CONNECTIONS,
-          { color: '#00CC00', lineWidth: 5 });
-        connect(canvasCtx, results.rightHandLandmarks,
-          { color: '#FF0000', lineWidth: 2 });
+        // connect(canvasCtx, results.poseLandmarks, holistic.POSE_CONNECTIONS,
+        //   { color: '#00FF00', lineWidth: 4 });
+        // connect(canvasCtx, results.poseLandmarks,
+        //   { color: '#FF0000', lineWidth: 2 });
+        // connect(canvasCtx, results.faceLandmarks, holistic.FACEMESH_TESSELATION,
+        //   { color: '#C0C0C070', lineWidth: 1 });
+        // connect(canvasCtx, results.leftHandLandmarks, holistic.HAND_CONNECTIONS,
+        //   { color: '#CC0000', lineWidth: 5 });
+        // connect(canvasCtx, results.leftHandLandmarks,
+        //   { color: '#00FF00', lineWidth: 2 });
+        // connect(canvasCtx, results.rightHandLandmarks, holistic.HAND_CONNECTIONS,
+        //   { color: '#00CC00', lineWidth: 5 });
+        // connect(canvasCtx, results.rightHandLandmarks,
+        //   { color: '#FF0000', lineWidth: 2 });
       }
     }
     canvasCtx.restore();
@@ -551,6 +629,21 @@ function ContextProvider({ children, socket, profile }) {
     const peer = new Peer({ initiator: false, trickle: false, stream });
     setMeAsPeer(peer);
 
+    peer.on('error', (err) => {console.log("error with peer", err)});
+
+    peer.on('data', (data) => {
+      data = JSON.parse(data);
+      console.log('data', data);
+      onResults2({poseLandmarks: data});
+    })
+    peer.on('connect', () => {
+      console.log("poseLandmarks: ", poseLandmarks_ref.current);
+      var state = peer._pc.connectionState;
+      console.log("datachannel", state);
+      if(poseLandmarks_ref.current !== null && poseLandmarks_ref.current !== undefined && state === "connected")
+        peer.send(JSON.stringify(poseLandmarks_ref.current));
+    })
+
     //when i get a signel that call is answered - i get data about the single
     // console.time('timer1-answerCall');
     peer.on('signal', (data) => {
@@ -586,6 +679,23 @@ function ContextProvider({ children, socket, profile }) {
 
     const peer = new Peer({ initiator: true, trickle: false, stream });
     setMeAsPeer(peer);
+
+
+    peer.on('error', (err) => {console.log("error with peer", err)});
+
+    peer.on('data', (data) => {
+      data = JSON.parse(data);
+      console.log('data', data);
+      onResults2({poseLandmarks: data});
+    })
+    peer.on('connect', () => {
+      console.log("poseLandmarks: ", poseLandmarks_ref.current);
+      var state = peer._pc.connectionState;
+      console.log("datachannel", state);
+      if(poseLandmarks_ref.current !== null && poseLandmarks_ref.current !== undefined && state === "connected")
+        peer.send(JSON.stringify(poseLandmarks_ref.current));
+    })
+
 
     // console.time('timer2-callUser');
     peer.on('signal', (data) => {

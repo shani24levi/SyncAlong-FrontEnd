@@ -123,7 +123,7 @@ export const getActiveMeeting = () => dispatch => {
                 dispatch(success(null));
             }
         );
-    function success(activities) { return { type: GET_ACTIVE_MEETING, payload: meeting } }
+    function success(meetings) { return { type: GET_ACTIVE_MEETING, payload: meetings } }
 }
 
 

@@ -42,7 +42,7 @@ function VideoContext({ meeting }) {
     const images = { thumbs_up: thumbs_up, victory: victory, stop: stop };
 
     useEffect(() => {
-        navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+        navigator.mediaDevices.getUserMedia({ video: true})
             .then((currentStream) => {
                 setStream(currentStream);
             });
@@ -266,6 +266,9 @@ function VideoContext({ meeting }) {
                         <Grid item xs={12} md={6}>
                             <Typography variant="h5" gutterBottom>{yourName || 'Name'}</Typography>
                             <video style={{ transform: 'scaleX(-1)' }} playsInline ref={userVideo} autoPlay className={classes.video}> </video>
+                            <canvas
+                                        style={{ transform: 'scaleX(-1)' }}
+                                        ref={userCanvasRef} className={classes.video}> </canvas>
                             {/* {syncScore >= 0.75 && <img width="100" src={`img/emojyGIF/emojy-1.gif`} alt="emojy gif" style={{ height: '100px' }} />} */}
                         </Grid>
                     </Paper>
