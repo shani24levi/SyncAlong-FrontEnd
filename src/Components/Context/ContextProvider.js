@@ -63,6 +63,7 @@ function ContextProvider({ children, socket, profile }) {
   //
   const [userEnteredNow, setUserEnteredNow] = useState({});
   const [accseptScheduleMeetingCall, setAccseptScheduleMeetingCall] = useState(false);
+  const [conectReq, setConectReq] = useState(false);
 
 
   const [emoji, setEmoji] = useState(null);
@@ -178,17 +179,16 @@ function ContextProvider({ children, socket, profile }) {
     return false;
   }
 
-  useEffect(()=> {
-    if(pose_results){
-      console.log("Pose_Results ", pose_results)
-      if(peer) {
+  useEffect(() => {
+    if (pose_results) {
+      //  console.log("Pose_Results ", pose_results)
+      if (peer) {
         poseLandmarks_ref.current = pose_results.poseLandmarks
-        console.log("peer is connect");
+        //  console.log("peer is connect");
         peer?.emit("connect");
       } else console.log("peer is not connect");
     }
-   }, [pose_results])
-
+  }, [pose_results])
 
   const onResults2 = async (results) => {
     const videoWidth = 640;
@@ -204,14 +204,13 @@ function ContextProvider({ children, socket, profile }) {
     const canvasCtx = canvasElement.getContext('2d');
     canvasCtx.save();
     canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-    canvasCtx.drawImage(userVideo.current,0,0,
+    canvasCtx.drawImage(userVideo.current, 0, 0,
       canvasElement.width,
       canvasElement.height
     );
     // collectionUserPose(results);
     let inframe = calculatingUserInFrame(results);
     let syncing = is_sync();
-
 
     if (syncScoreRef?.current < 0.75) {
       canvasCtx.globalCompositeOperation = 'source-in';
@@ -271,9 +270,8 @@ function ContextProvider({ children, socket, profile }) {
         results.poseLandmarks && draw(canvasCtx, canvasElement, results, 3);
     }
     canvasCtx.restore();
-    
-  };
 
+  };
 
   const onResults = async (results) => {
     const videoWidth = 640;
@@ -289,7 +287,7 @@ function ContextProvider({ children, socket, profile }) {
     const canvasCtx = canvasElement.getContext('2d');
     canvasCtx.save();
     canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-    canvasCtx.drawImage( results.image, 0, 0, canvasElement.width, canvasElement.height);
+    canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
     collectionUserPose(results);
     let inframe = calculatingUserInFrame(results);
     let syncing = is_sync();
@@ -301,7 +299,7 @@ function ContextProvider({ children, socket, profile }) {
       canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
       // Only overwrite missing pixels.
       canvasCtx.globalCompositeOperation = 'destination-atop';
-      canvasCtx.drawImage( results.image, 0, 0, canvasElement.width, canvasElement.height);
+      canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
       //drow only when seting modal is initilize and when not user in fram
       canvasCtx.globalCompositeOperation = 'source-over';
     }
@@ -312,7 +310,7 @@ function ContextProvider({ children, socket, profile }) {
       canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
       // Only overwrite missing pixels.
       canvasCtx.globalCompositeOperation = 'destination-atop';
-      canvasCtx.drawImage( results.image, 0, 0, canvasElement.width, canvasElement.height);
+      canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
       //drow only when seting modal is initilize and when not user in fram
       canvasCtx.globalCompositeOperation = 'source-over';
     }
@@ -324,31 +322,30 @@ function ContextProvider({ children, socket, profile }) {
       canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
       // Only overwrite missing pixels.
       canvasCtx.globalCompositeOperation = 'destination-atop';
-      canvasCtx.drawImage( results.image, 0, 0, canvasElement.width, canvasElement.height);
+      canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
       //drow only when seting modal is initilize and when not user in fram
       canvasCtx.globalCompositeOperation = 'source-over';
     }
-
 
     if (results) {
       if (syncing)
         results.poseLandmarks && draw(canvasCtx, canvasElement, results, 3);
 
       if (!inframe) {
-        // connect(canvasCtx, results.poseLandmarks, holistic.POSE_CONNECTIONS,
-        //   { color: '#00FF00', lineWidth: 4 });
-        // connect(canvasCtx, results.poseLandmarks,
-        //   { color: '#FF0000', lineWidth: 2 });
-        // connect(canvasCtx, results.faceLandmarks, holistic.FACEMESH_TESSELATION,
-        //   { color: '#C0C0C070', lineWidth: 1 });
-        // connect(canvasCtx, results.leftHandLandmarks, holistic.HAND_CONNECTIONS,
-        //   { color: '#CC0000', lineWidth: 5 });
-        // connect(canvasCtx, results.leftHandLandmarks,
-        //   { color: '#00FF00', lineWidth: 2 });
-        // connect(canvasCtx, results.rightHandLandmarks, holistic.HAND_CONNECTIONS,
-        //   { color: '#00CC00', lineWidth: 5 });
-        // connect(canvasCtx, results.rightHandLandmarks,
-        //   { color: '#FF0000', lineWidth: 2 });
+        connect(canvasCtx, results.poseLandmarks, holistic.POSE_CONNECTIONS,
+          { color: '#00FF00', lineWidth: 4 });
+        connect(canvasCtx, results.poseLandmarks,
+          { color: '#FF0000', lineWidth: 2 });
+        connect(canvasCtx, results.faceLandmarks, holistic.FACEMESH_TESSELATION,
+          { color: '#C0C0C070', lineWidth: 1 });
+        connect(canvasCtx, results.leftHandLandmarks, holistic.HAND_CONNECTIONS,
+          { color: '#CC0000', lineWidth: 5 });
+        connect(canvasCtx, results.leftHandLandmarks,
+          { color: '#00FF00', lineWidth: 2 });
+        connect(canvasCtx, results.rightHandLandmarks, holistic.HAND_CONNECTIONS,
+          { color: '#00CC00', lineWidth: 5 });
+        connect(canvasCtx, results.rightHandLandmarks,
+          { color: '#FF0000', lineWidth: 2 });
       }
     }
     canvasCtx.restore();
@@ -621,26 +618,21 @@ function ContextProvider({ children, socket, profile }) {
     setCallAccepted(true);
     //set me as a peer and difiend my data
 
-    // console.log('stream ', stream);
-    // console.log('myCanvasRef ', myCanvasRef);
-    // let canvasStream = myCanvasRef.captureStream(25);
-    // console.log('canvasStream ', canvasStream);
-
     const peer = new Peer({ initiator: false, trickle: false, stream });
     setMeAsPeer(peer);
 
-    peer.on('error', (err) => {console.log("error with peer", err)});
+    peer.on('error', (err) => { console.log("error with peer", err) });
 
     peer.on('data', (data) => {
       data = JSON.parse(data);
-      console.log('data', data);
-      onResults2({poseLandmarks: data});
+      // console.log('data', data);
+      onResults2({ poseLandmarks: data });
     })
     peer.on('connect', () => {
-      console.log("poseLandmarks: ", poseLandmarks_ref.current);
-      var state = peer._pc.connectionState;
-      console.log("datachannel", state);
-      if(poseLandmarks_ref.current !== null && poseLandmarks_ref.current !== undefined && state === "connected")
+      //console.log("poseLandmarks: ", poseLandmarks_ref.current);
+      var state = peer._pc?.connectionState;
+      //  console.log("datachannel", state);
+      if (poseLandmarks_ref.current !== null && poseLandmarks_ref.current !== undefined && state === "connected")
         peer.send(JSON.stringify(poseLandmarks_ref.current));
     })
 
@@ -648,6 +640,7 @@ function ContextProvider({ children, socket, profile }) {
     // console.time('timer1-answerCall');
     peer.on('signal', (data) => {
       socket.emit('answerCall', { signal: data, to: yourSocketId });
+      setConectReq(false);
       // console.timeEnd('timer1-answerCall');
       //  socket.emit('startMeeting', { signal: data, to: yourSocketId });
     });
@@ -671,35 +664,28 @@ function ContextProvider({ children, socket, profile }) {
     //   //sec user has no socketId - cant do connection
     //   return;
     // }
-
-    // console.log('stream ', stream);
-    // console.log('myCanvasRef ', myCanvasRef);
-    // let canvasStream = myCanvasRef.captureStream(25);
-    // console.log('canvasStream ', canvasStream);
-
     const peer = new Peer({ initiator: true, trickle: false, stream });
     setMeAsPeer(peer);
 
-
-    peer.on('error', (err) => {console.log("error with peer", err)});
+    peer.on('error', (err) => { console.log("error with peer", err) });
 
     peer.on('data', (data) => {
       data = JSON.parse(data);
-      console.log('data', data);
-      onResults2({poseLandmarks: data});
+      //console.log('data', data);
+      onResults2({ poseLandmarks: data });
     })
     peer.on('connect', () => {
-      console.log("poseLandmarks: ", poseLandmarks_ref.current);
-      var state = peer._pc.connectionState;
-      console.log("datachannel", state);
-      if(poseLandmarks_ref.current !== null && poseLandmarks_ref.current !== undefined && state === "connected")
+      // console.log("poseLandmarks: ", poseLandmarks_ref.current);
+      var state = peer._pc?.connectionState;
+      //console.log("datachannel", state);
+      if (poseLandmarks_ref.current !== null && poseLandmarks_ref.current !== undefined && state === "connected")
         peer.send(JSON.stringify(poseLandmarks_ref.current));
     })
-
 
     // console.time('timer2-callUser');
     peer.on('signal', (data) => {
       // console.log('signal', data);
+      setConectReq(false);
       socket.emit('callUser', {
         userToCall: yourSocketId,
         signalData: data,
@@ -721,6 +707,7 @@ function ContextProvider({ children, socket, profile }) {
 
     let start1 = new Date().getTime();
     socket.on('callAccepted', (signal, start_delay) => {
+      setConectReq(false);
       let start1 = start_delay;
       var end = new Date().toString();
       let delay = new Date(end).getSeconds() - new Date(start1).getSeconds();
@@ -731,6 +718,7 @@ function ContextProvider({ children, socket, profile }) {
       };
       setMyDelayOnConection(delay);
       setCallAccepted(true);
+      console.log('traineee coneccted with ok from prre2');
       // setStartMeeting(true);
       peer.signal(signal);
     });
@@ -813,6 +801,8 @@ function ContextProvider({ children, socket, profile }) {
         scheduleMeetingPopUpCall, setScheduleMeetingPopUpCall,
         upcamingMeeting,
         setAccseptScheduleMeetingCall, accseptScheduleMeetingCall,
+        setConectReq, conectReq,
+
 
         setSyncScore
       }}

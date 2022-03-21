@@ -75,13 +75,11 @@ function TrainerHome({ meeting, date }) {
                     <Grid item xs={3} md={4}>
                         <QuickStartBtn />
                         {/* <QuickStartBtn2 /> */}
-                        <LoadingModal />
                     </Grid>
                     <Grid item xs={9} md={8}>
                         <Search />
                     </Grid>
                 </Grid>
-
 
                 <Grid container alignItems='center' alignContent='center' spacing={2}>
                     <Grid item xs={12} md={12}> <StartCard title={'title'} subtitle={'subtitle'} /> </Grid>
@@ -91,7 +89,6 @@ function TrainerHome({ meeting, date }) {
                         </CardContiner>
                     </Grid>
                 </Grid>
-
 
                 <Grid container spacing={3}>
                     <Grid item lg={8} md={8} sm={12} xs={12}>

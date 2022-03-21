@@ -31,11 +31,6 @@ function PopUpCall(props) {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        setIsModalVisible(true);
-        Audio?.current?.play();
-    }, [])
-
-    useEffect(() => {
         if (isModalVisible) {
             Audio?.current?.play();
         } else Audio?.current?.pause();

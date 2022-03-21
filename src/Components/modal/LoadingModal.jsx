@@ -17,14 +17,14 @@ const style = {
     p: 4,
 };
 
-function LoadingModal(props) {
-    const [open, setOpen] = React.useState(false);
+function LoadingModal({ title }) {
+    const [open, setOpen] = React.useState(true);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
     return (
         <div>
-            <Button onClick={handleOpen}>Open modal</Button>
+            {/* <Button onClick={handleOpen}>Open modal</Button> */}
             <Modal
                 aria-labelledby="transition-modal-title"
                 aria-describedby="transition-modal-description"
@@ -46,7 +46,7 @@ function LoadingModal(props) {
                                 <span></span>
                             </Box>
                             <Box m="auto" className="loading">
-                                <span className="loader-text">Loading..</span> <br />
+                                <span className="loader-text">{title}</span> <br />
                             </Box>
                         </Box>
                     </Box>

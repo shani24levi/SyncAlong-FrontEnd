@@ -58,7 +58,7 @@ function VidoeRoom({ socket }) {
             <Sidebar>
                 <Notifications />
             </Sidebar>
-            <PopUpCall />
+            {/* <PopUpCall /> */}
         </>
     );
 }
