@@ -8,7 +8,7 @@ import {
   TRAINEE_UPDATE_SUCCESS,
   TRAINEE_DELETE,
   UPDATE_AVATAR,
-  UPDATE_USER
+  UPDATE_USER,
 } from '../actions/types';
 
 let user = localStorage.getItem('user');
@@ -49,7 +49,6 @@ export default function (state = initialState, action) {
     case UPDATE_USER:
       console.log(action.payload);
       state.user.name = action.payload.user;
-      console.log(state.user);
       return {
         ...state,
         loading: false,
@@ -68,6 +67,7 @@ export default function (state = initialState, action) {
         //trainees: trainees.filter(i => i != action.payload._id)
       };
     case UPDATE_AVATAR:
+      state.user.avatar = action.payload;
       return {
         ...state,
         loading: false,

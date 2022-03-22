@@ -108,9 +108,10 @@ function AddTrainee(props) {
     //1 page elements
     const [fullname, setFullName] = useState('');
     const [username, setUserName] = useState('');
-    const [email, setEmail] = useState('');
+    const [email, setEmail] = useState('trainee@gmail.com');
     const [pass, setPass] = useState('');
     //2 page elements
+    const [relation, setRelation] = useState('');
     const [address, setAddress] = useState('');
     const [phone, setPhone] = useState('');
     const [city, setCity] = useState('');
@@ -177,8 +178,13 @@ function AddTrainee(props) {
         !isEmpty(errors) && setErorrs(errors);
 
         if (activeStep == 1) {
+            if (!relation) {
+                errors["relation"] = "*relation is required";
+                setErorrs(errors);
+                return;
+            }
             //do api call to craete profile to elderly user data
-            let data = {}
+            let data = { relation }
             if (address) data.address = address;
             if (phone) data.phone = phone;
             if (city) data.city = city;
@@ -215,6 +221,7 @@ function AddTrainee(props) {
                 />;
             case 1:
                 return <CreateTraineeProfile
+                    relation={relation} setRelation={setRelation}
                     address={address} setAddress={setAddress}
                     phone={phone} setPhone={setPhone}
                     city={city} setCity={setCity}
@@ -227,6 +234,7 @@ function AddTrainee(props) {
                     changed={changed}
                     submitted={submitted}
                     limitations={limitations} setLimitations={setLimitations}
+                    errors={errors}
                 />;
             default:
                 throw new Error('Unknown step');

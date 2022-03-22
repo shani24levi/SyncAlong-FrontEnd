@@ -22,6 +22,8 @@ import CoolTextH1 from '../Context/videoChat/coolText/CoolTextH1';
 import FunQuestionPopUp from '../Context/videoChat/funQuestionPopUp/FunQuestionPopUp';
 import SeccsesAlert from '../alrets/SeccsesAlert';
 import LoadingModal from '../modal/LoadingModal';
+import CallIcon from '@mui/icons-material/Call';
+import TraineesCard from './trainer/TraineesCard';
 
 const buttonStyle = makeStyles(buttonsStyles);
 
@@ -40,6 +42,14 @@ const useStyles = makeStyles({
         position: "absolute",
         opacity: "0.02"
     },
+    box: {
+        // height: 100,
+        display: "flex",
+    },
+    topLeftBox: {
+        justifyContent: "center",
+        alignItems: "center"
+    }
 });
 
 const Title = styled('span')(() => ({
@@ -62,6 +72,7 @@ function TrainerHome({ meeting, date }) {
     const profile = useSelector(state => state.profile.profile)
     const [alart, setAlart] = useState(false);
     const meetings = useSelector(state => state.meetings);
+    const my_trainees = useSelector(state => state.profile.trainees_profiles);
 
     return (
         <>
@@ -82,10 +93,27 @@ function TrainerHome({ meeting, date }) {
                 </Grid>
 
                 <Grid container alignItems='center' alignContent='center' spacing={2}>
-                    <Grid item xs={12} md={12}> <StartCard title={'title'} subtitle={'subtitle'} /> </Grid>
+                    {my_trainees && my_trainees.lenght != 0 && <TraineesCard />}
+                    {/* <Grid item xs={12} md={12}> 
+                    <StartCard title={'title'} subtitle={'subtitle'} />
+                     </Grid> */}
+
                     <Grid item xs={12} md={12}>
                         <CardContiner title="Your up caming meeting" >
                             {meeting && <NextMeetingTime upcamingMeeting={upcamingMeeting} date={!date ? 0 : date} />}
+                            <Box
+                                component="span"
+                                m={1} //margin
+                                className={`${classes.topLeftBox} ${classes.box}`}
+                            >
+                                <Button
+                                    color='primary'
+                                    startIcon={<CallIcon />}
+                                    className={btnClasses.blueRound}
+                                >
+                                    Conect Now
+                                </Button>
+                            </Box>
                         </CardContiner>
                     </Grid>
                 </Grid>

@@ -41,7 +41,6 @@ export const logoutUser = () => dispatch => {
 
 export const registerUser = userData => dispatch => {
     dispatch(setLoading(true));
-    console.log(userData);
     userService.register(userData)
         .then(
             user => {
@@ -59,11 +58,13 @@ export const registerUser = userData => dispatch => {
 
 export const updateUser = userData => dispatch => {
     dispatch(setLoading(true));
-    console.log('userData', userData);
+    console.log('====================================');
+    console.log(userData);
+    console.log('====================================');
     userService.updateUser(userData)
         .then(
             user => {
-                dispatch(success(userData));
+                dispatch(success(userData.user));
                 dispatch(clear());
             },
             error => {
@@ -79,7 +80,6 @@ export const createTrainee = userData => dispatch => {
     userService.createTraineeUser(userData)
         .then(
             user => {
-                console.log('user retuen from db', user);
                 dispatch(success(user));
                 dispatch(setLoading(false));
                 dispatch(alertActions.success('Trainee user created successfuly'));
@@ -132,16 +132,14 @@ export const updateAvatarPic = (data) => dispatch => {
     userService.updateAvatarPic(data)
         .then(
             user => {
-                dispatch(success());
-                dispatch(currentUser());
-                dispatch(clear());
+                dispatch(success(user));
             },
             error => {
                 dispatch(setLoading(false));
                 dispatch(failure(error));
             }
         );
-    function success() { return { type: UPDATE_AVATAR } }
+    function success(user) { return { type: UPDATE_AVATAR, payload: user } }
 }
 
 function failure(error) { return { type: GET_ERRORS, payload: error.error } }

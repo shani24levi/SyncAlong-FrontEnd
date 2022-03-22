@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from '../../../../Store/actions/authAction';
 import { Link } from "react-router-dom";
 import { Box, ListItem, List } from "@material-ui/core";
@@ -22,7 +22,8 @@ const useStyles = makeStyles(componentStyles);
 
 const LogedInLinksNav = (props) => {
     const classes = useStyles();
-    const { user } = props.auth;
+    const user = props.auth.user;
+    const profile = useSelector(state => state.profile.profile);
     const dispatch = useDispatch();
 
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -93,7 +94,7 @@ const LogedInLinksNav = (props) => {
             </ListItem>
             <ListItem
                 component={Link}
-                to="/schedule/meetings"
+                to={profile ? "/schedule/meetings" : "#"}
                 onClick={props.handleMenuClose}
                 classes={{
                     root: classes.listItemRoot,
@@ -109,7 +110,7 @@ const LogedInLinksNav = (props) => {
             </ListItem>
             <ListItem
                 component={Link}
-                to="/meetings"
+                to={profile ? "/meetings" : "#"}
                 onClick={props.handleMenuClose}
                 classes={{
                     root: classes.listItemRoot,
@@ -138,7 +139,7 @@ const LogedInLinksNav = (props) => {
                     sx={{ width: 56, height: 56 }}
                     className={classes.spacing}
                 />
-                {user.user}
+                {user.name}
             </ListItem>
             <ListItem
                 component={Link}

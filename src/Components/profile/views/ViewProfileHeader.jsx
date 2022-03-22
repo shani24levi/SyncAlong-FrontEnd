@@ -31,12 +31,27 @@ function ViewProfileHeader(props) {
                             >
                                 <Grid item xs={12} sm={12}>
                                     <Typography variant="h6" gutterBottom >
-                                        {user.user}
+                                        User name: {user.user}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={12} sm={12}>
+                                    <Typography variant="h6" gutterBottom >
+                                        full name: {user.name}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={12} sm={12}>
+                                    <Typography variant="h6" gutterBottom >
+                                        email:   {user.email}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={12} sm={12}>
+                                    <Typography variant="h6" gutterBottom >
+                                        role: {user.role}
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={12} sm={12}>
                                     <Typography variant="subtitle1">
-                                        You will be transferred to your profile in a few seconds
+                                        You User Data
                                     </Typography>
                                 </Grid>
                             </Box>

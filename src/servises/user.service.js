@@ -8,18 +8,15 @@ const login = userData => {
     return axios
         .post(`${URL}/${USERS}/login`, userData)
         .then(user => {
-            console.log('user axis login', user.data);
             // Save to localStorage
             const { token } = user.data;
             // Set token to ls
-            // if (localStorage.getItem('user'))
-            //     localStorage.removeItem('user');
             localStorage.setItem('user', token);
             // Set token to Auth header
             setAuthToken(token);
             // Decode token to get user data
             const decoded = jwt_decode(token);
-            console.log(decoded);
+            //console.log(decoded);
             return decoded;
         })
         .catch(err => {
@@ -39,7 +36,7 @@ const register = userData => {
     console.log(userData);
     return axios
         .post(`${URL}/${USERS}`, userData)
-        .then(user => { console.log(user); return user })
+        .then(user => { return user })
         .catch(err => {
             return Promise.reject(err.response.data);
         })
@@ -49,7 +46,7 @@ const updateUser = userData => {
     console.log(userData);
     return axios
         .put(`${URL}/${USERS}`, userData)
-        .then(user => { console.log(user); return user })
+        .then(user => { return user })
         .catch(err => {
             return Promise.reject(err.response.data);
         })
@@ -81,10 +78,11 @@ const deleteTrainee = (id) => {
         })
 }
 
-const updateAvatarPic = (userData) => {
+const updateAvatarPic = (formData) => {
+    console.log(formData);
     return axios
-        .put(`${URL}/${USERS}/upload`, userData)
-        .then(user => { return user })
+        .post(`${URL}/api/upload`, { headers: { "Content-Type": "multipart/form-data" }, formData })
+        .then(user => { console.log(user); return `${URL}/${user.data}` })
         .catch(err => {
             return Promise.reject(err.response.data);
         })

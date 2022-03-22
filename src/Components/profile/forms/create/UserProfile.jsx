@@ -8,20 +8,39 @@ import {
 } from "@material-ui/core";
 import TextField from '@mui/material/TextField';
 import { styled } from '@mui/material/styles';
-
-
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateAvatarPic } from '../../../../Store/actions/authAction';
+import { CircularProgress } from "@material-ui/core";
 // core components style
 import componentStyles from "../../../../assets/material-ui-style/componenets/profile";
 const useStyles = makeStyles(componentStyles);
 
 function UserProfile({ fullname, setFullName, setUserName, username, setEmail, email, setAvatar, avatar, setChaged, changed, errors, submitted, setPass, pass }) {
     const user = useSelector(state => state.auth.user);
+    const loading = useSelector(state => state.auth.loading);
+    const dispatch = useDispatch();
     const classes = useStyles();
 
     const Input = styled('input')({
         display: 'none',
     });
+
+    useEffect(() => {
+        setAvatar(user.avatar);
+    }, [user.avatar])
+
+    const setImgShow = (event) => {
+        const imgData = {
+            "name": "new img",
+            "img": event.target.files[0],
+        }
+        const formData = new FormData();
+        for (const key of Object.keys(imgData)) {
+            formData.append(key, imgData[key])
+        }
+        console.log(imgData.img);
+        if (imgData) dispatch(updateAvatarPic(imgData))
+    }
 
     console.log(fullname);
     return (
@@ -37,13 +56,22 @@ function UserProfile({ fullname, setFullName, setUserName, username, setEmail, e
                 <Grid container spacing={1} alignItems='center'>
                     <Grid item xs={12} sm={4} md={4} >
                         <label htmlFor="contained-button-file">
-                            <Input accept="image/*" id="contained-button-file" multiple type="file" />
+                            <Input accept="image/*" id="contained-button-file" multiple type="file" onChange={setImgShow} />
                             <Button component="span">
-                                <Avatar
+                                {
+                                    loading ?
+                                        <CircularProgress color="secondary" size="20px" /> :
+                                        <Avatar
+                                            alt="avatar"
+                                            src={avatar}
+                                            className={classes.large}
+                                        />
+                                }
+                                {/* <Avatar
                                     alt="avatar"
                                     src={avatar}
                                     className={classes.large}
-                                />
+                                /> */}
                             </Button>
                         </label>
                         <Typography component="h6" variant="h6">Choose Picture</Typography>
@@ -59,7 +87,6 @@ function UserProfile({ fullname, setFullName, setUserName, username, setEmail, e
                                     onChange={(event) => { setFullName(event.target.value); setChaged(true); }}
                                     autoComplete="current-password"
                                     label='firstName'
-                                    label="firstName"
                                     name="firstName"
                                 />
                             </Grid>

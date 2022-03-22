@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { createProfile } from '../../Store/actions/profileAction';
-// import { updateAvatarPic, updateUser } from '../../Store/actions/authAction';
+import { updateUser } from '../../Store/actions/authAction';
 
 import { styled } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
@@ -128,7 +128,6 @@ const CreateProfile = (props) => {
     const [about, setAbout] = useState('');
     //3 Page
     const [limitations, setLimitations] = useState([]);
-
     const [changed, setChaged] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [errors, setErorrs] = useState({});
@@ -147,7 +146,6 @@ const CreateProfile = (props) => {
         return;
     }, [err])
 
-
     const handleNext = () => {
         let errors = {}
         setChaged(false);
@@ -165,9 +163,7 @@ const CreateProfile = (props) => {
         console.log(activeStep);
 
         if (isEmpty(errors) && activeStep == 0 && fullname) {
-            console.log('upadte call need fix the server - gets {} in body...?');
-            //do api call to update user data
-            //dispatch(updateUser({ user: fullname }))
+            dispatch(updateUser({ user: fullname }))
         }
         // 2-3 page has no requied elemebnts 
         !isEmpty(errors) && setErorrs(errors);
@@ -187,7 +183,6 @@ const CreateProfile = (props) => {
             console.log(data);
             dispatch(createProfile(data))
         }
-
         isEmpty(errors) && setActiveStep(activeStep + 1);
     };
     const handleBack = () => { setActiveStep(activeStep - 1); };

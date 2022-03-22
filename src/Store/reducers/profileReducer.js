@@ -34,7 +34,7 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 loading: false,
-                profile: action.payload,
+                profile: action.payload.data,
             };
         case UPDATE_PROFILE:
             // console.log('action.payload', action.payload);

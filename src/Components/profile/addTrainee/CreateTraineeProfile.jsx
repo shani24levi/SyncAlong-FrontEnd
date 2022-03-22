@@ -7,13 +7,16 @@ import {
     Avatar, Box,
     Grid,
     InputLabel,
-    MenuItem, FormControl
+    MenuItem, FormControl,
+    FilledInput,
 } from "@material-ui/core";
 import TextField from '@mui/material/TextField';
 import Select from '@mui/material/Select';
 import LimitationItem from '../../profile/forms/create/LimitationItem';
+import { capitalize } from '../../../helpers';
 
 function CreateTraineeProfile({
+    relation, setRelation,
     address, setAddress,
     phone, setPhone,
     city, setCity,
@@ -23,7 +26,8 @@ function CreateTraineeProfile({
     hobbies, setHobbies,
     about, setAbout,
     setChaged,
-    limitations, setLimitations
+    limitations, setLimitations,
+    errors
 }) {
     const dispatch = useDispatch();
     const profile = useSelector(state => state.profile);
@@ -39,6 +43,27 @@ function CreateTraineeProfile({
                 autoComplete="off"
                 onSubmit={onsubmit}
             >
+                <Typography variant="subtitle1" sx={{ mt: 2 }}>What is you relation with {capitalize(profile.trinee_added?.username)} ? </Typography>
+                <Grid container spacing={1}>
+                    <Grid item xs={12} sm={12} md={12}>
+                        <TextField
+                            fullWidth
+                            color="secondary"
+                            multiline={true}
+                            rows={2}
+                            id="relation"
+                            label="relation"
+                            name="relations"
+                            defaultValue={relation}
+                            onChange={(event) => { setRelation(event.target.value); }}
+                            error={errors.relation || !relation}
+                            helperText={errors["relation"] && <Typography color="error" variant="body2"> {errors["relation"]}</Typography>}
+                        />
+                    </Grid>
+                </Grid>
+
+
+                <Typography variant="subtitle1" sx={{ mt: 2 }}>What are {capitalize(profile.trinee_added?.username)}'s limitations for sports activities? </Typography>
                 <FormControl component="fieldset">
                     <Grid container spacing={2}>
                         {
@@ -51,6 +76,7 @@ function CreateTraineeProfile({
                     </Grid>
                 </FormControl>
 
+                <Typography variant="subtitle1" sx={{ mt: 2 }}>Tell us more abote {capitalize(profile.trinee_added?.username)}</Typography>
                 <Grid container spacing={1}>
                     <Grid item xs={6} sm={6}>
                         <TextField

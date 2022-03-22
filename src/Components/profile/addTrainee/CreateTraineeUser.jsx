@@ -81,6 +81,7 @@ function CreateTraineeUser({
                     autoComplete="off"
                     type="email"
                     placeholder="Email"
+                    value={email}
                     required
                     startAdornment={
                         <InputAdornment position="start">

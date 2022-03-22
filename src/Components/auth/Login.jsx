@@ -21,6 +21,7 @@ import { loginUser } from '../../Store/actions/authAction';
 //styling
 import componentStyles from "../../assets/material-ui-style/componenets/register";
 import buttonsStyles from "../../assets/theme/buttons";
+import SuccessAlertBotomCenter from '../alrets/SuccessAlertBotomCenter';
 const useStyles = makeStyles(componentStyles);
 const buttonStyle = makeStyles(buttonsStyles);
 
@@ -52,7 +53,6 @@ const Login = (props) => {
             setAlert(true);
         }
         //set up an alrat it user registered first 
-        console.log('props.auth login ', props.auth);
         userRef.current?.focus();
     }, []);
 
@@ -100,16 +100,12 @@ const Login = (props) => {
                     isEmail = true;
                 }
             })
-            console.log(isEmail);
 
             // set object data
             let data = { password: pass }
             //set object data with email or username as requsted in back-end
             if (isEmail) data.email = user;
             else data.username = user;
-
-            console.log('data', data);
-            //dispatch(loginUser(data));
             props.loginUser(data);
         }
     }
@@ -120,10 +116,6 @@ const Login = (props) => {
         setAlert(false);
     };
 
-    console.log('====================================');
-    console.log('pass', pass);
-    console.log('====================================');
-
     return (
         <Grid className="index-page">
             <CircelsHeader />
@@ -132,16 +124,7 @@ const Login = (props) => {
                 description='Joint physical activity and movement synchronized with positive energies.'
             />
 
-            {/* ///display error on chrom */}
-            {/* <Snackbar
-                open={alert}
-                autoHideDuration={10000}
-                anchorOrigin={{ vertical: 'center', horizontal: 'center' }}
-                onClose={handleClose}>
-                <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-                    {props.alert.message}
-                </Alert>
-            </Snackbar> */}
+            {alert && <SuccessAlertBotomCenter name={props.alert.message} title={props.alert.message} />}
 
             <Grid>
                 <Paper elevation={10} className={classes.paperStyle2}>

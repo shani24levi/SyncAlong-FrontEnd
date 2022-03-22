@@ -4,7 +4,8 @@ import { Box } from '@mui/system'
 import { styled, alpha } from '@mui/material/styles';
 import PersonIcon from '@mui/icons-material/Person';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
-import { Button } from '@material-ui/core';
+import { Avatar, Button } from '@material-ui/core';
+import { useNavigate } from 'react-router-dom'
 
 const StyledCard = styled(Card)(({ theme }) => ({
     display: 'flex',
@@ -45,41 +46,28 @@ const Heading = styled('h6')(({ theme }) => ({
 }))
 
 
-function StartCard({ title, subtitle }) {
-    return (
-        <Grid container spacing={2} sx={{ mb: '24px' }}>
-            <Grid item xs={12} md={6}>
-                <StyledCard elevation={6}>
-                    <ContentBox>
-                        <PersonIcon className="icon" />
-                        <Box ml="12px">
-                            <Typography>{title}</Typography>
-                            <Heading>{subtitle}</Heading>
-                        </Box>
-                    </ContentBox>
-                    <Tooltip title="View Details" placement="top">
-                        <Button endIcon={<ArrowRightAltIcon />}>
-                        </Button>
-                    </Tooltip>
-                </StyledCard>
-            </Grid>
+function StartCard({ title, subtitle, avatar, trainee }) {
+    const navigate = useNavigate();
 
-            <Grid item xs={12} md={6}>
-                <StyledCard elevation={6}>
-                    <ContentBox>
-                        <PersonIcon className="icon" />
-                        <Box ml="12px">
-                            <Typography>{title}</Typography>
-                            <Heading>{subtitle}</Heading>
-                        </Box>
-                    </ContentBox>
-                    <Tooltip title="View Details" placement="top">
-                        <Button endIcon={<ArrowRightAltIcon />}>
-                        </Button>
-                    </Tooltip>
-                </StyledCard>
-            </Grid>
-        </Grid>
-    );
+    return (
+        <StyledCard elevation={6}>
+            <ContentBox>
+                <Avatar
+                    alt="avatar"
+                    src={avatar}
+                />
+                <PersonIcon className="icon" />
+                <Box ml="12px">
+                    <Typography>{title}</Typography>
+                    <Heading>{subtitle}</Heading>
+                </Box>
+            </ContentBox>
+            <Tooltip title="View Details" placement="top">
+                <Button endIcon={<ArrowRightAltIcon />} onClick={() => navigate('/trainee/view', { state: { trainee_id: trainee.user._id, trainee: trainee } })}>
+                </Button>
+            </Tooltip>
+        </StyledCard>
+
+    )
 }
 export default StartCard;

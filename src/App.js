@@ -30,6 +30,7 @@ import VideoRoom from './Components/screens/VidoeRoom';
 import Profile from './Components/screens/Profile';
 import AddTrainee from './Components/profile/addTrainee/AddTrainee';
 import ScheduleMeetings from './Components/screens/ScheduleMeetings';
+import TraineeView from './Components/screens/TraineeView';
 
 const App = (props) => {
   const navigate = useNavigate();
@@ -100,6 +101,10 @@ const App = (props) => {
 
                   <Route exact path='/schedule/meetings' element={<PrivateRoute />}>
                     <Route exact path='/schedule/meetings' element={<ScheduleMeetings />} />
+                  </Route>
+
+                  <Route exact path='/trainee/view' element={<PrivateRoute />}>
+                    <Route exact path='/trainee/view' element={<TraineeView />} />
                   </Route>
 
                 </Routes>
