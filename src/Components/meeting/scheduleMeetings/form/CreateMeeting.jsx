@@ -120,11 +120,7 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
                                 label="MeetingName"
                                 name="MeetingName"
                                 error={errors.title}
-                                helperText={
-                                    (!title)
-                                        ? <Typography color="error" variant="body2"> *title is required</Typography>
-                                        : errors["title"] && <Typography color="error" variant="body2"> {errors["title"]}</Typography>
-                                }
+                                helperText={errors["title"] && <Typography component="div" color="error" variant="body2"> {errors["title"]}</Typography>}
                             />
                         </Grid>
                         <Grid item xs={6} sm={6}>

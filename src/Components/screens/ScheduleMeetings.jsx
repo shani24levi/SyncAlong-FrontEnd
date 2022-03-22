@@ -17,6 +17,14 @@ const ScheduleMeetings = (props) => {
         start: new Date()
     });
     const [modalCreate, setModalCreate] = useState(false);
+    let events = [
+        {
+            title: "Test Meeting",
+            allDay: true,
+            start: new Date(2022, 2, 1),
+            end: new Date(2022, 2, 1),
+        },
+    ];
     const [meetingEvents, setMeetingEvents] = useState(null);
 
     const profile = useSelector(state => state.profile);
@@ -75,32 +83,13 @@ const ScheduleMeetings = (props) => {
         setModalIsOpen(false);
     }
 
-    const events = [
-        {
-            title: "Big Meeting",
-            allDay: true,
-            start: new Date(2022, 2, 1),
-            end: new Date(2022, 2, 1),
-        },
-        {
-            title: "Vacation",
-            start: new Date(2022, 3, 7),
-            end: new Date(2022, 3, 10),
-        },
-        {
-            title: "Conference",
-            start: new Date(2022, 3, 20),
-            end: new Date(2022, 3, 23),
-        },
-    ];
-
     console.log(meetingEvents);
     return (
         <>
             <MeetingModal modalIsOpen={modalIsOpen} modalCreate={modalCreate} modalData={modalData} handelClose={handelClose} />
             <Container>
                 <ScheduleHeader month={month} newMeeting={newMeeting} />
-                <CalendarMeetings events={meetingEvents} handleSelectSlot={handleSelectSlot} handleSelectEvent={handleSelectEvent} />
+                <CalendarMeetings events={events} handleSelectSlot={handleSelectSlot} handleSelectEvent={handleSelectEvent} />
             </Container>
         </>
     );

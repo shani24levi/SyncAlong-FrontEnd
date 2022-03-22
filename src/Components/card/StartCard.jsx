@@ -56,7 +56,6 @@ function StartCard({ title, subtitle, avatar, trainee }) {
                     alt="avatar"
                     src={avatar}
                 />
-                <PersonIcon className="icon" />
                 <Box ml="12px">
                     <Typography>{title}</Typography>
                     <Heading>{subtitle}</Heading>

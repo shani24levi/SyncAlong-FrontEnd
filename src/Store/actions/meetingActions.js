@@ -53,7 +53,7 @@ export const getAllMeetings = () => dispatch => {
                 dispatch(setLoading(false));
                 dispatch({
                     type: GET_ALL_MEETINGS,
-                    payload: {}
+                    payload: null
                 })
             }
         );

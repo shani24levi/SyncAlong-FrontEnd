@@ -24,8 +24,8 @@ export default function (state = initialState, action) {
         case GET_FUTURE_MEETINGS:
             return {
                 ...state,
-                meetings: action.payload.lenght === 0 ? null : action.payload,
-                upcoming_meeting: action.payload.lenght === 0 ? null : action.payload[0],
+                meetings: !action.payload ? null : action.payload,
+                upcoming_meeting: !action.payload || action.payload.lenght === 0 ? null : action.payload[0],
                 loading: false,
             };
         case GET_ALL_MEETINGS:

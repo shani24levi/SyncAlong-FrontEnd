@@ -43,7 +43,7 @@ function a11yProps(index) {
 
 function ContextTrainee(props) {
     const tabs = ['Scheduled', 'Activities', 'Notifications']
-    const [value, setValue] = React.useState('one');
+    const [value, setValue] = React.useState(0);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -63,13 +63,14 @@ function ContextTrainee(props) {
             </Box>
 
             <TabPanel value={value} index={0}>
-                <Scheduled />
+                0
+                {/* <Scheduled /> */}
             </TabPanel>
-            <TabPanel value={value} index={1}>
-                <Activities />
+            <TabPanel value={value} index={1}>1
+                {/* <Activities /> */}
             </TabPanel>
-            <TabPanel value={value} index={2}>
-                <Notifications />
+            <TabPanel value={value} index={2}>2
+                {/* <Notifications /> */}
             </TabPanel>
         </Box>
     );
