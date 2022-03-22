@@ -13,13 +13,15 @@ import { convertValueToMeridiem } from '@mui/lab/internal/pickers/time-utils';
 // let gif = new  GIF();
 let img = new Image();
 let b = false;
-let array = [];
+let my_array = [];
+let your_array= [];
 
 const different = (a, b) => {
   // return Math.abs(a - b);
   return a - b;
 }
-const draw = (ctx, canvas, results, flag = 0, x = 0, y = 0) => {
+const draw = (ctx, canvas, results, flag = 0, user= "me") => {
+  // user => me, you
   // ctx.drawImage(image, x, y);
   //console.log(results);
   //console.log('flag', flag);
@@ -39,18 +41,27 @@ const draw = (ctx, canvas, results, flag = 0, x = 0, y = 0) => {
       let y2 = (results.poseLandmarks[i - 2].y) * canvas.height;
       let dx = different(x1, x2);
       let dy = different(y1, y2);
-      array.push({
-        startX: parseInt(x1),
-        startY: parseInt(y1),
-        endX: parseInt((dx > 0 && dy > 0) ? x1 + dx : x1 - dx),
-        endY: parseInt(dy > 0 ? y1 + dy : y1 - dy),
-        color: '#' + Math.floor(Math.random() * 16777215).toString(16)
-      });
+      if(user = "me"){
+        my_array.push({
+          startX: parseInt(x1), startY: parseInt(y1),
+          endX: parseInt((dx > 0 && dy > 0) ? x1 + dx : x1 - dx),
+          endY: parseInt(dy > 0 ? y1 + dy : y1 - dy),
+          color: '#' + Math.floor(Math.random() * 16777215).toString(16)
+        });
+      }else{
+        your_array.push({
+          startX: parseInt(x1), startY: parseInt(y1),
+          endX: parseInt((dx > 0 && dy > 0) ? x1 + dx : x1 - dx),
+          endY: parseInt(dy > 0 ? y1 + dy : y1 - dy),
+          color: '#' + Math.floor(Math.random() * 16777215).toString(16)
+        });
+      }
     }
     ctx.lineWidth = 5;
-    for (var i = array.length - 1; i >= array.length - 50; i--) {
+    const array_temp = (user == "me") ? (my_array) : (your_array);
+    for (var i = array_temp.length - 1; i >= array_temp.length - 50; i--) {
       if (i < 0) return;
-      const line = array[i];
+      const line = array_temp[i];
       ctx.beginPath();
       ctx.moveTo(line.startX, line.startY);
       ctx.lineTo(line.endX, line.endY);

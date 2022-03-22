@@ -96,6 +96,7 @@ function VideoContext({ meeting }) {
     const activitiesSession = async () => {
         for (let i = currActivity; i < meeting.activities.length; i++) {
             //for (const i in meeting.activities) {
+            setSyncScore(0);
             setCurrActivity(i);
             console.log(i, ' this activity is ....', meeting.activities[i]);
             //whait for 5 sec to garenty thet the bouth video loaded
@@ -104,11 +105,13 @@ function VideoContext({ meeting }) {
 
             if (stopRef.current) return false;
             setStartActivity(true);
+            setSyncScore(0);
             await delay(4000); //wait for the timer will end
             setStartActivity(false);
 
             if (stopRef.current) return false;
             setDemo(true);
+            setSyncScore(0);
             await delay(5000); //wait for the demo 5 sec
             setDemo(false);
 
@@ -123,6 +126,7 @@ function VideoContext({ meeting }) {
             await delay(30000);
             setPosesArray([]); //clear poses array after finishing 1 activity
             console.log('stop sending.......');
+            setSyncScore(0);
             setSendCurrPoses(false);
             setActivityTime(false);
 
@@ -130,9 +134,10 @@ function VideoContext({ meeting }) {
             console.log('recognition2', recognition);
             console.log('stopRef1', stopRef.current);
 
-            if (stopRef.current) return false;
+            if (stopRef.current) {setSyncScore(0); return false;}
             console.log('end time of settings/.....', new Date().toLocaleString());
         }
+        setSyncScore(0);
         setActivitiesEnded(true);
         return true //end of all session
     }

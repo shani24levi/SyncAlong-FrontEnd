@@ -38,7 +38,13 @@ const App = (props) => {
   const [mySocketId, setMe] = useState(null);
 
   useEffect(() => {
-    setSocket(io(`${URL}`));
+    setSocket(io(`${URL}`, {
+      rejectUnauthorized: false, // WARN: please do not do this
+      reconnection: true,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax : 5000,
+      reconnectionAttempts: Infinity
+    }));
     return () => { }
   }, []);
 

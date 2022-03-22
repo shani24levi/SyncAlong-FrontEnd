@@ -62,9 +62,9 @@ function ContextProvider({ children, socket, profile }) {
 
   //
   const [userEnteredNow, setUserEnteredNow] = useState({});
-  const [accseptScheduleMeetingCall, setAccseptScheduleMeetingCall] = useState(false);
+  const [accseptScheduleMeetingCall, setAccseptScheduleMeetingCall] =
+    useState(false);
   const [conectReq, setConectReq] = useState(false);
-
 
   const [emoji, setEmoji] = useState(null);
   const images = { thumbs_up: thumbs_up, victory: victory, stop: stop };
@@ -73,7 +73,7 @@ function ContextProvider({ children, socket, profile }) {
   const userVideo = useRef();
   const connectionRef = useRef();
   const connect = window.drawConnectors;
-  var camera = null;
+  let camera = null;
   const myCanvasRef = useRef();
   const userCanvasRef = useRef();
   let userPoseAngle = null;
@@ -90,7 +90,7 @@ function ContextProvider({ children, socket, profile }) {
   // its described in the docs on: ->outpue -> POSE_LANDMARKS -> z index.
   //mediaPipe docs-link: https://google.github.io/mediapipe/solutions/holistic.html
   //mediaPipe Working on a Graph-based framework, MP is tremendously faster than TensorFlow, especially so on the browser.
-  //data for webGL with midiapipe(see GPU!!!!): https://google.github.io/mediapipe/framework_concepts/framework_concepts.html  
+  //data for webGL with midiapipe(see GPU!!!!): https://google.github.io/mediapipe/framework_concepts/framework_concepts.html
   let arryof1sec = [];
   let timeObject;
   let flagTime = true;
@@ -126,12 +126,14 @@ function ContextProvider({ children, socket, profile }) {
         // console.log("new poseLandmarks", p.poseLandmarks);
         return p.poseLandmarks;
       });
-      let add = { time: new Date().toLocaleString("en-GB"), poses: array_of_poses };
+      let add = {
+        time: new Date().toLocaleString('en-GB'),
+        poses: array_of_poses
+      };
       // console.log("add", add);
       setPosesArray((array_poses) => [...array_poses, add]);
 
-
-      setTimeOfColectionPose(new Date().toLocaleString("en-GB"));
+      setTimeOfColectionPose(new Date().toLocaleString('en-GB'));
       setPosesArry(array_of_poses); //now......
 
       arryof1sec = [];
@@ -149,12 +151,11 @@ function ContextProvider({ children, socket, profile }) {
     results.poseLandmarks.map((i, body_index) => {
       if (
         i.visibility < 0.6 &&
-        (
-          // mediaPipeLandmarks('RIGHR_WRIST') === body_index ||
-          // mediaPipeLandmarks('LEFT_WRIST') === body_index ||
-          // mediaPipeLandmarks('RIGHR_ELBOW') === body_index ||
-          // mediaPipeLandmarks('LEFT_ELBOW') === body_index ||
-          mediaPipeLandmarks('RIGHR_SHOULDER') === body_index ||
+        // mediaPipeLandmarks('RIGHR_WRIST') === body_index ||
+        // mediaPipeLandmarks('LEFT_WRIST') === body_index ||
+        // mediaPipeLandmarks('RIGHR_ELBOW') === body_index ||
+        // mediaPipeLandmarks('LEFT_ELBOW') === body_index ||
+        (mediaPipeLandmarks('RIGHR_SHOULDER') === body_index ||
           mediaPipeLandmarks('LEFT_SHOULDER') === body_index ||
           mediaPipeLandmarks('RIGHR_HIP') === body_index ||
           mediaPipeLandmarks('LEFT_HIP') === body_index ||
@@ -174,21 +175,20 @@ function ContextProvider({ children, socket, profile }) {
   };
 
   const is_sync = () => {
-    if (syncScoreRef?.current >= 0.75)
-      return true
+    if (syncScoreRef?.current >= 0.75) return true;
     return false;
-  }
+  };
 
   useEffect(() => {
     if (pose_results) {
       //  console.log("Pose_Results ", pose_results)
       if (peer) {
-        poseLandmarks_ref.current = pose_results.poseLandmarks
+        poseLandmarks_ref.current = pose_results.poseLandmarks;
         //  console.log("peer is connect");
-        peer?.emit("connect");
-      } else console.log("peer is not connect");
+        peer?.emit('connect');
+      } else console.log('peer is not connect');
     }
-  }, [pose_results])
+  }, [pose_results]);
 
   const onResults2 = async (results) => {
     const videoWidth = 640;
@@ -204,10 +204,7 @@ function ContextProvider({ children, socket, profile }) {
     const canvasCtx = canvasElement.getContext('2d');
     canvasCtx.save();
     canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-    canvasCtx.drawImage(userVideo.current, 0, 0,
-      canvasElement.width,
-      canvasElement.height
-    );
+    canvasCtx.drawImage( userVideo.current, 0, 0, canvasElement.width, canvasElement.height);
     // collectionUserPose(results);
     let inframe = calculatingUserInFrame(results);
     let syncing = is_sync();
@@ -218,13 +215,7 @@ function ContextProvider({ children, socket, profile }) {
       canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
       // Only overwrite missing pixels.
       canvasCtx.globalCompositeOperation = 'destination-atop';
-      canvasCtx.drawImage(
-        userVideo.current,
-        0,
-        0,
-        canvasElement.width,
-        canvasElement.height
-      );
+      canvasCtx.drawImage( userVideo.current, 0, 0, canvasElement.width, canvasElement.height);
       //drow only when seting modal is initilize and when not user in fram
       canvasCtx.globalCompositeOperation = 'source-over';
     }
@@ -235,13 +226,7 @@ function ContextProvider({ children, socket, profile }) {
       canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
       // Only overwrite missing pixels.
       canvasCtx.globalCompositeOperation = 'destination-atop';
-      canvasCtx.drawImage(
-        userVideo.current,
-        0,
-        0,
-        canvasElement.width,
-        canvasElement.height
-      );
+      canvasCtx.drawImage( userVideo.current, 0, 0, canvasElement.width, canvasElement.height);
       //drow only when seting modal is initilize and when not user in fram
       canvasCtx.globalCompositeOperation = 'source-over';
     }
@@ -253,24 +238,16 @@ function ContextProvider({ children, socket, profile }) {
       canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
       // Only overwrite missing pixels.
       canvasCtx.globalCompositeOperation = 'destination-atop';
-      canvasCtx.drawImage(
-        userVideo.current,
-        0,
-        0,
-        canvasElement.width,
-        canvasElement.height
-      );
+      canvasCtx.drawImage( userVideo.current, 0, 0, canvasElement.width, canvasElement.height);
       //drow only when seting modal is initilize and when not user in fram
       canvasCtx.globalCompositeOperation = 'source-over';
     }
 
-
     if (results) {
       if (syncing)
-        results.poseLandmarks && draw(canvasCtx, canvasElement, results, 3);
+        results.poseLandmarks && draw(canvasCtx, canvasElement, results, 3, "you");
     }
     canvasCtx.restore();
-
   };
 
   const onResults = async (results) => {
@@ -291,7 +268,6 @@ function ContextProvider({ children, socket, profile }) {
     collectionUserPose(results);
     let inframe = calculatingUserInFrame(results);
     let syncing = is_sync();
-
 
     if (syncScoreRef?.current < 0.75) {
       canvasCtx.globalCompositeOperation = 'source-in';
@@ -332,20 +308,40 @@ function ContextProvider({ children, socket, profile }) {
         results.poseLandmarks && draw(canvasCtx, canvasElement, results, 3);
 
       if (!inframe) {
-        connect(canvasCtx, results.poseLandmarks, holistic.POSE_CONNECTIONS,
-          { color: '#00FF00', lineWidth: 4 });
-        connect(canvasCtx, results.poseLandmarks,
-          { color: '#FF0000', lineWidth: 2 });
-        connect(canvasCtx, results.faceLandmarks, holistic.FACEMESH_TESSELATION,
-          { color: '#C0C0C070', lineWidth: 1 });
-        connect(canvasCtx, results.leftHandLandmarks, holistic.HAND_CONNECTIONS,
-          { color: '#CC0000', lineWidth: 5 });
-        connect(canvasCtx, results.leftHandLandmarks,
-          { color: '#00FF00', lineWidth: 2 });
-        connect(canvasCtx, results.rightHandLandmarks, holistic.HAND_CONNECTIONS,
-          { color: '#00CC00', lineWidth: 5 });
-        connect(canvasCtx, results.rightHandLandmarks,
-          { color: '#FF0000', lineWidth: 2 });
+        connect(canvasCtx, results.poseLandmarks, holistic.POSE_CONNECTIONS, {
+          color: '#00FF00',
+          lineWidth: 4
+        });
+        connect(canvasCtx, results.poseLandmarks, {
+          color: '#FF0000',
+          lineWidth: 2
+        });
+        connect(
+          canvasCtx,
+          results.faceLandmarks,
+          holistic.FACEMESH_TESSELATION,
+          { color: '#C0C0C070', lineWidth: 1 }
+        );
+        connect(
+          canvasCtx,
+          results.leftHandLandmarks,
+          holistic.HAND_CONNECTIONS,
+          { color: '#CC0000', lineWidth: 5 }
+        );
+        connect(canvasCtx, results.leftHandLandmarks, {
+          color: '#00FF00',
+          lineWidth: 2
+        });
+        connect(
+          canvasCtx,
+          results.rightHandLandmarks,
+          holistic.HAND_CONNECTIONS,
+          { color: '#00CC00', lineWidth: 5 }
+        );
+        connect(canvasCtx, results.rightHandLandmarks, {
+          color: '#FF0000',
+          lineWidth: 2
+        });
       }
     }
     canvasCtx.restore();
@@ -423,7 +419,6 @@ function ContextProvider({ children, socket, profile }) {
       //get the same time of poses as you
       console.log('my_array_poses', array_poses);
 
-
       found_el = array_poses.find(
         (el) => el.time === yourDataResived.end_time_of_colection
       );
@@ -440,10 +435,10 @@ function ContextProvider({ children, socket, profile }) {
 
       if (!found_el || found_el === undefined) {
         ///whan you computer is faster then me
-        //you send time of: 00:00:02 , i get it in 00:00:01 
+        //you send time of: 00:00:02 , i get it in 00:00:01
         //and my last colection is in 00:00:00
         //then get my last one in the array .
-        found_el = array_poses[array_poses.length - 1]; //set it to the last 
+        found_el = array_poses[array_poses.length - 1]; //set it to the last
       }
 
       console.log('posesArry now...found_el...', found_el);
@@ -487,11 +482,15 @@ function ContextProvider({ children, socket, profile }) {
     }
   }, [peer1inFrame]);
 
-  //for lisiner of user entered now 
+  //for lisiner of user entered now
   useEffect(() => {
     console.log('userEnteredNow', profile.profile, user);
     if (!isEmpty(userEnteredNow)) {
-      if (!isEmpty(profile.profile) && user.role === 'trainer' && profile.profile?.trainerOf) {
+      if (
+        !isEmpty(profile.profile) &&
+        user.role === 'trainer' &&
+        profile.profile?.trainerOf
+      ) {
         console.log('lisinig whos is enterd ....');
         profile.profile?.trainerOf.map((trainee) => {
           if (trainee === userEnteredNow.userId) {
@@ -506,12 +505,12 @@ function ContextProvider({ children, socket, profile }) {
 
   //======================helpers func==============================//
   //===============FOR POP UP MEETING IS NOW=========================//
-  //===== It's here because it wraps the interface and all the pages ... 
+  //===== It's here because it wraps the interface and all the pages ...
   //==== although in fact it can be on a home page and move it from redux====//
   //==========================================================================================//
   // I need it here because a yes or no click should go through the socket and start a session//
-  //==========================================================================================// 
-  const meetings = useSelector(state => state.meetings);
+  //==========================================================================================//
+  const meetings = useSelector((state) => state.meetings);
   const [upcamingMeeting, setUpcamingMeeting] = useState({});
   const [scheduleMeetingPopUpCall, setScheduleMeetingPopUpCall] = useState({});
   const [MeetingIsNOW, setMeetingIsNOW] = useState(false);
@@ -526,10 +525,12 @@ function ContextProvider({ children, socket, profile }) {
     meetingsListener();
   }, [meetings?.meetings]);
 
-  function meetingsListener() { // loop function
-    setTimeout(function () {   //  call a 30s setTimeout when the loop is called
-      let currentTime = new Date().setSeconds(0, 0)
-      const date = new Date(meetings.upcoming_meeting?.date?.slice(0, -1)) // delte z from date
+  function meetingsListener() {
+    // loop function
+    setTimeout(function () {
+      //  call a 30s setTimeout when the loop is called
+      let currentTime = new Date().setSeconds(0, 0);
+      const date = new Date(meetings.upcoming_meeting?.date?.slice(0, -1)); // delte z from date
       let upcomingMeeting = date.getTime();
       // console.log('a', currentTime, upcomingMeeting, currentTime < upcomingMeeting);
       //console.log(currentTime === upcomingMeeting, meetings.upcoming_meeting);
@@ -540,15 +541,14 @@ function ContextProvider({ children, socket, profile }) {
       }
       if (currentTime < upcomingMeeting) {
         meetingsListener();
-      }
-      else if (currentTime === upcomingMeeting) {
+      } else if (currentTime === upcomingMeeting) {
         console.log('meeting is NOW!!!!', meetings.upcoming_meeting);
         setScheduleMeetingPopUpCall(meetings.upcoming_meeting);
-        setMeetingIsNOW(true)
+        setMeetingIsNOW(true);
         //set up next meeting timing....
         return;
       }
-    }, 30000)
+    }, 30000);
   }
 
   //===============lisiners=========================//
@@ -562,8 +562,7 @@ function ContextProvider({ children, socket, profile }) {
       setUserEnteredNow(user);
 
       if (MeetingIsNOW && !yourSocketId && yourInfo) {
-        if (user.userId === yourInfo._id)
-          setYourSocketId(user.socketId)
+        if (user.userId === yourInfo._id) setYourSocketId(user.socketId);
       }
     });
     //close lisining to event when your socket exists
@@ -582,7 +581,7 @@ function ContextProvider({ children, socket, profile }) {
       console.log(
         data,
         'resiving time of your data:',
-        new Date().toLocaleString("en-GB")
+        new Date().toLocaleString('en-GB')
       );
       setYourDataResived(data);
     });
@@ -621,20 +620,26 @@ function ContextProvider({ children, socket, profile }) {
     const peer = new Peer({ initiator: false, trickle: false, stream });
     setMeAsPeer(peer);
 
-    peer.on('error', (err) => { console.log("error with peer", err) });
+    peer.on('error', (err) => {
+      console.log('error with peer', err);
+    });
 
     peer.on('data', (data) => {
       data = JSON.parse(data);
       // console.log('data', data);
       onResults2({ poseLandmarks: data });
-    })
+    });
     peer.on('connect', () => {
       //console.log("poseLandmarks: ", poseLandmarks_ref.current);
-      var state = peer._pc?.connectionState;
+      let state = peer._pc?.connectionState;
       //  console.log("datachannel", state);
-      if (poseLandmarks_ref.current !== null && poseLandmarks_ref.current !== undefined && state === "connected")
+      if (
+        poseLandmarks_ref.current !== null &&
+        poseLandmarks_ref.current !== undefined &&
+        state != undefined && state != null && state == 'connected'
+      )
         peer.send(JSON.stringify(poseLandmarks_ref.current));
-    })
+    });
 
     //when i get a signel that call is answered - i get data about the single
     // console.time('timer1-answerCall');
@@ -652,7 +657,6 @@ function ContextProvider({ children, socket, profile }) {
       userVideo.current.srcObject = currentStream;
       // console.log(currentStream);
       // console.log('userVideo', userVideo);
-
     });
     peer.signal(call.signal);
     connectionRef.current = peer;
@@ -667,20 +671,26 @@ function ContextProvider({ children, socket, profile }) {
     const peer = new Peer({ initiator: true, trickle: false, stream });
     setMeAsPeer(peer);
 
-    peer.on('error', (err) => { console.log("error with peer", err) });
+    peer.on('error', (err) => {
+      console.log('error with peer', err);
+    });
 
     peer.on('data', (data) => {
       data = JSON.parse(data);
       //console.log('data', data);
       onResults2({ poseLandmarks: data });
-    })
+    });
     peer.on('connect', () => {
       // console.log("poseLandmarks: ", poseLandmarks_ref.current);
-      var state = peer._pc?.connectionState;
+      let state = peer._pc?.connectionState;
       //console.log("datachannel", state);
-      if (poseLandmarks_ref.current !== null && poseLandmarks_ref.current !== undefined && state === "connected")
+      if (
+        poseLandmarks_ref.current !== null &&
+        poseLandmarks_ref.current !== undefined &&
+        state != undefined && state != null && state == 'connected'
+      )
         peer.send(JSON.stringify(poseLandmarks_ref.current));
-    })
+    });
 
     // console.time('timer2-callUser');
     peer.on('signal', (data) => {
@@ -696,7 +706,7 @@ function ContextProvider({ children, socket, profile }) {
     });
 
     console.time('timer2-stream');
-    var start = new Date();
+    let start = new Date();
     peer.on('stream', (currentStream) => {
       console.timeEnd('timer2-stream');
       console.log('Request took:', (new Date() - start) / 1000, 'sec');
@@ -709,7 +719,7 @@ function ContextProvider({ children, socket, profile }) {
     socket.on('callAccepted', (signal, start_delay) => {
       setConectReq(false);
       let start1 = start_delay;
-      var end = new Date().toString();
+      let end = new Date().toString();
       let delay = new Date(end).getSeconds() - new Date(start1).getSeconds();
       console.log('my delay', delay, 'sec');
       let data = {
@@ -730,14 +740,12 @@ function ContextProvider({ children, socket, profile }) {
     //An alternative solution for canvas transfer that the peer library does not support
   };
 
-  const leaveCall = () => {
-
-  };
+  const leaveCall = () => {};
   //===================socket calls when meeting in now============================//
   //===================pop up to bouth===========================//
   //===================socket for sync func============================//
   const sendMyPoses = async (time, poses, activity) => {
-    var start = new Date().toLocaleString("en-GB");
+    let start = new Date().toLocaleString('en-GB');
     let data = {
       from: mySocketId,
       to: yourSocketId,
@@ -775,7 +783,8 @@ function ContextProvider({ children, socket, profile }) {
         myCanvasRef,
         userCanvasRef,
         socket,
-        traineeEntered, setMyTraineeEntered,
+        traineeEntered,
+        setMyTraineeEntered,
         setRoomId,
         allUsersInRoom,
         startMeeting,
@@ -797,12 +806,15 @@ function ContextProvider({ children, socket, profile }) {
         peer1inFrame,
         recognition,
         setRecognition,
-        setSettingUserInFrame, setPeer2inFrame,
-        scheduleMeetingPopUpCall, setScheduleMeetingPopUpCall,
+        setSettingUserInFrame,
+        setPeer2inFrame,
+        scheduleMeetingPopUpCall,
+        setScheduleMeetingPopUpCall,
         upcamingMeeting,
-        setAccseptScheduleMeetingCall, accseptScheduleMeetingCall,
-        setConectReq, conectReq,
-
+        setAccseptScheduleMeetingCall,
+        accseptScheduleMeetingCall,
+        setConectReq,
+        conectReq,
 
         setSyncScore
       }}
