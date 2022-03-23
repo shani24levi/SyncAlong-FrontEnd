@@ -17,7 +17,6 @@ const allMeetings = () => {
     return axios
         .get(`${URL}/${MEETINGS}`)
         .then(meetings => {
-            console.log('meetings', meetings);
             return meetings.data;
         })
         .catch(err => {

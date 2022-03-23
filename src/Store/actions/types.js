@@ -40,10 +40,9 @@ export const SET_ACTIVE_MEETING = 'SET_ACTIVE_MEETING';
 export const GET_ACTIVE_MEETING = 'GET_ACTIVE_MEETING';
 export const DELETE_MEETING = 'DELETE_MEETING';
 
-
-//export const  = '';
-//export const  = '';
-//export const  = '';
+export const CLEAR_PROFILE = 'CLEAR_PROFILE';
+export const CLEAR_AUTH = 'CLEAR_AUTH';
+export const CLEAR_MEETINGS = 'CLEAR_MEETINGS';
 //export const  = '';
 //export const  = '';
 //export const  = '';

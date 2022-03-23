@@ -7,14 +7,6 @@ import * as cam from '@mediapipe/camera_utils';
 import { useSelector } from 'react-redux';
 import isEmpty from '../../validation/isEmpty';
 import mediaPipeLandmarks from './mediaPipeLandmarks';
-
-///////// NEW STUFF IMPORTS
-import * as fp from 'fingerpose';
-import victory from '../../assets/signs/victory.png';
-import thumbs_up from '../../assets/signs/thumbs_up.png';
-import stop from '../../assets/signs/stop.png';
-///////// NEW STUFF IMPORTS
-
 import draw from './DrawAnimation/draw';
 
 {
@@ -60,15 +52,12 @@ function ContextProvider({ children, socket, profile }) {
   const [peer1inFrame, setSettingUserInFrame] = useState(false);
   const [peer2inFrame, setPeer2inFrame] = useState(false);
 
-  //
+  //stats to handel conection from pop up coming meeting is now 
   const [userEnteredNow, setUserEnteredNow] = useState({});
-  const [accseptScheduleMeetingCall, setAccseptScheduleMeetingCall] =
-    useState(false);
+  const [accseptScheduleMeetingCall, setAccseptScheduleMeetingCall] = useState(false);
   const [conectReq, setConectReq] = useState(false);
 
   const [emoji, setEmoji] = useState(null);
-  const images = { thumbs_up: thumbs_up, victory: victory, stop: stop };
-
   const myVideo = useRef();
   const userVideo = useRef();
   const connectionRef = useRef();
@@ -204,7 +193,7 @@ function ContextProvider({ children, socket, profile }) {
     const canvasCtx = canvasElement.getContext('2d');
     canvasCtx.save();
     canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-    canvasCtx.drawImage( userVideo.current, 0, 0, canvasElement.width, canvasElement.height);
+    canvasCtx.drawImage(userVideo.current, 0, 0, canvasElement.width, canvasElement.height);
     // collectionUserPose(results);
     let inframe = calculatingUserInFrame(results);
     let syncing = is_sync();
@@ -215,7 +204,7 @@ function ContextProvider({ children, socket, profile }) {
       canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
       // Only overwrite missing pixels.
       canvasCtx.globalCompositeOperation = 'destination-atop';
-      canvasCtx.drawImage( userVideo.current, 0, 0, canvasElement.width, canvasElement.height);
+      canvasCtx.drawImage(userVideo.current, 0, 0, canvasElement.width, canvasElement.height);
       //drow only when seting modal is initilize and when not user in fram
       canvasCtx.globalCompositeOperation = 'source-over';
     }
@@ -226,7 +215,7 @@ function ContextProvider({ children, socket, profile }) {
       canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
       // Only overwrite missing pixels.
       canvasCtx.globalCompositeOperation = 'destination-atop';
-      canvasCtx.drawImage( userVideo.current, 0, 0, canvasElement.width, canvasElement.height);
+      canvasCtx.drawImage(userVideo.current, 0, 0, canvasElement.width, canvasElement.height);
       //drow only when seting modal is initilize and when not user in fram
       canvasCtx.globalCompositeOperation = 'source-over';
     }
@@ -238,7 +227,7 @@ function ContextProvider({ children, socket, profile }) {
       canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
       // Only overwrite missing pixels.
       canvasCtx.globalCompositeOperation = 'destination-atop';
-      canvasCtx.drawImage( userVideo.current, 0, 0, canvasElement.width, canvasElement.height);
+      canvasCtx.drawImage(userVideo.current, 0, 0, canvasElement.width, canvasElement.height);
       //drow only when seting modal is initilize and when not user in fram
       canvasCtx.globalCompositeOperation = 'source-over';
     }
@@ -484,14 +473,14 @@ function ContextProvider({ children, socket, profile }) {
 
   //for lisiner of user entered now
   useEffect(() => {
-    console.log('userEnteredNow', profile.profile, user);
+    // console.log('userEnteredNow', profile.profile, user);
     if (!isEmpty(userEnteredNow)) {
       if (
         !isEmpty(profile.profile) &&
         user.role === 'trainer' &&
         profile.profile?.trainerOf
       ) {
-        console.log('lisinig whos is enterd ....');
+        // console.log('lisinig whos is enterd ....');
         profile.profile?.trainerOf.map((trainee) => {
           if (trainee === userEnteredNow.userId) {
             console.log(trainee, userEnteredNow.userId);
@@ -516,8 +505,7 @@ function ContextProvider({ children, socket, profile }) {
   const [MeetingIsNOW, setMeetingIsNOW] = useState(false);
 
   useEffect(() => {
-    console.log(meetings?.meetings);
-    console.log(meetings?.meetings?.length);
+    console.log('meetings', meetings?.meetings);
     if (!meetings?.meetings || meetings?.meetings?.length === 0) {
       return;
     }
@@ -556,9 +544,9 @@ function ContextProvider({ children, socket, profile }) {
   const lisiningForNewUsers = () => {
     //lisinig for changes in the array of users caming in to the app
     socket?.on('getNewUserAddToApp', (user) => {
-      console.log('new user enter to app', user);
-      console.log('yourInfo', yourInfo);
-      console.log('yourSocketId', yourSocketId); //yor socket id camming form meeting conect page / else its undidiend
+      // console.log('new user enter to app', user);
+      // console.log('yourInfo', yourInfo);
+      // console.log('yourSocketId', yourSocketId); //yor socket id camming form meeting conect page / else its undidiend
       setUserEnteredNow(user);
 
       if (MeetingIsNOW && !yourSocketId && yourInfo) {
@@ -595,7 +583,7 @@ function ContextProvider({ children, socket, profile }) {
 
   const lisiningResivingSyncScore = () => {
     socket?.on('syncScore', (sync_score) => {
-      console.log('///...score.../// ', sync_score);
+      // console.log('///...score.../// ', sync_score);
       setSyncScore(sync_score);
     });
   };
@@ -740,7 +728,7 @@ function ContextProvider({ children, socket, profile }) {
     //An alternative solution for canvas transfer that the peer library does not support
   };
 
-  const leaveCall = () => {};
+  const leaveCall = () => { };
   //===================socket calls when meeting in now============================//
   //===================pop up to bouth===========================//
   //===================socket for sync func============================//

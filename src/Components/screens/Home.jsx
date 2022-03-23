@@ -66,7 +66,7 @@ const Home = ({ socket }) => {
     }, [upcamingMeeting])
 
     //const scheduleMeetingPopUpCall = { id: 'ddd', trainee: { user: 'nam2', avatar: '22' }, trainer: { user: 'name1', avatar: '233' } }
-    console.log('scheduleMeetingPopUpCall', scheduleMeetingPopUpCall);
+    // console.log('scheduleMeetingPopUpCall', scheduleMeetingPopUpCall);
 
     return (
         <>

@@ -5,10 +5,13 @@ import {
     SET_ACTIVE_MEETING,
     GET_ACTIVE_MEETING,
     DELETE_MEETING,
+    CLEAR_MEETINGS,
 } from './types';
 import { meetingsService } from '../../servises';
 import { redirect } from '../../helpers';
 import { alertActions } from './alertActions';
+
+export const clearLogoutMeetings = () => { return { type: CLEAR_MEETINGS }; };
 
 export const setLoading = (val) => {
     return {
@@ -22,6 +25,7 @@ export const futureMeetings = () => dispatch => {
     meetingsService.futureMeetings()
         .then(
             meetings => {
+                //  console.log('meetingsmeetings', meetings.data);
                 dispatch({
                     type: GET_FUTURE_MEETINGS,
                     payload: meetings.data
@@ -43,7 +47,12 @@ export const getAllMeetings = () => dispatch => {
     meetingsService.allMeetings()
         .then(
             meetings => {
-                console.log(meetings);
+                // console.log(meetings.data);
+                // let m = meetings.data.map(i => {
+                //     console.log(i.date);
+                //     i.date = new Date(i.date?.slice(0, -1));
+                // })
+                // console.log(meetings.data);
                 dispatch({
                     type: GET_ALL_MEETINGS,
                     payload: meetings.data
@@ -62,7 +71,6 @@ export const getAllMeetings = () => dispatch => {
 
 export const craeteMeetings = (data) => dispatch => {
     dispatch(setLoading(true));
-    console.log('data ', data);
     meetingsService.craete(data)
         .then(
             meetings => {
@@ -75,7 +83,6 @@ export const craeteMeetings = (data) => dispatch => {
         );
     function success(meetings) { return { type: CREATE_MEETING, payload: meetings } }
 };
-
 
 export const getActivities = (id) => dispatch => {
     dispatch(setLoading(true));
@@ -140,8 +147,5 @@ export const deleteMeeting = (id) => dispatch => {
         );
     function success(meetings) { return { type: DELETE_MEETING, payload: id } }
 }
-
-
-
 
 function failure(error) { return { type: GET_ERRORS, payload: error.error } }

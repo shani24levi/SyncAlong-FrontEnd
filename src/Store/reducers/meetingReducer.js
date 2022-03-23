@@ -5,6 +5,7 @@ import {
     SET_ACTIVE_MEETING,
     GET_ACTIVE_MEETING,
     DELETE_MEETING,
+    CLEAR_MEETINGS,
 } from '../actions/types';
 
 const initialState = {
@@ -22,6 +23,14 @@ export default function (state = initialState, action) {
                 ...state,
                 loading: action.payload
             };
+        case CLEAR_MEETINGS:
+            return {
+                loading: false,
+                all_meetings: null,
+                meetings: null,
+                upcoming_meeting: null,
+                active_meeting: null,
+            };
         case GET_FUTURE_MEETINGS:
             return {
                 ...state,
@@ -37,7 +46,7 @@ export default function (state = initialState, action) {
             };
 
         case CREATE_MEETING:
-            console.log(action.payload.data);
+            console.log(action.payload.data.data);
             return {
                 ...state,
                 all_meetings: !state.all_meetings ? [action.payload] : [...state.all_meetings, action.payload.data.data],

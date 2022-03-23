@@ -74,6 +74,9 @@ function TrainerHome({ meeting, date }) {
     const meetings = useSelector(state => state.meetings);
     const my_trainees = useSelector(state => state.profile.trainees_profiles);
 
+    // console.log('upcamingMeeting', upcamingMeeting, !isEmpty(upcamingMeeting), meetings.meetings);
+    // console.log('meeting', meeting, 'date', date);
+
     return (
         <>
             <img
@@ -94,13 +97,10 @@ function TrainerHome({ meeting, date }) {
 
                 <Grid container alignItems='center' alignContent='center' spacing={2}>
                     {my_trainees && my_trainees.lenght != 0 && <TraineesCard />}
-                    {/* <Grid item xs={12} md={12}> 
-                    <StartCard title={'title'} subtitle={'subtitle'} />
-                     </Grid> */}
 
                     <Grid item xs={12} md={12}>
                         <CardContiner title="Your up caming meeting" >
-                            {meeting && <NextMeetingTime upcamingMeeting={upcamingMeeting} date={!date ? 0 : date} />}
+                            {meetings?.meetings && meetings?.meetings?.lenght != 0 && meeting && !isEmpty(upcamingMeeting) && (date !== 0 || date !== NaN) && <NextMeetingTime upcamingMeeting={upcamingMeeting} date={!date ? 0 : date} />}
                             <Box
                                 component="span"
                                 m={1} //margin

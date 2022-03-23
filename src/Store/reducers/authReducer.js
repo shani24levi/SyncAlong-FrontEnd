@@ -1,6 +1,5 @@
 import {
   LOGIN_SUCCESS,
-  LOGOUT,
   GET_CURR_USER,
   REGISTER_REQUEST,
   AUTH_LOADING,
@@ -9,6 +8,7 @@ import {
   TRAINEE_DELETE,
   UPDATE_AVATAR,
   UPDATE_USER,
+  CLEAR_AUTH,
 } from '../actions/types';
 
 let user = localStorage.getItem('user');
@@ -21,11 +21,9 @@ export default function (state = initialState, action) {
         ...state,
         loading: action.payload
       };
-    case LOGOUT:
+    case CLEAR_AUTH:
       return {
-        ...state,
         user: {},
-        loggedIn: false,
         loading: false,
         resisterd: false
       };

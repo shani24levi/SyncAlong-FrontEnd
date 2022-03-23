@@ -52,10 +52,7 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
         }
     }, []);
 
-    console.log(err)
-
     useEffect(() => {
-        console.log(close, isEmpty(err));
         let errors = {};
         if (err === 'title not found') {
             errors["title"] = "*title not found";
@@ -94,6 +91,7 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
                 trainee: traineeId,
                 date: value,
             }
+            console.log('data', data);
             if (activities.length != 0) data.activities = activities;
             dispatch(craeteMeetings(data));
         }
@@ -113,9 +111,6 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
     const handleChange = (newValue) => {
         setValue(newValue);
     };
-
-    console.log('value', value);
-    console.log('value', value.getHours());
 
     return (
         <>

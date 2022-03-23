@@ -11,9 +11,12 @@ import {
     TRAINEE_DELETE,
     UPDATE_AVATAR,
     UPDATE_USER,
+    CLEAR_AUTH
 } from './types';
 import { userService } from '../../servises';
 import { alertActions } from './alertActions';
+import { clearLogoutMeetings } from './meetingActions';
+import { clearLogoutProfile } from './profileAction';
 
 export const loginUser = userData => dispatch => {
     dispatch(setLoading(true));
@@ -31,12 +34,13 @@ export const loginUser = userData => dispatch => {
     function success(user) { return { type: LOGIN_SUCCESS, payload: user } }
 }
 export const setCurrentUser = user => { return { type: LOGIN_SUCCESS, payload: user } }
-export const setLogoutCurrentUser = user => { return { type: LOGOUT } }
 export const currentUser = () => { return { type: GET_CURR_USER } }
 
 export const logoutUser = () => dispatch => {
     userService.logout();
-    dispatch(setLogoutCurrentUser())
+    dispatch(clearLogoutAuth());
+    dispatch(clearLogoutMeetings());
+    dispatch(clearLogoutProfile());
 };
 
 export const registerUser = userData => dispatch => {
@@ -144,6 +148,8 @@ export const updateAvatarPic = (data) => dispatch => {
 
 function failure(error) { return { type: GET_ERRORS, payload: error.error } }
 function clear(eror) { return { type: CLEAR_ERRORS } }
+
+export const clearLogoutAuth = () => { return { type: CLEAR_AUTH }; };
 
 export const setLoading = (val) => {
     return {

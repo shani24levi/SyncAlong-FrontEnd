@@ -9,7 +9,8 @@ import {
     TRINEE_PROFILE_CREATE,
     UPDATE_TRAINEES_LIST,
     DELETE_TRAINEE,
-    SET_ALL_TRAINEES
+    SET_ALL_TRAINEES,
+    CLEAR_PROFILE,
 } from './types';
 import { profileService } from '../../servises';
 import { alertActions } from './alertActions';
@@ -49,8 +50,6 @@ export const updateProfile = (data) => dispatch => {
         );
     function success(profile) { return { type: UPDATE_PROFILE, payload: profile } }
 };
-
-// export const setCurrentProfile = user => { return { type: SET_CURR_PROFILE, payload: user } }
 
 export const setCurrentProfile = () => dispatch => {
     dispatch(setLoading(true));
@@ -118,8 +117,6 @@ export const getAllTraineesProfiles = () => dispatch => {
     function success(profile) { return { type: SET_ALL_TRAINEES, payload: profile } }
 }
 
-
-
 // export const setTraineeProfileById = (id, data) => dispatch => {
 //     return { type: UPDATE_TRAINEES_LIST, payload: { id, profile } }
 // }
@@ -154,6 +151,9 @@ export const getAllTraineesProfiles = () => dispatch => {
 // };
 function failure(error) { return { type: GET_ERRORS, payload: error.error } }
 function clear(eror) { return { type: CLEAR_ERRORS } }
+
+
+export const clearLogoutProfile = () => { return { type: CLEAR_PROFILE }; };
 
 export const setLoading = (val) => {
     return {

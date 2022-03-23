@@ -8,6 +8,7 @@ import {
     DELETE_TRAINEE, UPDATE_PROFILE,
     TRAINEE_CREATE_SUCCESS,
     SET_ALL_TRAINEES,
+    CLEAR_PROFILE,
 } from '../actions/types';
 
 const initialState = {
@@ -24,6 +25,14 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 loading: action.payload
+            };
+        case CLEAR_PROFILE:
+            return {
+                loading: false,
+                profile: null,
+                trainees_profiles: [],
+                trainee_profile_success: false,
+                trainee_profile_called: false,
             };
         case SET_CURR_PROFILE:
             return {
@@ -61,7 +70,7 @@ export default function (state = initialState, action) {
                 trainee_profile_called: true,
             }
         case SET_ALL_TRAINEES:
-            console.log('SET_ALL_TRAINEES', action.payload.data);
+            //   console.log('SET_ALL_TRAINEES', action.payload.data);
             return {
                 ...state,
                 loading: false,
@@ -77,7 +86,7 @@ export default function (state = initialState, action) {
                 trainee_profile_success: false,
             };
         case TRINEE_PROFILE_CREATE:
-            console.log(action.payload);
+            // console.log(action.payload);
             return {
                 ...state,
                 loading: false,
