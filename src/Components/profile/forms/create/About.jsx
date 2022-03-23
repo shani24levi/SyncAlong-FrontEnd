@@ -7,7 +7,8 @@ import {
     Avatar, Box,
     Grid,
     InputLabel,
-    MenuItem, FormControl
+    MenuItem, FormControl,
+    Dialog,
 } from "@material-ui/core";
 import TextField from '@mui/material/TextField';
 import Select from '@mui/material/Select';
@@ -32,6 +33,7 @@ function About({
     const btnClasses = buttonStyle();
     const profile = useSelector(state => state.profile)
 
+    const [age1, setAge1] = React.useState('');
     return (
         <Box sx={{ mx: 'auto', textAlign: 'center', fontSize: '0.875rem', fontWeight: '700' }}>
             <Typography variant="subtitle1" sx={{ mt: 2 }}>Please tell us more about yourself</Typography>

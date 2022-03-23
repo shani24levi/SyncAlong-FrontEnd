@@ -116,7 +116,7 @@ function About({ profile, setModalIsOpen }) {
                                 <PhoneIcon />
                             </Avatar>
                         </ListItemAvatar>
-                        <ListItemText primary='Phone : ' secondary={profile.address ? profile.address : 'No phone number'} />
+                        <ListItemText primary='Phone : ' secondary={profile.phone ? profile.phone : 'No phone number'} />
                     </ListItem>
 
 

@@ -4,6 +4,7 @@ import {
     MEETINGS_LOADING, GET_CURR_ACTIVITIES, GET_ALL_MEETINGS,
     SET_ACTIVE_MEETING,
     GET_ACTIVE_MEETING,
+    DELETE_MEETING,
 } from '../actions/types';
 
 const initialState = {
@@ -39,7 +40,7 @@ export default function (state = initialState, action) {
             console.log(action.payload.data);
             return {
                 ...state,
-                all_meetings: [action.payload, ...state.all_meetings],
+                all_meetings: !state.all_meetings ? [action.payload] : [...state.all_meetings, action.payload.data.data],
                 meetings: !state.meetings ? [action.payload] : [...state.meetings, action.payload.data.data],
                 // [action.payload, ...state.meetings],
                 loading: false,
@@ -66,7 +67,15 @@ export default function (state = initialState, action) {
                 loading: false,
                 active_meeting: action.payload
             }
-
+        case DELETE_MEETING:
+            console.log("DELETE_MEETING", action.payload);
+            return {
+                ...state,
+                loading: false,
+                meetings: !state.meetings ? null : state.meetings.filter(m => m._id !== action.payload),
+                all_meetings: state.all_meetings.filter(m => m._id !== action.payload),
+                upcoming_meeting: state.upcoming_meeting?._id === action.payload ? null : state.upcoming_meeting,
+            }
 
 
         default:

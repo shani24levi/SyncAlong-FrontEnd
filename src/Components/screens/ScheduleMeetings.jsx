@@ -17,15 +17,8 @@ const ScheduleMeetings = (props) => {
         start: new Date()
     });
     const [modalCreate, setModalCreate] = useState(false);
-    let events = [
-        {
-            title: "Test Meeting",
-            allDay: true,
-            start: new Date(2022, 2, 1),
-            end: new Date(2022, 2, 1),
-        },
-    ];
-    const [meetingEvents, setMeetingEvents] = useState(null);
+    const [meetingEvents, setMeetingEvents] = useState([]);
+    const [firstTime, setFirstTime] = useState(true);
 
     const profile = useSelector(state => state.profile);
     const meetings = useSelector(state => state.meetings);
@@ -38,36 +31,39 @@ const ScheduleMeetings = (props) => {
 
     useEffect(() => {
         console.log('meetings.all_meetings', meetings.all_meetings);
-        if (meetingEvents && meetings.all_meetings.length !== meetingEvents.length) {
+        if (!meetings.all_meetings || isEmpty(meetings.all_meetings)) return;
+
+        if (meetings.all_meetings?.length != 0 && meetings.all_meetings?.length !== meetingEvents?.length) {
             const newState = meetings.all_meetings.map(obj =>
                 obj.date ? { ...obj, date: new Date(obj.date), start: new Date(obj.date), end: new Date(obj.date) } : obj
             );
             setMeetingEvents(newState);
         }
-
-        if (isEmpty(meetings.all_meetings)) {
-            console.log('ther is no meetings selcteted');
-        }
-        else if (meetings.all_meetings.length > 0) {
+        else if (meetings.all_meetings?.length > 0) {
             const newState = meetings.all_meetings.map(obj =>
                 obj.date ? { ...obj, date: new Date(obj.date), start: new Date(obj.date), end: new Date(obj.date) } : obj
             );
             setMeetingEvents(newState);
         }
-
     }, [meetings])
+
+    useEffect(() => {
+        if (firstTime)
+            return
+        setModalIsOpen(true);
+    }, [modalData, firstTime])
 
     const handleSelectSlot = (start) => {
         //handel create new meeting 
-        console.log(start);
+        console.log('start', start);
         setModalCreate(true);
-        setModalIsOpen(true);
+        setFirstTime(false)
         setModalData(start);
     };
 
     const handleSelectEvent = (start) => {
         setModalCreate(false);
-        setModalIsOpen(true);
+        setFirstTime(false)
         setModalData(start);
     };
 
@@ -83,13 +79,24 @@ const ScheduleMeetings = (props) => {
         setModalIsOpen(false);
     }
 
+    // let events = [
+    //     {
+    //         title: "Test Meeting",
+    //         allDay: true,
+    //         start: new Date(2022, 2, 1),
+    //         end: new Date(2022, 2, 1),
+    //     },
+    // ];
+
+    console.log('firstTime', firstTime);
+    console.log('modalData', modalData);
     console.log(meetingEvents);
     return (
         <>
             <MeetingModal modalIsOpen={modalIsOpen} modalCreate={modalCreate} modalData={modalData} handelClose={handelClose} />
             <Container>
                 <ScheduleHeader month={month} newMeeting={newMeeting} />
-                <CalendarMeetings events={events} handleSelectSlot={handleSelectSlot} handleSelectEvent={handleSelectEvent} />
+                <CalendarMeetings events={meetingEvents} handleSelectSlot={handleSelectSlot} handleSelectEvent={handleSelectEvent} />
             </Container>
         </>
     );

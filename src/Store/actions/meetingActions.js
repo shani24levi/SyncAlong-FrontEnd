@@ -4,6 +4,7 @@ import {
     GET_ALL_MEETINGS,
     SET_ACTIVE_MEETING,
     GET_ACTIVE_MEETING,
+    DELETE_MEETING,
 } from './types';
 import { meetingsService } from '../../servises';
 import { redirect } from '../../helpers';
@@ -61,6 +62,7 @@ export const getAllMeetings = () => dispatch => {
 
 export const craeteMeetings = (data) => dispatch => {
     dispatch(setLoading(true));
+    console.log('data ', data);
     meetingsService.craete(data)
         .then(
             meetings => {
@@ -111,7 +113,6 @@ export const setActiveMeeting = (meeting, status) => dispatch => {
     function success(activities) { return { type: SET_ACTIVE_MEETING, payload: meeting } }
 }
 
-
 export const getActiveMeeting = () => dispatch => {
     dispatch(setLoading(true));
     meetingsService.getActiveMeeting()
@@ -125,6 +126,21 @@ export const getActiveMeeting = () => dispatch => {
         );
     function success(meetings) { return { type: GET_ACTIVE_MEETING, payload: meetings } }
 }
+
+export const deleteMeeting = (id) => dispatch => {
+    dispatch(setLoading(true));
+    meetingsService.deleteMeeting(id)
+        .then(
+            meetings => {
+                dispatch(success(id))
+            },
+            error => {
+                dispatch(success(null));
+            }
+        );
+    function success(meetings) { return { type: DELETE_MEETING, payload: id } }
+}
+
 
 
 

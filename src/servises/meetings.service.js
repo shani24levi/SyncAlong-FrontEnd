@@ -27,6 +27,7 @@ const allMeetings = () => {
 }
 
 const craete = (data) => {
+    console.log('data ', data);
     return axios
         .post(`${URL}/${MEETINGS}`, data)
         .then(meetings => { console.log(meetings); return meetings })

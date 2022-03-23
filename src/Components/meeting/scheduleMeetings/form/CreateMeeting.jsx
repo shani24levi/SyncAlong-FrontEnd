@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { craeteMeetings } from '../../../../Store/actions/meetingActions';
+import { craeteMeetings, deleteMeeting } from '../../../../Store/actions/meetingActions';
 import {
     Typography,
     Button,
@@ -42,6 +42,8 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
     const [activities, setActivities] = useState([]);
     const [errors, setErorrs] = useState({});
     const [close, setClose] = useState(false);
+    const [traineeId, setTraineeId] = useState(null);
+    const [loadingType, setLoadingType] = useState('create');
 
 
     useEffect(() => {
@@ -70,19 +72,26 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
         return;
     }, [err, all_meetings]);
 
-
-
-
     const onConfirm = (e) => {
         e.preventDefault();
+        setLoadingType('create');
         setClose(true)
         let errors = {}
+        if (!title) errors["title"] = "*Title for the meeting is required"
+        if (!value) errors["value"] = "*Time & Date is required"
+        if (!traineeId) errors["traineeId"] = "*Please selecte user for the activitiy";
+
+        console.log('dddddd', title, value, traineeId);
+        if (!isEmpty(errors)) {
+            setErorrs(errors);
+            return;
+        }
+
         //add new ....
         if (modalCreate) {
-            if (!title || !trainee || !value) return;
             let data = {
                 title,
-                trainee: trainee.toString(),
+                trainee: traineeId,
                 date: value,
             }
             if (activities.length != 0) data.activities = activities;
@@ -93,11 +102,20 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
 
         }
     }
-    console.log(trainee);
+
+    const onDelet = (e) => {
+        e.preventDefault();
+        setLoadingType('delete');
+        setClose(true)
+        dispatch(deleteMeeting(modalData._id));
+    }
 
     const handleChange = (newValue) => {
         setValue(newValue);
     };
+
+    console.log('value', value);
+    console.log('value', value.getHours());
 
     return (
         <>
@@ -155,12 +173,11 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
                                         console.log(e.target.value)
                                         setTrainee(e.target.value)
                                     }}
-                                    error={errors.trainee}
+                                    error={errors.traineeId}
                                 >
                                     {
                                         profile.trainees_profiles && profile.trainees_profiles?.map((trainee, i) => {
-
-                                            return <MenuItem value={trainee.user._id} key={i}>
+                                            return <MenuItem value={i} key={i} onClick={() => setTraineeId(trainee.user._id)}>
                                                 <Avatar
                                                     alt="avatar"
                                                     src={trainee.user.avatar}
@@ -170,10 +187,11 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
                                         })
                                     }
                                 </Select>
+                                {errors["traineeId"] && <Typography component="div" color="error" variant="body2"> {errors["traineeId"]}</Typography>}
                             </FormControl>
                         </Grid>
                         {
-                            trainee != 0 ?
+                            traineeId ?
                                 <Grid item xs={12} sm={12}>
                                     <FormControl fullWidth>
                                         <InputLabel id="activities-select-label">Activities</InputLabel>
@@ -202,10 +220,16 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
                             <Button startIcon={<DeleteOutlineIcon />}
                                 className={btnClasses.purpleRoundEmpty}
                                 variant="contained"
+                                onClick={onDelet}
                             // sx={{ mt: 3, ml: 1 }}
                             //modalData.id
                             >
-                                Delete
+                                {
+                                    loading && loadingType === 'delete' ?
+                                        <CircularProgress color="secondary" size="20px" />
+                                        :
+                                        'Delete'
+                                }
                             </Button>
                         }
 
@@ -217,7 +241,7 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
                         // sx={{ mt: 3, ml: 1 }}
                         >
                             {
-                                loading ?
+                                loading && loadingType === 'create' ?
                                     <CircularProgress color="secondary" size="20px" />
                                     :
                                     'Confirm'

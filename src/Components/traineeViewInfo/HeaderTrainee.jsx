@@ -14,7 +14,7 @@ function HeaderTrainee({ trainee }) {
                 </div>
                 <div className="media-body va-m">
                     <h2 className="media-heading">{trainee.user.user}
-                        <small> - Profile</small>
+                        <small> - Summary of Activities</small>
                     </h2>
                     <p className="lead">{trainee.user.email}</p>
                 </div>
