@@ -40,6 +40,7 @@ function ContextProvider({ children, socket, profile }) {
   const [myRole, setMyRole] = useState(null);
   const [yourDataResived, setYourDataResived] = useState(null);
   const [syncScore, setSyncScore] = useState(null);
+  const [activity_now, setActivityNow] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(true);
   const [mediaPipeInitilaize, setMediaPipeInitilaize] = useState('');
   const [peer, setMeAsPeer] = useState(null);
@@ -47,6 +48,8 @@ function ContextProvider({ children, socket, profile }) {
 
   const syncScoreRef = useRef(syncScore);
   syncScoreRef.current = syncScore;
+  const activity_now_ref = useRef(activity_now);
+  activity_now_ref.current = activity_now;
 
   //for first step - user enters the roonm - need to stap away for the camaea.
   const [peer1inFrame, setSettingUserInFrame] = useState(false);
@@ -168,6 +171,10 @@ function ContextProvider({ children, socket, profile }) {
     return false;
   };
 
+  const now_activity = () => {
+    return activity_now_ref.current;
+  };
+
   useEffect(() => {
     if (pose_results) {
       //  console.log("Pose_Results ", pose_results)
@@ -197,7 +204,7 @@ function ContextProvider({ children, socket, profile }) {
     // collectionUserPose(results);
     let inframe = calculatingUserInFrame(results);
     let syncing = is_sync();
-
+    let activity = now_activity();
     if (syncScoreRef?.current < 0.75) {
       canvasCtx.globalCompositeOperation = 'source-in';
       canvasCtx.fillStyle = 'rgba(255,0,0,0.1)';
@@ -234,7 +241,7 @@ function ContextProvider({ children, socket, profile }) {
 
     if (results) {
       if (syncing)
-        results.poseLandmarks && draw(canvasCtx, canvasElement, results, 3, "you");
+        results.poseLandmarks && draw(canvasCtx, canvasElement, results, activity, "you");
     }
     canvasCtx.restore();
   };
@@ -257,7 +264,7 @@ function ContextProvider({ children, socket, profile }) {
     collectionUserPose(results);
     let inframe = calculatingUserInFrame(results);
     let syncing = is_sync();
-
+    let activity = now_activity();
     if (syncScoreRef?.current < 0.75) {
       canvasCtx.globalCompositeOperation = 'source-in';
       canvasCtx.fillStyle = 'rgba(255,0,0,0.1)';
@@ -294,7 +301,7 @@ function ContextProvider({ children, socket, profile }) {
 
     if (results) {
       if (syncing)
-        results.poseLandmarks && draw(canvasCtx, canvasElement, results, 3);
+        results.poseLandmarks && draw(canvasCtx, canvasElement, results, activity);
 
       if (!inframe) {
         connect(canvasCtx, results.poseLandmarks, holistic.POSE_CONNECTIONS, {
@@ -803,7 +810,8 @@ function ContextProvider({ children, socket, profile }) {
         accseptScheduleMeetingCall,
         setConectReq,
         conectReq,
-
+        activity_now, 
+        setActivityNow,
         setSyncScore
       }}
     >

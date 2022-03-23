@@ -22,7 +22,16 @@ import SeccsesAlert from '../../alrets/SeccsesAlert';
 const useStyles = makeStyles(componentStyles);
 
 function VideoContext({ meeting }) {
-    const { conectReq, setConectReq, callUser, answerCall, accseptScheduleMeetingCall, yourSocketId, setSyncScore, setRecognition, setSettingUserInFrame, setPeer2inFrame, peer2inFrame, peer1inFrame, recognition, mediaPipeInitilaize, syncScore, myDelayOnConection, setPosesArray, array_poses, timeOfColectionPose, delayBetweenUsers, setFlagTime, setFlagFeatch, myRole, emoji, startMeeting, setStream, myName, yourName, callAccepted, myVideo, userVideo, callEnded, stream, call, myCanvasRef, userCanvasRef, me, posesArry, you, sendPoses, sendMyPoses, socket } = useContext(SocketContext);
+    const { conectReq, setConectReq, callUser, answerCall, 
+        accseptScheduleMeetingCall, yourSocketId, setSyncScore, 
+        setRecognition, setSettingUserInFrame, setPeer2inFrame, 
+        peer2inFrame, peer1inFrame, recognition, mediaPipeInitilaize, 
+        syncScore, myDelayOnConection, setPosesArray, array_poses, 
+        timeOfColectionPose, delayBetweenUsers, setFlagTime, setFlagFeatch, 
+        myRole, emoji, startMeeting, setStream, myName, yourName, 
+        callAccepted, myVideo, userVideo, callEnded, stream, call, myCanvasRef, 
+        userCanvasRef, me, posesArry, you, sendPoses, sendMyPoses, socket, 
+        activity_now, setActivityNow } = useContext(SocketContext);
     const classes = useStyles();
     const [start, setStartActivity] = useState(false);
     const [showDemo, setDemo] = useState(false);
@@ -92,6 +101,9 @@ function VideoContext({ meeting }) {
         }
     }, [syncScore]);
 
+    useEffect(async () => {
+        console.log('activity_now', activity_now);
+      }, [activity_now]);
 
     const activitiesSession = async () => {
         for (let i = currActivity; i < meeting.activities.length; i++) {
@@ -99,6 +111,7 @@ function VideoContext({ meeting }) {
             setSyncScore(0);
             setCurrActivity(i);
             console.log(i, ' this activity is ....', meeting.activities[i]);
+            setActivityNow(meeting.activities[i]);
             //whait for 5 sec to garenty thet the bouth video loaded
             recognition === 'start' && await delay(5000);
             //set the start activity to display

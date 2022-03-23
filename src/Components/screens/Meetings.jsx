@@ -21,7 +21,7 @@ function Meetings(props) {
                 "role": "trainer"
             },
             trainee: {
-                "_id": '61f7a56542f3e116d721a7c6',
+                "_id": '6214b44405ebc47e36303a6b',
                 "user": "grma-trainee of shani",
                 "role": "trainee"
             },
