@@ -22,15 +22,15 @@ import SeccsesAlert from '../../alrets/SeccsesAlert';
 const useStyles = makeStyles(componentStyles);
 
 function VideoContext({ meeting }) {
-    const { conectReq, setConectReq, callUser, answerCall, 
-        accseptScheduleMeetingCall, yourSocketId, setSyncScore, 
-        setRecognition, setSettingUserInFrame, setPeer2inFrame, 
-        peer2inFrame, peer1inFrame, recognition, mediaPipeInitilaize, 
-        syncScore, myDelayOnConection, setPosesArray, array_poses, 
-        timeOfColectionPose, delayBetweenUsers, setFlagTime, setFlagFeatch, 
-        myRole, emoji, startMeeting, setStream, myName, yourName, 
-        callAccepted, myVideo, userVideo, callEnded, stream, call, myCanvasRef, 
-        userCanvasRef, me, posesArry, you, sendPoses, sendMyPoses, socket, 
+    const { mediapipeOfTrainee, conectReq, setConectReq, callUser, answerCall,
+        accseptScheduleMeetingCall, yourSocketId, setSyncScore,
+        setRecognition, setSettingUserInFrame, setPeer2inFrame,
+        peer2inFrame, peer1inFrame, recognition, mediaPipeInitilaize,
+        syncScore, myDelayOnConection, setPosesArray, array_poses,
+        timeOfColectionPose, delayBetweenUsers, setFlagTime, setFlagFeatch,
+        myRole, emoji, startMeeting, setStream, myName, yourName,
+        callAccepted, myVideo, userVideo, callEnded, stream, call, myCanvasRef,
+        userCanvasRef, me, posesArry, you, sendPoses, sendMyPoses, socket,
         activity_now, setActivityNow } = useContext(SocketContext);
     const classes = useStyles();
     const [start, setStartActivity] = useState(false);
@@ -44,6 +44,7 @@ function VideoContext({ meeting }) {
     const [question, setQuestion] = useState(false);
     const [activitiesEnded, setActivitiesEnded] = useState(false);
     const [isPeerHere, setIsPeerHere] = useState(yourSocketId ? true : false);
+    const [oneTime, setOneTime] = useState(true);
 
     const [stop, setStop] = useState(false);
     const stopRef = useRef(stop);
@@ -103,7 +104,7 @@ function VideoContext({ meeting }) {
 
     useEffect(async () => {
         console.log('activity_now', activity_now);
-      }, [activity_now]);
+    }, [activity_now]);
 
     const activitiesSession = async () => {
         for (let i = currActivity; i < meeting.activities.length; i++) {
@@ -147,7 +148,7 @@ function VideoContext({ meeting }) {
             console.log('recognition2', recognition);
             console.log('stopRef1', stopRef.current);
 
-            if (stopRef.current) {setSyncScore(0); return false;}
+            if (stopRef.current) { setSyncScore(0); return false; }
             console.log('end time of settings/.....', new Date().toLocaleString());
         }
         setSyncScore(0);
@@ -249,16 +250,26 @@ function VideoContext({ meeting }) {
 
     useEffect(() => {
         //teainer is calling to trainee......
-        if (accseptScheduleMeetingCall && myRole === 'trainer' && mediaPipeInitilaize === 'none' && isPeerHere) {
+        if (accseptScheduleMeetingCall && myRole === 'trainer' && mediaPipeInitilaize === 'none' && isPeerHere && mediapipeOfTrainee && oneTime) {
+            setOneTime(false);
             setConectReq(true)
             callUser();
         }
         //trainee answerrrs....
         if (accseptScheduleMeetingCall && myRole === 'trainee' && mediaPipeInitilaize === 'none' && call.isReceivingCall && !callAccepted) {
             setConectReq(true)
+            // await delay(5000);
+            // console.log('====================================');
+            // console.log('wauted 5 sec and theb answer');
+            // console.log('====================================');
             answerCall();
         }
-    }, [accseptScheduleMeetingCall, mediaPipeInitilaize, isPeerHere, call, callAccepted]);
+    }, [accseptScheduleMeetingCall, mediaPipeInitilaize, isPeerHere, call, callAccepted, mediapipeOfTrainee]);
+
+
+    useEffect(() => {
+        console.log('mediaPipeInitilaize', mediaPipeInitilaize);
+    }, [mediaPipeInitilaize])
 
     return (
         <>
@@ -300,10 +311,18 @@ function VideoContext({ meeting }) {
                         <Grid item xs={12} md={6}>
                             <Typography variant="h5" gutterBottom>{yourName || 'Name'}</Typography>
                             <video style={{ transform: 'scaleX(-1)', display: 'none' }} playsInline ref={userVideo} autoPlay className={classes.video}> </video>
-                            <canvas
+                            {
+                                // userCanvasRef.current ?
+                                <canvas
+                                    style={{ transform: 'scaleX(-1)' }}
+                                    ref={userCanvasRef} className={classes.video}> </canvas>
+                                // :
+                                // <video style={{ transform: 'scaleX(-1)' }} playsInline ref={userVideo} autoPlay className={classes.video}> </video>
+
+                            }
+                            {/* <canvas
                                 style={{ transform: 'scaleX(-1)' }}
-                                ref={userCanvasRef} className={classes.video}> </canvas>
-                            {/* {syncScore >= 0.75 && <img width="100" src={`img/emojyGIF/emojy-1.gif`} alt="emojy gif" style={{ height: '100px' }} />} */}
+                                ref={userCanvasRef} className={classes.video}> </canvas> */}
                         </Grid>
                     </Paper>
                 )}

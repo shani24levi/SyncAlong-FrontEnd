@@ -59,6 +59,8 @@ function ContextProvider({ children, socket, profile }) {
   const [userEnteredNow, setUserEnteredNow] = useState({});
   const [accseptScheduleMeetingCall, setAccseptScheduleMeetingCall] = useState(false);
   const [conectReq, setConectReq] = useState(false);
+  const [oneTime, setOneTime] = useState(true);
+  const [mediapipeOfTrainee, setMediapipeOfTrainee] = useState(false);
 
   const [emoji, setEmoji] = useState(null);
   const myVideo = useRef();
@@ -182,7 +184,7 @@ function ContextProvider({ children, socket, profile }) {
         poseLandmarks_ref.current = pose_results.poseLandmarks;
         //  console.log("peer is connect");
         peer?.emit('connect');
-      } else console.log('peer is not connect');
+      } //else console.log('peer is not connect');
     }
   }, [pose_results]);
 
@@ -190,8 +192,9 @@ function ContextProvider({ children, socket, profile }) {
     const videoWidth = 640;
     const videoHeight = 480;
 
-    setMediaPipeInitilaize('none');
+    // setMediaPipeInitilaize('none');
 
+    if (userCanvasRef.current === undefined || userCanvasRef.current == null) return;
     // Set canvas width
     userCanvasRef.current.width = videoWidth;
     userCanvasRef.current.height = videoHeight;
@@ -386,6 +389,7 @@ function ContextProvider({ children, socket, profile }) {
     lisiningMassagesInMyRoom();
     lisiningNotifications();
     !peer2inFrame && lisiningPeer2InFrame();
+    lisiningMediaPipe();
   }, [socket]);
 
   useEffect(() => {
@@ -477,6 +481,15 @@ function ContextProvider({ children, socket, profile }) {
       socket?.emit('peer1inFrame', roomId);
     }
   }, [peer1inFrame]);
+
+  useEffect(() => {
+    console.log('t', mediaPipeInitilaize, oneTime);
+    if (mediaPipeInitilaize === 'none' && oneTime && myRole === 'trainee') {
+      setOneTime(false);
+      socket?.emit('t', yourSocketId);
+    }
+  }, [mediaPipeInitilaize]);
+
 
   //for lisiner of user entered now
   useEffect(() => {
@@ -607,11 +620,17 @@ function ContextProvider({ children, socket, profile }) {
       setPeer2inFrame(true);
     });
   };
+
+  const lisiningMediaPipe = () => {
+    socket?.on('t', (id) => {
+      console.log(id);
+      setMediapipeOfTrainee(id);
+    });
+  };
   //===================socket calls when user in room and whant to call============================//
   function answerCall() {
     setCallAccepted(true);
     //set me as a peer and difiend my data
-
     const peer = new Peer({ initiator: false, trickle: false, stream });
     setMeAsPeer(peer);
 
@@ -621,19 +640,19 @@ function ContextProvider({ children, socket, profile }) {
 
     peer.on('data', (data) => {
       data = JSON.parse(data);
-      // console.log('data', data);
+      console.log('data', data);
       onResults2({ poseLandmarks: data });
     });
     peer.on('connect', () => {
       //console.log("poseLandmarks: ", poseLandmarks_ref.current);
       let state = peer._pc?.connectionState;
-      //  console.log("datachannel", state);
+      console.log("datachannel", state, "peer", peer);
       if (
         poseLandmarks_ref.current !== null &&
         poseLandmarks_ref.current !== undefined &&
         state != undefined && state != null && state == 'connected'
       )
-        peer.send(JSON.stringify(poseLandmarks_ref.current));
+        peer?.send(JSON.stringify(poseLandmarks_ref.current));
     });
 
     //when i get a signel that call is answered - i get data about the single
@@ -678,13 +697,13 @@ function ContextProvider({ children, socket, profile }) {
     peer.on('connect', () => {
       // console.log("poseLandmarks: ", poseLandmarks_ref.current);
       let state = peer._pc?.connectionState;
-      //console.log("datachannel", state);
+      console.log("datachannel", state, "peer", peer);
       if (
         poseLandmarks_ref.current !== null &&
         poseLandmarks_ref.current !== undefined &&
         state != undefined && state != null && state == 'connected'
       )
-        peer.send(JSON.stringify(poseLandmarks_ref.current));
+        peer?.send(JSON.stringify(poseLandmarks_ref.current));
     });
 
     // console.time('timer2-callUser');
@@ -810,9 +829,10 @@ function ContextProvider({ children, socket, profile }) {
         accseptScheduleMeetingCall,
         setConectReq,
         conectReq,
-        activity_now, 
+        activity_now,
         setActivityNow,
-        setSyncScore
+        setSyncScore,
+        mediapipeOfTrainee
       }}
     >
       {children}
