@@ -124,7 +124,7 @@ const Login = (props) => {
                 description='Joint physical activity and movement synchronized with positive energies.'
             />
 
-            {alert && <SuccessAlertBotomCenter name={props.alert.message} title={props.alert.message} />}
+            {alert && <SuccessAlertBotomCenter title={props.alert.message} />}
 
             <Grid>
                 <Paper elevation={10} className={classes.paperStyle2}>

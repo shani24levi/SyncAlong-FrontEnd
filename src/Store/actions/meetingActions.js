@@ -42,17 +42,10 @@ export const futureMeetings = () => dispatch => {
 };
 
 export const getAllMeetings = () => dispatch => {
-    // dispatch(setLoading(true));
-    console.log('meetings');
+    dispatch(setLoading(true));
     meetingsService.allMeetings()
         .then(
             meetings => {
-                // console.log(meetings.data);
-                // let m = meetings.data.map(i => {
-                //     console.log(i.date);
-                //     i.date = new Date(i.date?.slice(0, -1));
-                // })
-                // console.log(meetings.data);
                 dispatch({
                     type: GET_ALL_MEETINGS,
                     payload: meetings.data
@@ -136,7 +129,7 @@ export const getActiveMeeting = () => dispatch => {
 
 export const deleteMeeting = (id) => dispatch => {
     dispatch(setLoading(true));
-    meetingsService.deleteMeeting(id)
+    meetingsService.deleteMeeting(id._id)
         .then(
             meetings => {
                 dispatch(success(id))

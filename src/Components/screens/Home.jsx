@@ -23,6 +23,7 @@ const Home = ({ socket }) => {
 
     const [meeting, setMeeting] = useState(false);
     const [date, setDate] = useState(0);
+    const [dateToMeeting, setDateToMeeting] = useState(0);
 
     const [trineeOnline, setTrineeOnline] = useState({});
 
@@ -55,15 +56,21 @@ const Home = ({ socket }) => {
         }
     }, [traineeEntered]);
 
-
     useEffect(() => {
+        console.log('====================================');
+        console.log(meetings.upcoming_meeting);
+        console.log('====================================');
         if (!isEmpty(upcamingMeeting)) {
             const t = new Date(meetings.upcoming_meeting?.date?.slice(0, -1));
+            t.setHours(t.getHours() + 2);
+            setDateToMeeting(t);
             setDate(t.getTime() / 1000)
             setMeeting(true)
+
+            //relaod page
         }
         else setMeeting(false)
-    }, [upcamingMeeting])
+    }, [meetings.upcoming_meeting])
 
     //const scheduleMeetingPopUpCall = { id: 'ddd', trainee: { user: 'nam2', avatar: '22' }, trainer: { user: 'name1', avatar: '233' } }
     // console.log('scheduleMeetingPopUpCall', scheduleMeetingPopUpCall);
@@ -77,7 +84,7 @@ const Home = ({ socket }) => {
             {
                 user.role === 'trainer'
                     ?
-                    <TrainerHome meeting={meeting} date={date} />
+                    <TrainerHome meeting={meeting} date={date} dateToMeeting={dateToMeeting} />
                     :
                     <TraineeHome meeting={meeting} date={date} />
             }

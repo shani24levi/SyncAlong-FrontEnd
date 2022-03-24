@@ -105,7 +105,7 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
         e.preventDefault();
         setLoadingType('delete');
         setClose(true)
-        dispatch(deleteMeeting(modalData._id));
+        dispatch(deleteMeeting(modalData));
     }
 
     const handleChange = (newValue) => {

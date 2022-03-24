@@ -9,6 +9,7 @@ import isEmpty from '../../validation/isEmpty';
 import NextMeetingTime from '../meeting/NextMeetingTime';
 import { Helmet } from "react-helmet";
 import Search from '../search/Search';
+import Swal from 'sweetalert2';
 
 import buttonsStyles from "../../assets/theme/buttons";
 import QuickStartBtn from './QuickStartBtn';
@@ -64,7 +65,7 @@ const SubTitle = styled('span')(({ theme }) => ({
 }))
 
 //Trainer will have his data , graph and lists
-function TrainerHome({ meeting, date }) {
+function TrainerHome({ meeting, date, dateToMeeting }) {
     const { scheduleMeetingPopUpCall, upcamingMeeting } = useContext(SocketContext);
     const classes = useStyles();
     const btnClasses = buttonStyle();
@@ -76,6 +77,27 @@ function TrainerHome({ meeting, date }) {
 
     // console.log('upcamingMeeting', upcamingMeeting, !isEmpty(upcamingMeeting), meetings.meetings);
     // console.log('meeting', meeting, 'date', date);
+
+    const handelConectNow = () => {
+        if (upcamingMeeting) {
+            //sand popup call to trainee
+
+            //if no socket to trainee_id -> say to trainer Cant start now try layter 
+
+            //move trainer to vodo-room page
+            console.log('cliclllllkkkk');
+        }
+        else {
+            Swal.fire({
+                title: 'Cant conect',
+                width: 600,
+                padding: '3em',
+                showCancelButton: true,
+                background: '#fff',
+                backdrop: `rgba(0,0,123,0.4)`
+            })
+        }
+    }
 
     return (
         <>
@@ -99,7 +121,8 @@ function TrainerHome({ meeting, date }) {
                     {my_trainees && my_trainees.lenght != 0 && <TraineesCard />}
 
                     <Grid item xs={12} md={12}>
-                        <CardContiner title="Your up caming meeting" >
+                        <CardContiner title="Your up caming meeting" subtitle={dateToMeeting === 0 ? '' : dateToMeeting.toString()} >
+                            {!isEmpty(upcamingMeeting) && 'Participants :  ' + upcamingMeeting?.tariner.user + ' && ' + upcamingMeeting?.trainee.user}
                             {meetings?.meetings && meetings?.meetings?.lenght != 0 && meeting && !isEmpty(upcamingMeeting) && (date !== 0 || date !== NaN) && <NextMeetingTime upcamingMeeting={upcamingMeeting} date={!date ? 0 : date} />}
                             <Box
                                 component="span"
@@ -110,6 +133,7 @@ function TrainerHome({ meeting, date }) {
                                     color='primary'
                                     startIcon={<CallIcon />}
                                     className={btnClasses.blueRound}
+                                    onClick={handelConectNow}
                                 >
                                     Conect Now
                                 </Button>

@@ -90,7 +90,7 @@ function VideoContext({ meeting }) {
             console.log('posesArry', posesArry);
             await sendMyPoses(timeOfColectionPose, posesArry, meeting.activities[currActivity])
         }
-    }, [posesArry]);
+    }, [posesArry, currData]);
 
     useEffect(async () => {
         setSync(true);
@@ -188,7 +188,7 @@ function VideoContext({ meeting }) {
         if (session && peer2inFrame && (recognition === 'start' || recognition === 'continue')) {
             console.log('recognition', recognition);
             let status = await activitiesSession();
-            console.log(status)
+            console.log('is activity ended? -', status, ',activiry stoped by voice ')
         }
     }, [recognition, session, peer2inFrame]);
 
@@ -258,10 +258,6 @@ function VideoContext({ meeting }) {
         //trainee answerrrs....
         if (accseptScheduleMeetingCall && myRole === 'trainee' && mediaPipeInitilaize === 'none' && call.isReceivingCall && !callAccepted) {
             setConectReq(true)
-            // await delay(5000);
-            // console.log('====================================');
-            // console.log('wauted 5 sec and theb answer');
-            // console.log('====================================');
             answerCall();
         }
     }, [accseptScheduleMeetingCall, mediaPipeInitilaize, isPeerHere, call, callAccepted, mediapipeOfTrainee]);

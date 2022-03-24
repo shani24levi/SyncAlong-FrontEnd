@@ -11,7 +11,8 @@ import {
     TRAINEE_DELETE,
     UPDATE_AVATAR,
     UPDATE_USER,
-    CLEAR_AUTH
+    CLEAR_AUTH,
+    AUTH_PROFILE
 } from './types';
 import { userService } from '../../servises';
 import { alertActions } from './alertActions';
@@ -150,6 +151,8 @@ function failure(error) { return { type: GET_ERRORS, payload: error.error } }
 function clear(eror) { return { type: CLEAR_ERRORS } }
 
 export const clearLogoutAuth = () => { return { type: CLEAR_AUTH }; };
+
+export function seccesProfile(profile) { return { type: AUTH_PROFILE, payload: profile }; }
 
 export const setLoading = (val) => {
     return {

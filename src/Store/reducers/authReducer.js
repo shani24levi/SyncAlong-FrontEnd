@@ -9,6 +9,7 @@ import {
   UPDATE_AVATAR,
   UPDATE_USER,
   CLEAR_AUTH,
+  AUTH_PROFILE,
 } from '../actions/types';
 
 let user = localStorage.getItem('user');
@@ -33,6 +34,14 @@ export default function (state = initialState, action) {
         user: action.payload,
         loading: false,
       };
+    case AUTH_PROFILE:
+      state.user.profile_id = action.payload
+      //console.log(action.payload, 'state user', state);
+      return {
+        ...state,
+        loading: false,
+      };
+
     case GET_CURR_USER:
       return {
         user: user,

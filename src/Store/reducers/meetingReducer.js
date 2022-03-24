@@ -1,4 +1,7 @@
+import MeetingModal from '../../Components/meeting/scheduleMeetings/MeetingModal';
 import isEmpty from '../../validation/isEmpty';
+import inFutuer from '../../validation/inFutuer';
+
 import {
     CREATE_MEETING, GET_ERRORS, GET_MEETINGS, GET_FUTURE_MEETINGS,
     MEETINGS_LOADING, GET_CURR_ACTIVITIES, GET_ALL_MEETINGS,
@@ -16,7 +19,29 @@ const initialState = {
     active_meeting: null,
 }
 
+
 export default function (state = initialState, action) {
+    const setUpcomingMeeting = (meeting, type) => {
+        if (type === 'add') {
+            console.log(inFutuer(meeting.date, new Date().setSeconds(0, 0)));
+            if (!state.upcoming_meeting && inFutuer(meeting.date, new Date().setSeconds(0, 0))) return meeting;
+            if (inFutuer(state.upcoming_meeting.date, meeting.date)) {
+                console.log('up', meeting);
+                return meeting;
+            }
+            else {
+                console.log('up starte', state.upcoming_meeting);
+                return state.upcoming_meeting;
+            }
+        }
+
+        else if (type === 'delete') {
+            if (state.upcoming_meeting._id === meeting._id) {
+                if (state.meetings && state.meetings.lenght !== 0) return state.meetings[0]
+                else return null
+            } else return state.upcoming_meeting;
+        }
+    }
     switch (action.type) {
         case MEETINGS_LOADING:
             return {
@@ -49,9 +74,9 @@ export default function (state = initialState, action) {
             console.log(action.payload.data.data);
             return {
                 ...state,
-                all_meetings: !state.all_meetings ? [action.payload] : [...state.all_meetings, action.payload.data.data],
+                all_meetings: !state.all_meetings ? [action.payload.data.data] : [...state.all_meetings, action.payload.data.data],
                 meetings: !state.meetings ? [action.payload] : [...state.meetings, action.payload.data.data],
-                // [action.payload, ...state.meetings],
+                upcoming_meeting: setUpcomingMeeting(action.payload.data.data, 'add'),
                 loading: false,
             };
         case GET_CURR_ACTIVITIES:
@@ -77,13 +102,13 @@ export default function (state = initialState, action) {
                 active_meeting: action.payload
             }
         case DELETE_MEETING:
-            console.log("DELETE_MEETING", action.payload);
+            console.log("DELETE_MEETING", action.payload._id);
             return {
                 ...state,
                 loading: false,
-                meetings: !state.meetings ? null : state.meetings.filter(m => m._id !== action.payload),
-                all_meetings: state.all_meetings.filter(m => m._id !== action.payload),
-                upcoming_meeting: state.upcoming_meeting?._id === action.payload ? null : state.upcoming_meeting,
+                meetings: !state.meetings ? null : state.meetings.filter(m => m._id !== action.payload._id),
+                all_meetings: state.all_meetings.filter(m => m._id !== action.payload._id),
+                upcoming_meeting: setUpcomingMeeting(action.payload, 'delete') //state.upcoming_meeting?._id === action.payload ? null : state.upcoming_meeting,
             }
 
 

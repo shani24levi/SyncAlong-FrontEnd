@@ -534,11 +534,14 @@ function ContextProvider({ children, socket, profile }) {
   }, [meetings?.meetings]);
 
   function meetingsListener() {
+    console.log('upcamingMeeting', upcamingMeeting);
     // loop function
     setTimeout(function () {
       //  call a 30s setTimeout when the loop is called
       let currentTime = new Date().setSeconds(0, 0);
       const date = new Date(meetings.upcoming_meeting?.date?.slice(0, -1)); // delte z from date
+      date.setHours(date.getHours() + 2);
+      console.log('datedate', date);
       let upcomingMeeting = date.getTime();
       // console.log('a', currentTime, upcomingMeeting, currentTime < upcomingMeeting);
       //console.log(currentTime === upcomingMeeting, meetings.upcoming_meeting);
@@ -603,7 +606,7 @@ function ContextProvider({ children, socket, profile }) {
 
   const lisiningResivingSyncScore = () => {
     socket?.on('syncScore', (sync_score) => {
-      // console.log('///...score.../// ', sync_score);
+      console.log('///...score.../// ', sync_score);
       setSyncScore(sync_score);
     });
   };
@@ -640,13 +643,13 @@ function ContextProvider({ children, socket, profile }) {
 
     peer.on('data', (data) => {
       data = JSON.parse(data);
-      console.log('data', data);
+      // console.log('data', data);
       onResults2({ poseLandmarks: data });
     });
     peer.on('connect', () => {
       //console.log("poseLandmarks: ", poseLandmarks_ref.current);
       let state = peer._pc?.connectionState;
-      console.log("datachannel", state, "peer", peer);
+      // console.log("datachannel", state, "peer", peer);
       if (
         poseLandmarks_ref.current !== null &&
         poseLandmarks_ref.current !== undefined &&
@@ -697,7 +700,7 @@ function ContextProvider({ children, socket, profile }) {
     peer.on('connect', () => {
       // console.log("poseLandmarks: ", poseLandmarks_ref.current);
       let state = peer._pc?.connectionState;
-      console.log("datachannel", state, "peer", peer);
+      // console.log("datachannel", state, "peer", peer);
       if (
         poseLandmarks_ref.current !== null &&
         poseLandmarks_ref.current !== undefined &&

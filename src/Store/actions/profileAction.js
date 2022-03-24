@@ -14,15 +14,16 @@ import {
 } from './types';
 import { profileService } from '../../servises';
 import { alertActions } from './alertActions';
+import { seccesProfile } from './authAction';
 
 export const createProfile = data => dispatch => {
     dispatch(setLoading(true));
-    console.log(data);
     profileService.createProfile(data)
         .then(
             profile => {
                 dispatch(success(profile));
                 dispatch(alertActions.success('Profile created successfuly'));
+                dispatch(seccesProfile(profile.data._id));
                 dispatch(clear());
             },
             error => {
