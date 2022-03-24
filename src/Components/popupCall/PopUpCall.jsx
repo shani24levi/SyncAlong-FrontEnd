@@ -39,22 +39,22 @@ function PopUpCall(props) {
     }, [isModalVisible])
 
     const showModal = (showVal) => {
-        let roomId = scheduleMeetingPopUpCall._id;
+        let roomId = currMeeting._id;
         let from = user._id;
-        let to = scheduleMeetingPopUpCall.tariner._id !== user._id ? scheduleMeetingPopUpCall.tariner._id : scheduleMeetingPopUpCall.trainee._id;
+        let to = currMeeting.tariner._id !== user._id ? currMeeting.tariner._id : currMeeting.trainee._id;
 
         socket?.emit("joinUser", from, to, roomId, users => {
             console.log('getUsers', users);
         });
         socket?.off("joinUser");
 
-        dispatch(setActiveMeeting(scheduleMeetingPopUpCall, { status: true }));
+        dispatch(setActiveMeeting(currMeeting, { status: true }));
         setScheduleMeetingPopUpCall({});
         setIsModalVisible(showVal);
         Audio.current.pause();
         setAccseptScheduleMeetingCall(true);
         setCallTrainee(false);
-        navigate('/video-room', { state: { meeting: scheduleMeetingPopUpCall } });
+        navigate('/video-room', { state: { meeting: currMeeting } });
     };
 
     const handleClose = (showVal) => {
@@ -93,7 +93,7 @@ function PopUpCall(props) {
                         open={isModalVisible}
                         TransitionComponent={Transition}
                         keepMounted
-                        onClose={handleClose}
+                        //   onClose={handleClose}
                         aria-describedby="alert-dialog-slide-description"
                     >
                         <DialogTitle>{"Schedule Meeting Call"}</DialogTitle>

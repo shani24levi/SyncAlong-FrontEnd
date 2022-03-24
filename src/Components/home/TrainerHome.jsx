@@ -69,7 +69,7 @@ const SubTitle = styled('span')(({ theme }) => ({
 
 //Trainer will have his data , graph and lists
 function TrainerHome({ meeting, date, dateToMeeting }) {
-    const { setYourSocketId, socket, setUpcomingMeetingToNow, scheduleMeetingPopUpCall, upcamingMeeting } = useContext(SocketContext);
+    const { setAccseptScheduleMeetingCall, setYourSocketId, socket, setUpcomingMeetingToNow, scheduleMeetingPopUpCall, upcamingMeeting } = useContext(SocketContext);
     const navigate = useNavigate();
     const classes = useStyles();
     const btnClasses = buttonStyle();
@@ -102,15 +102,16 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
                     //move trainer to vodo-room page
                     //vodo-room page chacks what the socket id of the participamts 
                     //if ther is none for trainee then dont conect and set an error display
-                    // let roomId = upcamingMeeting._id;
-                    // let from = upcamingMeeting.tariner._id;
-                    // let to = upcamingMeeting.trainee._id;
+                    let roomId = upcamingMeeting._id;
+                    let from = upcamingMeeting.tariner._id;
+                    let to = upcamingMeeting.trainee._id;
 
-                    // socket?.emit("joinUser", from, to, roomId, users => {
-                    //     console.log('getUsers', users);
-                    // });
-                    // socket?.off("joinUser");
-                    // navigate('/video-room', { state: { meeting: upcamingMeeting } });
+                    socket?.emit("joinUser", from, to, roomId, users => {
+                        console.log('getUsers', users);
+                    });
+                    socket?.off("joinUser");
+                    setAccseptScheduleMeetingCall(true);
+                    navigate('/video-room', { state: { meeting: upcamingMeeting } });
                     return;
                 }
                 else if (user === null) {

@@ -249,6 +249,9 @@ function VideoContext({ meeting }) {
     }, [accseptScheduleMeetingCall, yourSocketId]);
 
     useEffect(() => {
+        console.log('spossss to do somting');
+        console.log(accseptScheduleMeetingCall, myRole, mediaPipeInitilaize, isPeerHere, mediapipeOfTrainee, oneTime);
+
         //teainer is calling to trainee......
         if (accseptScheduleMeetingCall && myRole === 'trainer' && mediaPipeInitilaize === 'none' && isPeerHere && mediapipeOfTrainee && oneTime) {
             setOneTime(false);
