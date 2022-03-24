@@ -7,13 +7,18 @@ import { Box, Container, Grid } from "@material-ui/core";
 import NextMeetingTime from '../meeting/NextMeetingTime';
 // core components
 import componentStyles from "../../assets/material-ui-style/componenets/auth-header";
+import PopUpCall from '../popupCall/PopUpCall';
 const useStyles = makeStyles(componentStyles);
 
 function TraineeHome({ meeting, date }) {
-    const { scheduleMeetingPopUpCall, upcamingMeeting } = useContext(SocketContext);
+    const { callTrainee, upcomingMeetingToNow, scheduleMeetingPopUpCall, upcamingMeeting } = useContext(SocketContext);
     const classes = useStyles();
     const theme = useTheme();
     const user = useSelector(state => state.auth.user);
+
+    console.log('====================================');
+    console.log(callTrainee);
+    console.log('====================================');
 
     return (
         <Box
@@ -22,6 +27,7 @@ function TraineeHome({ meeting, date }) {
             paddingTop="8rem"
             paddingBottom="8rem"
         >
+            {callTrainee && <PopUpCall />}
             <Container maxWidth="xl">
                 <Box marginBottom="6rem" textAlign="center">
                     <Box

@@ -10,6 +10,7 @@ import NextMeetingTime from '../meeting/NextMeetingTime';
 import { Helmet } from "react-helmet";
 import Search from '../search/Search';
 import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom'
 
 import buttonsStyles from "../../assets/theme/buttons";
 import QuickStartBtn from './QuickStartBtn';
@@ -25,6 +26,8 @@ import SeccsesAlert from '../alrets/SeccsesAlert';
 import LoadingModal from '../modal/LoadingModal';
 import CallIcon from '@mui/icons-material/Call';
 import TraineesCard from './trainer/TraineesCard';
+import ErrorAlert from '../alrets/ErrorAlert';
+import { delay } from '../../helpers';
 
 const buttonStyle = makeStyles(buttonsStyles);
 
@@ -66,26 +69,56 @@ const SubTitle = styled('span')(({ theme }) => ({
 
 //Trainer will have his data , graph and lists
 function TrainerHome({ meeting, date, dateToMeeting }) {
-    const { scheduleMeetingPopUpCall, upcamingMeeting } = useContext(SocketContext);
+    const { setYourSocketId, socket, setUpcomingMeetingToNow, scheduleMeetingPopUpCall, upcamingMeeting } = useContext(SocketContext);
+    const navigate = useNavigate();
     const classes = useStyles();
     const btnClasses = buttonStyle();
     const theme = useTheme();
     const profile = useSelector(state => state.profile.profile)
-    const [alart, setAlart] = useState(false);
+    const [errorDisplay, setErrorDisplay] = useState(false);
     const meetings = useSelector(state => state.meetings);
     const my_trainees = useSelector(state => state.profile.trainees_profiles);
 
     // console.log('upcamingMeeting', upcamingMeeting, !isEmpty(upcamingMeeting), meetings.meetings);
     // console.log('meeting', meeting, 'date', date);
 
+    useEffect(async () => {
+        if (errorDisplay) {
+            await delay(3000);
+            setErrorDisplay(false);
+        }
+    }, [errorDisplay])
+
     const handelConectNow = () => {
         if (upcamingMeeting) {
-            //sand popup call to trainee
-
-            //if no socket to trainee_id -> say to trainer Cant start now try layter 
-
-            //move trainer to vodo-room page
             console.log('cliclllllkkkk');
+            //get your socket id
+            socket?.emit("getSocketId", upcamingMeeting.trainee._id, user => {
+                console.log('getSocketId', upcamingMeeting.trainee._id, user);
+                if (user !== null) {
+                    setYourSocketId(user?.socketId);
+                    //sand popup call to trainee
+                    setUpcomingMeetingToNow(true);
+                    //move trainer to vodo-room page
+                    //vodo-room page chacks what the socket id of the participamts 
+                    //if ther is none for trainee then dont conect and set an error display
+                    // let roomId = upcamingMeeting._id;
+                    // let from = upcamingMeeting.tariner._id;
+                    // let to = upcamingMeeting.trainee._id;
+
+                    // socket?.emit("joinUser", from, to, roomId, users => {
+                    //     console.log('getUsers', users);
+                    // });
+                    // socket?.off("joinUser");
+                    // navigate('/video-room', { state: { meeting: upcamingMeeting } });
+                    return;
+                }
+                else if (user === null) {
+                    console.log('errrorrrrrrr rturnnnnn');
+                    setErrorDisplay(true);
+                    return;
+                }
+            });
         }
         else {
             Swal.fire({
@@ -107,6 +140,7 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
                 src={require("../../assets/img/path1.png").default}
             />
             <Container maxWidth="xl">
+                {errorDisplay && <ErrorAlert name={upcamingMeeting.trainee.user} title=" is not online in order to conect joined meeting" />}
                 <Grid container alignItems='center' justifyContent='center' spacing={1} >
                     <Grid item xs={3} md={4}>
                         <QuickStartBtn />

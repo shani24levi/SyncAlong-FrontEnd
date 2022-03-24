@@ -24,9 +24,11 @@ const Transition = forwardRef(function Transition(props, ref) {
 });
 
 function PopUpCall(props) {
-    const { socket, setAccseptScheduleMeetingCall, scheduleMeetingPopUpCall, setScheduleMeetingPopUpCall, setIsModalVisible, isModalVisible, Audio, answerCall, call, callAccepted } = useContext(SocketContext);
+    const { setCallTrainee, socket, setAccseptScheduleMeetingCall, scheduleMeetingPopUpCall, setScheduleMeetingPopUpCall, setIsModalVisible, isModalVisible, Audio, answerCall, call, callAccepted } = useContext(SocketContext);
     // const scheduleMeetingPopUpCall = { id: 'ddd', trainee: { user: 'nam2', avatar: '22' }, trainer: { user: 'name1', avatar: '233' } }
     const user = useSelector(state => state.auth.user);
+    const meetings = useSelector(state => state.meetings);
+    const [currMeeting, setCurrMeeting] = useState(scheduleMeetingPopUpCall);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -51,11 +53,13 @@ function PopUpCall(props) {
         setIsModalVisible(showVal);
         Audio.current.pause();
         setAccseptScheduleMeetingCall(true);
+        setCallTrainee(false);
         navigate('/video-room', { state: { meeting: scheduleMeetingPopUpCall } });
     };
 
     const handleClose = (showVal) => {
         setScheduleMeetingPopUpCall({});
+        setCallTrainee(false);
         setIsModalVisible(showVal);
         Audio.current.pause();
         //declineCall
@@ -70,12 +74,19 @@ function PopUpCall(props) {
     // _id: "6235d3e3f556f618668c617b"
 
     console.log('scheduleMeetingPopUpCall', scheduleMeetingPopUpCall);
+    console.log('meetings', meetings);
     console.log('isModalVisible', isModalVisible);
     console.log('user.role', user.role);
 
+    useEffect(() => {
+        if (!isEmpty(scheduleMeetingPopUpCall)) setCurrMeeting(scheduleMeetingPopUpCall)
+        else if (!isEmpty(meetings.upcoming_meeting)) setCurrMeeting(meetings.upcoming_meeting)
+    }, [])
+
+
     return (
         <>
-            {!isEmpty(scheduleMeetingPopUpCall) && (
+            {(!isEmpty(currMeeting)) && (
                 <>
                     <audio src={Calling} loop ref={Audio} />
                     <Dialog
@@ -90,8 +101,8 @@ function PopUpCall(props) {
                             <DialogContentText id="alert-dialog-slide-description">
                                 Your Meeting with {" "}
                                 {user.role === 'trainer' //trainer
-                                    ? scheduleMeetingPopUpCall.trainee.user
-                                    : scheduleMeetingPopUpCall.tariner.user ////erroreee text 
+                                    ? currMeeting.trainee.user
+                                    : currMeeting.tariner.user ////erroreee text 
                                 }
                                 {" "} is NOW ! !
                                 <img
@@ -105,14 +116,14 @@ function PopUpCall(props) {
                                 <Grid item>
                                     <Avatar
                                         alt="avatar"
-                                        src={scheduleMeetingPopUpCall.trainee.avatar}
+                                        src={currMeeting.trainee.avatar}
                                         sx={{ width: 70, height: 70 }}
                                     >{user.user}</Avatar>
                                 </Grid>
                                 <Grid item>
                                     <Avatar
                                         alt="avatar"
-                                        src={scheduleMeetingPopUpCall.tariner.avatar}
+                                        src={currMeeting.tariner.avatar}
                                         sx={{ width: 70, height: 70 }}
                                     />
                                 </Grid>

@@ -61,6 +61,9 @@ function ContextProvider({ children, socket, profile }) {
   const [conectReq, setConectReq] = useState(false);
   const [oneTime, setOneTime] = useState(true);
   const [mediapipeOfTrainee, setMediapipeOfTrainee] = useState(false);
+  const [upcomingMeetingToNow, setUpcomingMeetingToNow] = useState(false);
+  const [callTrainee, setCallTrainee] = useState(false);
+
 
   const [emoji, setEmoji] = useState(null);
   const myVideo = useRef();
@@ -390,6 +393,7 @@ function ContextProvider({ children, socket, profile }) {
     lisiningNotifications();
     !peer2inFrame && lisiningPeer2InFrame();
     lisiningMediaPipe();
+    lisiningTraineeCall();
   }, [socket]);
 
   useEffect(() => {
@@ -512,6 +516,16 @@ function ContextProvider({ children, socket, profile }) {
     }
   }, [userEnteredNow]);
 
+  useEffect(() => {
+    if (upcomingMeetingToNow && !isEmpty(upcamingMeeting) && yourSocketId) {
+      console.log('hererererrere');
+      socket?.emit('calltoTrainee', yourSocketId);
+      setUpcomingMeetingToNow(false);
+    }
+  }, [upcomingMeetingToNow]);
+
+
+
   //======================helpers func==============================//
   //===============FOR POP UP MEETING IS NOW=========================//
   //===== It's here because it wraps the interface and all the pages ...
@@ -628,6 +642,13 @@ function ContextProvider({ children, socket, profile }) {
     socket?.on('t', (id) => {
       console.log(id);
       setMediapipeOfTrainee(id);
+    });
+  };
+
+  const lisiningTraineeCall = () => {
+    socket?.on('calltoTrainee', (data) => {
+      console.log(data);
+      setCallTrainee(data);
     });
   };
   //===================socket calls when user in room and whant to call============================//
@@ -835,7 +856,9 @@ function ContextProvider({ children, socket, profile }) {
         activity_now,
         setActivityNow,
         setSyncScore,
-        mediapipeOfTrainee
+        mediapipeOfTrainee,
+        upcomingMeetingToNow, setUpcomingMeetingToNow,
+        callTrainee, setCallTrainee,
       }}
     >
       {children}

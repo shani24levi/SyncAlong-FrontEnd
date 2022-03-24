@@ -334,7 +334,7 @@ function VideoContext({ meeting }) {
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                 {meeting.activities.map(i => {
                     return (
-                        <Box sx={{ borderRadius: '16px' }} className={classes.activityList} style={{ color: meeting.activities[currActivity] === i ? 'blue' : 'black' }}>{i}</Box>
+                        <Box key={i} sx={{ borderRadius: '16px' }} className={classes.activityList} style={{ color: meeting.activities[currActivity] === i ? 'blue' : 'black' }}>{i}</Box>
                     )
                 })
                 }
@@ -345,7 +345,6 @@ function VideoContext({ meeting }) {
                 <Button onClick={() => {
                     setSettingUserInFrame(true)
                     setPeer2inFrame(true)
-                    //stream.getTracks().forEach(track => track.stop())
                 }}>Stop Stream</Button>
 
                 <Button onClick={() => {
