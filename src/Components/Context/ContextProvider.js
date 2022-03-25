@@ -476,6 +476,9 @@ function ContextProvider({ children, socket, profile }) {
         time: new Date().toLocaleString(),
         roomId
       };
+      if (recognition === 'leave') {
+        console.log('leve clear');
+      }
       socket?.emit('sendNotification', data);
     }
   }, [recognition]);

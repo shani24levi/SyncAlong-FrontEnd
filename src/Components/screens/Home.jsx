@@ -62,7 +62,7 @@ const Home = ({ socket }) => {
         console.log('====================================');
         if (!isEmpty(upcamingMeeting)) {
             const t = new Date(meetings.upcoming_meeting?.date?.slice(0, -1));
-            t.setHours(t.getHours() + 2);
+            t.setHours(t.getHours() + 3);
             setDateToMeeting(t);
             setDate(t.getTime() / 1000)
             setMeeting(true)

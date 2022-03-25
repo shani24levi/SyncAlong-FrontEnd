@@ -31,6 +31,10 @@ function SpeachRecognition(props) {
             command: ['קדימה', 'next'],
             callback: () => { setRecognition('next') }
         },
+        {
+            command: ['leave'],
+            callback: () => { setRecognition('leave') }
+        },
     ]
 
     const {

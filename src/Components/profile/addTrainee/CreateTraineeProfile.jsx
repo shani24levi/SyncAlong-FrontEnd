@@ -56,7 +56,7 @@ function CreateTraineeProfile({
                             name="relations"
                             defaultValue={relation}
                             onChange={(event) => { setRelation(event.target.value); }}
-                            error={errors.relation || !relation}
+                            error={errors.relation}
                             helperText={errors["relation"] && <Typography color="error" variant="body2"> {errors["relation"]}</Typography>}
                         />
                     </Grid>

@@ -23,6 +23,7 @@ import DesktopDatePicker from '@mui/lab/DesktopDatePicker'
 
 import buttonsStyles from "../../../../assets/theme/buttons";
 import isEmpty from '../../../../validation/isEmpty';
+import CheckboxActivities from '../../../activieties-checkbox/CheckboxActivities';
 const buttonStyle = makeStyles(buttonsStyles);
 
 function CreateMeeting({ modalData, modalCreate, handelClose }) {
@@ -112,6 +113,7 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
         setValue(newValue);
     };
 
+    console.log('activities.....', activities);
     return (
         <>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -188,7 +190,8 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
                         {
                             traineeId ?
                                 <Grid item xs={12} sm={12}>
-                                    <FormControl fullWidth>
+                                    <CheckboxActivities activities={activities} setActivities={setActivities} traineeId={traineeId} />
+                                    {/* <FormControl fullWidth>
                                         <InputLabel id="activities-select-label">Activities</InputLabel>
                                         <Select
                                             labelId="activites-select-label"
@@ -201,7 +204,7 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
                                             <MenuItem value={20}>Twenty</MenuItem>
                                             <MenuItem value={30}>Thirty</MenuItem>
                                         </Select>
-                                    </FormControl>
+                                    </FormControl> */}
                                 </Grid>
                                 :
                                 <></>

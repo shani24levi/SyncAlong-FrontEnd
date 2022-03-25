@@ -227,6 +227,11 @@ function VideoContext({ meeting }) {
             nextActivitySession();
             console.log('next....');
         }
+        else if (recognition == 'leave') {
+            setActivitiesEnded(true);
+
+            console.log('leave....');
+        }
     }, [recognition]);
 
     const swalAlret = () => {
