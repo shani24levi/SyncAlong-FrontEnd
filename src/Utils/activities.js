@@ -19,7 +19,7 @@ export const activities = {
     arms: [
         'hands-x', 'hands-y', 'swim-hands',
     ],
-    abdomen: ['squats', 'crunches'],
+    abdomen: ['baly-work'],
     legs_knees: [
         'left-leg-up', 'right-leg-up', 'legs-bouth-up',
     ],

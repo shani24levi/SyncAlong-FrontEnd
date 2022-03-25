@@ -79,7 +79,6 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
         if (!value) errors["value"] = "*Time & Date is required"
         if (!traineeId) errors["traineeId"] = "*Please selecte user for the activitiy";
 
-        console.log('dddddd', title, value, traineeId);
         if (!isEmpty(errors)) {
             setErorrs(errors);
             return;
@@ -92,8 +91,8 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
                 trainee: traineeId,
                 date: value,
             }
-            console.log('data', data);
             if (activities.length != 0) data.activities = activities;
+            console.log('data', data);
             dispatch(craeteMeetings(data));
         }
         //edit
@@ -113,7 +112,11 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
         setValue(newValue);
     };
 
-    console.log('activities.....', activities);
+
+    console.log('====================================');
+    console.log('activities', activities);
+    console.log('====================================');
+
     return (
         <>
             <LocalizationProvider dateAdapter={AdapterDateFns}>

@@ -33,7 +33,6 @@ function CheckboxActivities({ activities, setActivities, traineeId }) {
     const [AllBody, setAllBody] = useState([]);
     const [allSet, setAllSet] = useState(false);
 
-
     const profile = useSelector(state => state.profile.profile);
     const trainees_profiles = useSelector(state => state.profile.trainees_profiles);
     const limits_areas = ['arms', 'abdomen', 'legs_knees', 'lower_back', 'upper_back', 'none'];
@@ -73,7 +72,6 @@ function CheckboxActivities({ activities, setActivities, traineeId }) {
             setAllSet(true);
         }
     }, [ourActivities])
-
 
     return (
         <Box sx={{ mx: 'auto', textAlign: 'center', fontSize: '0.875rem', fontWeight: '700' }}>

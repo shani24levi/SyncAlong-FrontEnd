@@ -1,12 +1,15 @@
 import React from 'react';
 import Card from '@mui/material/Card';
+import CardMedia from '@mui/material/CardMedia';
 import { makeStyles } from "@material-ui/core";
 import Checkbox from '@mui/material/Checkbox';
 import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
 import Favorite from '@mui/icons-material/Favorite';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import AddIcon from '@mui/icons-material/Add';
+import DoneIcon from '@mui/icons-material/Done';
 
-import componentStyles from "../../assets/material-ui-style/componenets/profile";
+import componentStyles from "../../assets/material-ui-style/componenets/activity";
 const useStyles = makeStyles(componentStyles);
 
 function ActivityItem({ activity, setActivities, activities }) {  //activities==chosen in clicked
@@ -23,14 +26,19 @@ function ActivityItem({ activity, setActivities, activities }) {  //activities==
         setActivities(activities);
     }
 
-    console.log('====================================');
-    console.log('activities', activities);
-    console.log('====================================');
     return (
-        <Card className={classes.cardCheckbox}>
+
+        <Card className={classes.cardCheckbox}
+        >
+            <CardMedia
+                component="img"
+                height="140"
+                image={`/activities\\${activity}.gif`}
+                alt="green iguana"
+            />
             <FormControlLabel
                 value="top"
-                control={<Checkbox color='secondary' icon={<FavoriteBorder />} checkedIcon={<Favorite />}
+                control={<Checkbox color='secondary' icon={<AddIcon />} checkedIcon={<DoneIcon />}
                     onClick={() => hadelActivity(activity)}
                 />}
                 label={activity}
