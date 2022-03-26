@@ -13,6 +13,7 @@ import { connect } from 'react-redux';
 import { setCurrentUser, logoutUser } from './Store/actions/authAction';
 import { setCurrentProfile, getTraineesProfiles, getAllTraineesProfiles } from './Store/actions/profileAction';
 import { futureMeetings } from './Store/actions/meetingActions';
+import { getSync } from './Store/actions/syncActions'; 
 //utiles needed
 import setAuthToken from './Utils/setAuthToken';
 import jwt_decode from 'jwt-decode';
@@ -31,6 +32,7 @@ import Profile from './Components/screens/Profile';
 import AddTrainee from './Components/profile/addTrainee/AddTrainee';
 import ScheduleMeetings from './Components/screens/ScheduleMeetings';
 import TraineeView from './Components/screens/TraineeView';
+import MeetingReport from './Components/screens/MeetingReport';
 
 const App = (props) => {
   const navigate = useNavigate();
@@ -44,7 +46,7 @@ const App = (props) => {
     //   reconnection: true,
     //   reconnectionDelay: 1000,
     //   reconnectionDelayMax : 5000,
-    //   reconnectionAttempts: Infinity
+    //   reconnectionAttempts: 5,
     // }));
     return () => { }
   }, []);
@@ -114,6 +116,10 @@ const App = (props) => {
                     <Route exact path='/trainee/view' element={<TraineeView />} />
                   </Route>
 
+                  <Route exact path='/meeting/report' element={<PrivateRoute />}>
+                    <Route exact path='/meeting/report' element={<MeetingReport />} />
+                  </Route>
+
                 </Routes>
               </ContextProvider>
             </Fragment>
@@ -131,8 +137,10 @@ App.propTypes = {
   getTraineesProfiles: PropTypes.func.isRequired,
   setCurrentUser: PropTypes.func.isRequired,
   setCurrentProfile: PropTypes.func.isRequired,
+  // getSync: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   meetings: PropTypes.object.isRequired,
+  // allSync: PropTypes.object,
 };
 
 function mapStateToProps(state) {
@@ -141,7 +149,8 @@ function mapStateToProps(state) {
     loading: state.auth.loading,
     profile: state.profile,
     meetings: state.meetings,
+    // allSync: state.allSync,
   };
 }
 
-export default connect(mapStateToProps, { setCurrentUser, futureMeetings, logoutUser, setCurrentProfile, getTraineesProfiles, getAllTraineesProfiles })(App);
+export default connect(mapStateToProps, {setCurrentUser, futureMeetings, logoutUser, setCurrentProfile, getTraineesProfiles, getAllTraineesProfiles, getSync })(App);

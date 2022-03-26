@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState, useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { SocketContext } from '../ContextProvider';
 import { Grid, Typography, Paper, makeStyles, useTheme, Button, Box } from '@material-ui/core';
 import Webcam from "react-webcam";
@@ -22,6 +23,9 @@ import SeccsesAlert from '../../alrets/SeccsesAlert';
 const useStyles = makeStyles(componentStyles);
 
 function VideoContext({ meeting }) {
+
+    const navigate = useNavigate();
+
     const { mediapipeOfTrainee, conectReq, setConectReq, callUser, answerCall,
         accseptScheduleMeetingCall, yourSocketId, setSyncScore,
         setRecognition, setSettingUserInFrame, setPeer2inFrame,
@@ -31,7 +35,7 @@ function VideoContext({ meeting }) {
         myRole, emoji, startMeeting, setStream, myName, yourName,
         callAccepted, myVideo, userVideo, callEnded, stream, call, myCanvasRef,
         userCanvasRef, me, posesArry, you, sendPoses, sendMyPoses, socket,
-        activity_now, setActivityNow } = useContext(SocketContext);
+        activity_now, setActivityNow} = useContext(SocketContext);
     const classes = useStyles();
     const [start, setStartActivity] = useState(false);
     const [showDemo, setDemo] = useState(false);
@@ -156,6 +160,12 @@ function VideoContext({ meeting }) {
         return true //end of all session
     }
 
+    useEffect(()=>{
+        if(activitiesEnded == true){
+            console.log("go to repoet for meeting with id: ", meeting._id);
+            navigate('/meeting/report', {state: {meeting_id: meeting._id, me: myName, you:yourName }})
+        }
+    },[activitiesEnded])
     const prevActivitySession = () => {
         if (currActivity === 0) {
             setDisplayErrorMessage('No prev activity to go back to.... whold you like to contine?');
@@ -229,7 +239,7 @@ function VideoContext({ meeting }) {
         }
         else if (recognition == 'leave') {
             setActivitiesEnded(true);
-
+            setStop(true);
             console.log('leave....');
         }
     }, [recognition]);

@@ -1,5 +1,5 @@
 import React, { createContext, useState, useRef, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Peer from 'simple-peer/simplepeer.min.js';
 import { Holistic } from '@mediapipe/holistic';
 import * as holistic from '@mediapipe/holistic';
@@ -21,6 +21,7 @@ import draw from './DrawAnimation/draw';
 const SocketContext = createContext();
 
 function ContextProvider({ children, socket, profile }) {
+  const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user);
   const [callAccepted, setCallAccepted] = useState(false);
   const [callEnded, setCallEnded] = useState(false);
@@ -477,7 +478,7 @@ function ContextProvider({ children, socket, profile }) {
         roomId
       };
       if (recognition === 'leave') {
-        console.log('leve clear');
+        console.log('leave clear', roomId);
       }
       socket?.emit('sendNotification', data);
     }

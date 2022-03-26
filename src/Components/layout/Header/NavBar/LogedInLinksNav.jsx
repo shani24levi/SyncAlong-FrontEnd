@@ -1,4 +1,5 @@
 import React from 'react';
+import {useNavigate} from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from '../../../../Store/actions/authAction';
 import { Link } from "react-router-dom";
@@ -21,6 +22,7 @@ import componentStyles from "../../../../assets/material-ui-style/componenets/au
 const useStyles = makeStyles(componentStyles);
 
 const LogedInLinksNav = (props) => {
+    const navigate = useNavigate();
     const classes = useStyles();
     const user = props.auth.user;
     const profile = useSelector(state => state.profile.profile);
@@ -140,6 +142,15 @@ const LogedInLinksNav = (props) => {
                     className={classes.spacing}
                 />
                 {user.name}
+            </ListItem>
+            <ListItem
+                
+                onClick={() => navigate('meeting/report', {state: {meeting_id: '623c91b9ebfc668d5b26c226'}})}
+                classes={{
+                    root: classes.listItemRoot,
+                }}
+            >
+                test report
             </ListItem>
             <ListItem
                 component={Link}

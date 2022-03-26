@@ -4,6 +4,7 @@ import errorReducer from './errorReducer';
 import alertReducer from './alertReducer';
 import profileReducer from './profileReducer';
 import meetingReducer from './meetingReducer';
+import syncReducer from './syncReducer';
 
 export default combineReducers({
     auth: authReducer,
@@ -11,4 +12,5 @@ export default combineReducers({
     alert: alertReducer,
     profile: profileReducer,
     meetings: meetingReducer,
+    syncs: syncReducer
 });

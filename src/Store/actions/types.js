@@ -44,6 +44,10 @@ export const CLEAR_PROFILE = 'CLEAR_PROFILE';
 export const CLEAR_AUTH = 'CLEAR_AUTH';
 export const CLEAR_MEETINGS = 'CLEAR_MEETINGS';
 export const AUTH_PROFILE = 'AUTH_PROFILE';
+ 
+export const SYNC_LOADING = 'SYNC_LOADING';
+export const GET_CURR_SYNCS = 'GET_CURR_SYNCS';
+export const CLEAR_SYNCS = 'CLEAR_SYNCS';
 //export const  = '';
 //export const  = '';
 //export const  = '';
