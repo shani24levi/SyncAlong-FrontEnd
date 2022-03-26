@@ -35,7 +35,7 @@ function VideoContext({ meeting }) {
         myRole, emoji, startMeeting, setStream, myName, yourName,
         callAccepted, myVideo, userVideo, callEnded, stream, call, myCanvasRef,
         userCanvasRef, me, posesArry, you, sendPoses, sendMyPoses, socket,
-        activity_now, setActivityNow} = useContext(SocketContext);
+        activity_now, setActivityNow } = useContext(SocketContext);
     const classes = useStyles();
     const [start, setStartActivity] = useState(false);
     const [showDemo, setDemo] = useState(false);
@@ -160,12 +160,12 @@ function VideoContext({ meeting }) {
         return true //end of all session
     }
 
-    useEffect(()=>{
-        if(activitiesEnded == true){
+    useEffect(() => {
+        if (activitiesEnded == true) {
             console.log("go to repoet for meeting with id: ", meeting._id);
-            navigate('/meeting/report', {state: {meeting_id: meeting._id, me: myName, you:yourName }})
+            navigate('/meeting/report', { state: { meeting_id: meeting._id, me: myName, you: yourName } })
         }
-    },[activitiesEnded])
+    }, [activitiesEnded])
     const prevActivitySession = () => {
         if (currActivity === 0) {
             setDisplayErrorMessage('No prev activity to go back to.... whold you like to contine?');
@@ -280,7 +280,6 @@ function VideoContext({ meeting }) {
         }
     }, [accseptScheduleMeetingCall, mediaPipeInitilaize, isPeerHere, call, callAccepted, mediapipeOfTrainee]);
 
-
     useEffect(() => {
         console.log('mediaPipeInitilaize', mediaPipeInitilaize);
     }, [mediaPipeInitilaize])
@@ -331,7 +330,7 @@ function VideoContext({ meeting }) {
                                     style={{ transform: 'scaleX(-1)' }}
                                     ref={userCanvasRef} className={classes.video}> </canvas>
                                 // :
-                                // <video style={{ transform: 'scaleX(-1)' }} playsInline ref={userVideo} autoPlay className={classes.video}> </video>
+                                //  <video style={{ transform: 'scaleX(-1)' }} playsInline ref={userVideo} autoPlay className={classes.video}> </video>
 
                             }
                             {/* <canvas

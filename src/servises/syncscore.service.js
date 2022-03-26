@@ -3,9 +3,13 @@ import { URL } from '../Utils/globalVaribals';
 const SYNC = 'api/syncscores';
 
 const getSyncsById = (id) => {
+
     return axios
         .get(`${URL}/${SYNC}/${id}`)
-        .then(syncs => { return syncs })
+        .then(syncs => {
+            console.log('syncs', syncs);
+            return syncs
+        })
         .catch(err => {
             return Promise.reject(err.response.data);
         })

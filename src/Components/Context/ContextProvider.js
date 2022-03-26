@@ -558,7 +558,7 @@ function ContextProvider({ children, socket, profile }) {
       //  call a 30s setTimeout when the loop is called
       let currentTime = new Date().setSeconds(0, 0);
       const date = new Date(meetings.upcoming_meeting?.date?.slice(0, -1)); // delte z from date
-      date.setHours(date.getHours() + 2);
+      date.setHours(date.getHours() + 3);
       console.log('datedate', date);
       let upcomingMeeting = date.getTime();
       // console.log('a', currentTime, upcomingMeeting, currentTime < upcomingMeeting);
@@ -657,13 +657,17 @@ function ContextProvider({ children, socket, profile }) {
   };
   //===================socket calls when user in room and whant to call============================//
   function answerCall() {
+    console.log('answerCall');
     setCallAccepted(true);
     //set me as a peer and difiend my data
     const peer = new Peer({ initiator: false, trickle: false, stream });
     setMeAsPeer(peer);
+    peer._debug = console.log;
 
     peer.on('error', (err) => {
       console.log('error with peer', err);
+      console.log('peer', peer);
+      answerCall();
     });
 
     peer.on('data', (data) => {
@@ -705,6 +709,7 @@ function ContextProvider({ children, socket, profile }) {
   }
 
   const callUser = () => {
+    console.log('callUser');
     // console.log('isConnectedFriend', isConnectedFriend);
     // if (!isConnectedFriend) {
     //   //sec user has no socketId - cant do connection
@@ -712,9 +717,12 @@ function ContextProvider({ children, socket, profile }) {
     // }
     const peer = new Peer({ initiator: true, trickle: false, stream });
     setMeAsPeer(peer);
+    peer._debug = console.log;
 
     peer.on('error', (err) => {
       console.log('error with peer', err);
+      console.log('peer', peer);
+      callUser();
     });
 
     peer.on('data', (data) => {

@@ -16,16 +16,15 @@ const bottom_part = {
 
 //add activitys as gos.....
 const upper_activities = [
-    'hands', 'swing-hands', 'right-hand-up', 'sholders',
-    'elbow', 'wrist',
-    'hands-x', 'hands-y', 'swim-hands',
+    'hands-x', 'hands-y', 'swim-hands', 'swing-hands',
+    'hands', 'right-hand-up',
 
     //all of the body - must be in both upper&lower
     'gamp', 'open-close',
 ]
 const bottom_activities = [
-    'legs', 'hip', 'ankle', 'knee',
-    'left-leg-up', 'right-leg-up', 'legs-bouth-up', 'legs-gumping',
+    'left-leg-up', 'right-leg-up', 'legs-bouth-up',
+    'legs', 'legs-gumping',
 
     //all of the body - must be in both upper&lower
     'gamp', 'open-close',

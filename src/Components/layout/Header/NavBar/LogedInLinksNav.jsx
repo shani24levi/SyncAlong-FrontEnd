@@ -1,5 +1,5 @@
 import React from 'react';
-import {useNavigate} from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from '../../../../Store/actions/authAction';
 import { Link } from "react-router-dom";
@@ -15,6 +15,7 @@ import Person from "@material-ui/icons/Person";
 import LogoutIcon from '@mui/icons-material/Logout';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 // core components styling
 import { makeStyles } from "@material-ui/core/styles";
@@ -144,8 +145,8 @@ const LogedInLinksNav = (props) => {
                 {user.name}
             </ListItem>
             <ListItem
-                
-                onClick={() => navigate('meeting/report', {state: {meeting_id: '623c91b9ebfc668d5b26c226'}})}
+
+                onClick={() => navigate('meeting/report', { state: { meeting_id: '623c91b9ebfc668d5b26c226' } })}
                 classes={{
                     root: classes.listItemRoot,
                 }}

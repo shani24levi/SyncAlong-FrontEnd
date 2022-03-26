@@ -1,7 +1,7 @@
 import { ConstructionOutlined } from '@mui/icons-material';
 import isEmpty from '../../validation/isEmpty';
 import {
-    GET_ERRORS, 
+    GET_ERRORS,
     SYNC_LOADING,
     GET_CURR_SYNCS,
     CLEAR_SYNCS,
@@ -11,7 +11,7 @@ const initialState = {
     loading: false,
     all_syncs: null,
     meeting: null,
-    
+
 }
 
 export default function (state = initialState, action) {

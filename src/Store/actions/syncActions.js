@@ -1,5 +1,5 @@
 import {
-    GET_ERRORS, 
+    GET_ERRORS,
     SYNC_LOADING,
     GET_CURR_SYNCS,
     CLEAR_SYNCS,
@@ -20,7 +20,7 @@ export const getSync = (id) => dispatch => {
     syncService.getSyncsById(id)
         .then(
             syncs => {
-                console.log("success sync");
+                console.log("success sync", syncs);
                 dispatch(success(syncs))
             },
             error => {
@@ -28,8 +28,9 @@ export const getSync = (id) => dispatch => {
                 dispatch(failure(error));
             }
         );
-    function success(syncs) { 
-        return { type: GET_CURR_SYNCS, payload: syncs.data.data } }
+    function success(syncs) {
+        return { type: GET_CURR_SYNCS, payload: syncs.data.data }
+    }
 };
 
 function failure(error) { return { type: GET_ERRORS, payload: error.error } }
