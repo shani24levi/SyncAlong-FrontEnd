@@ -6,9 +6,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import SyncScoreView from './../syncscore/SyncScoreView';
 
 import { getSync}  from '../../Store/actions/syncActions'
+import { CircularProgress } from "@material-ui/core";
 function MeetingReport(props) {
     const { setMyRole, setRoomId, setMySocketId, setYourSocketId, setYourInfo, setMyName, setYourName } = useContext(SocketContext);
     const [change, setChange] = useState(false);
+    let allSync = useSelector((state) => state.syncs?.all_syncs);
     const [you, setYou] = useState(null);
     const location = useLocation();
     const dispatch = useDispatch();
@@ -20,7 +22,17 @@ function MeetingReport(props) {
         console.log("meeting_id", meeting_id);
         dispatch(getSync(meeting_id));
     }, []);
-    return (<SyncScoreView meeting_id={meeting_id} my_name={my_name} your_name={your_name}/>);
+
+    console.log("allSync",allSync)
+    return (
+        <>
+        { allSync ?
+            <SyncScoreView meeting_id={meeting_id} my_name={my_name} your_name={your_name}/>
+            : <CircularProgress color="secondary" size="20px" />
+            
+        }
+    </>
+    );
 }
 
 export default MeetingReport;
