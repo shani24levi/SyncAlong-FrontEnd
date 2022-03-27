@@ -10,11 +10,10 @@ import PopUpCall from '../Context/videoChat/PopUpCall';
 
 function VidoeRoom({ socket }) {
     const { setMyRole, setRoomId, setMySocketId, setYourSocketId, setYourInfo, setMyName, setYourName } = useContext(SocketContext);
-    const [me, setMe] = useState(null);
-    const [you, setYou] = useState(null);
-
     const location = useLocation();
     const user = useSelector(state => state.auth.user)
+    const [me, setMe] = useState(user.role === 'trainer' ? location.state.meeting.tariner : location.state.meeting.tariner);
+    const [you, setYou] = useState(user.role === 'trainee' ? location.state.meeting.trainee : location.state.meeting.tariner);
 
     useEffect(() => {
         if (!user) return;

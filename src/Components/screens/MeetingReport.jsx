@@ -2,11 +2,10 @@ import React, { useContext, useState, useEffect, useRef } from 'react';
 import { SocketContext } from '../Context/ContextProvider';
 import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-
 import SyncScoreView from './../syncscore/SyncScoreView';
-
 import { getSync } from '../../Store/actions/syncActions'
 import { CircularProgress } from "@material-ui/core";
+
 function MeetingReport(props) {
     const { setMyRole, setRoomId, setMySocketId, setYourSocketId, setYourInfo, setMyName, setYourName } = useContext(SocketContext);
     const [change, setChange] = useState(false);

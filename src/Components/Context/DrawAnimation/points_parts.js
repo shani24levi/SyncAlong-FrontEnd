@@ -17,17 +17,27 @@ const bottom_part = {
 //add activitys as gos.....
 const upper_activities = [
     'hands-x', 'hands-y', 'swim-hands', 'swing-hands',
-    'hands', 'right-hand-up',
+    "left-hand-up", "right-hand-up", 'crazy',
 
     //all of the body - must be in both upper&lower
-    'gamp', 'open-close',
+    'poshup', 'baly-run', 'baly-legs',
+    'back-down', 'toch-flor',
+    'claping', 'all-up-1',
+    'gamp', 'legs-gumping', 'open-close',
+    'kicks', 'pray', 'right-all', 'up-dwon-both',
+    'gump-sides', 'zomba'
 ]
 const bottom_activities = [
-    'left-leg-up', 'right-leg-up', 'legs-bouth-up',
-    'legs', 'legs-gumping',
+    'left-leg-up', 'right-leg-up', 'legs-both-up',
+    '90leging-right', '90leging-left',
 
     //all of the body - must be in both upper&lower
-    'gamp', 'open-close',
+    'poshup', 'baly-run', 'baly-legs',
+    'back-down', 'toch-flor',
+    'claping', 'all-up-1',
+    'gamp', 'legs-gumping', 'open-close',
+    'kicks', 'pray', 'right-all', 'up-dwon-both',
+    'gump-sides', 'zomba'
 ]
 
 const center_part = [11, 12, 23, 24];

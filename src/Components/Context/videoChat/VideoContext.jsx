@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { SocketContext } from '../ContextProvider';
+import { useSelector } from 'react-redux';
 import { Grid, Typography, Paper, makeStyles, useTheme, Button, Box } from '@material-ui/core';
 import Webcam from "react-webcam";
 import Swal from 'sweetalert2';
@@ -55,6 +56,7 @@ function VideoContext({ meeting }) {
     stopRef.current = stop;
 
     const images = { thumbs_up: thumbs_up, victory: victory, stop: stop };
+    const user = useSelector((state) => state.auth.user);
 
     useEffect(() => {
         navigator.mediaDevices.getUserMedia({ video: true })
@@ -90,8 +92,8 @@ function VideoContext({ meeting }) {
     useEffect(async () => {
         //Whoever it is in the Daily sends his points every second collected
         if (currData && myDelayOnConection && !stop) {
-            console.log('timeOfColectionPose', timeOfColectionPose);
-            console.log('posesArry', posesArry);
+            // console.log('timeOfColectionPose', timeOfColectionPose);
+            //  console.log('posesArry', posesArry);
             await sendMyPoses(timeOfColectionPose, posesArry, meeting.activities[currActivity])
         }
     }, [posesArry, currData]);
@@ -160,12 +162,15 @@ function VideoContext({ meeting }) {
         return true //end of all session
     }
 
-    useEffect(() => {
+    useEffect(async () => {
         if (activitiesEnded == true) {
+            swalEndMeeting();
+            await delay(2000);
             console.log("go to repoet for meeting with id: ", meeting._id);
             navigate('/meeting/report', { state: { meeting_id: meeting._id, me: myName, you: yourName } })
         }
     }, [activitiesEnded])
+
     const prevActivitySession = () => {
         if (currActivity === 0) {
             setDisplayErrorMessage('No prev activity to go back to.... whold you like to contine?');
@@ -190,21 +195,24 @@ function VideoContext({ meeting }) {
             setCurrActivity(currActivity + 1);
             //setRecognition('continue');
             setStop(false);
-            //activitiesSession(); //contineu the activities
+            // activitiesSession(); //contineu the activities
         }
     }
 
     useEffect(async () => {
-        if (session && peer2inFrame && (recognition === 'start' || recognition === 'continue')) {
+        if (session && peer2inFrame && peer1inFrame && (recognition === 'start' || recognition === 'continue')) {
             console.log('recognition', recognition);
+            setQuestion(false);
+            setStop(false);
             let status = await activitiesSession();
             console.log('is activity ended? -', status, ',activiry stoped by voice ')
         }
-    }, [recognition, session, peer2inFrame]);
+    }, [recognition, session, peer2inFrame, peer1inFrame]);
 
     useEffect(async () => {
+        console.log('peer1inFrame', peer1inFrame, 'peer2inFrame', peer2inFrame);
         if (peer1inFrame && peer2inFrame && !session) {
-            console.log('######We can Start the meeting ####///');
+            console.log('we both in the frame and  #We can Start the meeting #///');
             setSession(true)
             setQuestion(true);
         }
@@ -220,8 +228,12 @@ function VideoContext({ meeting }) {
             setQuestion(false);
             setStop(false);
             console.log('continue,,,,');
-            if (activitiesEnded) console.log('Activity ENDED yoo can go back or restart');
-            //else activitiesSession();
+            if (activitiesEnded) {
+                console.log('Activity ENDED yoo can go back or restart');
+                setDisplayErrorMessage('Session Ended , would you like to start over?');
+                swalAlret();
+            }
+            else activitiesSession();
         }
         else if (recognition == 'stop') {
             setStop(true);
@@ -258,7 +270,41 @@ function VideoContext({ meeting }) {
                       url("/img/emojyGIF/fall_stars.gif")`
         })
     }
+
+    const swalEndMeeting = () => {
+        let timerInterval
+        Swal.fire({
+            title: 'Activity completed ! !',
+            html: 'meeting sync score will be in <b></b> milliseconds.',
+            timer: 4000,
+            timerProgressBar: true,
+            width: 600,
+            padding: '3em',
+            background: '#fff',
+            backdrop: `
+                          rgba(0,0,123,0.4)
+                          url("/img/emojyGIF/good.gif")`,
+            didOpen: () => {
+                Swal.showLoading()
+                const b = Swal.getHtmlContainer().querySelector('b')
+                timerInterval = setInterval(() => {
+                    b.textContent = Swal.getTimerLeft()
+                }, 100)
+            },
+            willClose: () => {
+                clearInterval(timerInterval)
+            }
+        }).then((result) => {
+            if (result.dismiss === Swal.DismissReason.timer) {
+                console.log('I was closed by the timer')
+            }
+        })
+    }
+
     useEffect(() => {
+        console.log('====================================');
+        console.log('accseptScheduleMeetingCall', accseptScheduleMeetingCall, 'yourSocketId', yourSocketId);
+        console.log('====================================');
         if (accseptScheduleMeetingCall && !yourSocketId) setIsPeerHere(false);
         else if (accseptScheduleMeetingCall && yourSocketId) setIsPeerHere(true);;
     }, [accseptScheduleMeetingCall, yourSocketId]);
@@ -268,21 +314,17 @@ function VideoContext({ meeting }) {
         console.log(accseptScheduleMeetingCall, myRole, mediaPipeInitilaize, isPeerHere, mediapipeOfTrainee, oneTime);
 
         //teainer is calling to trainee......
-        if (accseptScheduleMeetingCall && myRole === 'trainer' && mediaPipeInitilaize === 'none' && isPeerHere && mediapipeOfTrainee && oneTime) {
+        if (accseptScheduleMeetingCall && user.role === 'trainer' && mediaPipeInitilaize === 'none' && isPeerHere && mediapipeOfTrainee && oneTime) {
             setOneTime(false);
             setConectReq(true)
             callUser();
         }
         //trainee answerrrs....
-        if (accseptScheduleMeetingCall && myRole === 'trainee' && mediaPipeInitilaize === 'none' && call.isReceivingCall && !callAccepted) {
+        if (accseptScheduleMeetingCall && user.role === 'trainee' && mediaPipeInitilaize === 'none' && call.isReceivingCall && !callAccepted) {
             setConectReq(true)
             answerCall();
         }
     }, [accseptScheduleMeetingCall, mediaPipeInitilaize, isPeerHere, call, callAccepted, mediapipeOfTrainee]);
-
-    useEffect(() => {
-        console.log('mediaPipeInitilaize', mediaPipeInitilaize);
-    }, [mediaPipeInitilaize])
 
     return (
         <>
@@ -294,6 +336,7 @@ function VideoContext({ meeting }) {
             }
             {isPeerHere && <SeccsesAlert title="You will be conected after loading pose evaluation" />}
             {mediaPipeInitilaize !== 'none' && <LoadingModal title="Load Identification" />}
+            {mediaPipeInitilaize === 'none' && !mediapipeOfTrainee && myRole === 'trainer' && yourName && <LoadingModal title={`Waiting to ${yourName}..`} />}
             {conectReq && <LoadingModal title="Conecting..." />}
             {
                 callAccepted && !callEnded && question && session &&

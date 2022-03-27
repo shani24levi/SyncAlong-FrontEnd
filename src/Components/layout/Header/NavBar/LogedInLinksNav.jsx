@@ -54,15 +54,6 @@ const LogedInLinksNav = (props) => {
             className={classes.flexDirectionColumn}
         >
             <div>
-                <Button
-                    id="fade-button"
-                    aria-controls={open ? 'fade-menu' : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={open ? 'true' : undefined}
-                    onClick={handleClick}
-                >
-                    Dashboard
-                </Button>
                 <Menu
                     id="fade-menu"
                     MenuListProps={{
@@ -145,13 +136,18 @@ const LogedInLinksNav = (props) => {
                 {user.name}
             </ListItem>
             <ListItem
-
                 onClick={() => navigate('meeting/report', { state: { meeting_id: '623c91b9ebfc668d5b26c226' } })}
                 classes={{
                     root: classes.listItemRoot,
                 }}
             >
-                test report
+                <Box
+                    component={InfoOutlinedIcon}
+                    width="1.25rem!important"
+                    height="1.25rem!important"
+                    marginRight=".5rem!important"
+                />
+                SyncReports
             </ListItem>
             <ListItem
                 component={Link}

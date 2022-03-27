@@ -55,6 +55,9 @@ function ContextProvider({ children, socket, profile }) {
   //for first step - user enters the roonm - need to stap away for the camaea.
   const [peer1inFrame, setSettingUserInFrame] = useState(false);
   const [peer2inFrame, setPeer2inFrame] = useState(false);
+  const [firstTimeInFram, setfirstTimeInFram] = useState(true);
+
+
 
   //stats to handel conection from pop up coming meeting is now 
   const [userEnteredNow, setUserEnteredNow] = useState({});
@@ -485,8 +488,10 @@ function ContextProvider({ children, socket, profile }) {
   }, [recognition]);
 
   useEffect(() => {
-    if (peer1inFrame && roomId) {
-      socket?.emit('peer1inFrame', roomId);
+    if (peer1inFrame && yourSocketId && firstTimeInFram) {
+      setfirstTimeInFram(false);
+      console.log('im in the frame ......');
+      socket?.emit('peer1inFrame', yourSocketId);
     }
   }, [peer1inFrame]);
 
@@ -522,7 +527,7 @@ function ContextProvider({ children, socket, profile }) {
 
   useEffect(() => {
     if (upcomingMeetingToNow && !isEmpty(upcamingMeeting) && yourSocketId) {
-      console.log('hererererrere');
+      //console.log('hererererrere');
       socket?.emit('calltoTrainee', yourSocketId);
       setUpcomingMeetingToNow(false);
     }
@@ -552,32 +557,31 @@ function ContextProvider({ children, socket, profile }) {
   }, [meetings?.meetings]);
 
   function meetingsListener() {
-    console.log('upcamingMeeting', upcamingMeeting);
     // loop function
     setTimeout(function () {
       //  call a 30s setTimeout when the loop is called
-      let currentTime = new Date().setSeconds(0, 0);
+      let currentTime = new Date().getTime();  //.setSeconds(0, 0);
       const date = new Date(meetings.upcoming_meeting?.date?.slice(0, -1)); // delte z from date
       date.setHours(date.getHours() + 3);
-      console.log('datedate', date);
       let upcomingMeeting = date.getTime();
-      // console.log('a', currentTime, upcomingMeeting, currentTime < upcomingMeeting);
-      //console.log(currentTime === upcomingMeeting, meetings.upcoming_meeting);
+
+      //console.log('aj', new Date(), 'date+3', date);
+      //console.log('a', currentTime, upcomingMeeting, currentTime < upcomingMeeting);
       if (!upcomingMeeting) {
         //set new upcamong meeting or brack from loop
         console.log('somthing is NOT OK with date meeting!!!!');
         return;
       }
-      if (currentTime < upcomingMeeting) {
+      if (currentTime < upcomingMeeting - 5000) {
         meetingsListener();
-      } else if (currentTime === upcomingMeeting) {
+      } else if (currentTime >= upcomingMeeting - 5000) {
         console.log('meeting is NOW!!!!', meetings.upcoming_meeting);
         setScheduleMeetingPopUpCall(meetings.upcoming_meeting);
         setMeetingIsNOW(true);
         //set up next meeting timing....
         return;
       }
-    }, 30000);
+    }, 5000);
   }
 
   //===============lisiners=========================//
@@ -637,7 +641,8 @@ function ContextProvider({ children, socket, profile }) {
   };
 
   const lisiningPeer2InFrame = () => {
-    socket?.on('peer1inFrame', (roomId) => {
+    socket?.on('peer1inFrame', (yourSocketId) => {
+      console.log('you are in the frame ......');
       setPeer2inFrame(true);
     });
   };
