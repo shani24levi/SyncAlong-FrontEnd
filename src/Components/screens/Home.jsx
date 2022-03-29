@@ -57,23 +57,15 @@ const Home = ({ socket }) => {
     }, [traineeEntered]);
 
     useEffect(() => {
-        console.log('====================================');
-        console.log(meetings.upcoming_meeting);
-        console.log('====================================');
-        if (!isEmpty(upcamingMeeting)) {
+        if (!isEmpty(meetings.upcoming_meeting)) {
             const t = new Date(meetings.upcoming_meeting?.date?.slice(0, -1));
             t.setHours(t.getHours() + 3);
             setDateToMeeting(t);
             setDate(t.getTime() / 1000)
             setMeeting(true)
-
-            //relaod page
         }
         else setMeeting(false)
     }, [meetings.upcoming_meeting])
-
-    //const scheduleMeetingPopUpCall = { id: 'ddd', trainee: { user: 'nam2', avatar: '22' }, trainer: { user: 'name1', avatar: '233' } }
-    // console.log('scheduleMeetingPopUpCall', scheduleMeetingPopUpCall);
 
     return (
         <>

@@ -31,25 +31,12 @@ const getTimeMinutes = (time) => ((time % hourSeconds) / minuteSeconds) | 0;
 const getTimeHours = (time) => ((time % daySeconds) / hourSeconds) | 0;
 const getTimeDays = (time) => (time / daySeconds) | 0;
 
-
-
 function NextMeetingTime({ date }) {
     const { scheduleMeetingPopUpCall, upcamingMeeting } = useContext(SocketContext);
     const [stratTime, setStratTime] = useState(Date.now() / 1000);
     const [time, setTime] = useState((date !== 0 || date !== NaN) ? date - stratTime : 0);
     const [endTime, setEndTime] = useState(stratTime + time);
 
-    // useEffect(() => {
-    //     console.log('called her ,', date);
-    //     setTime(date !== 0 ? date - stratTime : 0);
-    //     console.log('stratTime', stratTime);
-
-    // }, [date])
-
-    // useEffect(() => {
-    //     console.log('time', time);
-    //     console.log(endTime);
-    // }, [time])
 
     // let endTime = stratTime + time
     let remainingTime = endTime - stratTime;
