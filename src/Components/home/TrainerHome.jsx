@@ -28,6 +28,8 @@ import CallIcon from '@mui/icons-material/Call';
 import TraineesCard from './trainer/TraineesCard';
 import ErrorAlert from '../alrets/ErrorAlert';
 import { delay } from '../../helpers';
+import SearchAnimation from '../search/SearchAnimation';
+import UserCard from '../card/userCard/UserCard';
 
 const buttonStyle = makeStyles(buttonsStyles);
 
@@ -141,6 +143,8 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
                 src={require("../../assets/img/path1.png").default}
             />
             <Container maxWidth="xl">
+                {/* <SearchAnimation /> */}
+                {/* <UserCard /> */}
                 {errorDisplay && <ErrorAlert name={upcamingMeeting.trainee.user} title=" is not online in order to conect joined meeting" />}
                 <Grid container alignItems='center' justifyContent='center' spacing={1} >
                     <Grid item xs={3} md={4}>

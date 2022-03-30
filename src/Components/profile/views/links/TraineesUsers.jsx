@@ -11,6 +11,7 @@ import { Link } from 'react-router-dom';
 
 import { getTraineesProfiles } from '../../../../Store/actions/profileAction';
 import { useEffect } from 'react';
+import SearchAnimation from '../../../search/SearchAnimation';
 
 const useStyles = makeStyles(componentStyles);
 
@@ -26,28 +27,48 @@ function TraineesUsers({ profile }) {
     const navigate = useNavigate();
 
     return (
-        <Grid container>
-            {
-                trainees?.length == 0
-                    ?
-                    <CardContiner title="No Trainees listed...">
-                        {/* <Typography>No Trainees listed...</Typography> */}
-                        <Button onClick={() => { navigate('/profile/adduser') }} className={classesBtn.blueRound}> Add User</Button>
-                    </CardContiner>
-                    :
+        <>
+            <Box sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                '& > *': {
+                    m: 1,
+                },
+            }}>
+                <SearchAnimation />
+                <Button onClick={() => { navigate('/profile/adduser') }} className={classesBtn.blueRound}> Add New User</Button>
+            </Box>
+            <Grid container>
+                {
                     <>
-                        <Button onClick={() => { navigate('/profile/adduser') }} className={classesBtn.blueRound}> Add User</Button>
                         {
-                            trainees && trainees.map(trainee => {
-                                console.log("trainee", trainee);
-                                return (
-                                    <UserCard key={trainee.user._id} trainee={trainee.user} />
-                                )
-                            })
+                            trainees?.length == 0
+                                ?
+                                <CardContiner title="No Trainees listed...">
+                                    <Typography>No Trainees listed...</Typography>
+                                </CardContiner>
+                                :
+                                <>
+                                    <Grid container spacing={3}>
+                                        {
+                                            trainees && trainees.map(trainee => {
+                                                console.log("trainee", trainee);
+                                                return (
+                                                    <UserCard key={trainee.user._id} trainee={trainee.user} />
+                                                )
+
+                                            })
+                                        }
+                                    </Grid>
+
+                                </>
                         }
                     </>
-            }
-        </Grid>
+                }
+            </Grid>
+        </>
+
     );
 }
 

@@ -15,7 +15,6 @@ import ViewProfileHeader from './views/ViewProfileHeader';
 import ProfileEditeModal from './forms/edit/ProfileEditeModal';
 import TraineesUsers from './views/links/TraineesUsers';
 
-
 const ProfileView = (props) => {
     const dispatch = useDispatch();
     const user = useSelector(state => state.auth.user);

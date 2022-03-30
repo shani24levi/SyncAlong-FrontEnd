@@ -1,27 +1,40 @@
+@import url("https://fonts.googleapis.com/css?family=Roboto+Slab:400,700&display=swap");
+
 * {
   margin: 0;
   padding: 0;
   font-family: Open Sans,sans-serif;
 }
 
+:root {
+  --main-bg-color: #e5e5ea;
+  --primary-color: #8c3db9 ;
+  --secondary-color: #171941;
+  --tertiary-color: #d1c926;
+  --text-color: #4d4d4d;
+  --mobile-width: 90%;
+}
+
 .body {
   position: absolute;
   width: 100%;
-  min-height: 100vh;
+  /* min-height: 100vh; */
   /* background:#172b4d; */
+  /* background: var(--main-bg-color); */
   background: #171941;
-  color: #8d94a7;
+  color: var(--text-color);
+  /* color: #8d94a7; */
   line-height: 1.43;
   background-image: url(../img/dots.png);
   background-position: 50% 8%;
   background-size: contain;
   overflow: hidden;
+  font-family: "Roboto Slab", serif;
 }
-/* 
-.container {
-    position: relative;
-    margin: 2px 80px auto;
-    overflow: auto;
-    min-height: 300px;
-    padding: 0px 40px 20px;
-} */
+
+/* Mobile */
+@media screen and (max-width: 767px) {
+  html {
+    font-size: 12px;
+  }
+}
