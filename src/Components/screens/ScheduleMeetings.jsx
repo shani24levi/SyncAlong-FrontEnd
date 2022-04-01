@@ -7,6 +7,7 @@ import isEmpty from '../../validation/isEmpty';
 import CalendarMeetings from '../meeting/scheduleMeetings/CalendarMeetings';
 import MeetingModal from '../meeting/scheduleMeetings/MeetingModal';
 import ScheduleHeader from '../meeting/scheduleMeetings/ScheduleHeader';
+import ScrollTop from '../scrollToTop/ScrollTop';
 
 
 const ScheduleMeetings = (props) => {
@@ -93,11 +94,13 @@ const ScheduleMeetings = (props) => {
     console.log(meetingEvents);
     return (
         <>
+            <div id="back-to-top-anchor" />
             <MeetingModal modalIsOpen={modalIsOpen} modalCreate={modalCreate} modalData={modalData} handelClose={handelClose} />
             <Container>
                 <ScheduleHeader month={month} newMeeting={newMeeting} />
                 <CalendarMeetings events={meetingEvents} handleSelectSlot={handleSelectSlot} handleSelectEvent={handleSelectEvent} />
             </Container>
+            <ScrollTop />
         </>
     );
 }

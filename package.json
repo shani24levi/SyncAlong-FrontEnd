@@ -33,6 +33,7 @@
     "react-error-overlay": "^6.0.10",
     "react-helmet": "^6.1.0",
     "react-horizontal-gauge": "^0.1.2",
+    "react-lazy-load-image-component": "^1.5.3",
     "react-redux": "^7.2.6",
     "react-router-dom": "^6.1.0",
     "react-scripts": "^5.0.0",
@@ -44,6 +45,7 @@
     "simple-peer": "^9.11.0",
     "socket.io-client": "^4.4.1",
     "sweetalert2": "^11.4.4",
+    "swiper": "^8.0.7",
     "web-vitals": "^1.1.2"
   },
   "scripts": {

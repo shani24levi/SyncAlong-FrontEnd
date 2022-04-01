@@ -4,6 +4,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import { styled } from '@mui/material/styles';
 import Scheduled from './Scheduled';
 import Activities from './Activities';
 import Notifications from './Notifications';
@@ -49,30 +50,54 @@ function ContextTrainee(props) {
         setValue(newValue);
     };
 
-    return (
-        <Box sx={{ width: '100%' }}>
-            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                <Tabs value={value} onChange={handleChange}
-                    textColor="secondary"
-                    indicatorColor="secondary"
-                    aria-label="basic tabs example">
-                    <Tab label="Scheduled" {...a11yProps(0)} />
-                    <Tab label="Activities" {...a11yProps(1)} />
-                    <Tab label="Notifications" {...a11yProps(2)} />
-                </Tabs>
-            </Box>
+    const Wrapper = styled('div')({
+        backgroundColor: '#171941',
+        color: '#f5f5f5',
+        minHeight: '100vh',
+        '& .Mui-selected ': {
+            color: '',
+        },
+        '.MuiTab-root': {
+            fontSize: '24px',
+            fontWeight: '600',
+            // color: '#fff'
+        },
 
-            <TabPanel value={value} index={0}>
-                0
-                {/* <Scheduled /> */}
-            </TabPanel>
-            <TabPanel value={value} index={1}>1
-                {/* <Activities /> */}
-            </TabPanel>
-            <TabPanel value={value} index={2}>2
-                {/* <Notifications /> */}
-            </TabPanel>
-        </Box>
+        '.Tab_Box': {
+            borderBottom: 1,
+            borderColor: 'transparent',
+            padding: '2rem',
+        },
+    });
+
+    return (
+        <Wrapper>
+            <Box sx={{ width: '100%' }}>
+                <Box className="Tab_Box">
+                    <Tabs
+                        value={value}
+                        onChange={handleChange}
+                        textColor="secondary"
+                        indicatorColor="secondary"
+                        aria-label="basic tabs example">
+                        <Tab label="Scheduled" {...a11yProps(0)} />
+                        <Tab label="Activities" {...a11yProps(1)} />
+                        <Tab label="Notifications" {...a11yProps(2)} />
+                    </Tabs>
+                </Box>
+
+                <TabPanel value={value} index={0}>
+                    0
+                    {/* <Scheduled /> */}
+                </TabPanel>
+                <TabPanel value={value} index={1}>1
+                    {/* <Activities /> */}
+                </TabPanel>
+                <TabPanel value={value} index={2}>2
+                    {/* <Notifications /> */}
+                </TabPanel>
+            </Box>
+        </Wrapper>
     );
 }
 

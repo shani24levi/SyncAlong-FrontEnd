@@ -13,7 +13,7 @@ import { connect } from 'react-redux';
 import { setCurrentUser, logoutUser } from './Store/actions/authAction';
 import { setCurrentProfile, getTraineesProfiles, getAllTraineesProfiles } from './Store/actions/profileAction';
 import { futureMeetings } from './Store/actions/meetingActions';
-import { getSync } from './Store/actions/syncActions'; 
+import { getSync } from './Store/actions/syncActions';
 //utiles needed
 import setAuthToken from './Utils/setAuthToken';
 import jwt_decode from 'jwt-decode';
@@ -33,6 +33,7 @@ import AddTrainee from './Components/profile/addTrainee/AddTrainee';
 import ScheduleMeetings from './Components/screens/ScheduleMeetings';
 import TraineeView from './Components/screens/TraineeView';
 import MeetingReport from './Components/screens/MeetingReport';
+import TraineePage from './Components/screens/TraineePage';
 
 const App = (props) => {
   const navigate = useNavigate();
@@ -120,6 +121,10 @@ const App = (props) => {
                     <Route exact path='/meeting/report' element={<MeetingReport />} />
                   </Route>
 
+                  <Route exact path='/trainee/:id' element={<PrivateRoute />}>
+                    <Route exact path='/trainee/:id' element={<TraineePage />} />
+                  </Route>
+
                 </Routes>
               </ContextProvider>
             </Fragment>
@@ -153,4 +158,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, {setCurrentUser, futureMeetings, logoutUser, setCurrentProfile, getTraineesProfiles, getAllTraineesProfiles, getSync })(App);
+export default connect(mapStateToProps, { setCurrentUser, futureMeetings, logoutUser, setCurrentProfile, getTraineesProfiles, getAllTraineesProfiles, getSync })(App);

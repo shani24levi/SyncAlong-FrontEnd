@@ -12,6 +12,9 @@
   --secondary-color: #171941;
   --tertiary-color: #d1c926;
   --text-color: #4d4d4d;
+  --info: #ddd;
+
+  
   --mobile-width: 90%;
 }
 
@@ -32,9 +35,13 @@
   font-family: "Roboto Slab", serif;
 }
 
+
 /* Mobile */
 @media screen and (max-width: 767px) {
   html {
-    font-size: 12px;
+    font-size: 12px;    
+  }
+  .MuiTab-root {
+    font-size: 12px;    
   }
 }

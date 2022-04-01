@@ -35,11 +35,11 @@ function Footer(props) {
                 </section>
                 <section className="item">
                     <IconButton aria-label="fingerprint" color="secondary">
-                        <EditIcon className="icon" />
+                        <EditIcon className="icon iconsEdit" />
                         <p>Edit User</p>
                     </IconButton>
                     <IconButton aria-label="fingerprint" color="secondary">
-                        <DeleteIcon className="icon" />
+                        <DeleteIcon className="icon iconDelete" />
                         <p>Delete</p>
                     </IconButton>
                 </section>

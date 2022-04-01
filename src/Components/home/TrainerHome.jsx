@@ -3,11 +3,9 @@ import { SocketContext } from '../Context/ContextProvider';
 import { styled } from '@mui/system'
 import { Grid, Container, Button, Box, Card } from '@material-ui/core';
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import { Alert } from '@mui/material';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import isEmpty from '../../validation/isEmpty';
 import NextMeetingTime from '../meeting/NextMeetingTime';
-import { Helmet } from "react-helmet";
 import Search from '../search/Search';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom'
@@ -15,22 +13,16 @@ import { useNavigate } from 'react-router-dom'
 import buttonsStyles from "../../assets/theme/buttons";
 import QuickStartBtn from './QuickStartBtn';
 import QuickStartBtn2 from './quickStartBtn/QuickStartBtn';
-import StartCard from '../card/StartCard';
 import ListBoxTop from '../listBox/ListBoxTop';
 import DoughnutChart from '../charts/DoughnutChart';
 import ProgressUserView from './trainer/ProgressUserView';
 import CardContiner from '../card/CardContiner';
-import CoolTextH1 from '../Context/videoChat/coolText/CoolTextH1';
-import FunQuestionPopUp from '../Context/videoChat/funQuestionPopUp/FunQuestionPopUp';
 import SeccsesAlert from '../alrets/SeccsesAlert';
-import LoadingModal from '../modal/LoadingModal';
 import CallIcon from '@mui/icons-material/Call';
 import TraineesCard from './trainer/TraineesCard';
 import ErrorAlert from '../alrets/ErrorAlert';
 import { delay } from '../../helpers';
-import SearchAnimation from '../search/SearchAnimation';
-import UserCard from '../card/userCard/UserCard';
-
+import Carousel from '../card/Carousel/Carousel';
 const buttonStyle = makeStyles(buttonsStyles);
 
 const useStyles = makeStyles({
@@ -143,8 +135,6 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
                 src={require("../../assets/img/path1.png").default}
             />
             <Container maxWidth="xl">
-                {/* <SearchAnimation /> */}
-                {/* <UserCard /> */}
                 {errorDisplay && <ErrorAlert name={upcamingMeeting.trainee.user} title=" is not online in order to conect joined meeting" />}
                 <Grid container alignItems='center' justifyContent='center' spacing={1} >
                     <Grid item xs={3} md={4}>
@@ -155,6 +145,8 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
                         <Search />
                     </Grid>
                 </Grid>
+
+                {my_trainees && my_trainees.lenght != 0 && <Carousel />}
 
                 <Grid container alignItems='center' alignContent='center' spacing={2}>
                     {my_trainees && my_trainees.lenght != 0 && <TraineesCard />}

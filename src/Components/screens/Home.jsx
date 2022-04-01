@@ -12,6 +12,7 @@ import WorningAlert from '../alrets/WorningAlert';
 import isEmpty from '../../validation/isEmpty';
 import SeccsesAlert from '../alrets/SeccsesAlert';
 import { delay } from '../../helpers';
+import ScrollTop from '../scrollToTop/ScrollTop';
 
 const Home = ({ socket }) => {
     const { upcamingMeeting, traineeEntered, setMyTraineeEntered, scheduleMeetingPopUpCall } = useContext(SocketContext);
@@ -69,6 +70,7 @@ const Home = ({ socket }) => {
 
     return (
         <>
+            <div id="back-to-top-anchor" />
             {!isEmpty(scheduleMeetingPopUpCall) && <PopUpCall />}
             {user?._id && !user?.profile_id && <ErrorAlert title="Please set up profile details" />}
             {!meetings.meetings && (isEmpty(upcamingMeeting) || !upcamingMeeting) && <WorningAlert title="No futuer meetings found" />}
@@ -80,6 +82,7 @@ const Home = ({ socket }) => {
                     :
                     <TraineeHome meeting={meeting} date={date} />
             }
+            <ScrollTop />
         </>
     )
 }

@@ -29,6 +29,7 @@ const useStyles = makeStyles((theme) => ({
         color: "#e14eca",
         outline: "none",
         transition: ".5s",
+        fontSize: 'medium'
     },
     i: {
         position: "absolute",
@@ -49,16 +50,24 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function SearchAnimation(props) {
+function SearchAnimation({ onSearch }) {
     const classes = useStyles();
+    const [search, setSearch] = React.useState('');
+
+    const onSearchInputChange = ({ target: { value } }) => {
+        console.log(value);
+        setSearch(value);
+        onSearch(value);
+    }
 
     return (
         <div class="box">
             <form name="search">
-                <input type="text" className={classes.input} name="txt"
-                    onmouseout="document.search.txt.value = ''" />
+                <input className={classes.input}
+                    type="text" placeholder="Search" value={search} onChange={onSearchInputChange}
+                />
             </form>
-            <SearchIcon className={classes.i} />
+            {/* <SearchIcon className={classes.i} /> */}
         </div>
     );
 }

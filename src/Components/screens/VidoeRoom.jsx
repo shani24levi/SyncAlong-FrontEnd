@@ -7,6 +7,7 @@ import VideoContext from '../Context/videoChat/VideoContext';
 import Sidebar from '../Context/videoChat/Sidebar';
 import Notifications from '../Context/videoChat/Notifications';
 import PopUpCall from '../Context/videoChat/PopUpCall';
+import ScrollTop from '../scrollToTop/ScrollTop';
 
 function VidoeRoom({ socket }) {
     const { setMyRole, setRoomId, setMySocketId, setYourSocketId, setYourInfo, setMyName, setYourName } = useContext(SocketContext);
@@ -53,10 +54,12 @@ function VidoeRoom({ socket }) {
 
     return (
         <>
+            <div id="back-to-top-anchor" />
             <VideoContext meeting={location.state.meeting} />
             <Sidebar>
                 <Notifications />
             </Sidebar>
+            <ScrollTop />
             {/* <PopUpCall /> */}
         </>
     );

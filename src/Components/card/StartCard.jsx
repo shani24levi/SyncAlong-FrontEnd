@@ -6,6 +6,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import { Avatar, Button } from '@material-ui/core';
 import { useNavigate } from 'react-router-dom'
+import Zoom from '@material-ui/core/Zoom';
 
 const StyledCard = styled(Card)(({ theme }) => ({
     display: 'flex',
@@ -61,7 +62,7 @@ function StartCard({ title, subtitle, avatar, trainee }) {
                     <Heading>{subtitle}</Heading>
                 </Box>
             </ContentBox>
-            <Tooltip title="View Details" placement="top">
+            <Tooltip title="View Details" placement="top" arrow>
                 <Button endIcon={<ArrowRightAltIcon />} onClick={() => navigate('/trainee/view', { state: { trainee_id: trainee.user._id, trainee: trainee } })}>
                 </Button>
             </Tooltip>

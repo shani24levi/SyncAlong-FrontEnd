@@ -5,7 +5,9 @@ import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { Box, Button, Container, Grid, Typography } from "@material-ui/core";
 // core components
 import componentStyles from "../../../../assets/theme/buttons";
-import UserCard from '../../UserCard';
+// import UserCard from '../../UserCard';
+import UserCard from '../../../card/UserCard';
+import UserCardProfile from '../../../card/UserCardProfile';
 import CardContiner from '../../../card/CardContiner';
 import { Link } from 'react-router-dom';
 
@@ -20,11 +22,22 @@ function TraineesUsers({ profile }) {
     const classesBtn = useStyles();
     const user = useSelector(state => state.auth.user);
     const trainees = useSelector(state => state.profile.trainees_profiles);
+    const [mytrainees, setMyTrainees] = React.useState(trainees);
+    const [search, setSearch] = React.useState('');
+
     // useEffect(()=>{ 
     //     dispatch(getTraineesProfiles([profile?.trainerOf]));
     // },[])
     console.log("profile", trainees);
     const navigate = useNavigate();
+
+
+    const onSearch = (search) => {
+        console.log(search);
+        setSearch(search.toLowerCase());
+    };
+
+    const mytrainees_filtered = mytrainees.filter(i => i.user.user.toString().toLowerCase().includes(search));
 
     return (
         <>
@@ -36,10 +49,12 @@ function TraineesUsers({ profile }) {
                     m: 1,
                 },
             }}>
-                <SearchAnimation />
-                <Button onClick={() => { navigate('/profile/adduser') }} className={classesBtn.blueRound}> Add New User</Button>
+                <Grid container justifyContent='space-between'>
+                    <SearchAnimation onSearch={onSearch} />
+                    <Button onClick={() => { navigate('/profile/adduser') }} className={classesBtn.blueRound}> Add New User</Button>
+                </Grid>
             </Box>
-            <Grid container>
+            <Grid container justifyContent='center'>
                 {
                     <>
                         {
@@ -50,12 +65,13 @@ function TraineesUsers({ profile }) {
                                 </CardContiner>
                                 :
                                 <>
-                                    <Grid container spacing={3}>
+                                    <Grid container justifyContent='center' >
                                         {
-                                            trainees && trainees.map(trainee => {
+                                            mytrainees_filtered && mytrainees_filtered.map(trainee => {
                                                 console.log("trainee", trainee);
                                                 return (
-                                                    <UserCard key={trainee.user._id} trainee={trainee.user} />
+                                                    <UserCardProfile key={trainee.user._id} trainee={trainee.user} />
+
                                                 )
 
                                             })

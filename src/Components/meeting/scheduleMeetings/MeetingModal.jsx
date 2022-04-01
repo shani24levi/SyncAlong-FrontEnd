@@ -5,7 +5,7 @@ import {
     Button,
     makeStyles,
     Avatar, Box,
-    Grid,
+    Grid, styled
 } from "@material-ui/core";
 import CreateMeeting from './form/CreateMeeting';
 
@@ -22,9 +22,14 @@ const style = {
     p: 4,
 };
 
+const WrapperModal = styled(Modal)`
+    border-radius: 2%;
+    background-color: rgba(255, 2, 222, 0.2);
+`;
+
 function MeetingModal({ modalIsOpen, modalCreate, modalData, handelClose }) {
     return (
-        <Modal
+        <WrapperModal
             open={modalIsOpen}
             onClose={() => handelClose()}
             aria-labelledby="modal-modal-title"
@@ -36,7 +41,7 @@ function MeetingModal({ modalIsOpen, modalCreate, modalData, handelClose }) {
                 </Typography>
                 <CreateMeeting modalData={modalData} modalCreate={modalCreate} handelClose={handelClose} />
             </Box>
-        </Modal>
+        </WrapperModal>
     );
 }
 

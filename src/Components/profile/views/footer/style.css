@@ -46,7 +46,22 @@
     grid-row: 1 / span 2;
     justify-self: center;
   }
+  .footer .container .item .iconsEdit:hover{
+    color:rgb(200, 168, 237);
+    -ms-transform: rotate(360deg); 
+    transform: rotate(360deg);
+    transition: transform 1s;
+    cursor: pointer;
+  }
   
+  .footer .container .item .iconDelete:hover{
+    color:rgb(237, 168, 168);
+    -ms-transform: rotate(360deg); 
+    transform: rotate(360deg);
+    transition: transform 1s;
+    cursor: pointer;
+  }
+
   @media screen and (max-width: 480px) {
     .footer .container {
       grid-template: repeat(2, 1fr) / 1fr 1fr;

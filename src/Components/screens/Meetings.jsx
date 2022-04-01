@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { Container, Grid } from '@material-ui/core';
 import MeetingItemCard from '../meeting/MeetingItemCard';
 import { useSelector } from 'react-redux';
+import ScrollTop from '../scrollToTop/ScrollTop';
 
 
 function Meetings(props) {
@@ -50,6 +51,7 @@ function Meetings(props) {
 
     return (
         <Container fixed>
+            <div id="back-to-top-anchor" />
             <Grid container spacing={5} justifyContent='center'>
                 {
                     meetings.map((meeting, i) => {
@@ -61,6 +63,8 @@ function Meetings(props) {
                     })
                 }
             </Grid>
+            <ScrollTop />
+
         </Container>
     );
 }

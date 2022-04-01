@@ -92,7 +92,7 @@ function ViewProfileHeader(props) {
                             {
                                 user.role === 'trainer' &&
                                 <>
-                                    <Tooltip title="New User" placement="bottom">
+                                    <Tooltip title="New User" placement="bottom" arrow>
                                         <IconButton onClick={() => console.log('ssss')} aria-label="add" size="large" color="secondary">
                                             <AddIcon fontSize="large" />
                                         </IconButton>
@@ -104,7 +104,7 @@ function ViewProfileHeader(props) {
                                                 profile.trainees_profiles && profile.trainees_profiles.map(trainee => {
                                                     return (
                                                         <Grid item>
-                                                            <Tooltip title={capitalize(trainee.user.username)} placement="top">
+                                                            <Tooltip title={capitalize(trainee.user.username)} placement="top" arrow>
                                                                 <IconButton aria-label="fingerprint" color="secondary">
                                                                     <Avatar alt={trainee.user.name} src={trainee.user.avatar} />
                                                                 </IconButton>

@@ -1,0 +1,11 @@
+.css-1asxcoe {
+    color: rgb(245, 245, 245) !important;
+    min-height: 100vh;
+  }
+
+  /* Mobile */
+@media screen and (max-width: 767px) {
+    .css-1asxcoe .MuiTab-root{
+      font-size: 16px !important;    
+    }
+  }
