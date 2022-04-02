@@ -76,7 +76,6 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
 
     // console.log('upcamingMeeting', upcamingMeeting, !isEmpty(upcamingMeeting), meetings.meetings);
     // console.log('meeting', meeting, 'date', date);
-
     useEffect(async () => {
         if (errorDisplay) {
             await delay(3000);
@@ -151,7 +150,6 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
                     <Carousel />
                     : <Loader />
                 }
-
                 <Grid container alignItems='center' alignContent='center' spacing={2}>
                     {my_trainees && my_trainees.lenght != 0 && <TraineesCard />}
 

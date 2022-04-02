@@ -15,7 +15,7 @@ const Carousel = () => {
     const userList = useSelector(state => state.profile.trainees_profiles);
     const prevRef = useRef(null);
     const nextRef = useRef(null);
-    //console.log(prevRef, nextRef);
+        //console.log(prevRef, nextRef);
 
     return (
         <CarouselDiv style={{ margin: '2rem', backgroundColor: 'inherit' }}>

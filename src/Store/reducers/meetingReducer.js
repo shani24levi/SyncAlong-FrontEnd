@@ -24,8 +24,8 @@ export default function (state = initialState, action) {
     const setUpcomingMeeting = (meeting, type) => {
         if (type === 'add') {
             console.log(inFutuer(meeting.date, new Date().setSeconds(0, 0)));
-            if (!state.upcoming_meeting && inFutuer(meeting.date, new Date().setSeconds(0, 0))) return meeting;
-            if (inFutuer(state.upcoming_meeting.date, meeting.date)) {
+            if (!state.upcoming_meeting && inFutuer(meeting?.date, new Date().setSeconds(0, 0))) return meeting;
+            if (inFutuer(state.upcoming_meeting?.date, meeting?.date)) {
                 console.log('up', meeting);
                 return meeting;
             }

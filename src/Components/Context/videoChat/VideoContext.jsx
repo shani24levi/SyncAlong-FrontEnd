@@ -62,31 +62,8 @@ function VideoContext({ meeting }) {
         navigator.mediaDevices.getUserMedia({ video: true })
             .then((currentStream) => {
                 setStream(currentStream);
-            });
-
-        // navigator.getMedia = (
-        //     navigator.getUserMedia ||
-        //     navigator.webkitGetUserMedia ||
-        //     navigator.mozGetUserMedia ||
-        //     navigator.msGetUserMedia
-        // );
-
-        // if (!navigator.getMedia) {
-        //     console.log("Your browser doesn't have support");
-        //     setDisplayErrorMessage("Your browser doesn't have support for the navigator.getUserMedia interface.");
-        // }
-        // else {
-        //     // Request the camera.
-        //     navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-        //         .then((currentStream) => {
-        //             console.log('currentStream', currentStream);
-        //             setStream(currentStream); //sent to pather the steam data
-        //         })
-        //         .catch(err => {
-        //             console.log("Err setting stream conection");
-        //             return setDisplayErrorMessage("Err setting stream conection: " + err.name, err);
-        //         })
-        // }
+            })
+            .catch((error) => {console.log(`Error when open camera: ${error}`)});
     }, []);
 
     useEffect(async () => {
@@ -181,7 +158,7 @@ function VideoContext({ meeting }) {
             setCurrActivity(currActivity - 1);
             //setRecognition('');
             setStop(false);
-            //activitiesSession(); //contineu the activities
+            activitiesSession(); //contineu the activities
         }
     }
 
@@ -195,7 +172,7 @@ function VideoContext({ meeting }) {
             setCurrActivity(currActivity + 1);
             //setRecognition('continue');
             setStop(false);
-            // activitiesSession(); //contineu the activities
+            activitiesSession(); //contineu the activities
         }
     }
 
@@ -221,11 +198,11 @@ function VideoContext({ meeting }) {
     useEffect(() => {
         //when me or you said someting 
         if (recognition == 'start') {
-            setQuestion(false);
+            //setQuestion(false);
             console.log('starting,,,');
         }
         if (recognition == 'continue') {
-            setQuestion(false);
+            //setQuestion(false);
             setStop(false);
             console.log('continue,,,,');
             if (activitiesEnded) {
@@ -237,6 +214,7 @@ function VideoContext({ meeting }) {
         }
         else if (recognition == 'stop') {
             setStop(true);
+            swalEnd();
             console.log('stop....');
         }
         else if (recognition == 'prev') {
@@ -261,13 +239,41 @@ function VideoContext({ meeting }) {
             title: displayErrorMessage,
             width: 600,
             padding: '3em',
-            confirmButtonText: 'OK1',
+            confirmButtonText: 'OK',
             showCancelButton: true,
             preConfirm: () => { displayErrorMessage(null); },
             background: '#fff',
             backdrop: `
                       rgba(0,0,123,0.4)
                       url("/img/emojyGIF/fall_stars.gif")`
+        })
+    }
+
+    const swalEnd = () => {
+        const {value: status} = Swal.fire({
+            title: 'Select Status',
+            input: 'radio',
+            inputOptions: {
+                'Restart': 'Restart',
+                'Repeat': 'Repeat',
+                'Leave': 'Leave',
+            },
+            inputValue: 3,
+            inputValidator: (value) => {
+                if(!value) {
+                    return 'You need to choose somthing!'
+                }
+                else{
+                    console.log('status swal', value);
+                    if(value === 'Restart'){
+                        setCurrActivity(0)
+                    } else if(value === 'Leave'){
+                        setRecognition('leave');
+                    } else {
+                        setRecognition('continue');
+                    }
+                }
+            }
         })
     }
 
@@ -306,7 +312,7 @@ function VideoContext({ meeting }) {
         console.log('accseptScheduleMeetingCall', accseptScheduleMeetingCall, 'yourSocketId', yourSocketId);
         console.log('====================================');
         if (accseptScheduleMeetingCall && !yourSocketId) setIsPeerHere(false);
-        else if (accseptScheduleMeetingCall && yourSocketId) setIsPeerHere(true);;
+        else if (accseptScheduleMeetingCall && yourSocketId) setIsPeerHere(true);
     }, [accseptScheduleMeetingCall, yourSocketId]);
 
     useEffect(() => {

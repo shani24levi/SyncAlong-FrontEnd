@@ -6,12 +6,13 @@ const initialState = {};
 
 const middleware = [thunk]; //for aysnc await calls 
 
+const devToolsExtension = window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__() || compose;
 const store = createStore(
     rootReducer,
     initialState,
     compose(
-        applyMiddleware(...middleware),
-        window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+        applyMiddleware(...middleware), ...[devToolsExtension]
+        // window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
     )
 );
 
