@@ -8,7 +8,10 @@ function WorningAlert({ title }) {
     }, [])
 
     const notify = () => toast.warning(title,
-        { autoClose: 10000 });
+        {
+            autoClose: 10000,
+            position: toast.POSITION.BOTTOM_RIGHT
+        });
 
     return (
         <div>

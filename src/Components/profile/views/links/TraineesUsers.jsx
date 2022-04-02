@@ -6,7 +6,6 @@ import { Box, Button, Container, Grid, Typography } from "@material-ui/core";
 // core components
 import componentStyles from "../../../../assets/theme/buttons";
 // import UserCard from '../../UserCard';
-import UserCard from '../../../card/UserCard';
 import UserCardProfile from '../../../card/UserCardProfile';
 import CardContiner from '../../../card/CardContiner';
 import { Link } from 'react-router-dom';
@@ -68,10 +67,8 @@ function TraineesUsers({ profile }) {
                                     <Grid container justifyContent='center' >
                                         {
                                             mytrainees_filtered && mytrainees_filtered.map(trainee => {
-                                                console.log("trainee", trainee);
                                                 return (
                                                     <UserCardProfile key={trainee.user._id} trainee={trainee.user} />
-
                                                 )
 
                                             })

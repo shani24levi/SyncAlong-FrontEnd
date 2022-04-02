@@ -137,9 +137,11 @@ export const updateAvatarPic = (data) => dispatch => {
     userService.updateAvatarPic(data)
         .then(
             user => {
+                console.log('user', user);
                 dispatch(success(user));
             },
             error => {
+                console.log('error', error.response);
                 dispatch(setLoading(false));
                 dispatch(failure(error));
             }

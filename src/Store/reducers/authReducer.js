@@ -74,7 +74,8 @@ export default function (state = initialState, action) {
         //trainees: trainees.filter(i => i != action.payload._id)
       };
     case UPDATE_AVATAR:
-      state.user.avatar = action.payload;
+      console.log('action.payload', action.payload);
+      state.user.avatar = action.payload.data;
       return {
         ...state,
         loading: false,

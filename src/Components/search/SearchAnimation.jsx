@@ -61,7 +61,7 @@ function SearchAnimation({ onSearch }) {
     }
 
     return (
-        <div class="box">
+        <div className="box">
             <form name="search">
                 <input className={classes.input}
                     type="text" placeholder="Search" value={search} onChange={onSearchInputChange}

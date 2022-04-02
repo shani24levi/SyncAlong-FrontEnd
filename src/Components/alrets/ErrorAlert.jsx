@@ -11,7 +11,10 @@ function ErrorAlert({ name = '', title }) {
     }, [])
 
     const notify = () => toast.error(capitalize(name) + title,
-        { autoClose: 10000 });
+        {
+            autoClose: 10000,
+            position: toast.POSITION.BOTTOM_RIGHT
+        });
 
     return (
         <div>

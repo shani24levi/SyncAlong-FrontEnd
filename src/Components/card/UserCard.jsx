@@ -3,6 +3,8 @@ import { Paper, styled, Grid } from '@mui/material';
 import BookmarksRoundedIcon from '@mui/icons-material/BookmarksRounded';
 import WorkRoundedIcon from '@mui/icons-material/WorkRounded';
 import { Link } from 'react-router-dom';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import EventNoteIcon from '@mui/icons-material/EventNote';
 
 const Wrapper = styled(Paper)`
   height: 300px;
@@ -68,21 +70,24 @@ const AbsoluteGrid = styled(Grid)`
 
 function UserCard({ trainee }) {
     return (
-        <Link to={{ pathname: `/trainee/${trainee._id}`, state: { trainee: trainee } }}>
+        <Link to={{ pathname: `/trainee/${trainee.user._id}`, state: { trainee: trainee } }}>
             <Wrapper elevation={4}>
-                <StyledImage src={trainee.avatar} />
+                <StyledImage src={trainee.user.avatar} />
                 <AbsoluteGrid container>
                     <Grid item>
-                        <BookmarksRoundedIcon />
-                        <span className="UserCard_topics">{trainee.user}</span>
+                        <AccessTimeIcon />
+                        {/* Last:{" "} */}
+                        <span>{trainee.profile?.meetings.length !== 0 ? trainee.profile?.meetings[0]?.date.toString() : 'No futer meeting '}</span>
+                        {/* <span className="UserCard_topics">{trainee.profile?.ended_meetings.length !== 0 ? trainee.profile?.ended_meetings[0]?.date.toString() : ' - '}</span> */}
                     </Grid>
                     <Grid item>
-                        <WorkRoundedIcon />
-                        <span>{trainee.user}</span>
+                        <EventNoteIcon />
+                        Upcoming Meeting:
+                        {/* <span>{trainee.profile?.meetings.length !== 0 ? trainee.profile?.meetings[0]?.date.toString() : ' - '}</span> */}
                     </Grid>
-                    <Grid item>{trainee.user}</Grid>
+                    <Grid item>{trainee.profile?.relation ? trainee.profile.relation : ''}</Grid>
                     <Grid item className="UserCard_text">
-                        {trainee.user}
+                        {trainee.user.user}
                     </Grid>
                 </AbsoluteGrid>
             </Wrapper>

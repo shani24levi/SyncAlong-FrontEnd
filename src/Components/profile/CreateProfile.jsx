@@ -163,6 +163,8 @@ const CreateProfile = (props) => {
         console.log(activeStep);
 
         if (isEmpty(errors) && activeStep == 0 && fullname) {
+            //if(avatar) dispatch(updateUser({ user: fullname , avatar }));
+            //else 
             dispatch(updateUser({ user: fullname }))
         }
         // 2-3 page has no requied elemebnts 

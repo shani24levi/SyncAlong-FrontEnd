@@ -1,11 +1,13 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateAvatarPic } from '../../../Store/actions/authAction';
 import {
     Container, Button, Typography, Box, Grid, Avatar,
     Tooltip
 } from "@material-ui/core";
 import { styled } from '@mui/material/styles';
 import "./style.css";
+import { useNavigate } from 'react-router-dom';
 
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import AvatarGroup from '@mui/material/AvatarGroup';
@@ -24,6 +26,8 @@ const useStyles = makeStyles(componentStyles);
 function ViewProfileHeader(props) {
     const user = useSelector(state => state.auth.user);
     const profile = useSelector(state => state.profile);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const classes = useStyles();
 
@@ -42,8 +46,7 @@ function ViewProfileHeader(props) {
         for (const key of Object.keys(imgData)) {
             formData.append(key, imgData[key])
         }
-        console.log(imgData.img);
-        //if (imgData) dispatch(updateAvatarPic(imgData))
+        if (imgData) dispatch(updateAvatarPic(formData))
     }
 
     return (
@@ -93,7 +96,7 @@ function ViewProfileHeader(props) {
                                 user.role === 'trainer' &&
                                 <>
                                     <Tooltip title="New User" placement="bottom" arrow>
-                                        <IconButton onClick={() => console.log('ssss')} aria-label="add" size="large" color="secondary">
+                                        <IconButton onClick={() => navigate('/profile/adduser')} aria-label="add" size="large" color="secondary">
                                             <AddIcon fontSize="large" />
                                         </IconButton>
                                     </Tooltip>
@@ -103,7 +106,7 @@ function ViewProfileHeader(props) {
                                             {
                                                 profile.trainees_profiles && profile.trainees_profiles.map(trainee => {
                                                     return (
-                                                        <Grid item>
+                                                        <Grid item key={trainee.user._id}>
                                                             <Tooltip title={capitalize(trainee.user.username)} placement="top" arrow>
                                                                 <IconButton aria-label="fingerprint" color="secondary">
                                                                     <Avatar alt={trainee.user.name} src={trainee.user.avatar} />

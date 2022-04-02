@@ -23,6 +23,7 @@ import TraineesCard from './trainer/TraineesCard';
 import ErrorAlert from '../alrets/ErrorAlert';
 import { delay } from '../../helpers';
 import Carousel from '../card/Carousel/Carousel';
+import Loader from '../loder/Loder';
 const buttonStyle = makeStyles(buttonsStyles);
 
 const useStyles = makeStyles({
@@ -146,7 +147,10 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
                     </Grid>
                 </Grid>
 
-                {my_trainees && my_trainees.lenght != 0 && <Carousel />}
+                {my_trainees && my_trainees.lenght != 0 ?
+                    <Carousel />
+                    : <Loader />
+                }
 
                 <Grid container alignItems='center' alignContent='center' spacing={2}>
                     {my_trainees && my_trainees.lenght != 0 && <TraineesCard />}

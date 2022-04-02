@@ -25,10 +25,6 @@ function UserProfile({ fullname, setFullName, setUserName, username, setEmail, e
         display: 'none',
     });
 
-    useEffect(() => {
-        setAvatar(user.avatar);
-    }, [user.avatar])
-
     const setImgShow = (event) => {
         const imgData = {
             "name": "new img",
@@ -38,8 +34,7 @@ function UserProfile({ fullname, setFullName, setUserName, username, setEmail, e
         for (const key of Object.keys(imgData)) {
             formData.append(key, imgData[key])
         }
-        console.log(imgData.img);
-        if (imgData) dispatch(updateAvatarPic(imgData))
+        if (imgData) dispatch(updateAvatarPic(formData))
     }
 
     console.log(fullname);
@@ -63,15 +58,10 @@ function UserProfile({ fullname, setFullName, setUserName, username, setEmail, e
                                         <CircularProgress color="secondary" size="20px" /> :
                                         <Avatar
                                             alt="avatar"
-                                            src={avatar}
+                                            src={user.avatar}
                                             className={classes.large}
                                         />
                                 }
-                                {/* <Avatar
-                                    alt="avatar"
-                                    src={avatar}
-                                    className={classes.large}
-                                /> */}
                             </Button>
                         </label>
                         <Typography component="h6" variant="h6">Choose Picture</Typography>

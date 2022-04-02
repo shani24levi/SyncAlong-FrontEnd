@@ -81,8 +81,9 @@ const deleteTrainee = (id) => {
 const updateAvatarPic = (formData) => {
     console.log(formData);
     return axios
-        .post(`${URL}/api/upload`, { headers: { "Content-Type": "multipart/form-data" }, formData })
-        .then(user => { console.log(user); return `${URL}/${user.data}` })
+        //.put(`${URL}/api/users/avatar`, formData)
+        .put(`${URL}/api/users/avatar`, formData, { headers: { "Content-Type": "multipart/form-data", "boundary": "MyBoundary" } })
+        .then(user => { console.log(user); return user })
         .catch(err => {
             return Promise.reject(err.response.data);
         })

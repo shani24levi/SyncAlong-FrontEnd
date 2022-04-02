@@ -40,7 +40,7 @@
   .footer .container .item .icon {
     font-size: 1.5rem;
     color: var(--primary-color);
-    background: var(--secondary-color);
+    background: var(--bg-color);
     border-radius: 100%;
     padding: 0.5rem;
     grid-row: 1 / span 2;

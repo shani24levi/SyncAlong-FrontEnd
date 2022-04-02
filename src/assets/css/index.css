@@ -7,9 +7,10 @@
 }
 
 :root {
+  --bg-color: #171941;
   --main-bg-color: #e5e5ea;
   --primary-color: #8c3db9 ;
-  --secondary-color: #171941;
+  --secondary-color: #9c27b0 ;
   --tertiary-color: #d1c926;
   --text-color: #4d4d4d;
   --info: #ddd;
