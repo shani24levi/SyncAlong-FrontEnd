@@ -1,12 +1,13 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom'
 import Stack from '@mui/material/Stack';
 import { Typography } from '@mui/material';
 import ChevronLeftOutlined from '@mui/icons-material/ChevronLeftOutlined';
 import ChevronRightOutlined from '@mui/icons-material/ChevronRightOutlined';
 import { StyledIconButton } from './Carousel.styles';
+import { Link } from 'react-router-dom'
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
+import { useSwiper } from 'swiper/react'
 
 export const StyledButton = styled(Button)(({ theme }) => ({
     background: 'rgb(59,57,57,0.4)',
@@ -28,27 +29,34 @@ export const StyledButton = styled(Button)(({ theme }) => ({
     },
 }));
 
-const CarouselToolbar = ({ prevRef, nextRef }) => {
-    const navigate = useNavigate();
+
+function CarouselToolbarBottom({ prevRef, nextRef }) {
+    const swiper = useSwiper()
     return (
         <div
             style={{
                 margin: '0 2rem 1.5rem 1rem',
             }}>
-            <Stack direction="row" alignItems="center">
-                <Typography
-                    variant="h5"
-                    sx={{ fontWeight: 700, flexGrow: 1, color: '#f5f5f5' }}>
-                    Listed Users
-                </Typography>
-                <Stack direction="row" spacing={2} >
-                    <Button onClick={() => navigate('/profile', { state: { to: 'usersTrainees' } })} >
-                        <StyledButton sx={{ p: 2 }}>View All Users</StyledButton>
-                    </Button>
-                </Stack>
+            <Stack direction="row" alignItems="center" justifyContent='center' spacing={2} >
+                <div>
+                    <StyledIconButton
+                        onClick={() => swiper.slidePrev()}
+                        aria-label="previous-page"
+                        size="medium"
+                        ref={prevRef}>
+                        <ChevronLeftOutlined fontSize="inherit" />
+                    </StyledIconButton>
+                </div>
+                <div>
+                    <StyledIconButton aria-label="next page" size="medium" ref={nextRef}
+                        onClick={() => swiper.slideNext()}
+                    >
+                        <ChevronRightOutlined fontSize="inherit" />
+                    </StyledIconButton>
+                </div>
             </Stack>
         </div>
     )
-};
+}
 
-export default CarouselToolbar;
+export default CarouselToolbarBottom;

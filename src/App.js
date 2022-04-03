@@ -31,7 +31,6 @@ import VideoRoom from './Components/screens/VidoeRoom';
 import Profile from './Components/screens/Profile';
 import AddTrainee from './Components/profile/addTrainee/AddTrainee';
 import ScheduleMeetings from './Components/screens/ScheduleMeetings';
-import TraineeView from './Components/screens/TraineeView';
 import MeetingReport from './Components/screens/MeetingReport';
 import TraineePage from './Components/screens/TraineePage';
 
@@ -113,10 +112,6 @@ const App = (props) => {
                     <Route exact path='/schedule/meetings' element={<ScheduleMeetings />} />
                   </Route>
 
-                  <Route exact path='/trainee/view' element={<PrivateRoute />}>
-                    <Route exact path='/trainee/view' element={<TraineeView />} />
-                  </Route>
-
                   <Route exact path='/meeting/report' element={<PrivateRoute />}>
                     <Route exact path='/meeting/report' element={<MeetingReport />} />
                   </Route>
@@ -124,6 +119,10 @@ const App = (props) => {
                   <Route exact path='/trainee/:id' element={<PrivateRoute />}>
                     <Route exact path='/trainee/:id' element={<TraineePage />} />
                   </Route>
+
+                  {/* <Route exact path='/all/trainees' element={<PrivateRoute />}>
+                    <Route exact path='/all/trainees' element={<AllTraineePage />} />
+                  </Route> */}
 
                 </Routes>
               </ContextProvider>

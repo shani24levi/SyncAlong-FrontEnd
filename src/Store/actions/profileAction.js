@@ -111,11 +111,12 @@ export const getAllTraineesProfiles = () => dispatch => {
                 dispatch(clear());
             },
             error => {
-                dispatch(setLoading(false));
-                dispatch(failure(error));
+                //dispatch(setLoading(false));
+                dispatch(fail());
             }
         );
     function success(profile) { return { type: SET_ALL_TRAINEES, payload: profile } }
+    function fail() { return { type: SET_ALL_TRAINEES, payload: [] } }
 }
 
 // export const setTraineeProfileById = (id, data) => dispatch => {

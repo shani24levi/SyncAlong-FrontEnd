@@ -1,8 +1,9 @@
 import React from 'react';
-import { Paper, styled, Grid } from '@mui/material';
+import { Paper, styled, Grid, Button } from '@mui/material';
 import BookmarksRoundedIcon from '@mui/icons-material/BookmarksRounded';
 import WorkRoundedIcon from '@mui/icons-material/WorkRounded';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import EventNoteIcon from '@mui/icons-material/EventNote';
 
@@ -69,7 +70,10 @@ const AbsoluteGrid = styled(Grid)`
 `;
 
 function UserCard({ trainee }) {
+    const navigate = useNavigate();
+
     return (
+        // <Button onClick={() => navigate(`/trainee/${trainee.user._id}`, { state: { trainee: trainee } })} >
         <Link to={{ pathname: `/trainee/${trainee.user._id}`, state: { trainee: trainee } }}>
             <Wrapper elevation={4}>
                 <StyledImage src={trainee.user.avatar} />

@@ -24,6 +24,7 @@ import ErrorAlert from '../alrets/ErrorAlert';
 import { delay } from '../../helpers';
 import Carousel from '../card/Carousel/Carousel';
 import Loader from '../loder/Loder';
+import ListedMeetings from './trainer/listTable/ListedMeetings';
 const buttonStyle = makeStyles(buttonsStyles);
 
 const useStyles = makeStyles({
@@ -73,9 +74,9 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
     const [errorDisplay, setErrorDisplay] = useState(false);
     const meetings = useSelector(state => state.meetings);
     const my_trainees = useSelector(state => state.profile.trainees_profiles);
+    const trainee_profile_called = useSelector(state => state.profile.trainee_profile_called);
 
-    // console.log('upcamingMeeting', upcamingMeeting, !isEmpty(upcamingMeeting), meetings.meetings);
-    // console.log('meeting', meeting, 'date', date);
+
     useEffect(async () => {
         if (errorDisplay) {
             await delay(3000);
@@ -126,6 +127,7 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
             })
         }
     }
+    //console.log('my_trainees && my_trainees', isEmpty(my_trainees));
 
     return (
         <>
@@ -145,14 +147,18 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
                         <Search />
                     </Grid>
                 </Grid>
+                {
+                    profile && !trainee_profile_called ?
+                        <Loader /> :
+                        <>
+                            {
+                                !isEmpty(my_trainees) ? <Carousel /> : <></>
+                            }
+                        </>
 
-                {my_trainees && my_trainees.lenght != 0 ?
-                    <Carousel />
-                    : <Loader />
                 }
                 <Grid container alignItems='center' alignContent='center' spacing={2}>
-                    {my_trainees && my_trainees.lenght != 0 && <TraineesCard />}
-
+                    {/* {my_trainees && my_trainees.lenght != 0 && <TraineesCard />} */}
                     <Grid item xs={12} md={12}>
                         <CardContiner title="Your up caming meeting" subtitle={dateToMeeting === 0 ? '' : dateToMeeting.toString()} >
                             {!isEmpty(upcamingMeeting) && 'Participants :  ' + upcamingMeeting?.tariner.user + ' && ' + upcamingMeeting?.trainee.user}
@@ -173,6 +179,19 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
                             </Box>
                         </CardContiner>
                     </Grid>
+
+                    <Grid item xs={12} md={12} lg={12}>
+                        {
+                            profile && !isEmpty(meetings.meetings) ?
+                                <ListedMeetings /> :
+                                <></>
+                        }
+                    </Grid>
+
+                    <Grid item xs={12} md={6} lg={4}>
+                        {/* <AppCurrentVisits /> */}
+                    </Grid>
+
                 </Grid>
 
                 <Grid container spacing={3}>

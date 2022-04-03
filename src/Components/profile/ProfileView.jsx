@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateProfile } from '../../Store/actions/profileAction';
-
+import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom'
 import PropTypes from "prop-types";
 import { Container, Grid } from '@material-ui/core';
@@ -15,8 +15,9 @@ import ViewProfileHeader from './views/ViewProfileHeader';
 import ProfileEditeModal from './forms/edit/ProfileEditeModal';
 import TraineesUsers from './views/links/TraineesUsers';
 
-const ProfileView = (props) => {
+const ProfileView = () => {
     const dispatch = useDispatch();
+    const location = useLocation();
     const user = useSelector(state => state.auth.user);
     const profile = useSelector(state => state.profile.profile);
     const profileT = useSelector(state => state.profile);
@@ -36,6 +37,10 @@ const ProfileView = (props) => {
     const [changed, setChaged] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [errors, setErorrs] = useState({});
+
+    useEffect(() => {
+        if (location.state?.to) setLink(location.state.to);
+    }, [location.state])
 
     const setView = (link) => {
         switch (link) {
