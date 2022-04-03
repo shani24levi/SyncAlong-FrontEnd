@@ -1,41 +1,56 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { styled, Grid, Avatar, IconButton, Typography } from '@mui/material';
-import { Favorite, LinkedIn } from '@mui/icons-material';
-import Divider from '@mui/material/Divider';
+import {
+  styled, Grid, Avatar, IconButton, Typography, Select,
+  InputLabel, MenuItem, FormControl, SelectChangeEvent,
+} from '@mui/material';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+// import InputLabel from '@mui/material/InputLabel';
+// import MenuItem from '@mui/material/MenuItem';
+// import FormControl from '@mui/material/FormControl';
+// import Select, { SelectChangeEvent } from '@mui/material/Select';
 
+import Divider from '@mui/material/Divider';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+
+import { capitalize } from '../../helpers';
 import HeaderTrainee from './HeaderTrainee';
 import MainConextTrainee from './MainConextTrainee';
 import ScrollTop from '../scrollToTop/ScrollTop';
+import MeetingCard from './MeetingCard';
+import DaterPicker from './datePicker/DaterPicker';
 
 const Wrapper = styled('div')`
-  font-family: 'Circular Std';
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  /* height: 100vh; */
-  width: '100vw';
-  background-color: #242424;
+  width: '100%';
   color: #f5f5f5;
 `;
 
 const TextWrapper = styled('div')`
   width: 100%;
+  letter-spacing: 5px;
   .show-more {
     font-weight: 400;
     color: #d4d4d4;
     font-size: 16px;
   }
-
   .show-more-anchor {
     color: grey;
   }
   .show-more-anchor:hover {
     color: palevioletred;
   }
-  .MuiTypography-root {
-    font-family: 'Circular Std';
+  .MuiTypography-h5{
+    letter-spacing: 5px !importent;
   }
 `;
 
@@ -51,9 +66,7 @@ const Container = styled(Grid)`
   position: relative;
   display: flex;
   flex-direction: column;
-  max-width: 800px;
-  /* background: #393939; */
-  font-family: inter;
+  width: 100%;
 `;
 
 const PhotoWrapper = styled('div')`
@@ -78,111 +91,121 @@ const Photo = styled('div')`
   }
 `;
 
-
 function TraineeView({ trainee }) {
-    const location = useLocation();
-    const [page, setPage] = useState(1);
-    //console.log('id', id, location.state.trainee);
+  const location = useLocation();
+  const user = useSelector(state => state.auth.user);
+  const [page, setPage] = useState(1);
+  const [type, setType] = useState('All');
+  const [open, setOpen] = React.useState(false);
 
-    return (
-        <>
-            <Wrapper>
-                <Banner />
-                <Grid
-                    container
-                    height="100%"
-                    justifyContent="center"
-                    sx={{ background: '#242424', padding: '0rem 1rem' }}>
-                    <Container item>
-                        <PhotoWrapper>
-                            <Photo>
-                                <Avatar
-                                    src={trainee.user.avatar}
-                                    sx={{
-                                        bgcolor: "#ddd", //lightGreen[500],
-                                        padding: '0px !important',
-                                        border: '5px solid #3E3E42',
-                                    }}>
-                                </Avatar>
-                            </Photo>
-                            <span style={{ flexGrow: 1 }}></span>
-                            <IconButton
-                                target="_blank"
-                                href={"linkedIn"}
-                                aria-label="linkedIn"
-                                size="large"
-                                color="primary">
-                                <LinkedIn fontSize="inherit" />
-                            </IconButton>
-                            <IconButton
-                                onClick={() => {
-                                    console.log('like');
-                                }}
-                                aria-label="add to wish list"
-                                size="large"
-                            //color={heart}
-                            >
-                                <Favorite fontSize="inherit" />
-                            </IconButton>
-                        </PhotoWrapper>
+  //console.log('id', id, location.state.trainee);
 
-                        <TextWrapper>
-                            <Typography variant="h5" fontWeight={700}>
-                                Hi, I m {trainee.user.user}
-                            </Typography>
-                            <Typography fontWeight={600} sx={{ py: 1 }}>
-                                {'job_title'} at {"company"}
-                            </Typography>
-                        </TextWrapper>
+  return (
+    <>
+      <Wrapper>
+        <Banner />
+        <Grid
+          container
+          height="100%"
+          justifyContent="flex-start"
+          sx={{ padding: '0rem 4rem' }}>
+          <Container>
+            <PhotoWrapper>
+              <Photo>
+                <Avatar
+                  src={trainee.user.avatar}
+                  sx={{
+                    bgcolor: "#8c3db9",
+                    padding: '0px !important',
+                    border: '5px solid #8c3db9',
+                  }}>
+                </Avatar>
+              </Photo>
+              <span style={{ flexGrow: 1 }}></span>
 
-                        <Grid container sx={{ py: 2 }}>
-                            <Grid
-                                container
-                                direction="column"
-                                item
-                                xs={12}
-                                md={6}
-                                spacing={1}>
-                                <Grid item fontWeight={700}>
-                                    Expertise
-                                </Grid>
-                                <Grid item>{("expertise")}</Grid>
-                            </Grid>
-                            <Grid
-                                container
-                                direction="column"
-                                item
-                                xs={12}
-                                md={6}
-                                spacing={1}>
-                                <Grid item fontWeight={700}>
-                                    Languages
-                                </Grid>
-                                <Grid item>{("language")}</Grid>
-                            </Grid>
-                        </Grid>
-                        <Divider />
+              <IconButton
+                onClick={() => setOpen(true)}
+                aria-label="add to wish list"
+                size="large"
+                color="inherit"
+              >
+                <AddCircleOutlineIcon fontSize="large" />
+              </IconButton>
 
-                        {/* adding select here */}
-                        {/* <Grid item xs={12} md={4} sx={{ paddingTop: '1rem' }}>
+              <IconButton
+                onClick={() => setOpen(true)}
+                aria-label="add to wish list"
+                size="large"
+                color="inherit"
+              >
+                <AccountCircleIcon fontSize="large" />
+              </IconButton>
+            </PhotoWrapper>
+
+            <TextWrapper>
+              <Typography variant="h5" fontWeight={700}>
+                Hello To {capitalize(trainee.user.user)}
+              </Typography>
+              <Typography fontWeight={600} sx={{ py: 1 }}>
+                Ceated by {capitalize(user.user)}'s user at {trainee.user.createdAt}
+              </Typography>
+            </TextWrapper>
+
+            <Grid container sx={{ py: 2 }} justifyContent={'space-around'}>
+              <Grid
+                container
+                direction="column"
+                item
+                xs={12}
+                md={5}
+                spacing={1}>
+                <Grid item fontWeight={700}>
+                  Last Meeting
+                </Grid>
+                <Grid item lg={4} ><MeetingCard /></Grid>
+              </Grid>
+              <Grid
+                container
+                direction="column"
+                item
+                xs={12}
+                md={5}
+                spacing={1}>
+                <Grid item fontWeight={700}>
+                  Future meeting
+                </Grid>
+                <Grid item lg={4}><MeetingCard /></Grid>
+              </Grid>
+            </Grid>
+            <Divider light style={{ backgroundColor: '#f5f5f5' }} />
+
+            {/* adding select here */}
+            <Grid item xs={12} md={4} sx={{ paddingTop: '1rem' }}>
               <div style={{ margin: '1rem 0rem' }}>
-                <Select
-                  menuPlacement="auto"
-                  name="Topic"
-                  options={motivationOptions}
-                  // @ts-ignore
-                  onChange={({ value }) => {
-                    setMotivation(value);
-                    setPage(1);
-                  }} // Value - label
-                  isSearchable={true}
-                  classNamePrefix="select"
-                  placeholder={<span>Filter by Motivation</span>}
-                />
+                <FormControl fullWidth>
+                  <InputLabel id="demo-simple-select-label">Topic</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={type}
+                    color="secondary"
+                    label="setType"
+                    onChange={({ value }) => {
+                      setType(value);
+                      setPage(1);
+                    }}
+                  >
+                    <MenuItem value={10}>All</MenuItem>
+                    <MenuItem value={20}>High Sync</MenuItem>
+                    <MenuItem value={30}>Low Sync</MenuItem>
+                    <MenuItem value={40}>High amount of exercise</MenuItem>
+                    <MenuItem value={50}>Low amount of exercise</MenuItem>
+                  </Select>
+                </FormControl>
               </div>
-            </Grid> */}
+            </Grid>
 
-                        {/* <Grid container width="100%">
+            {/* <Grid container width="100%">
               <PaginatedBookingCard
                 motivation={motivation}
                 topics={topics}
@@ -190,20 +213,40 @@ function TraineeView({ trainee }) {
                 setPage={setPage}
               />
             </Grid> */}
-                    </Container>
-                </Grid>
-            </Wrapper>
+          </Container>
+        </Grid>
+      </Wrapper>
+
+      <div>
+        <Dialog
+          open={open}
+          onClose={() => setOpen(false)}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogContent>
+            <DaterPicker />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setOpen(false)}>Disagree</Button>
+            <Button onClick={() => setOpen(false)} autoFocus>
+              Agree
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
 
 
-            <Container maxWidth="xl">
-                <div id="back-to-top-anchor" />
-                <HeaderTrainee trainee={trainee} />
-                <MainConextTrainee trainee={trainee} />
-                <ScrollTop />
+      {/* 
+      <Container maxWidth="xl">
+        <div id="back-to-top-anchor" />
+        <HeaderTrainee trainee={trainee} />
+        <MainConextTrainee trainee={trainee} />
+        <ScrollTop />
 
-            </Container>
-        </>
-    );
+      </Container> */}
+    </>
+  );
 }
 
 export default TraineeView;
