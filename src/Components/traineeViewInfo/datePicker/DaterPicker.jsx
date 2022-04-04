@@ -3,7 +3,7 @@ import Grid from '@mui/material/Grid';
 import Divider from '@mui/material/Divider';
 import Calendar from './Calendar';
 import TimeSelector from './TimeSelector';
-// import TimeSelector from './TimeSelector';
+import Confirmation from './Confirmation';
 // import Confirmation from './ConfirmationPage';
 
 function DaterPicker(props) {
@@ -40,7 +40,7 @@ function DaterPicker(props) {
                             backgroundColor: 'rgb(48 48 48)',
                             color: '#f5f5f5',
                         }}>
-                        {/* <Confirmation date={date} hour={hour} setHour={setHour} /> */}
+                        <Confirmation date={date} hour={hour} setHour={setHour} />
                     </Grid>
                 </>
             )}

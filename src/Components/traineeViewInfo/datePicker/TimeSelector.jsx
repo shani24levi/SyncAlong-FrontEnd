@@ -1,5 +1,10 @@
 import React from 'react';
 import { styled, Grid, Button } from '@mui/material';
+import TextField from '@mui/material/TextField';
+import TimePicker from '@mui/lab/TimePicker';
+import StaticTimePicker from '@mui/lab/StaticTimePicker';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
 
 const getDate = (_date) => {
     const date = _date ? _date : new Date();
@@ -28,30 +33,41 @@ function TimeSelector({
     date,
     setHour,
     timeslot }) {
-    if (timeslot.length === 0) return <div />;
+    const [value, setValue] = React.useState(new Date());
+    if (!date) return <div />;
 
     return (
         <Grid
             style={{
                 display: 'flex',
                 flexDirection: 'column',
-                backgroundColor: '#303030',
-                padding: '1rem 2rem',
                 height: '360px',
-                color: '#f5f5f5',
+                color: '#ddd',
                 overflowY: 'scroll',
             }}>
             <div style={{ fontWeight: 600, marginBottom: '8px' }}>
                 {getDate(date)}
             </div>
-            {timeslot.map((time, index) => (
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <StaticTimePicker
+                    displayStaticWrapperAs="mobile"
+                    value={value}
+                    onChange={(newValue) => {
+                        setHour(newValue);
+                        setValue(newValue);
+                    }}
+                //   renderInput={(params) => <TextField {...params} />}
+                />
+            </LocalizationProvider>
+
+            {/* {timeslot.map((time, index) => (
                 <StyledButton
                     variant="outlined"
                     key={index}
                     onClick={() => setHour(time)}>
                     {`${addZero(time)}${time}:00 `}
                 </StyledButton>
-            ))}
+            ))} */}
         </Grid>
     );
 }

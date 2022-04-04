@@ -6,6 +6,31 @@ import { Container, Grid } from '@material-ui/core';
 import MeetingItemCard from '../meeting/MeetingItemCard';
 import { useSelector } from 'react-redux';
 import ScrollTop from '../scrollToTop/ScrollTop';
+import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
+import NotFoundCard from '../card/NotFoundCard';
+import { styled } from '@mui/material/styles';
+import { Typography } from '@mui/material';
+import { Box, textAlign } from '@mui/system';
+import MeetingsScours from '../meeting/meetingsScours/MeetingsScours';
+
+const Wrapper = styled('div')`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding-top: 140px;
+  div {
+    margin-top: 24px;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+  svg {
+    height: 120px;
+    width: 120px;
+  }
+`;
 
 
 function Meetings(props) {
@@ -30,6 +55,7 @@ function Meetings(props) {
             time: '1:2 am',
             activities: ['hands-x', 'hands-y', 'swing-hands', 'swim-hands',
                 'gamp', 'legs-gumping', 'open-close'],
+            video: "https://www.youtube.com/watch?v=0T75yyeotrU"
         },
     ]
 
@@ -52,7 +78,25 @@ function Meetings(props) {
     return (
         <Container fixed>
             <div id="back-to-top-anchor" />
-            <Grid container spacing={5} justifyContent='center'>
+            {
+                !meetings ?
+                    <Box m="auto"
+                        alignItems="center"
+                        justifyContent="center"
+                        textAlign="center"
+                        minHeight="100px"
+                        marginTop="160px"
+                        marginBottom="160px"
+                    >
+                        <OndemandVideoIcon style={{ height: '120px', width: '120px' }} />
+                        <Typography variant='h2'>{"No Meeting Complited"}</Typography>
+                        <Typography variant='h6'>{"Start with a sport activity .... "}</Typography>
+                    </Box>
+                    :
+                    <MeetingsScours meetings={meetings} />
+            }
+
+            {/* <Grid container spacing={5} justifyContent='center'>
                 {
                     meetings.map((meeting, i) => {
                         return (
@@ -62,9 +106,8 @@ function Meetings(props) {
                         )
                     })
                 }
-            </Grid>
+            </Grid> */}
             <ScrollTop />
-
         </Container>
     );
 }

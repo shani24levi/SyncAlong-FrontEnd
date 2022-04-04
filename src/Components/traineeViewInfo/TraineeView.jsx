@@ -95,13 +95,14 @@ function TraineeView({ trainee }) {
   const location = useLocation();
   const user = useSelector(state => state.auth.user);
   const [page, setPage] = useState(1);
-  const [type, setType] = useState('All');
+  const [type, setType] = useState(10);
   const [open, setOpen] = React.useState(false);
 
   //console.log('id', id, location.state.trainee);
 
   return (
     <>
+      <div id="back-to-top-anchor" />
       <Wrapper>
         <Banner />
         <Grid
@@ -213,38 +214,21 @@ function TraineeView({ trainee }) {
                 setPage={setPage}
               />
             </Grid> */}
+
+            <MainConextTrainee trainee={trainee} />
           </Container>
         </Grid>
       </Wrapper>
 
-      <div>
-        <Dialog
-          open={open}
-          onClose={() => setOpen(false)}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogContent>
-            <DaterPicker />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setOpen(false)}>Disagree</Button>
-            <Button onClick={() => setOpen(false)} autoFocus>
-              Agree
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </div>
-
-
-      {/* 
-      <Container maxWidth="xl">
-        <div id="back-to-top-anchor" />
-        <HeaderTrainee trainee={trainee} />
-        <MainConextTrainee trainee={trainee} />
-        <ScrollTop />
-
-      </Container> */}
+      <Dialog
+        open={open}
+        onClose={() => setOpen(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DaterPicker />
+      </Dialog>
+      <ScrollTop />
     </>
   );
 }

@@ -68,7 +68,7 @@ function Calendar({ date, setDate, setTimeslot }) {
                             const dayName = dayOfWeek[e.getDay()];
                             //const { start_hour, end_hour } = time_slot[dayName];
                             setDate(e);
-                            //setTimeslot((start_hour, end_hour, 1));
+                            //  setTimeslot((2, 3, 1));
                         }}
                         renderLoading={() => <CalendarPickerSkeleton />}
                         renderDay={(day, _value, DayComponentProps) => {
