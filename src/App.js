@@ -33,6 +33,7 @@ import AddTrainee from './Components/profile/addTrainee/AddTrainee';
 import ScheduleMeetings from './Components/screens/ScheduleMeetings';
 import MeetingReport from './Components/screens/MeetingReport';
 import TraineePage from './Components/screens/TraineePage';
+import WatchMeeting from './Components/meeting/watchMeeting/WatchMeeting';
 
 const App = (props) => {
   const navigate = useNavigate();
@@ -120,9 +121,9 @@ const App = (props) => {
                     <Route exact path='/trainee/:id' element={<TraineePage />} />
                   </Route>
 
-                  {/* <Route exact path='/all/trainees' element={<PrivateRoute />}>
-                    <Route exact path='/all/trainees' element={<AllTraineePage />} />
-                  </Route> */}
+                  <Route exact path='/meeting/watch/:id' element={<PrivateRoute />}>
+                    <Route exact path='/meeting/watch/:id' element={<WatchMeeting />} />
+                  </Route>
 
                 </Routes>
               </ContextProvider>

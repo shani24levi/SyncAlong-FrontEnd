@@ -17,9 +17,9 @@ function TraineeHome({ meeting, date }) {
     const theme = useTheme();
     const user = useSelector(state => state.auth.user);
 
-    console.log('====================================');
-    console.log(callTrainee);
-    console.log('====================================');
+    // console.log('====================================');
+    // console.log(callTrainee);
+    // console.log('====================================');
 
     return (
         <>

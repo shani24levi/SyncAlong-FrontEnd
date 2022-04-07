@@ -4,6 +4,7 @@ import SwiperCore, { Navigation, Mousewheel, Pagination } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import "swiper/css";
 import "swiper/css/navigation";
+import { EffectFade } from 'swiper';
 //import 'swiper/swiper-bundle.min.css';
 import { Typography } from '@mui/material';
 import UserCard from '../../card/UserCard';
@@ -18,6 +19,9 @@ const Carousel = () => {
     const userList = useSelector(state => state.profile.trainees_profiles);
     const prevRef = useRef(null);
     const nextRef = useRef(null);
+    console.log('====================================');
+    console.log('userList', userList);
+    console.log('====================================');
     return (
         <CarouselDiv style={{ margin: '2rem', backgroundColor: 'inherit' }}>
             <Toolbar prevRef={prevRef} nextRef={nextRef} />
@@ -59,15 +63,14 @@ const Carousel = () => {
                 grabCursor
                 centeredSlides
                 mousewheel={{ forceToAxis: true }}
-                // onSwiper={(swiper) => console.log(swiper)}
-                //onSlideChange={() => console.log('slide change')}
-                loop={true}>
+            >
                 <ToolbarBottom prevRef={prevRef} nextRef={nextRef} />
-                {userList.map((user, index) => (
-                    <SwiperSlide key={index} >
+                {userList.map((user, el) => {
+                    return <SwiperSlide key={el} >
                         <UserCard trainee={user} />
                     </SwiperSlide>
-                ))}
+                })}
+
             </Swiper>
         </CarouselDiv>
     );

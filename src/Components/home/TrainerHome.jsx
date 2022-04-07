@@ -76,7 +76,6 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
     const my_trainees = useSelector(state => state.profile.trainees_profiles);
     const trainee_profile_called = useSelector(state => state.profile.trainee_profile_called);
 
-
     useEffect(async () => {
         if (errorDisplay) {
             await delay(3000);
@@ -129,6 +128,7 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
     }
     //console.log('my_trainees && my_trainees', isEmpty(my_trainees));
 
+    console.log(!isEmpty(my_trainees));
     return (
         <>
             <img
