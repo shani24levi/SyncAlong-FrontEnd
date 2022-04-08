@@ -8,8 +8,8 @@ const RootStyle = styled(Card)(({ theme }) => ({
     textAlign: 'center',
     padding: '16px',
     borderRadius: '16px',
-    color: 'rgb(4, 41, 122)',
-    backgroundColor: 'rgb(208, 242, 255)'
+    color: 'rgb(4, 41, 122) !important',
+    backgroundColor: 'rgb(208, 242, 255) !important'
 }));
 
 const IconWrapperStyle = styled('div')(({ theme }) => ({

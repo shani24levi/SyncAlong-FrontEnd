@@ -2,6 +2,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { SocketContext } from '../Context/ContextProvider';
 import { useSelector, useDispatch } from 'react-redux';
+import { getAllMeetings } from '../../Store/actions/meetingActions';
 import { setCurrentProfile, getTraineesProfiles, getAllTraineesProfiles } from '../../Store/actions/profileAction';
 import { futureMeetings } from '../../Store/actions/meetingActions';
 import PopUpCall from '../popupCall/PopUpCall';
@@ -40,8 +41,13 @@ const Home = ({ socket }) => {
             user?.role === 'trainer' && profile?.profile?.trainerOf.length !== 0 && !profile?.trainee_profile_called && dispatch(getAllTraineesProfiles());
             //get future Meetings
             dispatch(futureMeetings());
+
+            if (!meetings.all_meetings || isEmpty(meetings.all_meetings)) {
+                dispatch(getAllMeetings());
+            }
         }
     }, [profile.profile]);
+
 
     useEffect(async () => {
         if (traineeEntered) {

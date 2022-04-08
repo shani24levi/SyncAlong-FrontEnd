@@ -41,11 +41,7 @@ const CarouselToolbar = ({ prevRef, nextRef }) => {
                     sx={{ fontWeight: 700, flexGrow: 1, color: '#f5f5f5' }}>
                     Listed Users
                 </Typography>
-                <Stack direction="row" spacing={2} >
-                    <Button onClick={() => navigate('/profile', { state: { to: 'usersTrainees' } })} >
-                        <StyledButton sx={{ p: 2 }}>View All Users</StyledButton>
-                    </Button>
-                </Stack>
+                <StyledButton sx={{ p: 2 }} onClick={() => navigate('/profile', { state: { to: 'usersTrainees' } })} >View All Users</StyledButton>
             </Stack>
         </div>
     )

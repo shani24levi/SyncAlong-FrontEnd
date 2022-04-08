@@ -36,6 +36,13 @@
   font-family: "Roboto Slab", serif;
 }
 
+label {
+  font-size: 14px;
+  line-height: 1.42857;
+  color: #aaaaaa;
+  font-weight: 400;
+}
+
 
 /* Mobile */
 @media screen and (max-width: 767px) {

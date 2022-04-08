@@ -131,11 +131,6 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
     console.log(!isEmpty(my_trainees));
     return (
         <>
-            <img
-                alt="..."
-                className={classes.imgBackground}
-                src={require("../../assets/img/path1.png").default}
-            />
             <Container maxWidth="xl">
                 {errorDisplay && <ErrorAlert name={upcamingMeeting.trainee.user} title=" is not online in order to conect joined meeting" />}
                 <Grid container alignItems='center' justifyContent='center' spacing={1} >
