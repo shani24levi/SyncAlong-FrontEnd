@@ -26,16 +26,17 @@ function UserProfile({ fullname, setFullName, setUserName, username, setEmail, e
     });
 
     const setImgShow = (event) => {
+        console.log('hi', event.target.files);
         const imgData = {
-            "name": "new img",
-            "img": event.target.files[0],
-        }
-        const formData = new FormData();
-        for (const key of Object.keys(imgData)) {
-            formData.append(key, imgData[key])
-        }
-        if (imgData) dispatch(updateAvatarPic(formData))
-    }
+          name: 'new img',
+          img: event.target.files[0]
+        };
+        let formData = new FormData();
+        formData.append('file', event.target.files[0]);
+        
+        console.log('formData', formData.getAll('file'));
+        if (imgData) dispatch(updateAvatarPic(formData));
+      };
 
     console.log(fullname);
     return (

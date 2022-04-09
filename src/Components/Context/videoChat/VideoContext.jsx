@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { SocketContext } from '../ContextProvider';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Grid, Typography, Paper, makeStyles, useTheme, Button, Box } from '@material-ui/core';
 import Webcam from "react-webcam";
 import Swal from 'sweetalert2';
@@ -21,15 +21,19 @@ import FunQuestionPopUp from './funQuestionPopUp/FunQuestionPopUp';
 import ErrorAlert from '../../alrets/ErrorAlert';
 import LoadingModal from '../../modal/LoadingModal';
 import SeccsesAlert from '../../alrets/SeccsesAlert';
+
+import { createRecordingById } from '../../../Store/actions/recordingActions';
+import {useReactMediaRecorder} from 'react-media-recorder';
 const useStyles = makeStyles(componentStyles);
 
 function VideoContext({ meeting }) {
 
+    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const { mediapipeOfTrainee, conectReq, setConectReq, callUser, answerCall,
         accseptScheduleMeetingCall, yourSocketId, setSyncScore,
-        setRecognition, setSettingUserInFrame, setPeer2inFrame,
+        setRecognition, setSettingUserInFrame, setPeer1inFrame, setPeer2inFrame,
         peer2inFrame, peer1inFrame, recognition, mediaPipeInitilaize,
         syncScore, myDelayOnConection, setPosesArray, array_poses,
         timeOfColectionPose, delayBetweenUsers, setFlagTime, setFlagFeatch,
@@ -57,6 +61,21 @@ function VideoContext({ meeting }) {
 
     const images = { thumbs_up: thumbs_up, victory: victory, stop: stop };
     const user = useSelector((state) => state.auth.user);
+
+
+    const {status, startRecording, stopRecording, mediaBlobUrl} = useReactMediaRecorder({screen: true});
+    const statusRecord = async(str) => {
+        if(str == "start"){
+            startRecording(); 
+            console.log(status);
+            return null;
+        }else{
+            stopRecording(); 
+            console.log(status);
+            return null;
+        }
+    }
+
 
     useEffect(() => {
         navigator.mediaDevices.getUserMedia({ video: true })
@@ -90,6 +109,10 @@ function VideoContext({ meeting }) {
     }, [activity_now]);
 
     const activitiesSession = async () => {
+        console.log("start Meeting and recorder");
+        if(user.role === 'trainer'){
+            statusRecord("start");
+        }
         for (let i = currActivity; i < meeting.activities.length; i++) {
             //for (const i in meeting.activities) {
             setSyncScore(0);
@@ -141,6 +164,26 @@ function VideoContext({ meeting }) {
 
     useEffect(async () => {
         if (activitiesEnded == true) {
+            if(user.role === 'trainer'){
+                statusRecord("stop");
+                if(status === 'stopped'){
+                    if(mediaBlobUrl && status === 'stopped')
+                    {
+                        console.log("can save recording");
+                        window.open(mediaBlobUrl, "_blank").focus();
+                        const blob = await fetch(mediaBlobUrl).then(res => res.blob());
+                        const myFile = new File([blob], "demo.mp4", { type: 'video/mp4' });
+                        console.log(blob);
+                        let formData = new FormData();
+                        formData.append('file', myFile);
+                        console.log('formData', formData.getAll('file'));
+                        dispatch(createRecordingById(formData, meeting._id));
+                    }
+                    else{
+                        console.log("cannot save recording because mediaBlobUrl is undefined");
+                    }
+                } else console.log("cannot save recording because the status is not stopped");
+            }
             swalEndMeeting();
             await delay(2000);
             console.log("go to repoet for meeting with id: ", meeting._id);
@@ -200,6 +243,15 @@ function VideoContext({ meeting }) {
         if (recognition == 'start') {
             //setQuestion(false);
             console.log('starting,,,');
+            swalAction('Start');
+        }
+        if(recognition == 'restart'){
+            setCurrActivity(0);
+            setStop(false);
+            swalAction('Restart');
+        }
+        if(recognition == 'repeat'){
+
         }
         if (recognition == 'continue') {
             //setQuestion(false);
@@ -210,20 +262,22 @@ function VideoContext({ meeting }) {
                 setDisplayErrorMessage('Session Ended , would you like to start over?');
                 swalAlret();
             }
-            else activitiesSession();
+            else swalAction('Continue');
         }
         else if (recognition == 'stop') {
             setStop(true);
-            swalEnd();
+            swalAction('Stop');
             console.log('stop....');
         }
         else if (recognition == 'prev') {
             setStop(true);
+            swalAction('Prev');
             prevActivitySession();
             console.log('prev....');
         }
         else if (recognition == 'next') {
             setStop(true);
+            swalAction('Next');
             nextActivitySession();
             console.log('next....');
         }
@@ -249,30 +303,19 @@ function VideoContext({ meeting }) {
         })
     }
 
-    const swalEnd = () => {
-        const {value: status} = Swal.fire({
-            title: 'Select Status',
-            input: 'radio',
-            inputOptions: {
-                'Restart': 'Restart',
-                'Repeat': 'Repeat',
-                'Leave': 'Leave',
+    const swalAction = (status) => {
+        let timerInterval
+        Swal.fire({
+            position: 'center',
+            title: status,
+            showConfirmButton: false,
+            timer: 1500,
+            timerInterval: true,
+            didOpen: () => {
+                Swal.showLoading()
             },
-            inputValue: 3,
-            inputValidator: (value) => {
-                if(!value) {
-                    return 'You need to choose somthing!'
-                }
-                else{
-                    console.log('status swal', value);
-                    if(value === 'Restart'){
-                        setCurrActivity(0)
-                    } else if(value === 'Leave'){
-                        setRecognition('leave');
-                    } else {
-                        setRecognition('continue');
-                    }
-                }
+            willClose: () => {
+                clearInterval(timerInterval)
             }
         })
     }
@@ -411,6 +454,7 @@ function VideoContext({ meeting }) {
                 <Button onClick={() => {
                     setSettingUserInFrame(true)
                     setPeer2inFrame(true)
+                    setPeer1inFrame(true)
                 }}>Stop Stream</Button>
 
                 <Button onClick={() => {
@@ -421,7 +465,37 @@ function VideoContext({ meeting }) {
                 <Button onClick={() => {
                     setSyncScore(0.8)
                 }}>sync</Button>
+                <Button onClick={async() => {
+                    if(user.role === 'trainer'){
+                        statusRecord("start");
+                    }
+                }}>Recorder</Button>
+
+                <Button onClick={async() => {
+                    if(user.role === 'trainer'){
+                        statusRecord("stop");
+                        if(status === 'stopped'){
+                            if(mediaBlobUrl && status === 'stopped')
+                            {
+                                console.log("can save recording");
+                                window.open(mediaBlobUrl, "_blank").focus();
+                                const blob = await fetch(mediaBlobUrl).then(res => res.blob());
+                                const myFile = new File([blob], "demo.mp4", { type: 'video/mp4' });
+                                console.log(blob);
+                                let formData = new FormData();
+                                formData.append('file', myFile);
+                                console.log('formData', formData.getAll('file'));
+                                dispatch(createRecordingById(formData, meeting._id));
+                            }
+                            else{
+                            console.log("cannot save recording because mediaBlobUrl is undefined");
+                            }
+                        } else console.log("cannot save recording because the status is not stopped");
+                    }
+                }}>Recorder</Button>
+
             </>}
+
 
             <SpeachRecognition />
         </>

@@ -5,12 +5,13 @@ import alertReducer from './alertReducer';
 import profileReducer from './profileReducer';
 import meetingReducer from './meetingReducer';
 import syncReducer from './syncReducer';
-
+import recordingReducer from './recordingReducer';
 export default combineReducers({
     auth: authReducer,
     errors: errorReducer,
     alert: alertReducer,
     profile: profileReducer,
     meetings: meetingReducer,
-    syncs: syncReducer
+    syncs: syncReducer,
+    recording: recordingReducer,
 });

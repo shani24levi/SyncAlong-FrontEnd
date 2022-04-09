@@ -401,6 +401,7 @@ function ContextProvider({ children, socket, profile }) {
   }, [socket]);
 
   useEffect(() => {
+    if(!stream) return;
     if (location.pathname !== '/video-room') {
       console.log('stream return');
       return;

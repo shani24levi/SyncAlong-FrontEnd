@@ -48,6 +48,10 @@ export const AUTH_PROFILE = 'AUTH_PROFILE';
 export const SYNC_LOADING = 'SYNC_LOADING';
 export const GET_CURR_SYNCS = 'GET_CURR_SYNCS';
 export const CLEAR_SYNCS = 'CLEAR_SYNCS';
+
+export const REC_LOADING = 'REC_LOADING';
+export const GET_CURR_REC = 'GET_CURR_REC';
+export const CLEAR_REC = 'CLEAR_REC';
 //export const  = '';
 //export const  = '';
 //export const  = '';

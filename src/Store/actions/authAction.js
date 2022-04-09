@@ -136,9 +136,9 @@ export const updateAvatarPic = (data) => dispatch => {
     dispatch(setLoading(true));
     userService.updateAvatarPic(data)
         .then(
-            user => {
-                console.log('user', user);
-                dispatch(success(user));
+            url => {
+                console.log('url', url);
+                dispatch(success(url));
             },
             error => {
                 console.log('error', error.response);
@@ -146,9 +146,8 @@ export const updateAvatarPic = (data) => dispatch => {
                 dispatch(failure(error));
             }
         );
-    function success(user) { return { type: UPDATE_AVATAR, payload: user } }
+    function success(url) { return { type: UPDATE_AVATAR, payload: url.data } }
 }
-
 function failure(error) { return { type: GET_ERRORS, payload: error.error } }
 function clear(eror) { return { type: CLEAR_ERRORS } }
 

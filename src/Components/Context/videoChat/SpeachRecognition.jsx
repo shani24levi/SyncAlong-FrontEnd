@@ -32,6 +32,14 @@ function SpeachRecognition(props) {
             callback: () => { setRecognition('next') }
         },
         {
+            command: ['restart'],
+            callback: () => { setRecognition('restart') }
+        },
+        {
+            command: ['repeat'],
+            callback: () => { setRecognition('repeat') }
+        },
+        {
             command: ['leave'],
             callback: () => { setRecognition('leave') }
         },

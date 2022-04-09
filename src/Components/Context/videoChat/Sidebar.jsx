@@ -53,7 +53,7 @@ const Sidebar = (props) => {
               <TextField label="Member " value={yourName} onChange={(e) => props.setIdToCall()} fullWidth />
               {callAccepted && !callEnded ? (
                 <Button variant="contained" color="secondary" startIcon={<PhoneDisabled fontSize="large" />} fullWidth onClick={() => {console.log('leave');
-                setRecognition('stop')}} className={classes.margin}>
+                setRecognition('leave')}} className={classes.margin}>
                   Hang Up
                 </Button>
               ) : (
