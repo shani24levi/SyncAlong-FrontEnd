@@ -1,31 +1,22 @@
-import React, { useContext, useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom'
 import {
   styled, Grid, Avatar, IconButton, Typography, Select,
-  InputLabel, MenuItem, FormControl, SelectChangeEvent,
+  InputLabel, MenuItem, FormControl,
 } from '@mui/material';
-import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-// import InputLabel from '@mui/material/InputLabel';
-// import MenuItem from '@mui/material/MenuItem';
-// import FormControl from '@mui/material/FormControl';
-// import Select, { SelectChangeEvent } from '@mui/material/Select';
-
 import Divider from '@mui/material/Divider';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 import { capitalize } from '../../helpers';
-import HeaderTrainee from './HeaderTrainee';
 import MainConextTrainee from './MainConextTrainee';
 import ScrollTop from '../scrollToTop/ScrollTop';
 import MeetingCard from './MeetingCard';
 import DaterPicker from './datePicker/DaterPicker';
+import { dateFormat } from '../../Utils/dateFormat';
 
 const Wrapper = styled('div')`
   min-height: 100vh;
@@ -93,12 +84,19 @@ const Photo = styled('div')`
 
 function TraineeView({ trainee }) {
   const location = useLocation();
+  const navigate = useNavigate();
   const user = useSelector(state => state.auth.user);
   const [page, setPage] = useState(1);
   const [type, setType] = useState(10);
   const [open, setOpen] = React.useState(false);
+  const [lastMeeting, setlastMeetingState] = useState(null);
 
   //console.log('id', id, location.state.trainee);
+
+  const setlastMeeting = (lastMeeting) => {
+    console.log('kckckc', lastMeeting);
+    setlastMeetingState(lastMeeting);
+  }
 
   return (
     <>
@@ -134,8 +132,8 @@ function TraineeView({ trainee }) {
               </IconButton>
 
               <IconButton
-                onClick={() => setOpen(true)}
-                aria-label="add to wish list"
+                onClick={() => navigate(`/profile/trainee/${trainee.user._id}`, { state: { trainee: trainee } })}
+                aria-label="go to trainee profile"
                 size="large"
                 color="inherit"
               >
@@ -148,7 +146,7 @@ function TraineeView({ trainee }) {
                 Hello To {capitalize(trainee.user.user)}
               </Typography>
               <Typography fontWeight={600} sx={{ py: 1 }}>
-                Ceated by {capitalize(user.user)}'s user at {trainee.user.createdAt}
+                Ceated by {capitalize(user.user)}'s user at {dateFormat(trainee.user.createdAt)}
               </Typography>
             </TextWrapper>
 
@@ -163,7 +161,7 @@ function TraineeView({ trainee }) {
                 <Grid item fontWeight={700}>
                   Last Meeting
                 </Grid>
-                <Grid item lg={4} ><MeetingCard /></Grid>
+                <Grid item lg={4} ><MeetingCard setlastMeeting={setlastMeeting} traineeId={trainee.user._id} /></Grid>
               </Grid>
               <Grid
                 container
@@ -175,47 +173,12 @@ function TraineeView({ trainee }) {
                 <Grid item fontWeight={700}>
                   Future meeting
                 </Grid>
-                <Grid item lg={4}><MeetingCard /></Grid>
+                <Grid item lg={4}><MeetingCard traineeId={trainee.user._id} filterBy='future' /></Grid>
               </Grid>
             </Grid>
-            <Divider light style={{ backgroundColor: '#f5f5f5' }} />
+            <Divider light style={{ backgroundColor: '#f5f5f5', marginBottom: '2%' }} />
 
-            {/* adding select here */}
-            <Grid item xs={12} md={4} sx={{ paddingTop: '1rem' }}>
-              <div style={{ margin: '1rem 0rem' }}>
-                <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-label">Topic</InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={type}
-                    color="secondary"
-                    label="setType"
-                    onChange={({ value }) => {
-                      setType(value);
-                      setPage(1);
-                    }}
-                  >
-                    <MenuItem value={10}>All</MenuItem>
-                    <MenuItem value={20}>High Sync</MenuItem>
-                    <MenuItem value={30}>Low Sync</MenuItem>
-                    <MenuItem value={40}>High amount of exercise</MenuItem>
-                    <MenuItem value={50}>Low amount of exercise</MenuItem>
-                  </Select>
-                </FormControl>
-              </div>
-            </Grid>
-
-            {/* <Grid container width="100%">
-              <PaginatedBookingCard
-                motivation={motivation}
-                topics={topics}
-                page={page}
-                setPage={setPage}
-              />
-            </Grid> */}
-
-            <MainConextTrainee trainee={trainee} />
+            <MainConextTrainee trainee={trainee} lastMeeting={lastMeeting} />
           </Container>
         </Grid>
       </Wrapper>

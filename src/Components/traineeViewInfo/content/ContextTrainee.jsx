@@ -42,7 +42,7 @@ function a11yProps(index) {
     };
 }
 
-function ContextTrainee(props) {
+function ContextTrainee({ trainee }) {
     const tabs = ['Scheduled', 'Activities', 'Notifications']
     const [value, setValue] = React.useState(0);
 
@@ -51,11 +51,15 @@ function ContextTrainee(props) {
     };
 
     const Wrapper = styled('div')({
-        backgroundColor: '#171941',
+        //backgroundColor: '#171941',
         color: '#f5f5f5',
+        color: '#0000',
         minHeight: '100vh',
         '& .Mui-selected ': {
             color: '',
+        },
+        '.MuiTypography': {
+            color: '#f5f5f5 !importent'
         },
         '.MuiTab-root': {
             fontSize: '24px',
@@ -87,13 +91,12 @@ function ContextTrainee(props) {
                 </Box>
 
                 <TabPanel value={value} index={0}>
-                    0
-                    {/* <Scheduled /> */}
+                    <Scheduled trainee={trainee} />
                 </TabPanel>
-                <TabPanel value={value} index={1}>1
-                    {/* <Activities /> */}
+                <TabPanel value={value} index={1}>
+                    <Activities trainee={trainee} />
                 </TabPanel>
-                <TabPanel value={value} index={2}>2
+                <TabPanel value={value} index={2}>
                     {/* <Notifications /> */}
                 </TabPanel>
             </Box>

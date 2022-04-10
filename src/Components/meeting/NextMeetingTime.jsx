@@ -36,6 +36,7 @@ function NextMeetingTime({ date }) {
     const [stratTime, setStratTime] = useState(Date.now() / 1000);
     const [time, setTime] = useState((date !== 0 || date !== NaN) ? date - stratTime : 0);
     const [endTime, setEndTime] = useState(stratTime + time);
+    console.log('date', date);
 
 
     // let endTime = stratTime + time

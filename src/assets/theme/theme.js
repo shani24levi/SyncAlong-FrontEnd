@@ -27,6 +27,10 @@ const theme = createTheme({
             dark: deepPurple[800],
             contrastText: '#000',
         },
+        orange: {
+            light: 'rgb(251, 233, 231)',
+            dark: 'rgb(216, 67, 21)'
+        },
         text: {
             secondary: deepPurple[50]
         }

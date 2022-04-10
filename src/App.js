@@ -34,6 +34,8 @@ import ScheduleMeetings from './Components/screens/ScheduleMeetings';
 import MeetingReport from './Components/screens/MeetingReport';
 import TraineePage from './Components/screens/TraineePage';
 import WatchMeeting from './Components/meeting/watchMeeting/WatchMeeting';
+import TraineeScheduleMeetings from './Components/screens/TraineeScheduleMeetings';
+import TraineeProfile from './Components/screens/TraineeProfile';
 
 const App = (props) => {
   const navigate = useNavigate();
@@ -101,12 +103,20 @@ const App = (props) => {
                     <Route exact path='/video-room' element={<VideoRoom socket={socket} />} />
                   </Route>
 
+                  <Route exact path='/profile/trainee/:id' element={<PrivateRoute />}>
+                    <Route exact path='/profile/trainee/:id' element={<TraineeProfile />} />
+                  </Route>
+
                   <Route exact path='/profile' element={<PrivateRoute />}>
                     <Route exact path='/profile' element={<Profile />} />
                   </Route>
 
                   <Route exact path='/profile/adduser' element={<PrivateRoute />}>
                     <Route exact path='/profile/adduser' element={<AddTrainee />} />
+                  </Route>
+
+                  <Route exact path='/schedule/meetings/:id' element={<PrivateRoute />}>
+                    <Route exact path='/schedule/meetings/:id' element={<TraineeScheduleMeetings />} />
                   </Route>
 
                   <Route exact path='/schedule/meetings' element={<PrivateRoute />}>

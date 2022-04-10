@@ -8,10 +8,14 @@ import {
     OutlinedInput,
     InputAdornment
 } from '@mui/material';
+import { useSelector, useDispatch } from 'react-redux';
+import { deleteMeeting } from '../../../../Store/actions/meetingActions';
+import Swal from 'sweetalert2';
 import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { dateFormat } from '../../../../Utils/dateFormat';
 
 // ----------------------------------------------------------------------
 
@@ -37,14 +41,63 @@ const SearchStyle = styled(OutlinedInput)(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-function UserListToolbar({ numSelected, filterName, onFilterName }) {
-    //const theme = useTheme();
+function UserListToolbar({ numSelected, selected, setSelected, arrMeetings, setArrMeetings, filterName, onFilterName }) {
+    const dispatch = useDispatch();
+    const meetings = useSelector(state => state.meetings.meetings);
+
+    const handelDelete = () => {
+        let arr = [];
+        if (meetings?.length != 0) {
+            meetings?.map(i => {
+                for (const j of selected) {
+                    //  console.log(j, i._id);
+                    if (i._id === j) arr.push(i);
+                }
+            })
+        }
+        let name = '';
+        if (arr.length > 1) {
+            console.log(arr);
+            arr.map((i, index) => {
+                name = name + ` ${index + 1}: at ${dateFormat(i.date)}`
+                console.log('2', name);
+
+            })
+        }
+        else name = `with ${arr[0].trainee.user} at ${dateFormat(arr[0].date)}`;
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: `delete meeting: ${name}`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Delete Meeting'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                //do api call to delete 
+                for (const id of arr) {
+                    console.log(' id', id);
+                    dispatch(deleteMeeting(id))
+                    setArrMeetings(arrMeetings => arrMeetings.filter(i => i._id !== id._id))
+                }
+                setSelected([]);
+                Swal.fire(
+                    'Deleted!',
+                    'Your Meeting has been deleted.',
+                    'success'
+                )
+            }
+        })
+    }
+
     return (
         <RootStyle
             sx={{
                 ...(numSelected > 0 && {
-                    color: 'primary.main',
-                    bgcolor: 'primary.lighter'
+                    color: '#2E8B57',
+                    bgcolor: 'rgba(0,255,0,0.2)'
                 })
             }}
         >
@@ -67,7 +120,7 @@ function UserListToolbar({ numSelected, filterName, onFilterName }) {
 
             {numSelected > 0 ? (
                 <Tooltip title="Delete">
-                    <IconButton>
+                    <IconButton onClick={handelDelete}>
                         <DeleteIcon icon="eva:trash-2-fill" />
                     </IconButton>
                 </Tooltip>

@@ -401,7 +401,7 @@ function ContextProvider({ children, socket, profile }) {
   }, [socket]);
 
   useEffect(() => {
-    if(!stream) return;
+    if (!stream) return;
     if (location.pathname !== '/video-room') {
       console.log('stream return');
       return;
@@ -562,8 +562,8 @@ function ContextProvider({ children, socket, profile }) {
     setTimeout(function () {
       //  call a 30s setTimeout when the loop is called
       let currentTime = new Date().getTime();  //.setSeconds(0, 0);
-      const date = new Date(meetings.upcoming_meeting?.date?.slice(0, -1)); // delte z from date
-      date.setHours(date.getHours() + 3);
+      const date = new Date(meetings.upcoming_meeting?.date) //?.slice(0, -1)); // delte z from date
+      //date.setHours(date.getHours() + 3);
       let upcomingMeeting = date.getTime();
 
       //console.log('aj', new Date(), 'date+3', date);

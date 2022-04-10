@@ -107,12 +107,12 @@ export default function (state = initialState, action) {
                 active_meeting: action.payload
             }
         case DELETE_MEETING:
-            console.log("DELETE_MEETING", action.payload._id);
+            console.log("DELETE_MEETING", action.payload);
             return {
                 ...state,
                 loading: false,
-                meetings: !state.meetings ? null : state.meetings.filter(m => m._id !== action.payload._id),
-                all_meetings: state.all_meetings.filter(m => m._id !== action.payload._id),
+                meetings: !state.meetings ? null : state.meetings.filter(m => m._id !== action.payload),
+                all_meetings: state.all_meetings.filter(m => m._id !== action.payload),
                 upcoming_meeting: setUpcomingMeeting(action.payload, 'delete') //state.upcoming_meeting?._id === action.payload ? null : state.upcoming_meeting,
             }
 

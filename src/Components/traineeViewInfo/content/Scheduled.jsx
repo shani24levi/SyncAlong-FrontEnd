@@ -1,10 +1,13 @@
+import { Typography } from '@material-ui/core';
 import React from 'react';
+import ListedMeetings from '../../home/trainer/listTable/ListedMeetings';
 
-function Scheduled(props) {
+function Scheduled({ trainee }) {
     return (
-        <div>
-            Scheduled
-        </div>
+        <>
+            <Typography>In the Futer</Typography>
+            <ListedMeetings traineeId={trainee.user._id} />
+        </>
     );
 }
 

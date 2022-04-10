@@ -5,8 +5,7 @@ import { useSelector } from 'react-redux';
 import isEmpty from '../../validation/isEmpty';
 import Loader from '../loder/Loder';
 import TraineeView from '../traineeViewInfo/TraineeView';
-
-
+import ScrollTop from '../scrollToTop/ScrollTop';
 
 function TraineePage(props) {
     const [trainee, setTrainee] = useState(null);
@@ -29,6 +28,7 @@ function TraineePage(props) {
 
     return (
         <>
+            <div id="back-to-top-anchor" />
             {errorPage && '<ErrorPage /> '}
             {
                 !trainee && !errorPage ?
@@ -36,6 +36,7 @@ function TraineePage(props) {
                     :
                     <TraineeView trainee={trainee} />
             }
+            <ScrollTop />
         </>
     );
 }

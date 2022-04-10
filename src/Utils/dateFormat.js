@@ -1,3 +1,5 @@
+import { string } from "prop-types";
+
 export const getMonth = m => {
     switch (m) {
         case 0:
@@ -50,3 +52,8 @@ export const getDay = d => {
     }
 };
 
+export const dateFormat = (s) => {
+    s = new Date(s);
+    let dateStr = `${getDay(s.getDay())} , ${s.getDate()} ${getMonth(s.getMonth())} , ${s.getHours()}:${s.getMinutes()}`;
+    return dateStr;
+}

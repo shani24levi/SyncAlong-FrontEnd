@@ -1,7 +1,15 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { alpha, styled } from '@mui/material/styles';
-import { Card, Typography } from '@mui/material';
+import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { Card, Typography, Grid } from '@mui/material';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
+import { set } from 'date-fns';
+import { dateFormat } from '../../Utils/dateFormat';
+import { Button, IconButton } from '@material-ui/core';
+import buttonsStyles from "../../assets/theme/buttons";
+const buttonStyle = makeStyles(buttonsStyles);
 
 const RootStyle = styled(Card)(({ theme }) => ({
     boxShadow: 'none',
@@ -28,16 +36,47 @@ const IconWrapperStyle = styled('div')(({ theme }) => ({
     )} 100%)`
 }));
 
-function MeetingCard(props) {
+function MeetingCard({ setlastMeeting, traineeId, filterBy = null }) {
+    const navigate = useNavigate();
+    const btnClasses = buttonStyle();
+    const meetings = useSelector(state => state.meetings);
+    const [meetingcard, setMeeting] = useState(null);
+
+    useEffect(() => {
+        let meeting;
+        if (filterBy === 'future' && traineeId) {
+            if (meetings.upcoming_meeting.trainee._id === traineeId)
+                meeting = meetings.upcoming_meeting;
+            else
+                meeting = meetings.all_meetings.find(i => i.trainee._id === traineeId);
+        }
+        else if ((filterBy === 'last' || null) && traineeId) {
+            meeting = meetings.meetings_complited.find(i => i.trainee._id === traineeId && !meeting?.urlRoom);
+            setlastMeeting(meeting)
+        }
+        setMeeting(meeting);
+    }, [meetings])
+
+    console.log(meetings, meetingcard, traineeId);
     return (
         <RootStyle>
             <IconWrapperStyle>
                 <EventAvailableIcon icon="ant-design:android-filled" width={24} height={24} />
             </IconWrapperStyle>
-            <Typography variant="h3">{'TIME'}</Typography>
-            <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
-                Weekly Sales
-            </Typography>
+            {
+                meetingcard ?
+                    <>
+                        <Typography variant="h5">{`At ${dateFormat(meetingcard.date)}`}</Typography>
+                        {
+                            meetingcard?.urlRoom && <Button className={btnClasses.blueRound} onClick={() => navigate(`/meeting/watch/${meetingcard._id}`)}>Meeting Report</Button>
+                        }
+                        {
+                            filterBy === 'future' && <Button className={btnClasses.blueRound} onClick={() => navigate(`/schedule/meetings/${traineeId}`)}>All Meetings</Button>
+                        }
+                    </>
+                    :
+                    <Typography variant="h5">No Meeting</Typography>
+            }
         </RootStyle>
     );
 }

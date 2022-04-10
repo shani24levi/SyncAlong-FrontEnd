@@ -9,6 +9,7 @@ import NextMeetingTime from '../meeting/NextMeetingTime';
 import Search from '../search/Search';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom'
+import { dateFormat } from '../../Utils/dateFormat';
 
 import buttonsStyles from "../../assets/theme/buttons";
 import QuickStartBtn from './QuickStartBtn';
@@ -155,7 +156,7 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
                 <Grid container alignItems='center' alignContent='center' spacing={2}>
                     {/* {my_trainees && my_trainees.lenght != 0 && <TraineesCard />} */}
                     <Grid item xs={12} md={12}>
-                        <CardContiner title="Your up caming meeting" subtitle={dateToMeeting === 0 ? '' : dateToMeeting.toString()} >
+                        <CardContiner title="Your Upcoming Meeting" subtitle={dateToMeeting === 0 ? '' : `At ${dateFormat(dateToMeeting.toString())}`} >
                             {!isEmpty(upcamingMeeting) && 'Participants :  ' + upcamingMeeting?.tariner.user + ' && ' + upcamingMeeting?.trainee.user}
                             {meetings?.meetings && meetings?.meetings?.lenght != 0 && meeting && !isEmpty(upcamingMeeting) && (date !== 0 || date !== NaN) && <NextMeetingTime upcamingMeeting={upcamingMeeting} date={!date ? 0 : date} />}
                             <Box

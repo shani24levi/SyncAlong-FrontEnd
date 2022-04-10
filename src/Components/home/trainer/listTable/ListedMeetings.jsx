@@ -24,37 +24,39 @@ import UserListToolbar from './UserListToolbar';
 import UserListHead from './UserListHead';
 import UserMoreMenu from './UserMoreMenu';
 import buttonsStyles from "../../../../assets/theme/buttons";
+import { dateFormat } from '../../../../Utils/dateFormat';
+import { capitalize } from '../../../../helpers';
 const buttonStyle = makeStyles(buttonsStyles);
 
 
-const USERLIST = [
-    {
-        id: '1',
-        avatarUrl: '1',
-        name: '1',
-        company: 'faker.company.companyName()',
-        isVerified: 'faker.datatype.boolean()',
-        status: 'sample()'
-    },
-    {
-        activities: ['poshup', 'baly-run'],
-        time: "2022-04-08T23:10:00.000Z",
-        status: false,
-        name: 'kfkfkf',
-        tariner: { _id: '61f41299f214dbc605e23778', user: 's-update', avatar: 'http://localhost:5000/avatars/1648920689671.jpg', role: 'trainer' },
-        title: "serr",
-    },
+// const USERLIST = [
+//     {
+//         id: '1',
+//         avatarUrl: '1',
+//         name: '1',
+//         company: 'faker.company.companyName()',
+//         isVerified: 'faker.datatype.boolean()',
+//         status: 'sample()'
+//     },
+//     {
+//         activities: ['poshup', 'baly-run'],
+//         time: "2022-04-08T23:10:00.000Z",
+//         status: false,
+//         name: 'kfkfkf',
+//         tariner: { _id: '61f41299f214dbc605e23778', user: 's-update', avatar: 'http://localhost:5000/avatars/1648920689671.jpg', role: 'trainer' },
+//         title: "serr",
+//     },
 
-    {
-        id: '2',
-        avatarUrl: '2',
-        name: '2',
-        company: 'faker.company.companyName()',
-        isVerified: 'faker.datatype.boolean()',
-        status: 'sample()'
-    },
+//     {
+//         id: '2',
+//         avatarUrl: '2',
+//         name: '2',
+//         company: 'faker.company.companyName()',
+//         isVerified: 'faker.datatype.boolean()',
+//         status: 'sample()'
+//     },
 
-];
+// ];
 
 const TABLE_HEAD = [
     { id: 'name', label: 'With User', alignRight: false },
@@ -63,7 +65,7 @@ const TABLE_HEAD = [
     { id: 'status', label: 'Active', alignRight: false },
 ];
 
-function ListedMeetings(props) {
+function ListedMeetings({ traineeId, complited = null }) {
     const [arrMeetings, setArrMeetings] = useState([]);
     const [page, setPage] = useState(0);
     const [order, setOrder] = useState('asc');
@@ -72,14 +74,35 @@ function ListedMeetings(props) {
     const [filterName, setFilterName] = useState('');
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const meetings = useSelector(state => state.meetings.meetings);
+    const meetingsComplited = useSelector(state => state.meetings.meetings_complited);
     const btnClasses = buttonStyle();
 
     useEffect(() => {
-        if (meetings?.length != 0) {
+        if (traineeId && complited === 'complited') { //for page of trainee views
+            if (!meetingsComplited) {
+                let arr = [];
+                meetingsComplited?.map(i => {
+                    if (i.trainee._id === traineeId)
+                        arr.push({ _id: i._id, name: i.trainee.user, avatarUrl: i.trainee.avatar, time: i.date.toString(), status: i.status, title: i.title })
+                })
+                setArrMeetings(arr);
+            }
+            else return <>No Meeting Complited</>
+        }
+
+        if (meetings?.length != 0 && arrMeetings.length === 0) {
             let arr = [];
-            meetings?.map(i => {
-                arr.push({ _id: i._id, name: i.trainee.user, avatarUrl: i.trainee.avatar, time: i.date.toString(), status: i.status, title: i.title })
-            })
+            if (traineeId) { //for page of trainee views
+                meetings?.map(i => {
+                    if (i.trainee._id === traineeId)
+                        arr.push({ _id: i._id, name: i.trainee.user, avatarUrl: i.trainee.avatar, time: i.date.toString(), status: i.status, title: i.title })
+                })
+            }
+            else { //all
+                meetings?.map(i => {
+                    arr.push({ _id: i._id, name: i.trainee.user, avatarUrl: i.trainee.avatar, time: i.date.toString(), status: i.status, title: i.title })
+                })
+            }
             setArrMeetings(arr);
         }
     }, [])
@@ -103,7 +126,6 @@ function ListedMeetings(props) {
     function applySortFilter(array, comparator, query) {
         console.log(array, comparator, query);
         const stabilizedThis = array.map((el, index) => [el, index]);
-        console.log('stabilizedThis', stabilizedThis);
         stabilizedThis.sort((a, b) => {
             const order = comparator(a[0], b[0]);
             if (order !== 0) return order;
@@ -116,6 +138,7 @@ function ListedMeetings(props) {
     }
 
     const handleClick = (event, name) => {
+        console.log('handleClick', name);
         const selectedIndex = selected.indexOf(name);
         let newSelected = [];
         if (selectedIndex === -1) {
@@ -138,10 +161,12 @@ function ListedMeetings(props) {
     const isUserNotFound = filteredUsers.length === 0;
 
     const handleFilterByName = (event) => {
+        console.log('handleFilterByName', event.target.value);
         setFilterName(event.target.value);
     };
 
     const handleRequestSort = (event, property) => {
+        console.log('handleRequestSort');
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
@@ -149,7 +174,8 @@ function ListedMeetings(props) {
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelecteds = USERLIST.map((n) => n.name);
+            console.log('event.target.checked', event.target.checked);
+            const newSelecteds = arrMeetings.map((n) => n._id);
             setSelected(newSelecteds);
             return;
         }
@@ -167,25 +193,32 @@ function ListedMeetings(props) {
 
     return (
         <>
-            <Stack direction="row" alignItems="center" justifyContent="space-between" mt={3} mb={1}>
-                <Typography variant="h4"
-                    sx={{ fontWeight: 700, flexGrow: 1, color: '#f5f5f5' }} gutterBottom>
-                    Meetings
-                </Typography>
-                <Button
-                    variant="contained"
-                    component={Link}
-                    to="/schedule/meetings"
-                    className={btnClasses.purpleRound}
-                    startIcon={<AddIcon />}
-                >
-                    New Meeting
-                </Button>
-            </Stack>
+            {
+                !traineeId &&
+                <Stack direction="row" alignItems="center" justifyContent="space-between" mt={3} mb={1}>
+                    <Typography variant="h4"
+                        sx={{ fontWeight: 700, flexGrow: 1, color: '#f5f5f5' }} gutterBottom>
+                        Meetings
+                    </Typography>
+                    <Button
+                        variant="contained"
+                        component={Link}
+                        to="/schedule/meetings"
+                        className={btnClasses.purpleRound}
+                        startIcon={<AddIcon />}
+                    >
+                        New Meeting
+                    </Button>
+                </Stack>
+            }
 
             <Card>
                 <UserListToolbar
                     numSelected={selected.length}
+                    selected={selected}
+                    setSelected={setSelected}
+                    arrMeetings={arrMeetings}
+                    setArrMeetings={setArrMeetings}
                     filterName={filterName}
                     onFilterName={handleFilterByName}
                 />
@@ -228,12 +261,12 @@ function ListedMeetings(props) {
                                                 <Stack direction="row" alignItems="center" spacing={2}>
                                                     <Avatar alt={name} src={avatarUrl} />
                                                     <Typography variant="subtitle2" noWrap>
-                                                        {name}
+                                                        {capitalize(name)}
                                                     </Typography>
                                                 </Stack>
                                             </TableCell>
-                                            <TableCell align="left">{time}</TableCell>
-                                            <TableCell align="left">{title}</TableCell>
+                                            <TableCell align="left">{dateFormat(time)}</TableCell>
+                                            <TableCell align="left">{capitalize(title)}</TableCell>
                                             <TableCell align="left">{status ? 'Yes' : 'No'}</TableCell>
 
                                             <TableCell align="right">
@@ -248,22 +281,13 @@ function ListedMeetings(props) {
                                 </TableRow>
                             )}
                         </TableBody>
-                        {isUserNotFound && (
-                            <TableBody>
-                                <TableRow>
-                                    <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                                        {/* <SearchNotFound searchQuery={filterName} /> */}
-                                    </TableCell>
-                                </TableRow>
-                            </TableBody>
-                        )}
                     </Table>
                 </TableContainer>
 
                 <TablePagination
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={USERLIST.length}
+                    count={arrMeetings.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={handleChangePage}

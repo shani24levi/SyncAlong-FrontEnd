@@ -65,10 +65,15 @@ const Home = ({ socket }) => {
 
     useEffect(() => {
         if (!isEmpty(meetings.upcoming_meeting)) {
-            const t = new Date(meetings.upcoming_meeting?.date?.slice(0, -1));
-            t.setHours(t.getHours() + 3);
+            console.log(meetings.upcoming_meeting);
+            console.log(meetings.upcoming_meeting?.date);
+            const t = new Date(meetings.upcoming_meeting?.date)//?.slice(0, -1));
+            // t.setHours(t.getHours() + 3);
             setDateToMeeting(t);
-            setDate(t.getTime() / 1000)
+
+            const t2 = new Date(meetings.upcoming_meeting?.date)
+            t2.setHours(t2.getHours() - 3);
+            setDate(t2.getTime() / 1000)
             setMeeting(true)
         }
         else setMeeting(false)
