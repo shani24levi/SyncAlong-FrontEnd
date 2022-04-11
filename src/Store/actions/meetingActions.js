@@ -1,6 +1,6 @@
 import {
     GET_ERRORS, GET_MEETINGS, GET_FUTURE_MEETINGS, MEETINGS_LOADING
-    , CREATE_MEETING, GET_CURR_ACTIVITIES,
+    , CREATE_MEETING,
     GET_ALL_MEETINGS,
     SET_ACTIVE_MEETING,
     GET_ACTIVE_MEETING,
@@ -75,21 +75,6 @@ export const craeteMeetings = (data) => dispatch => {
             }
         );
     function success(meetings) { return { type: CREATE_MEETING, payload: meetings } }
-};
-
-export const getActivities = (id) => dispatch => {
-    dispatch(setLoading(true));
-    meetingsService.getActivities(id)
-        .then(
-            activities => {
-                dispatch(success(activities))
-            },
-            error => {
-                dispatch(setLoading(false));
-                dispatch(failure(error));
-            }
-        );
-    function success(activities) { return { type: GET_CURR_ACTIVITIES, payload: activities } }
 };
 
 export const setActiveMeeting = (meeting, status) => dispatch => {

@@ -12,7 +12,7 @@ function CardContiner({ children, title, subtitle, icon }) {
     return (
         <CardRoot elevation={6}>
             <Typography
-                variant="h5"
+                variant="h6"
                 sx={{ fontWeight: 700, flexGrow: 1 }}>
                 {title}
             </Typography>

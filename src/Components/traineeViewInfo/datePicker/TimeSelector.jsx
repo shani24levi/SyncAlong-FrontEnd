@@ -34,6 +34,8 @@ function TimeSelector({
     setHour,
     timeslot }) {
     const [value, setValue] = React.useState(new Date());
+    const [houre, sethoure] = React.useState(false);
+
     if (!date) return <div />;
 
     return (
@@ -41,7 +43,6 @@ function TimeSelector({
             style={{
                 display: 'flex',
                 flexDirection: 'column',
-                height: '360px',
                 color: '#ddd',
                 overflowY: 'scroll',
             }}>
@@ -55,19 +56,16 @@ function TimeSelector({
                     onChange={(newValue) => {
                         setHour(newValue);
                         setValue(newValue);
+                        // if (houre) {
+                        //     console.log(newValue);
+                        //     setHour(newValue);
+                        //     setValue(newValue);
+                        // }
+                        // sethoure(true)
                     }}
-                //   renderInput={(params) => <TextField {...params} />}
+                    renderInput={(params) => <TextField {...params} />}
                 />
             </LocalizationProvider>
-
-            {/* {timeslot.map((time, index) => (
-                <StyledButton
-                    variant="outlined"
-                    key={index}
-                    onClick={() => setHour(time)}>
-                    {`${addZero(time)}${time}:00 `}
-                </StyledButton>
-            ))} */}
         </Grid>
     );
 }

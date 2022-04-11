@@ -36,11 +36,21 @@ const theme = createTheme({
         }
     },
     typography: {
+        h6: {
+            fontWeight: 700,
+            flexGrow: 1,
+            color: '#000',
+        },
+        h5: {
+            fontWeight: 700,
+            flexGrow: 1,
+            color: '#f5f5f5'
+        },
         body1: {
             fontFamily: "'Montserrat', sans-serif",
             fontWeight: 400,
             fontSize: 16,
-            color: "#ddd",
+            color: "#646060",
         },
         body2: {
             fontSize: 12,
@@ -163,28 +173,28 @@ const theme = createTheme({
                 },
             },
         },
-        MuiInputBase: {
-            root: {
-                color: "white !important",
-            },
-        },
-        MuiTextField: {
-            root: {
-                color: "white",
-            },
-        },
+        // MuiInputBase: {
+        //     root: {
+        //         color: "white !important",
+        //     },
+        // },
+        // MuiTextField: {
+        //     root: {
+        //         color: "white",
+        //     },
+        // },
         MuiOutlinedInput: {
             root: {
-                color: "white",
+                // color: "white",
                 '&$focused $notchedOutline': {
-                    borderColor: 'green',
+                    borderColor: '#8c3db9',
                     borderWidth: 1,
                 },
             }
         },
         MuiFormLabel: {
             root: {
-                color: "white",
+                color: "#ddd",
             },
         },
         MuiInput: {

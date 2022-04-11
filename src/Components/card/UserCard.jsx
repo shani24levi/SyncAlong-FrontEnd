@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Paper, styled, Grid, Button } from '@mui/material';
 import BookmarksRoundedIcon from '@mui/icons-material/BookmarksRounded';
 import WorkRoundedIcon from '@mui/icons-material/WorkRounded';
@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom'
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import EventNoteIcon from '@mui/icons-material/EventNote';
+import { setDate } from 'date-fns/esm';
 
 const Wrapper = styled(Paper)`
   height: 300px;
@@ -70,33 +71,38 @@ const AbsoluteGrid = styled(Grid)`
 `;
 
 function UserCard({ trainee }) {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const [date, setDate] = useState(null);
 
-    return (
-        // <Button onClick={() => navigate(`/trainee/${trainee.user._id}`, { state: { trainee: trainee } })} >
-        <Link to={{ pathname: `/trainee/${trainee.user._id}`, state: { trainee: trainee } }}>
-            <Wrapper elevation={4}>
-                <StyledImage src={trainee.user.avatar} />
-                <AbsoluteGrid container>
-                    <Grid item>
-                        <AccessTimeIcon />
-                        {/* Last:{" "} */}
-                        <span>{trainee.profile?.meetings.length !== 0 ? trainee.profile?.meetings[0]?.date.toString() : 'No futer meeting '}</span>
-                        {/* <span className="UserCard_topics">{trainee.profile?.ended_meetings.length !== 0 ? trainee.profile?.ended_meetings[0]?.date.toString() : ' - '}</span> */}
-                    </Grid>
-                    <Grid item>
-                        <EventNoteIcon />
-                        Upcoming Meeting:
-                        {/* <span>{trainee.profile?.meetings.length !== 0 ? trainee.profile?.meetings[0]?.date.toString() : ' - '}</span> */}
-                    </Grid>
-                    <Grid item>{trainee.profile?.relation ? trainee.profile.relation : ''}</Grid>
-                    <Grid item className="UserCard_text">
-                        {trainee.user.user}
-                    </Grid>
-                </AbsoluteGrid>
-            </Wrapper>
-        </Link>
-    );
+  useEffect(() => {
+    if (trainee.profile?.meetings.length !== 0)
+      setDate(new Date(trainee.profile?.meetings[0]?.date))
+  }, [trainee])
+
+
+  return (
+    // <Button onClick={() => navigate(`/trainee/${trainee.user._id}`, { state: { trainee: trainee } })} >
+    <Link to={{ pathname: `/trainee/${trainee.user._id}`, state: { trainee: trainee } }}>
+      <Wrapper elevation={4}>
+        <StyledImage src={trainee.user.avatar} />
+        <AbsoluteGrid container>
+          <Grid item>
+            <AccessTimeIcon />
+            <span>{date ? `${date.toLocaleDateString('en-gb')} , At ${date.getHours()}:${date.getMinutes()} ` : 'No futer meeting '}</span>
+          </Grid>
+          <Grid item>
+            <EventNoteIcon />
+            Upcoming Meeting:
+            {/* <span>{trainee.profile?.meetings.length !== 0 ? trainee.profile?.meetings[0]?.date.toString() : ' - '}</span> */}
+          </Grid>
+          <Grid item>{trainee.profile?.relation ? trainee.profile.relation : ''}</Grid>
+          <Grid item className="UserCard_text">
+            {trainee.user.user}
+          </Grid>
+        </AbsoluteGrid>
+      </Wrapper>
+    </Link>
+  );
 }
 
 export default UserCard;

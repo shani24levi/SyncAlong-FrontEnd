@@ -1,10 +1,9 @@
 import React from 'react';
+import LimitationCard from '../../trainee/LimitationCard';
 
-function Limits(props) {
+function Limits({ profile, setModalIsOpen }) {
     return (
-        <div>
-            limits
-        </div>
+        <LimitationCard profile={profile} />
     );
 }
 

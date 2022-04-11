@@ -161,7 +161,7 @@ function TraineeView({ trainee }) {
                 <Grid item fontWeight={700}>
                   Last Meeting
                 </Grid>
-                <Grid item lg={4} ><MeetingCard setlastMeeting={setlastMeeting} traineeId={trainee.user._id} /></Grid>
+                <Grid item lg={4} ><MeetingCard setlastMeeting={setlastMeeting} traineeId={trainee.user._id} filterBy='last' /></Grid>
               </Grid>
               <Grid
                 container
@@ -189,7 +189,7 @@ function TraineeView({ trainee }) {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DaterPicker />
+        <DaterPicker trainee={trainee} setOpen={setOpen} open={open} />
       </Dialog>
       <ScrollTop />
     </>

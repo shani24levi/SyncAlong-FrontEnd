@@ -1,7 +1,6 @@
 import React from 'react';
 import { Paper, styled, Grid, Button } from '@mui/material';
-import BookmarksRoundedIcon from '@mui/icons-material/BookmarksRounded';
-import WorkRoundedIcon from '@mui/icons-material/WorkRounded';
+import { useNavigate } from 'react-router-dom'
 import { Box } from '@mui/system';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import ErrorIcon from '@mui/icons-material/Error';
@@ -75,31 +74,33 @@ const AbsoluteGrid = styled(Grid)`
 `;
 
 function UserCardProfile({ trainee }) {
-    return (
-        <Wrapper elevation={4}>
-            <StyledImage src={trainee.avatar} />
-            <AbsoluteGrid container>
-                <Grid item justifyContent='space-between'>
-                    <Box className='icon'
-                        onClick={() => console.log('EditIcon')}
-                        role="presentation"
-                        sx={{ bgcolor: '#ffff', borderColor: 'primary.main', borderRadius: 5, padding: '2%', cursor: 'pointer' }}>
-                        <EditIcon color="secondary" size="large" aria-label="scroll back to top" className='icon' />
-                    </Box>
-                    <Box className='icon'
-                        onClick={() => console.log('DeleteIcon')}
-                        role="presentation"
-                        sx={{ bgcolor: '#ffff', borderColor: 'primary.main', borderRadius: 5, padding: '2%', cursor: 'pointer' }}>
-                        <DeleteIcon color="secondary" size="large" aria-label="scroll back to top" className='icon' />
-                    </Box>
-                </Grid>
-                <Grid item>{trainee.user}</Grid>
-                <Grid item className="UserCard_text">
-                    {trainee.user}
-                </Grid>
-            </AbsoluteGrid>
-        </Wrapper>
-    );
+  const navigate = useNavigate();
+
+  return (
+    <Wrapper elevation={4}>
+      <StyledImage src={trainee.avatar} />
+      <AbsoluteGrid container>
+        <Grid item justifyContent='space-between'>
+          <Box className='icon'
+            onClick={() => navigate(`/profile/trainee/${trainee._id}`)}
+            role="presentation"
+            sx={{ bgcolor: '#ffff', borderColor: 'primary.main', borderRadius: 5, padding: '2%', cursor: 'pointer' }}>
+            <EditIcon color="secondary" size="large" aria-label="scroll back to top" className='icon' />
+          </Box>
+          <Box className='icon'
+            onClick={() => console.log('DeleteIcon')}
+            role="presentation"
+            sx={{ bgcolor: '#ffff', borderColor: 'primary.main', borderRadius: 5, padding: '2%', cursor: 'pointer' }}>
+            <DeleteIcon color="secondary" size="large" aria-label="scroll back to top" className='icon' />
+          </Box>
+        </Grid>
+        <Grid item>{trainee.user}</Grid>
+        <Grid item className="UserCard_text">
+          {trainee.user}
+        </Grid>
+      </AbsoluteGrid>
+    </Wrapper>
+  );
 }
 
 export default UserCardProfile;

@@ -36,7 +36,7 @@ const IconWrapperStyle = styled('div')(({ theme }) => ({
     )} 100%)`
 }));
 
-function MeetingCard({ setlastMeeting, traineeId, filterBy = null }) {
+function MeetingCard({ setlastMeeting, traineeId, filterBy }) {
     const navigate = useNavigate();
     const btnClasses = buttonStyle();
     const meetings = useSelector(state => state.meetings);
@@ -50,14 +50,14 @@ function MeetingCard({ setlastMeeting, traineeId, filterBy = null }) {
             else
                 meeting = meetings.all_meetings.find(i => i.trainee._id === traineeId);
         }
-        else if ((filterBy === 'last' || null) && traineeId) {
+        else if ((filterBy === 'last') && traineeId) {
             meeting = meetings.meetings_complited.find(i => i.trainee._id === traineeId && !meeting?.urlRoom);
             setlastMeeting(meeting)
         }
         setMeeting(meeting);
     }, [meetings])
 
-    console.log(meetings, meetingcard, traineeId);
+    console.log(filterBy, meetingcard, traineeId);
     return (
         <RootStyle>
             <IconWrapperStyle>
@@ -66,7 +66,7 @@ function MeetingCard({ setlastMeeting, traineeId, filterBy = null }) {
             {
                 meetingcard ?
                     <>
-                        <Typography variant="h5">{`At ${dateFormat(meetingcard.date)}`}</Typography>
+                        <Typography variant="h6">{`${dateFormat(meetingcard.date)}`}</Typography>
                         {
                             meetingcard?.urlRoom && <Button className={btnClasses.blueRound} onClick={() => navigate(`/meeting/watch/${meetingcard._id}`)}>Meeting Report</Button>
                         }
@@ -75,7 +75,7 @@ function MeetingCard({ setlastMeeting, traineeId, filterBy = null }) {
                         }
                     </>
                     :
-                    <Typography variant="h5">No Meeting</Typography>
+                    <Typography variant="h6">No Meeting</Typography>
             }
         </RootStyle>
     );

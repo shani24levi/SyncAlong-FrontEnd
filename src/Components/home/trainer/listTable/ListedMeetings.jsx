@@ -26,37 +26,9 @@ import UserMoreMenu from './UserMoreMenu';
 import buttonsStyles from "../../../../assets/theme/buttons";
 import { dateFormat } from '../../../../Utils/dateFormat';
 import { capitalize } from '../../../../helpers';
+import isEmpty from '../../../../validation/isEmpty';
 const buttonStyle = makeStyles(buttonsStyles);
 
-
-// const USERLIST = [
-//     {
-//         id: '1',
-//         avatarUrl: '1',
-//         name: '1',
-//         company: 'faker.company.companyName()',
-//         isVerified: 'faker.datatype.boolean()',
-//         status: 'sample()'
-//     },
-//     {
-//         activities: ['poshup', 'baly-run'],
-//         time: "2022-04-08T23:10:00.000Z",
-//         status: false,
-//         name: 'kfkfkf',
-//         tariner: { _id: '61f41299f214dbc605e23778', user: 's-update', avatar: 'http://localhost:5000/avatars/1648920689671.jpg', role: 'trainer' },
-//         title: "serr",
-//     },
-
-//     {
-//         id: '2',
-//         avatarUrl: '2',
-//         name: '2',
-//         company: 'faker.company.companyName()',
-//         isVerified: 'faker.datatype.boolean()',
-//         status: 'sample()'
-//     },
-
-// ];
 
 const TABLE_HEAD = [
     { id: 'name', label: 'With User', alignRight: false },
@@ -65,7 +37,7 @@ const TABLE_HEAD = [
     { id: 'status', label: 'Active', alignRight: false },
 ];
 
-function ListedMeetings({ traineeId, complited = null }) {
+function ListedMeetings({ traineeId, complited = null, username }) {
     const [arrMeetings, setArrMeetings] = useState([]);
     const [page, setPage] = useState(0);
     const [order, setOrder] = useState('asc');
@@ -77,6 +49,8 @@ function ListedMeetings({ traineeId, complited = null }) {
     const meetingsComplited = useSelector(state => state.meetings.meetings_complited);
     const btnClasses = buttonStyle();
 
+
+    console.log('username', username);
     useEffect(() => {
         if (traineeId && complited === 'complited') { //for page of trainee views
             if (!meetingsComplited) {
@@ -124,7 +98,7 @@ function ListedMeetings({ traineeId, complited = null }) {
     }
 
     function applySortFilter(array, comparator, query) {
-        console.log(array, comparator, query);
+        // console.log(array, comparator, query);
         const stabilizedThis = array.map((el, index) => [el, index]);
         stabilizedThis.sort((a, b) => {
             const order = comparator(a[0], b[0]);
@@ -194,11 +168,11 @@ function ListedMeetings({ traineeId, complited = null }) {
     return (
         <>
             {
-                !traineeId &&
+                !traineeId || !isEmpty(username) &&
                 <Stack direction="row" alignItems="center" justifyContent="space-between" mt={3} mb={1}>
                     <Typography variant="h4"
                         sx={{ fontWeight: 700, flexGrow: 1, color: '#f5f5f5' }} gutterBottom>
-                        Meetings
+                        {isEmpty(username) ? `Meetings` : `Meetings of ${username}`}
                     </Typography>
                     <Button
                         variant="contained"

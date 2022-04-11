@@ -1,10 +1,10 @@
-import MeetingModal from '../../Components/meeting/scheduleMeetings/MeetingModal';
 import isEmpty from '../../validation/isEmpty';
 import inFutuer from '../../validation/inFutuer';
 
 import {
     CREATE_MEETING, GET_ERRORS, GET_MEETINGS, GET_FUTURE_MEETINGS,
-    MEETINGS_LOADING, GET_CURR_ACTIVITIES, GET_ALL_MEETINGS,
+    MEETINGS_LOADING,
+    GET_ALL_MEETINGS,
     SET_ACTIVE_MEETING,
     GET_ACTIVE_MEETING,
     DELETE_MEETING,
@@ -14,11 +14,24 @@ import {
 const initialState = {
     loading: false,
     all_meetings: null,
-    meetings: null,
-    upcoming_meeting: null,
-    active_meeting: null,
-    meetings_complited: null,
+    meetings: null, // futuer meetings only
+    upcoming_meeting: null,// upcomung meeting myte be also the active meeting
+    active_meeting: null, //meeting thet both users clicked joinRoom and not click closeRoom
+    meetings_complited: null, //status=false && urlRoom is difiend - in order to watch 
 }
+
+
+
+// const dates = [
+//     new Date('July 20, 2021 20:17:40'),
+//     new Date('August 19, 2021 23:15:30'),
+//     new Date('July 20, 2021 23:15:30'),
+//     new Date('August 19, 2021 20:17:40')
+//   ];
+
+//   dates.sort(function (a, b) {
+//     return a - b
+//   });
 
 
 export default function (state = initialState, action) {
@@ -74,48 +87,42 @@ export default function (state = initialState, action) {
                 meetings_complited: !isEmpty(meetingsComplited) ? meetingsComplited : null,
                 loading: false,
             };
-
         case CREATE_MEETING:
             console.log(action.payload.data.data);
+            let add_all = [...state.all_meetings, action.payload.data.data]
+            let meetings = [...state.meetings, action.payload.data.data]
             return {
                 ...state,
-                all_meetings: !state.all_meetings ? [action.payload.data.data] : [...state.all_meetings, action.payload.data.data],
-                meetings: !state.meetings ? [action.payload] : [...state.meetings, action.payload.data.data],
+                all_meetings: !state.all_meetings ? [action.payload.data.data] : add_all.sort((a, b) => { return a.date - b.date }),//  [...state.all_meetings, action.payload.data.data],
+                meetings: !state.meetings ? [action.payload] : meetings.sort((a, b) => { return a.date - b.date }), // [...state.meetings, action.payload.data.data],
                 upcoming_meeting: setUpcomingMeeting(action.payload.data.data, 'add'),
                 loading: false,
             };
-        case GET_CURR_ACTIVITIES:
-            console.log("GET_CURR_ACTIVITIES", action.payload);
-            return {
-                ...state,
-                loading: false,
-                activities: action.payload
-            }
         case SET_ACTIVE_MEETING:
             console.log("SET_ACTIVE_MEETING", action.payload);
             return {
                 ...state,
                 loading: false,
                 active_meeting: (!action.payload && action.payload?.status) ? action.payload : null
-            }
-
+            };
         case GET_ACTIVE_MEETING:
             console.log("GET_ACTIVE_MEETING", action.payload);
             return {
                 ...state,
                 loading: false,
                 active_meeting: action.payload
-            }
+            };
         case DELETE_MEETING:
             console.log("DELETE_MEETING", action.payload);
             return {
                 ...state,
                 loading: false,
+                active_meeting: (!state.active_meeting && state.active_meeting._id === action.payload) ? null : state.active_meeting,
                 meetings: !state.meetings ? null : state.meetings.filter(m => m._id !== action.payload),
                 all_meetings: state.all_meetings.filter(m => m._id !== action.payload),
+                meetings_complited: !state.meetings_complited ? null : state.meetings_complited.filter(m => m._id !== action.payload),
                 upcoming_meeting: setUpcomingMeeting(action.payload, 'delete') //state.upcoming_meeting?._id === action.payload ? null : state.upcoming_meeting,
-            }
-
+            };
 
         default:
             return state;

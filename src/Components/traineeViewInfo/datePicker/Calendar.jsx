@@ -64,27 +64,17 @@ function Calendar({ date, setDate, setTimeslot }) {
                         date={date}
                         minDate={minDate}
                         maxDate={maxDate}
-                        onChange={(e) => {
-                            const dayName = dayOfWeek[e.getDay()];
-                            //const { start_hour, end_hour } = time_slot[dayName];
-                            setDate(e);
-                            //  setTimeslot((2, 3, 1));
-                        }}
+                        onChange={(e) => setDate(e)}
                         renderLoading={() => <CalendarPickerSkeleton />}
                         renderDay={(day, _value, DayComponentProps) => {
                             const dayName = dayOfWeek[day.getDay()];
-
-                            //   const { available } = time_slot[dayName];
                             const isSelected =
                                 !DayComponentProps.outsideCurrentMonth &&
-                                // available &&
                                 checkValidDate(todaysDate, day);
-
                             DayComponentProps = {
                                 ...DayComponentProps,
                                 disabled: !isSelected,
                             };
-                            // @ts-ignore
                             return (
                                 <StyledPickersDay
                                     {...DayComponentProps}

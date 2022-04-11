@@ -24,6 +24,7 @@ const ProfileView = () => {
     //console.log("profileT",profileT);
     const [link, setLink] = useState('about');
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [modalIsOpenLimits, setModalIsOpenLimits] = useState(false);
 
     const [address, setAddress] = useState(profile.address ? profile.address : '');
     const [phone, setPhone] = useState(profile.phone ? profile.phone : '');
@@ -49,7 +50,7 @@ const ProfileView = () => {
             case 'about':
                 return <About profile={profile} setModalIsOpen={setModalIsOpen} />
             case 'limits':
-                return <Limits />
+                return <Limits profile={profile} setModalIsOpenLimits={setModalIsOpenLimits} />
             case 'activity':
                 return <Activities />
             case 'video':
@@ -61,6 +62,9 @@ const ProfileView = () => {
 
     const handelClose = () => {
         setModalIsOpen(false);
+    }
+    const handelCloseLimts = () => {
+        setModalIsOpenLimits(false);
     }
 
     const handelEditeAbout = async () => {
@@ -98,6 +102,8 @@ const ProfileView = () => {
                 submitted={submitted}
                 handelEditeAbout={handelEditeAbout}
             />
+
+            {/* <ProfileLimitsModal/> */}
 
             <ViewProfileHeader />
             <NavigatProfileLInks setLink={setLink} />

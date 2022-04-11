@@ -146,7 +146,7 @@ function About({ profile, setModalIsOpen }) {
 
                 </List>
 
-                <Typography>
+                {/* <Typography>
                     {profile._id}
                     {profile.address}
                     {profile.phone}
@@ -156,7 +156,7 @@ function About({ profile, setModalIsOpen }) {
                     {profile.about}
                     {profile.hobbies}
                     {profile.age}
-                </Typography>
+                </Typography> */}
                 <Button onClick={() => setModalIsOpen(true)} className={btnClasses.purpleRoundEmpty}> Edit</Button>
 
             </CardContiner>

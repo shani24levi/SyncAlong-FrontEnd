@@ -10,6 +10,7 @@ import {
     InputLabel,
     MenuItem, FormControl,
 } from "@material-ui/core";
+import { styled } from '@mui/material/styles';
 import { CircularProgress } from "@material-ui/core";
 import TextField from '@mui/material/TextField';
 import Select from '@mui/material/Select';
@@ -25,6 +26,7 @@ import buttonsStyles from "../../../../assets/theme/buttons";
 import isEmpty from '../../../../validation/isEmpty';
 import CheckboxActivities from '../../../activieties-checkbox/CheckboxActivities';
 const buttonStyle = makeStyles(buttonsStyles);
+
 
 function CreateMeeting({ modalData, modalCreate, handelClose }) {
     const dispatch = useDispatch();
@@ -117,6 +119,25 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
     console.log('activities', activities);
     console.log('====================================');
 
+    const checkValidDate = (todaysDate, date) => {
+        if (todaysDate.getMonth() < date.getMonth()) return true;
+        if (todaysDate.getDate() > date.getDate()) return false;
+        return true;
+    };
+
+    const todaysDate = new Date();
+    const minDate = new Date(todaysDate.getFullYear(), todaysDate.getMonth(), 1);
+    const maxDate = new Date(
+        todaysDate.getFullYear(),
+        todaysDate.getMonth() + 2,
+        0,
+    );
+
+    // function disableDays() {
+    //     const todaysDate = new Date();
+    //     return value.getDay() > todaysDate.getDay();
+    // }
+
     return (
         <>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -147,6 +168,10 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
                                 label="Date desktop"
                                 inputFormat="dd/MM/yyyy"
                                 value={value}
+                                date={todaysDate}
+                                minDate={minDate}
+                                maxDate={maxDate}
+                                //shouldDisableDate={disableDays}
                                 onChange={handleChange}
                                 renderInput={(params) => <TextField {...params} />}
                             />

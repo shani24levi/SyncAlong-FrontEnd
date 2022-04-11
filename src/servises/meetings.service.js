@@ -70,14 +70,6 @@ const getMeetingsById = (id) => {
             return Promise.reject(err.response.data);
         })
 }
-const getActivities = (id) => {
-    return axios
-        .get(`${URL}/${MEETINGS}/ouractivities/${id}`)
-        .then(data => { return data })
-        .catch(err => {
-            return Promise.reject(err.response.data);
-        })
-}
 
 const setActiveMeeting = (id, status) => {
     return axios
@@ -104,7 +96,6 @@ export const meetingsService = {
     deleteMeeting,
     getallMeetings,
     getMeetingsById,
-    getActivities,
     setActiveMeeting,
     getActiveMeeting
 };

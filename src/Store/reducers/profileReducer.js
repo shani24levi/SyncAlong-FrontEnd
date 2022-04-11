@@ -46,7 +46,6 @@ export default function (state = initialState, action) {
                 profile: action.payload.data,
             };
         case UPDATE_PROFILE:
-            // console.log('action.payload', action.payload);
             if (action.payload.data.address) state.profile.address = action.payload.data.address;
             if (action.payload.data.phone) state.profile.phone = action.payload.data.phone
             if (action.payload.data.city) state.profile.city = action.payload.data.city
@@ -55,49 +54,42 @@ export default function (state = initialState, action) {
             if (action.payload.data.gender) state.profile.gender = action.payload.data.gender
             if (action.payload.data.hobbies) state.profile.hobbies = action.payload.data.hobbies
             if (action.payload.data.about) state.profile.about = action.payload.data.about
-            // console.log('state.profile', state.profile);
-
             return {
                 ...state,
                 loading: false,
             };
-
         case SET_CURR_TRAINEES:
             return {
                 ...state,
                 loading: false,
                 trainees_profiles: !state.trainees_profiles ? [action.payload] : [...state.trainees_profiles, action.payload],
                 trainee_profile_called: true,
-            }
+            };
         case SET_ALL_TRAINEES:
-            //   console.log('SET_ALL_TRAINEES', action.payload.data);
             return {
                 ...state,
                 loading: false,
                 trainees_profiles: action.payload.data,
                 trainee_profile_called: true,
-            }
-        case TRAINEE_CREATE_SUCCESS:
-            state.profile?.trainerOf?.push(action.payload.data?._id) //add to the caurr list state
+            };
+        case TRAINEE_CREATE_SUCCESS: //user create of tarinee
+            state.profile?.trainerOf?.push(action.payload.data?._id) //add to the curr list state
             return {
                 ...state,
                 loading: false,
                 trinee_added: action.payload.data,
                 trainee_profile_success: false,
             };
-        case TRINEE_PROFILE_CREATE:
-            // console.log(action.payload);
+        case TRINEE_PROFILE_CREATE: //profile ceate
             return {
                 ...state,
                 loading: false,
                 trainees_profiles: !state.trainees_profiles ? [action.payload] : [...state.trainees_profiles, action.payload],
                 trainee_profile_success: true,
             };
-
-
         case UPDATE_TRAINEES_LIST:
             let new_trainees = state.trainees_profiles?.map(i => {
-                if (action.payload.id === i.id) {
+                if (action.payload.id === i.user._id) {
                     i.profile = action.payload.profile;
                 }
             })
@@ -107,11 +99,10 @@ export default function (state = initialState, action) {
                 trainees_profiles: new_trainees
             };
         case DELETE_TRAINEE:
-            new_trainees = state.trainees_profiles.filter(i => action.payload.id !== i.id)
             return {
                 ...state,
                 loading: false,
-                trainees_profiles: new_trainees
+                trainees_profiles: state.trainees_profiles.filter(i => action.payload.id !== i.user._id)
             };
 
         default:

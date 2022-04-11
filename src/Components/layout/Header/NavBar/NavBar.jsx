@@ -123,11 +123,11 @@ const NavBar = (props) => {
                                     marginLeft="1.25rem!important"
                                     marginRight="1.25rem!important"
                                 />
-                                {props.auth.loggedIn ? <LogedInLinksNav auth={props.auth} handleMenuClose={handleMenuClose} /> : <PublicLinksNav handleMenuClose={handleMenuClose} />}
+                                {props.auth.loggedIn ? <LogedInLinksNav socket={props.socket} auth={props.auth} handleMenuClose={handleMenuClose} /> : <PublicLinksNav handleMenuClose={handleMenuClose} />}
                             </Menu>
                         </Hidden>
                         <Hidden mdDown implementation="css">
-                            {props.auth.loggedIn ? <LogedInLinksNav auth={props.auth} handleMenuClose={handleMenuClose} /> : <PublicLinksNav handleMenuClose={handleMenuClose} />}
+                            {props.auth.loggedIn ? <LogedInLinksNav socket={props.socket} auth={props.auth} handleMenuClose={handleMenuClose} /> : <PublicLinksNav handleMenuClose={handleMenuClose} />}
                         </Hidden>
                     </Container>
                 </Toolbar>

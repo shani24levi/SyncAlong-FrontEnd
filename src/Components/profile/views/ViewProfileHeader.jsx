@@ -40,15 +40,15 @@ function ViewProfileHeader(props) {
     const setImgShow = (event) => {
         console.log('hi', event.target.files);
         const imgData = {
-          name: 'new img',
-          img: event.target.files[0]
+            name: 'new img',
+            img: event.target.files[0]
         };
         let formData = new FormData();
         formData.append('file', event.target.files[0]);
-        
+
         console.log('formData', formData.getAll('file'));
         if (imgData) dispatch(updateAvatarPic(formData));
-      };
+    };
 
     return (
         <Box sx={{ width: '100%' }} className={classes.haederView}>
@@ -66,7 +66,6 @@ function ViewProfileHeader(props) {
                         >
                             <label htmlFor="contained-button-file">
                                 <Input accept="image/*" id="contained-button-file" multiple type="file" onChange={setImgShow} />
-                                {/* <IconButton aria-label="fingerprint" color="secondary"> */}
                                 <Button component="span">
                                     <Avatar
                                         alt="avatar"
@@ -121,8 +120,6 @@ function ViewProfileHeader(props) {
                                     </Stack>
                                 </>
                             }
-
-
                         </Box>
                     </Grid>
                 </Grid>

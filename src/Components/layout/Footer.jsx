@@ -16,7 +16,7 @@ const Footer = () => {
     return (
         <footer className={classes.footer}>
             <Container>
-                <Typography variant="h6" component="h6" mt={2}
+                <Typography variant="h5" component="h5" mt={2}
                     style={{
                         display: "flex",
                         alignItems: "center",

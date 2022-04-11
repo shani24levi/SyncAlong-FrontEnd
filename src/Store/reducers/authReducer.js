@@ -36,12 +36,10 @@ export default function (state = initialState, action) {
       };
     case AUTH_PROFILE:
       state.user.profile_id = action.payload
-      //console.log(action.payload, 'state user', state);
       return {
         ...state,
         loading: false,
       };
-
     case GET_CURR_USER:
       return {
         user: user,
@@ -60,21 +58,17 @@ export default function (state = initialState, action) {
         ...state,
         loading: false,
       };
-
     case TRAINEE_UPDATE_SUCCESS:
       return {
         ...state,
         loading: false,
       };
-
     case TRAINEE_DELETE:
       return {
         ...state,
         loading: false,
-        //trainees: trainees.filter(i => i != action.payload._id)
       };
     case UPDATE_AVATAR:
-      console.log('action.payload', action.payload);
       state.user.avatar = action.payload.data;
       return {
         ...state,

@@ -40,7 +40,10 @@ const LogedInLinksNav = (props) => {
 
     const onLogoutClick = (e) => {
         e.preventDefault();
-        //props.clearCurrentProfile();
+        //remove user form list in the server
+        let userId = user._id;
+        userId && props.socket?.emit('disconnectLogout', userId);
+        //clearing all starts in the app
         dispatch(logoutUser())
         props.handleMenuClose();
     }

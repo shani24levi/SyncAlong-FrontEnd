@@ -10,7 +10,6 @@ import Search from '../search/Search';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom'
 import { dateFormat } from '../../Utils/dateFormat';
-
 import buttonsStyles from "../../assets/theme/buttons";
 import QuickStartBtn from './QuickStartBtn';
 import QuickStartBtn2 from './quickStartBtn/QuickStartBtn';
