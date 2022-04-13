@@ -11,6 +11,7 @@ import {
     DELETE_TRAINEE,
     SET_ALL_TRAINEES,
     CLEAR_PROFILE,
+    UPDATE_AVATAR_TRAINEE
 } from './types';
 import { profileService } from '../../servises';
 import { alertActions } from './alertActions';
@@ -118,6 +119,24 @@ export const getAllTraineesProfiles = () => dispatch => {
     function success(profile) { return { type: SET_ALL_TRAINEES, payload: profile } }
     function fail() { return { type: SET_ALL_TRAINEES, payload: [] } }
 }
+
+export const updateAvatarTraineePic = (data, id) => dispatch => {
+    dispatch(setLoading(true));
+    profileService.updateAvatarTraineePic(data, id)
+        .then(
+            url => {
+                console.log('url.data.data', url.data.data);
+                dispatch(success(url.data.data, id));
+            },
+            error => {
+                console.log('error', error.response);
+                dispatch(setLoading(false));
+                dispatch(failure(error));
+            }
+        );
+    function success(url, id) { return { type: UPDATE_AVATAR_TRAINEE, payload: { url, id } } }
+}
+
 
 // export const setTraineeProfileById = (id, data) => dispatch => {
 //     return { type: UPDATE_TRAINEES_LIST, payload: { id, profile } }

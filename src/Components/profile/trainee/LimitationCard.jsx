@@ -23,6 +23,7 @@ function LimitationCard({ profile }) {
         setModalIsOpenLimitations(false);
     }
 
+    console.log(profile.limitations);
     return (
         <>
             <CardContiner title="Areas Limitations" subtitle=''>
@@ -31,7 +32,6 @@ function LimitationCard({ profile }) {
                     profile?.limitations?.leght !== 0 ?
                         <>
                             {
-
                                 profile.limitations.map(limit => {
                                     return (
                                         // <Grid item xs={6} md={4}>
@@ -40,7 +40,7 @@ function LimitationCard({ profile }) {
                                                 <CardMedia
                                                     component="img"
                                                     height="80"
-                                                    image="/static/images/cards/contemplative-reptile.jpg"
+                                                    image={`/img/parts/${limit}.jpg`}
                                                     alt="green iguana"
                                                 />
                                                 <CardContent>

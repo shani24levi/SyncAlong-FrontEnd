@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { updateAvatarPic } from '../../Store/actions/authAction';
+import { updateAvatarTraineePic } from '../../Store/actions/profileAction';
 import {
     styled, Grid, Avatar, IconButton, Typography, Select,
     Box, Button, Dialog,
@@ -137,7 +137,7 @@ function TraineeProfile(props) {
         formData.append('file', event.target.files[0]);
 
         console.log('formData', formData.getAll('file'));
-        // if (imgData) dispatch(updateAvatarPic(formData));
+        if (imgData) dispatch(updateAvatarTraineePic(formData, id));
     };
 
 

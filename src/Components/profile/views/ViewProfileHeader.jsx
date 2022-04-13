@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom'
 import { updateAvatarPic } from '../../../Store/actions/authAction';
 import {
     Container, Button, Typography, Box, Grid, Avatar,
@@ -7,7 +8,6 @@ import {
 } from "@material-ui/core";
 import { styled } from '@mui/material/styles';
 import "./style.css";
-import { useNavigate } from 'react-router-dom';
 
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import AvatarGroup from '@mui/material/AvatarGroup';
@@ -108,7 +108,7 @@ function ViewProfileHeader(props) {
                                                     return (
                                                         <Grid item key={trainee.user._id}>
                                                             <Tooltip title={capitalize(trainee.user.username)} placement="top" arrow>
-                                                                <IconButton aria-label="fingerprint" color="secondary">
+                                                                <IconButton aria-label="fingerprint" color="secondary" onClick={() => navigate(`/profile/trainee/${trainee.user._id}`)}>
                                                                     <Avatar alt={trainee.user.name} src={trainee.user.avatar} />
                                                                 </IconButton>
                                                             </Tooltip>

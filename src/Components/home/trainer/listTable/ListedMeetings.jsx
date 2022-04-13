@@ -49,8 +49,6 @@ function ListedMeetings({ traineeId, complited = null, username }) {
     const meetingsComplited = useSelector(state => state.meetings.meetings_complited);
     const btnClasses = buttonStyle();
 
-
-    console.log('username', username);
     useEffect(() => {
         if (traineeId && complited === 'complited') { //for page of trainee views
             if (!meetingsComplited) {
@@ -64,9 +62,11 @@ function ListedMeetings({ traineeId, complited = null, username }) {
             else return <>No Meeting Complited</>
         }
 
-        if (meetings?.length != 0 && arrMeetings.length === 0) {
+        if (meetings?.length != 0) {
             let arr = [];
-            if (traineeId) { //for page of trainee views
+            console.log(traineeId, '!isEmpty(traineeId)', !isEmpty(traineeId));
+            if (!isEmpty(traineeId)) { //for page of trainee views
+                console.log('dddkdk', traineeId);
                 meetings?.map(i => {
                     if (i.trainee._id === traineeId)
                         arr.push({ _id: i._id, name: i.trainee.user, avatarUrl: i.trainee.avatar, time: i.date.toString(), status: i.status, title: i.title })
@@ -79,7 +79,7 @@ function ListedMeetings({ traineeId, complited = null, username }) {
             }
             setArrMeetings(arr);
         }
-    }, [])
+    }, [traineeId])
 
     function descendingComparator(a, b, orderBy) {
         if (b[orderBy] < a[orderBy]) {

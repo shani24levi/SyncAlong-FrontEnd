@@ -114,6 +114,7 @@ export const getActiveMeeting = () => dispatch => {
 
 export const deleteMeeting = (id) => dispatch => {
     dispatch(setLoading(true));
+    console.log('id', id);
     if (id?._id) id = id._id;
     meetingsService.deleteMeeting(id) //id._id
         .then(

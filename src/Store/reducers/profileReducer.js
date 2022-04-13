@@ -9,6 +9,7 @@ import {
     TRAINEE_CREATE_SUCCESS,
     SET_ALL_TRAINEES,
     CLEAR_PROFILE,
+    UPDATE_AVATAR_TRAINEE,
 } from '../actions/types';
 
 const initialState = {
@@ -86,6 +87,19 @@ export default function (state = initialState, action) {
                 loading: false,
                 trainees_profiles: !state.trainees_profiles ? [action.payload] : [...state.trainees_profiles, action.payload],
                 trainee_profile_success: true,
+            };
+        case UPDATE_AVATAR_TRAINEE:
+            console.log('====================================');
+            console.log(action.payload);
+            console.log('====================================');
+            state.trainees_profiles?.map(i => {
+                if (action.payload.id === i.user._id) {
+                    i.user.avatar = action.payload.url;
+                }
+            })
+            return {
+                ...state,
+                loading: false,
             };
         case UPDATE_TRAINEES_LIST:
             let new_trainees = state.trainees_profiles?.map(i => {

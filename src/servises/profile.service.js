@@ -82,6 +82,17 @@ const deleteTraineeProfile = (trinee_id) => {
         })
 }
 
+
+const updateAvatarTraineePic = (formData, id) => {
+    console.log(formData.getAll('file'));
+    return axios
+        .put(`${URL}/api/users/avatar/tarinee/${id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } })
+        .then(url => { console.log("url:", url); return url })
+        .catch(err => {
+            return Promise.reject(err.response.data);
+        })
+}
+
 export const profileService = {
     createProfile,
     update,
@@ -92,5 +103,6 @@ export const profileService = {
     getTraineeProfile,
     updateTraineeProfile,
     createTraineeProfile,
-    deleteTraineeProfile
+    deleteTraineeProfile,
+    updateAvatarTraineePic
 };

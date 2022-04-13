@@ -34,19 +34,19 @@ export const getMonth = m => {
 export const getDay = d => {
     switch (d) {
         case 0:
-            return 'Sun';
+            return 'Sunday';
         case 1:
-            return 'Mon'
+            return 'Monday'
         case 2:
-            return 'Tost';
+            return 'Tuesday';
         case 3:
-            return 'Weds';
+            return 'Wednesday';
         case 4:
-            return 'Terst';
+            return 'Thursday';
         case 5:
             return 'Friday';
         case 6:
-            return 'Sater';
+            return 'Saturday';
         default:
             break;
     }

@@ -63,6 +63,7 @@ const ScheduleMeetings = (props) => {
     };
 
     const handleSelectEvent = (start) => {
+        //  console.log('handleSelectEvent', start);
         setModalCreate(false);
         setFirstTime(false)
         setModalData(start);

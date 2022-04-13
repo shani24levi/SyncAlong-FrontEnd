@@ -49,11 +49,21 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
     const [loadingType, setLoadingType] = useState('create');
 
 
+    console.log('modalData', modalData);
     useEffect(() => {
         if (profile?.trainees_profiles && profile?.trainees_profiles?.length == 0) {
             console.log('NO trainees here');
         }
     }, []);
+
+    useEffect(() => {
+        //when clicked to edite modal 
+        if (modalData._id) {
+            setActivities(modalData.activities);
+            setTrainee(modalData.trainee._id)
+            setTraineeId(modalData.trainee._id)
+        }
+    }, [modalData]);
 
     useEffect(() => {
         let errors = {};
@@ -114,11 +124,6 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
         setValue(newValue);
     };
 
-
-    console.log('====================================');
-    console.log('activities', activities);
-    console.log('====================================');
-
     const checkValidDate = (todaysDate, date) => {
         if (todaysDate.getMonth() < date.getMonth()) return true;
         if (todaysDate.getDate() > date.getDate()) return false;
@@ -138,6 +143,9 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
     //     return value.getDay() > todaysDate.getDay();
     // }
 
+    console.log('====================================');
+    console.log(traineeId);
+    console.log('====================================');
     return (
         <>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -202,7 +210,7 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
                                 >
                                     {
                                         profile.trainees_profiles && profile.trainees_profiles?.map((trainee, i) => {
-                                            return <MenuItem value={i} key={i} onClick={() => setTraineeId(trainee.user._id)}>
+                                            return <MenuItem value={trainee.user._id} key={i} onClick={() => setTraineeId(trainee.user._id)}>
                                                 <Avatar
                                                     alt="avatar"
                                                     src={trainee.user.avatar}
@@ -219,20 +227,6 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
                             traineeId ?
                                 <Grid item xs={12} sm={12}>
                                     <CheckboxActivities activities={activities} setActivities={setActivities} traineeId={traineeId} />
-                                    {/* <FormControl fullWidth>
-                                        <InputLabel id="activities-select-label">Activities</InputLabel>
-                                        <Select
-                                            labelId="activites-select-label"
-                                            id="trainee-simple-select"
-                                            value={trainee}
-                                            label="Trainee"
-                                            onChange={e => setTrainee(e.target.value)}
-                                        >
-                                            <MenuItem value={1}>Ten</MenuItem>
-                                            <MenuItem value={20}>Twenty</MenuItem>
-                                            <MenuItem value={30}>Thirty</MenuItem>
-                                        </Select>
-                                    </FormControl> */}
                                 </Grid>
                                 :
                                 <></>

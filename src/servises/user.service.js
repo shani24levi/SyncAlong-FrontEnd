@@ -81,12 +81,23 @@ const deleteTrainee = (id) => {
 const updateAvatarPic = (formData) => {
     console.log(formData.getAll('file'));
     return axios
-        .put(`${URL}/api/users/avatar`, formData, {headers: {'Content-Type': 'multipart/form-data'}})
+        .put(`${URL}/${USERS}/avatar`, formData, { headers: { 'Content-Type': 'multipart/form-data' } })
         .then(url => { console.log("url:", url); return url })
         .catch(err => {
             return Promise.reject(err.response.data);
         })
 }
+
+// const updateAvatarTraineePic = (formData,id) => {
+//     console.log(formData.getAll('file'));
+//     return axios
+//         .put(`${URL}/${USERS}/avatar/tarinee/${id}`, formData, {headers: {'Content-Type': 'multipart/form-data'}})
+//         .then(url => { console.log("url:", url); return url })
+//         .catch(err => {
+//             return Promise.reject(err.response.data);
+//         })
+// }
+
 
 export const userService = {
     login,
@@ -98,4 +109,5 @@ export const userService = {
     deleteTrainee,
 
     updateAvatarPic,
+    // updateAvatarTraineePic,
 };

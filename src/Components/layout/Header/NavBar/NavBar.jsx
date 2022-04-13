@@ -57,7 +57,7 @@ const NavBar = (props) => {
                                 height="90px"
                                 component="img"
                                 className={classes.headerImg}
-                                src={"/logo3.png"}
+                                src={"/img/logo3.png"}
                             // src={require("./../../../../assets/img/logo3.png").default}
                             />
                         </ListItem>
@@ -100,7 +100,7 @@ const NavBar = (props) => {
                                         height="76px"
                                         component="img"
                                         className={classes.headerImg}
-                                        src={"/logo-dark3.png"}
+                                        src={"/img/logo-dark3.png"}
                                     // src={require("./../../../../assets/img/logo-dark3.png").default}
                                     />
                                     <IconButton
