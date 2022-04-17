@@ -39,17 +39,17 @@ function VidoeRoom({ socket }) {
         you && setYourInfo(you);
         me && setMyRole(me?.role);
 
-        //get my socket id
-        //console.log(me?._id, you?._id);
-        socket?.emit("getSocketId", me?._id, user => {
-            console.log('getSocketId', me?._id, user);
-            setMySocketId(user?.socketId)
-        });
-        //get your socket id
-        socket?.emit("getSocketId", you?._id, user => {
-            console.log('getSocketId', you?._id, user);
-            setYourSocketId(user?.socketId)
-        });
+        // //get my socket id
+        // //console.log(me?._id, you?._id);
+        // socket?.emit("getSocketId", me?._id, user => {
+        //     console.log('getSocketId', me?._id, user);
+        //     setMySocketId(user?.socketId)
+        // });
+        // //get your socket id
+        // socket?.emit("getSocketId", you?._id, user => {
+        //     console.log('getSocketId', you?._id, user);
+        //     setYourSocketId(user?.socketId)
+        // });
     }, [me, you]);
 
     return (

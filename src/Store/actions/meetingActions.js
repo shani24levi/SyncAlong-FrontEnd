@@ -95,7 +95,7 @@ export const setActiveMeeting = (meeting, status) => dispatch => {
     else {
         dispatch(success(null))
     }
-    function success(activities) { return { type: SET_ACTIVE_MEETING, payload: meeting } }
+    function success(meeting) { return { type: SET_ACTIVE_MEETING, payload: meeting } }
 }
 
 export const getActiveMeeting = () => dispatch => {

@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import isEmpty from '../../validation/isEmpty';
 import mediaPipeLandmarks from './mediaPipeLandmarks';
 import draw from './DrawAnimation/draw';
+import { setActiveMeeting } from '../../Store/actions/meetingActions';
 
 {
   /* 
@@ -62,6 +63,7 @@ function ContextProvider({ children, socket, profile }) {
   //stats to handel conection from pop up coming meeting is now 
   const [userEnteredNow, setUserEnteredNow] = useState({});
   const [accseptScheduleMeetingCall, setAccseptScheduleMeetingCall] = useState(false);
+  const [accseptPeer2ScheduleMeetingCall, setAccseptPeer2ScheduleMeetingCall] = useState(false);
   const [conectReq, setConectReq] = useState(false);
   const [oneTime, setOneTime] = useState(true);
   const [mediapipeOfTrainee, setMediapipeOfTrainee] = useState(false);
@@ -100,6 +102,7 @@ function ContextProvider({ children, socket, profile }) {
   const [myDelayOnConection, setMyDelayOnConection] = useState(null);
   const [array_poses, setPosesArray] = useState([]);
   const [pose_results, setPose_Results] = useState([]);
+  const [poseFarFrame, setPoseFarFrame] = useState([]);
 
   const collectionUserPose = (results) => {
     //calls inside of the midiapipe loop thets runs fer frams
@@ -271,6 +274,10 @@ function ContextProvider({ children, socket, profile }) {
     canvasCtx.save();
     canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
     canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+
+    setTimeOfColectionPose(new Date().toLocaleString('en-GB'));
+    setPoseFarFrame(results.poseLandmarks);
+
     collectionUserPose(results);
     let inframe = calculatingUserInFrame(results);
     let syncing = is_sync();
@@ -398,6 +405,8 @@ function ContextProvider({ children, socket, profile }) {
     !peer2inFrame && lisiningPeer2InFrame();
     lisiningMediaPipe();
     lisiningTraineeCall();
+    lisiningAccseptScheduleMeetingCall();
+    lisiningForDisconectPeerInRoom();
   }, [socket]);
 
   useEffect(() => {
@@ -500,7 +509,7 @@ function ContextProvider({ children, socket, profile }) {
     console.log('t', mediaPipeInitilaize, oneTime);
     if (mediaPipeInitilaize === 'none' && oneTime && myRole === 'trainee') {
       setOneTime(false);
-      socket?.emit('t', yourSocketId);
+      socket?.emit('t', { yourSocketId, roomId });
     }
   }, [mediaPipeInitilaize]);
 
@@ -534,6 +543,13 @@ function ContextProvider({ children, socket, profile }) {
     }
   }, [upcomingMeetingToNow]);
 
+  useEffect(() => {
+    console.log('accseptScheduleMeetingCall', accseptScheduleMeetingCall, yourSocketId);
+    if (accseptScheduleMeetingCall && yourSocketId) {
+      console.log('i accsept Schedule MeetingCall to', yourSocketId);
+      socket?.emit('accseptScheduleMeetingCall', yourSocketId);
+    }
+  }, [accseptScheduleMeetingCall, yourSocketId]);
 
 
   //======================helpers func==============================//
@@ -632,6 +648,11 @@ function ContextProvider({ children, socket, profile }) {
       console.log('///...score.../// ', sync_score);
       setSyncScore(sync_score);
     });
+    //for eyal
+    socket?.on('resivingSyncScoure', (sync_score) => {
+      console.log('///...score.../// ', sync_score, new Date().toLocaleString('en-GB'));
+      setSyncScore(sync_score);
+    });
   };
 
   const lisiningNotifications = () => {
@@ -661,6 +682,28 @@ function ContextProvider({ children, socket, profile }) {
       setCallTrainee(data);
     });
   };
+
+  const lisiningAccseptScheduleMeetingCall = () => {
+    socket?.on('accseptScheduleMeetingCall', (id) => {
+      console.log('-------------------accseptScheduleMeetingCall of you -----------------------');
+      setAccseptPeer2ScheduleMeetingCall(id);
+    });
+  };
+
+  const lisiningForDisconectPeerInRoom = () => {
+    socket?.on('userLeft', (userId) => {
+      console.log('------------------userLeft ', userId);
+      //Clear the state of yourSocketId
+      //im waiting in the room... 
+      //waiting for notify that you are back!
+      //whan you are back to the room - im setting your new socketID
+      //sand to you that im accept the call
+      //if i left the room also then room is closed for good and no recording has saved.
+      //reconect when your midiapipe is up 
+      //userLeft(userId);
+    });
+  };
+
   //===================socket calls when user in room and whant to call============================//
   function answerCall() {
     console.log('answerCall');
@@ -758,7 +801,6 @@ function ContextProvider({ children, socket, profile }) {
         from: mySocketId,
         name: myName
       });
-      // console.timeEnd('timer2-callUser');
     });
 
     console.time('timer2-stream');
@@ -796,7 +838,15 @@ function ContextProvider({ children, socket, profile }) {
     //An alternative solution for canvas transfer that the peer library does not support
   };
 
-  const leaveCall = () => { };
+  const leaveCall = () => {
+    setCallEnded(true);
+    connectionRef.current.destroy();
+    // stop both video and audio
+    stream.getTracks().forEach(function (track) {
+      track.stop();
+    });
+    // window.location.reload();
+  };
   //===================socket calls when meeting in now============================//
   //===================pop up to bouth===========================//
   //===================socket for sync func============================//
@@ -813,6 +863,16 @@ function ContextProvider({ children, socket, profile }) {
     console.log('data im sending ..', data);
     socket.emit('sendPoses', data); //peer1 send his poses to peer2
   };
+
+  const sendPosesByPeers = async (dataTo, activity) => {
+    let data = {
+      poses: dataTo.poses,
+      time: dataTo.time
+    };
+    let trainer = myRole === 'trainer' ? true : false;
+    console.log('sendPosesByPeers im sending ..', data, new Date().toLocaleString('en-GB'), 'milisec : ', new Date().getMilliseconds());
+    socket.emit('sendPosesByPeers', data, mySocketId, yourSocketId, trainer, activity, roomId);
+  }
 
   return (
     <SocketContext.Provider
@@ -877,6 +937,10 @@ function ContextProvider({ children, socket, profile }) {
         mediapipeOfTrainee,
         upcomingMeetingToNow, setUpcomingMeetingToNow,
         callTrainee, setCallTrainee,
+
+        sendPosesByPeers,
+        poseFarFrame,
+        accseptPeer2ScheduleMeetingCall, setAccseptPeer2ScheduleMeetingCall,
       }}
     >
       {children}

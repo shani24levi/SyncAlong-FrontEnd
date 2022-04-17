@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Sidebar = (props) => {
-  const { me, callAccepted, myName, yourName, callEnded, leaveCall, callUser, setRecognition } = useContext(SocketContext);
+  const { callAccepted, myName, yourName, callEnded, leaveCall, callUser, setRecognition } = useContext(SocketContext);
   const classes = useStyles();
 
   return (
@@ -52,8 +52,13 @@ const Sidebar = (props) => {
               <Typography gutterBottom variant="h6">Make a call</Typography>
               <TextField label="Member " value={yourName} onChange={(e) => props.setIdToCall()} fullWidth />
               {callAccepted && !callEnded ? (
-                <Button variant="contained" color="secondary" startIcon={<PhoneDisabled fontSize="large" />} fullWidth onClick={() => {console.log('leave');
-                setRecognition('leave')}} className={classes.margin}>
+                <Button variant="contained" color="secondary" startIcon={<PhoneDisabled fontSize="large" />} fullWidth
+                  onClick={() => {
+                    console.log('leave');
+                    leaveCall();
+                    setRecognition('leave')
+                  }}
+                  className={classes.margin}>
                   Hang Up
                 </Button>
               ) : (

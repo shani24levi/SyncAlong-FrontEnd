@@ -65,7 +65,7 @@ const SubTitle = styled('span')(({ theme }) => ({
 
 //Trainer will have his data , graph and lists
 function TrainerHome({ meeting, date, dateToMeeting }) {
-    const { setAccseptScheduleMeetingCall, setYourSocketId, socket, setUpcomingMeetingToNow, scheduleMeetingPopUpCall, upcamingMeeting } = useContext(SocketContext);
+    const { setAccseptScheduleMeetingCall, setYourSocketId, setMySocketId, socket, setUpcomingMeetingToNow, scheduleMeetingPopUpCall, upcamingMeeting } = useContext(SocketContext);
     const navigate = useNavigate();
     const classes = useStyles();
     const btnClasses = buttonStyle();
@@ -87,6 +87,10 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
         if (upcamingMeeting) {
             console.log('cliclllllkkkk');
             //get your socket id
+            socket?.emit("getSocketId", upcamingMeeting.tariner._id, user => {
+                console.log('getSocketId', upcamingMeeting.tariner._id, user);
+                setMySocketId(user?.socketId)
+            });
             socket?.emit("getSocketId", upcamingMeeting.trainee._id, user => {
                 console.log('getSocketId', upcamingMeeting.trainee._id, user);
                 if (user !== null) {

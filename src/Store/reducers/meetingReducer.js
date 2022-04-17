@@ -72,6 +72,7 @@ export default function (state = initialState, action) {
                 meetings_complited: null
             };
         case GET_FUTURE_MEETINGS:
+            action.payload = action.payload?.filter(el => el.status !== true);
             return {
                 ...state,
                 meetings: !action.payload ? null : action.payload,
@@ -81,11 +82,13 @@ export default function (state = initialState, action) {
         case GET_ALL_MEETINGS:
             console.log('GET_ALL_MEETINGS.payload', action.payload);
             let meetingsComplited = action.payload ? action.payload.filter(el => !isEmpty(el.urlRoom)) : null;
+            let activeMeeting = action.payload ? action.payload.find(el => el.status) : null;
             console.log('meetings_complited', isEmpty(meetingsComplited), meetingsComplited.lenght);
             return {
                 ...state,
                 all_meetings: action.payload,
                 meetings_complited: !isEmpty(meetingsComplited) ? meetingsComplited : null,
+                active_meeting: activeMeeting,
                 loading: false,
             };
         case CREATE_MEETING:

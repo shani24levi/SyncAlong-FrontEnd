@@ -21,9 +21,13 @@ import FunQuestionPopUp from './funQuestionPopUp/FunQuestionPopUp';
 import ErrorAlert from '../../alrets/ErrorAlert';
 import LoadingModal from '../../modal/LoadingModal';
 import SeccsesAlert from '../../alrets/SeccsesAlert';
+import WorningAlert from '../../alrets/WorningAlert';
 
 import { createRecordingById } from '../../../Store/actions/recordingActions';
-import {useReactMediaRecorder} from 'react-media-recorder';
+import { setActiveMeeting } from '../../../Store/actions/meetingActions';
+
+import { useReactMediaRecorder } from 'react-media-recorder';
+import isEmpty from '../../../validation/isEmpty';
 const useStyles = makeStyles(componentStyles);
 
 function VideoContext({ meeting }) {
@@ -40,7 +44,11 @@ function VideoContext({ meeting }) {
         myRole, emoji, startMeeting, setStream, myName, yourName,
         callAccepted, myVideo, userVideo, callEnded, stream, call, myCanvasRef,
         userCanvasRef, me, posesArry, you, sendPoses, sendMyPoses, socket,
-        activity_now, setActivityNow } = useContext(SocketContext);
+        activity_now, setActivityNow,
+        sendPosesByPeers,
+        poseFarFrame,
+        accseptPeer2ScheduleMeetingCall, setAccseptPeer2ScheduleMeetingCall,
+    } = useContext(SocketContext);
     const classes = useStyles();
     const [start, setStartActivity] = useState(false);
     const [showDemo, setDemo] = useState(false);
@@ -63,14 +71,14 @@ function VideoContext({ meeting }) {
     const user = useSelector((state) => state.auth.user);
 
 
-    const {status, startRecording, stopRecording, mediaBlobUrl} = useReactMediaRecorder({screen: true});
-    const statusRecord = async(str) => {
-        if(str == "start"){
-            startRecording(); 
+    const { status, startRecording, stopRecording, mediaBlobUrl } = useReactMediaRecorder({ screen: true });
+    const statusRecord = async (str) => {
+        if (str == "start") {
+            startRecording();
             console.log(status);
             return null;
-        }else{
-            stopRecording(); 
+        } else {
+            stopRecording();
             console.log(status);
             return null;
         }
@@ -78,21 +86,26 @@ function VideoContext({ meeting }) {
 
 
     useEffect(() => {
-        navigator.mediaDevices.getUserMedia({ video: true })
+        navigator.mediaDevices.getUserMedia({ video: true, audio: true })
             .then((currentStream) => {
                 setStream(currentStream);
             })
-            .catch((error) => {console.log(`Error when open camera: ${error}`)});
+            .catch((error) => { console.log(`Error when open camera: ${error}`) });
     }, []);
 
     useEffect(async () => {
-        //Whoever it is in the Daily sends his points every second collected
-        if (currData && myDelayOnConection && !stop) {
-            // console.log('timeOfColectionPose', timeOfColectionPose);
-            //  console.log('posesArry', posesArry);
-            await sendMyPoses(timeOfColectionPose, posesArry, meeting.activities[currActivity])
+        if (currData && !stop) {
+            let data = {
+                poses: poseFarFrame,
+                time: timeOfColectionPose,
+                getMilliseconds: new Date(timeOfColectionPose).getMilliseconds()
+            }
+            await sendPosesByPeers(data, meeting.activities[currActivity])
         }
-    }, [posesArry, currData]);
+        // if (currData && myDelayOnConection && !stop) {
+        //     await sendMyPoses(timeOfColectionPose, posesArry, meeting.activities[currActivity])
+        // }
+    }, [posesArry, currData, poseFarFrame]);
 
     useEffect(async () => {
         setSync(true);
@@ -110,7 +123,7 @@ function VideoContext({ meeting }) {
 
     const activitiesSession = async () => {
         console.log("start Meeting and recorder");
-        if(user.role === 'trainer'){
+        if (user.role === 'trainer') {
             statusRecord("start");
         }
         for (let i = currActivity; i < meeting.activities.length; i++) {
@@ -164,11 +177,10 @@ function VideoContext({ meeting }) {
 
     useEffect(async () => {
         if (activitiesEnded == true) {
-            if(user.role === 'trainer'){
+            if (user.role === 'trainer') {
                 statusRecord("stop");
-                if(status === 'stopped'){
-                    if(mediaBlobUrl && status === 'stopped')
-                    {
+                if (status === 'stopped') {
+                    if (mediaBlobUrl && status === 'stopped') {
                         console.log("can save recording");
                         window.open(mediaBlobUrl, "_blank").focus();
                         const blob = await fetch(mediaBlobUrl).then(res => res.blob());
@@ -179,7 +191,7 @@ function VideoContext({ meeting }) {
                         console.log('formData', formData.getAll('file'));
                         dispatch(createRecordingById(formData, meeting._id));
                     }
-                    else{
+                    else {
                         console.log("cannot save recording because mediaBlobUrl is undefined");
                     }
                 } else console.log("cannot save recording because the status is not stopped");
@@ -245,12 +257,12 @@ function VideoContext({ meeting }) {
             console.log('starting,,,');
             swalAction('Start');
         }
-        if(recognition == 'restart'){
+        if (recognition == 'restart') {
             setCurrActivity(0);
             setStop(false);
             swalAction('Restart');
         }
-        if(recognition == 'repeat'){
+        if (recognition == 'repeat') {
 
         }
         if (recognition == 'continue') {
@@ -350,23 +362,46 @@ function VideoContext({ meeting }) {
         })
     }
 
+    //Handles the request for automatic connection of the chat after the two users connect with the library
     useEffect(() => {
         console.log('====================================');
-        console.log('accseptScheduleMeetingCall', accseptScheduleMeetingCall, 'yourSocketId', yourSocketId);
+        console.log('accseptScheduleMeetingCall', accseptScheduleMeetingCall, accseptPeer2ScheduleMeetingCall, 'yourSocketId', yourSocketId);
         console.log('====================================');
-        if (accseptScheduleMeetingCall && !yourSocketId) setIsPeerHere(false);
-        else if (accseptScheduleMeetingCall && yourSocketId) setIsPeerHere(true);
-    }, [accseptScheduleMeetingCall, yourSocketId]);
+        if (accseptScheduleMeetingCall && !accseptPeer2ScheduleMeetingCall && !isEmpty(yourSocketId)) setIsPeerHere(false);
+        else if (accseptScheduleMeetingCall && accseptPeer2ScheduleMeetingCall && !isEmpty(yourSocketId)) setIsPeerHere(true);
+    }, [accseptScheduleMeetingCall, accseptPeer2ScheduleMeetingCall, yourSocketId]);
+
+    // const is_call_accepted = () => {
+    //     setTimeout(function () {
+    //         let currentTime = new Date().getTime();
+    //         let currentTime2 = new Date();
+    //         const datePose3min = currentTime2.setMinutes(currentTime2.getMinutes() + 3)
+    //         let plas3minTime = datePose3min.getTime();
+
+    //         if (callAccepted) {
+    //             return true;
+    //         } else if (currentTime > plas3minTime && !callAccepted) {
+    //             is_call_accepted();
+    //         } else if (currentTime <= plas3minTime || !callAccepted) {
+    //             return false;
+    //         }
+    //     }, 5000);
+    // }
 
     useEffect(() => {
         console.log('spossss to do somting');
         console.log(accseptScheduleMeetingCall, myRole, mediaPipeInitilaize, isPeerHere, mediapipeOfTrainee, oneTime);
 
-        //teainer is calling to trainee......
+        //trainer is calling to trainee......
         if (accseptScheduleMeetingCall && user.role === 'trainer' && mediaPipeInitilaize === 'none' && isPeerHere && mediapipeOfTrainee && oneTime) {
             setOneTime(false);
             setConectReq(true)
             callUser();
+            // let is_accepted = is_call_accepted(); //lisghing to callAccepted for 3 min
+            // if (!is_accepted) { //false not concted after 3 min of waiting....
+            //     console.log('Try to re conect - send callUser agin');
+            //     setOneTime(true);
+            // }
         }
         //trainee answerrrs....
         if (accseptScheduleMeetingCall && user.role === 'trainee' && mediaPipeInitilaize === 'none' && call.isReceivingCall && !callAccepted) {
@@ -375,18 +410,29 @@ function VideoContext({ meeting }) {
         }
     }, [accseptScheduleMeetingCall, mediaPipeInitilaize, isPeerHere, call, callAccepted, mediapipeOfTrainee]);
 
+    useEffect(() => {
+        if (callAccepted) {
+            //when user answer the call the set this meeting as active
+            //set it in db to seport reconect 
+            !isEmpty(meeting) && dispatch(setActiveMeeting(meeting, true));
+        }
+    }, [callAccepted]);
+
+
     return (
         <>
             {
-                !isPeerHere && yourName && <>
-                    <ErrorAlert name={yourName} title=" is not online" />
-                    <ErrorAlert title="Sorry , cant conect... " />
+                !isPeerHere && yourName && mediaPipeInitilaize === 'none' && <>
+                    <ErrorAlert name={yourName} title=" is not in the room yet" />
+                    <WorningAlert title="Try to call from the room" />
                 </>
             }
-            {isPeerHere && <SeccsesAlert title="You will be conected after loading pose evaluation" />}
+            {isPeerHere && mediaPipeInitilaize !== 'none' && <SeccsesAlert title="You will be conected after loading pose evaluation" />}
+            {isPeerHere && mediaPipeInitilaize === 'none' && <SeccsesAlert title="will be conected in few sec..." />}
             {mediaPipeInitilaize !== 'none' && <LoadingModal title="Load Identification" />}
-            {mediaPipeInitilaize === 'none' && !mediapipeOfTrainee && myRole === 'trainer' && yourName && <LoadingModal title={`Waiting to ${yourName}..`} />}
+            {isPeerHere && mediaPipeInitilaize === 'none' && !mediapipeOfTrainee && myRole === 'trainer' && yourName && <LoadingModal title={`Waiting to ${yourName}..`} />}
             {conectReq && <LoadingModal title="Conecting..." />}
+
             {
                 callAccepted && !callEnded && question && session &&
                 <FunQuestionPopUp name={myName} />
@@ -465,18 +511,17 @@ function VideoContext({ meeting }) {
                 <Button onClick={() => {
                     setSyncScore(0.8)
                 }}>sync</Button>
-                <Button onClick={async() => {
-                    if(user.role === 'trainer'){
+                <Button onClick={async () => {
+                    if (user.role === 'trainer') {
                         statusRecord("start");
                     }
                 }}>Recorder</Button>
 
-                <Button onClick={async() => {
-                    if(user.role === 'trainer'){
+                <Button onClick={async () => {
+                    if (user.role === 'trainer') {
                         statusRecord("stop");
-                        if(status === 'stopped'){
-                            if(mediaBlobUrl && status === 'stopped')
-                            {
+                        if (status === 'stopped') {
+                            if (mediaBlobUrl && status === 'stopped') {
                                 console.log("can save recording");
                                 window.open(mediaBlobUrl, "_blank").focus();
                                 const blob = await fetch(mediaBlobUrl).then(res => res.blob());
@@ -487,8 +532,8 @@ function VideoContext({ meeting }) {
                                 console.log('formData', formData.getAll('file'));
                                 dispatch(createRecordingById(formData, meeting._id));
                             }
-                            else{
-                            console.log("cannot save recording because mediaBlobUrl is undefined");
+                            else {
+                                console.log("cannot save recording because mediaBlobUrl is undefined");
                             }
                         } else console.log("cannot save recording because the status is not stopped");
                     }

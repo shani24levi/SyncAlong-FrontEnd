@@ -24,7 +24,7 @@ const Transition = forwardRef(function Transition(props, ref) {
 });
 
 function PopUpCall(props) {
-    const { setCallTrainee, socket, setAccseptScheduleMeetingCall, scheduleMeetingPopUpCall, setScheduleMeetingPopUpCall, setIsModalVisible, isModalVisible, Audio, answerCall, call, callAccepted } = useContext(SocketContext);
+    const { setYourSocketId, setMySocketId, setCallTrainee, socket, setAccseptScheduleMeetingCall, scheduleMeetingPopUpCall, setScheduleMeetingPopUpCall, setIsModalVisible, isModalVisible, Audio, answerCall, call, callAccepted } = useContext(SocketContext);
     // const scheduleMeetingPopUpCall = { id: 'ddd', trainee: { user: 'nam2', avatar: '22' }, trainer: { user: 'name1', avatar: '233' } }
     const user = useSelector(state => state.auth.user);
     const meetings = useSelector(state => state.meetings);
@@ -43,12 +43,22 @@ function PopUpCall(props) {
         let from = user._id;
         let to = currMeeting.tariner._id !== user._id ? currMeeting.tariner._id : currMeeting.trainee._id;
 
+        socket?.emit("getSocketId", to, user => {
+            console.log('you-getSocketId', to, user);
+            setYourSocketId(user?.socketId)
+        })
+
+        socket?.emit("getSocketId", user._id, user => {
+            console.log('getSocketId', user._id, user);
+            setMySocketId(user?.socketId)
+        });
+
         socket?.emit("joinUser", from, to, roomId, users => {
             console.log('getUsers', users);
         });
         socket?.off("joinUser");
 
-        dispatch(setActiveMeeting(currMeeting, { status: true }));
+        // dispatch(setActiveMeeting(currMeeting, { status: true }));
         setScheduleMeetingPopUpCall({});
         setIsModalVisible(showVal);
         Audio.current.pause();
