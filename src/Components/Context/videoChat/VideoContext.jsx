@@ -414,6 +414,9 @@ function VideoContext({ meeting }) {
         if (callAccepted) {
             //when user answer the call the set this meeting as active
             //set it in db to seport reconect 
+            console.log('====================================');
+            console.log('meeting-callAccepted', meeting, callAccepted);
+            console.log('====================================');
             !isEmpty(meeting) && dispatch(setActiveMeeting(meeting, true));
         }
     }, [callAccepted]);

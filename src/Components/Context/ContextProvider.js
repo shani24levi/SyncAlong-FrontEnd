@@ -1,14 +1,14 @@
 import React, { createContext, useState, useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { closeActiveMeeting } from '../../Store/actions/meetingActions';
 import Peer from 'simple-peer/simplepeer.min.js';
 import { Holistic } from '@mediapipe/holistic';
 import * as holistic from '@mediapipe/holistic';
 import * as cam from '@mediapipe/camera_utils';
-import { useSelector } from 'react-redux';
 import isEmpty from '../../validation/isEmpty';
 import mediaPipeLandmarks from './mediaPipeLandmarks';
 import draw from './DrawAnimation/draw';
-import { setActiveMeeting } from '../../Store/actions/meetingActions';
 
 {
   /* 
@@ -23,6 +23,7 @@ const SocketContext = createContext();
 
 function ContextProvider({ children, socket, profile }) {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
   const [callAccepted, setCallAccepted] = useState(false);
   const [callEnded, setCallEnded] = useState(false);
@@ -57,8 +58,6 @@ function ContextProvider({ children, socket, profile }) {
   const [peer1inFrame, setSettingUserInFrame] = useState(false);
   const [peer2inFrame, setPeer2inFrame] = useState(false);
   const [firstTimeInFram, setfirstTimeInFram] = useState(true);
-
-
 
   //stats to handel conection from pop up coming meeting is now 
   const [userEnteredNow, setUserEnteredNow] = useState({});
@@ -407,6 +406,7 @@ function ContextProvider({ children, socket, profile }) {
     lisiningTraineeCall();
     lisiningAccseptScheduleMeetingCall();
     lisiningForDisconectPeerInRoom();
+    lisiningRoomClosed();
   }, [socket]);
 
   useEffect(() => {
@@ -492,6 +492,7 @@ function ContextProvider({ children, socket, profile }) {
       };
       if (recognition === 'leave') {
         console.log('leave clear', roomId);
+        leaveCall();
       }
       socket?.emit('sendNotification', data);
     }
@@ -704,18 +705,28 @@ function ContextProvider({ children, socket, profile }) {
     });
   };
 
+  const lisiningRoomClosed = () => {
+    socket?.on('closeRoom', (roomId) => {
+      console.log('closeRoom ', roomId);
+      //Clear the state of all and return to home page
+      dispatch(closeActiveMeeting()); //no need to update db becose peer2 alrady done that
+      leaveCall();
+      navigate('/home');
+    });
+  };
+
   //===================socket calls when user in room and whant to call============================//
   function answerCall() {
-    console.log('answerCall');
+    //console.log('answerCall');
     setCallAccepted(true);
     //set me as a peer and difiend my data
     const peer = new Peer({ initiator: false, trickle: false, stream });
     setMeAsPeer(peer);
-    peer._debug = console.log;
+    // peer._debug = console.log;
 
     peer.on('error', (err) => {
-      console.log('error with peer', err);
-      console.log('peer', peer);
+      // console.log('error with peer', err);
+      // console.log('peer', peer);
       answerCall();
     });
 
@@ -766,11 +777,11 @@ function ContextProvider({ children, socket, profile }) {
     // }
     const peer = new Peer({ initiator: true, trickle: false, stream });
     setMeAsPeer(peer);
-    peer._debug = console.log;
+    //peer._debug = console.log;
 
     peer.on('error', (err) => {
-      console.log('error with peer', err);
-      console.log('peer', peer);
+      //console.log('error with peer', err);
+      // console.log('peer', peer);
       callUser();
     });
 
@@ -806,8 +817,8 @@ function ContextProvider({ children, socket, profile }) {
     console.time('timer2-stream');
     let start = new Date();
     peer.on('stream', (currentStream) => {
-      console.timeEnd('timer2-stream');
-      console.log('Request took:', (new Date() - start) / 1000, 'sec');
+      //console.timeEnd('timer2-stream');
+      // console.log('Request took:', (new Date() - start) / 1000, 'sec');
       userVideo.current.srcObject = currentStream;
       // console.log(currentStream);
       // console.log('userVideo', userVideo);
@@ -819,32 +830,29 @@ function ContextProvider({ children, socket, profile }) {
       let start1 = start_delay;
       let end = new Date().toString();
       let delay = new Date(end).getSeconds() - new Date(start1).getSeconds();
-      console.log('my delay', delay, 'sec');
+      // console.log('my delay', delay, 'sec');
       let data = {
         to: yourSocketId,
         delay
       };
       setMyDelayOnConection(delay);
       setCallAccepted(true);
-      console.log('traineee coneccted with ok from prre2');
+      //console.log('traineee coneccted with ok from prre2');
       // setStartMeeting(true);
       peer.signal(signal);
     });
     connectionRef.current = peer;
   };
 
-  const sendPosesPeer2Peer = () => {
-    //Sends my data through webRTC
-    //An alternative solution for canvas transfer that the peer library does not support
-  };
-
   const leaveCall = () => {
+    console.log('leve func');
     setCallEnded(true);
     connectionRef.current.destroy();
     // stop both video and audio
     stream.getTracks().forEach(function (track) {
       track.stop();
     });
+    clearRoomStates();
     // window.location.reload();
   };
   //===================socket calls when meeting in now============================//
@@ -872,6 +880,41 @@ function ContextProvider({ children, socket, profile }) {
     let trainer = myRole === 'trainer' ? true : false;
     console.log('sendPosesByPeers im sending ..', data, new Date().toLocaleString('en-GB'), 'milisec : ', new Date().getMilliseconds());
     socket.emit('sendPosesByPeers', data, mySocketId, yourSocketId, trainer, activity, roomId);
+  }
+
+  const clearRoomStates = () => {
+    setSettingUserInFrame(false);
+    setPeer2inFrame(false);
+    setfirstTimeInFram(true);
+
+    setAccseptScheduleMeetingCall(false);
+    setAccseptPeer2ScheduleMeetingCall(false);
+    setConectReq(false);
+    setOneTime(true);
+    setMediapipeOfTrainee(false);
+    setUpcomingMeetingToNow(false);
+    setCallTrainee(false);
+
+    setCallAccepted(false);
+    setCallEnded(false);
+    setStream(null);
+    setMyName('');
+    setYourName('');
+    setCall({});
+    setMySocketId(null);
+    setYourSocketId(null);
+    setYourInfo({});
+    setRoomId(null);
+    setStartMeeting(false);
+    setPosesArry([]);
+    setMyRole(null);
+    setYourDataResived(null);
+    setSyncScore(null);
+    setActivityNow(null);
+    setIsModalVisible(true);
+    setMediaPipeInitilaize('');
+    setMeAsPeer(null);
+    setRecognition(null);
   }
 
   return (

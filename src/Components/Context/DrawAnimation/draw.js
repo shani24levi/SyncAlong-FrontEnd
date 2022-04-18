@@ -49,59 +49,59 @@ const drawLines = (ctx, canvas, results, array_for, flag) => {
     let dx = different(x1, x2);
     let dy = different(y1, y2);
     if (i == 15) {
-        array_for.right_hand.push({
-          startX: parseInt(x1),
-          startY: parseInt(y1),
-          endX: parseInt(dx > 0 && dy > 0 ? x1 + dx : x1 - dx),
-          endY: parseInt(dy > 0 ? y1 + dy : y1 - dy),
-          color: '#' + Math.floor(Math.random() * 16777215).toString(16)
-        });
-      }
-      if (i == 16) {
-        array_for.left_hand.push({
-          startX: parseInt(x1),
-          startY: parseInt(y1),
-          endX: parseInt(dx > 0 && dy > 0 ? x1 + dx : x1 - dx),
-          endY: parseInt(dy > 0 ? y1 + dy : y1 - dy),
-          color: '#' + Math.floor(Math.random() * 16777215).toString(16)
-        });
-      }
-      if (i == 28) {
-        array_for.right_leg.push({
-          startX: parseInt(x1),
-          startY: parseInt(y1),
-          endX: parseInt(dx > 0 && dy > 0 ? x1 + dx : x1 - dx),
-          endY: parseInt(dy > 0 ? y1 + dy : y1 - dy),
-          color: '#' + Math.floor(Math.random() * 16777215).toString(16)
-        });
-      }
-      if (i == 27) {
-        array_for.left_leg.push({
-          startX: parseInt(x1),
-          startY: parseInt(y1),
-          endX: parseInt(dx > 0 && dy > 0 ? x1 + dx : x1 - dx),
-          endY: parseInt(dy > 0 ? y1 + dy : y1 - dy),
-          color: '#' + Math.floor(Math.random() * 16777215).toString(16)
-        });
-      }
+      array_for.right_hand.push({
+        startX: parseInt(x1),
+        startY: parseInt(y1),
+        endX: parseInt(dx > 0 && dy > 0 ? x1 + dx : x1 - dx),
+        endY: parseInt(dy > 0 ? y1 + dy : y1 - dy),
+        color: '#' + Math.floor(Math.random() * 16777215).toString(16)
+      });
     }
+    if (i == 16) {
+      array_for.left_hand.push({
+        startX: parseInt(x1),
+        startY: parseInt(y1),
+        endX: parseInt(dx > 0 && dy > 0 ? x1 + dx : x1 - dx),
+        endY: parseInt(dy > 0 ? y1 + dy : y1 - dy),
+        color: '#' + Math.floor(Math.random() * 16777215).toString(16)
+      });
+    }
+    if (i == 28) {
+      array_for.right_leg.push({
+        startX: parseInt(x1),
+        startY: parseInt(y1),
+        endX: parseInt(dx > 0 && dy > 0 ? x1 + dx : x1 - dx),
+        endY: parseInt(dy > 0 ? y1 + dy : y1 - dy),
+        color: '#' + Math.floor(Math.random() * 16777215).toString(16)
+      });
+    }
+    if (i == 27) {
+      array_for.left_leg.push({
+        startX: parseInt(x1),
+        startY: parseInt(y1),
+        endX: parseInt(dx > 0 && dy > 0 ? x1 + dx : x1 - dx),
+        endY: parseInt(dy > 0 ? y1 + dy : y1 - dy),
+        color: '#' + Math.floor(Math.random() * 16777215).toString(16)
+      });
+    }
+  }
   ctx.lineWidth = 5;
-  for(const index in array_for){
-    console.log("index: ", index, array_for[index]);
+  for (const index in array_for) {
+    // console.log("index: ", index, array_for[index]);
     const part = array_for[index];
     let end = part.length;
     let start = 0;
-    if(end > 15) {
+    if (end > 15) {
       start = end - 15;
     }
-    part.splice(start,end).map((object => {
+    part.splice(start, end).map((object => {
       const line = object;
-        ctx.beginPath();
-        ctx.moveTo(line.startX, line.startY);
-        ctx.lineTo(line.endX, line.endY);
-        ctx.strokeStyle = line.color;
-        ctx.stroke();
-      }))
+      ctx.beginPath();
+      ctx.moveTo(line.startX, line.startY);
+      ctx.lineTo(line.endX, line.endY);
+      ctx.strokeStyle = line.color;
+      ctx.stroke();
+    }))
   }
 }
 
@@ -134,40 +134,40 @@ const draw = (ctx, canvas, results, activity_now = 'none', user = 'me') => {
   in_upper = upper_activities.find((activity) => activity === activity_now);
   in_bottom = bottom_activities.find((activity) => activity === activity_now);
 
-  console.log("in_upper", in_upper, in_bottom);
+  // console.log("in_upper", in_upper, in_bottom);
   if (in_upper && activity_now.includes('left')) {
     flag = [3];
-  } 
+  }
   else if (in_upper && activity_now.includes('right')) {
     flag = [4];
   }
   else if (in_bottom && activity_now.includes('left')) {
     flag = [5];
-  } 
+  }
   else if (in_bottom && activity_now.includes('right')) {
     flag = [6];
   }
   else if (in_upper && in_bottom) {
     flag = [3, 4, 5, 6];
   }
-  else if(in_upper){
+  else if (in_upper) {
     flag = [3, 4];
-  } 
-  else if(in_bottom){
-    flag = [5,6];
-  } 
+  }
+  else if (in_bottom) {
+    flag = [5, 6];
+  }
 
 
   if (flag.includes(0)) {
     img.src = card;
-  } 
+  }
   else if (flag.includes(1)) {
     img.src = monkey;
-  } 
+  }
   else if (flag.includes(2)) {
     img.src = cat;
-  } 
-  else if ( flag.includes(3) || flag.includes(4) || flag.includes(5) || flag.includes(6)) {
+  }
+  else if (flag.includes(3) || flag.includes(4) || flag.includes(5) || flag.includes(6)) {
     // if(!flag.includes(3)){
     //   my_array.right_hand = [];
     //   your_array.right_hand = [];
@@ -186,7 +186,7 @@ const draw = (ctx, canvas, results, activity_now = 'none', user = 'me') => {
     // }
     //[1,2,3,4,5]
     //
-    drawLines(ctx,canvas,results,user == "me"? my_array: your_array, flag);
+    drawLines(ctx, canvas, results, user == "me" ? my_array : your_array, flag);
   }
 };
 

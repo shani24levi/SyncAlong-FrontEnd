@@ -73,7 +73,7 @@ const getMeetingsById = (id) => {
 
 const setActiveMeeting = (id, status) => {
     return axios
-        .put(`${URL}/${MEETINGS}/${id}`, status)
+        .put(`${URL}/${MEETINGS}/${id}`, { status })
         .then(meetings => { return meetings })
         .catch(err => {
             return Promise.reject(err.response.data);

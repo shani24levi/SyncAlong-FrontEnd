@@ -2,7 +2,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { SocketContext } from '../Context/ContextProvider';
 import { useSelector, useDispatch } from 'react-redux';
-import { getAllMeetings } from '../../Store/actions/meetingActions';
+import { getAllMeetings, setActiveMeeting } from '../../Store/actions/meetingActions';
 import { setCurrentProfile, getTraineesProfiles, getAllTraineesProfiles } from '../../Store/actions/profileAction';
 import { futureMeetings } from '../../Store/actions/meetingActions';
 import PopUpCall from '../popupCall/PopUpCall';
@@ -14,9 +14,10 @@ import isEmpty from '../../validation/isEmpty';
 import SeccsesAlert from '../alrets/SeccsesAlert';
 import { delay } from '../../helpers';
 import ScrollTop from '../scrollToTop/ScrollTop';
+import ReConectCall from '../popupCall/ReConectCall';
 
 const Home = ({ socket }) => {
-    const { upcamingMeeting, traineeEntered, setMyTraineeEntered, scheduleMeetingPopUpCall } = useContext(SocketContext);
+    const { setYourSocketId, yourSocketId, upcamingMeeting, traineeEntered, setMyTraineeEntered, scheduleMeetingPopUpCall } = useContext(SocketContext);
     // const scheduleMeetingPopUpCall = { id: 'ddd', trainee: { user: 'nam2', avatar: '22' }, trainer: { user: 'name1', avatar: '233' } }
     const dispatch = useDispatch();
     const user = useSelector(state => state.auth.user);
@@ -47,7 +48,6 @@ const Home = ({ socket }) => {
             }
         }
     }, [profile.profile]);
-
 
     useEffect(async () => {
         if (traineeEntered) {
@@ -80,10 +80,38 @@ const Home = ({ socket }) => {
         else setMeeting(false)
     }, [meetings.upcoming_meeting])
 
+    useEffect(() => {
+        if (!isEmpty(meetings.active_meeting)) {
+            //chack the this meeting is valid - today only
+            let today = new Date();
+            console.log(today.getDate(), new Date(meetings.active_meeting.date).getDate());
+            // if (today.getDate() !== new Date(meetings.active_meeting.date).getDate()) {
+            //     //NOT TODAY and Not closed meeting - then close this meeting,,,,
+            //     dispatch(setActiveMeeting(meetings.active_meeting, false));
+            //     return;
+            // }
+            // else {
+            let you = user?._id === meetings.active_meeting.trainee._id ? meetings.active_meeting.tariner._id : meetings.active_meeting.trainee._id
+            console.log('you', you);
+            you && socket?.emit("getSocketId", you, user => {
+                console.log('getSocketId', you, user);
+                if (user?.socketId)
+                    setYourSocketId(user?.socketId)
+                else {
+                    //or lising for yoursocket id and when its updates then pop up 
+                    //or close the meeting...
+                    //dispach(setActiveMeeting(meeing, fals)) //close meeting
+                }
+            });
+            //  }
+        }
+    }, [meetings.active_meeting])
+
     return (
         <>
             <div id="back-to-top-anchor" />
             {!isEmpty(scheduleMeetingPopUpCall) && <PopUpCall />}
+            {!isEmpty(meetings.active_meeting) && !isEmpty(yourSocketId) && <ReConectCall />}
             {user?._id && !user?.profile_id && <ErrorAlert title="Please set up profile details" />}
             {!meetings.meetings && (isEmpty(upcamingMeeting) || !upcamingMeeting) && <WorningAlert title="No futuer meetings found" />}
             {!isEmpty(trineeOnline.user) && <SeccsesAlert name={trineeOnline.user.user} title=' is online' />}

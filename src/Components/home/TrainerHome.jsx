@@ -146,6 +146,7 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
                         <Search />
                     </Grid>
                 </Grid>
+
                 {
                     profile && !trainee_profile_called ?
                         <Loader /> :

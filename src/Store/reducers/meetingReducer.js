@@ -9,6 +9,7 @@ import {
     GET_ACTIVE_MEETING,
     DELETE_MEETING,
     CLEAR_MEETINGS,
+    CLOSE_ACTIVE_MEETING
 } from '../actions/types';
 
 const initialState = {
@@ -82,8 +83,10 @@ export default function (state = initialState, action) {
         case GET_ALL_MEETINGS:
             console.log('GET_ALL_MEETINGS.payload', action.payload);
             let meetingsComplited = action.payload ? action.payload.filter(el => !isEmpty(el.urlRoom)) : null;
-            let activeMeeting = action.payload ? action.payload.find(el => el.status) : null;
+            let activeMeeting = action.payload ? action.payload.find(el => el.status === true) : null;
             console.log('meetings_complited', isEmpty(meetingsComplited), meetingsComplited.lenght);
+            console.log('activeMeeting', activeMeeting);
+
             return {
                 ...state,
                 all_meetings: action.payload,
@@ -107,7 +110,7 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 loading: false,
-                active_meeting: (!action.payload && action.payload?.status) ? action.payload : null
+                active_meeting: (action.payload && action.payload?.status) ? action.payload : null
             };
         case GET_ACTIVE_MEETING:
             console.log("GET_ACTIVE_MEETING", action.payload);
@@ -116,6 +119,15 @@ export default function (state = initialState, action) {
                 loading: false,
                 active_meeting: action.payload
             };
+        case CLOSE_ACTIVE_MEETING:
+            console.log("CLOSE_ACTIVE_MEETING")
+            return {
+                ...state,
+                loading: false,
+                active_meeting: null
+            };
+
+
         case DELETE_MEETING:
             console.log("DELETE_MEETING", action.payload);
             return {

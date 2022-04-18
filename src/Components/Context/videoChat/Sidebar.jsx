@@ -55,8 +55,8 @@ const Sidebar = (props) => {
                 <Button variant="contained" color="secondary" startIcon={<PhoneDisabled fontSize="large" />} fullWidth
                   onClick={() => {
                     console.log('leave');
-                    leaveCall();
-                    setRecognition('leave')
+                    setRecognition('leave');
+                    //leaveCall();
                   }}
                   className={classes.margin}>
                   Hang Up

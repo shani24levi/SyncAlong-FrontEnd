@@ -16,6 +16,7 @@ import { capitalize } from '../../helpers';
 import isEmpty from '../../validation/isEmpty';
 import activitiesFilter from '../../Utils/activitiesFilter';
 import Activities from './Activities';
+import { activities } from '../../Utils/activities'
 import { CircularProgress } from "@material-ui/core";
 
 
@@ -50,6 +51,9 @@ function CheckboxActivities({ activities, setActivities, traineeId }) {
             let limits = trainee.profile.limitations.concat(trainee.profile.limitations);
             unique = [...new Set(limits)];
         }
+        console.log('====================================');
+        console.log('unique', unique);
+        console.log('====================================');
         setOutLimitations(unique);
     }, [trainee])
 
@@ -57,6 +61,10 @@ function CheckboxActivities({ activities, setActivities, traineeId }) {
     useEffect(() => {
         if (limitations.length !== 0) {
             let activities_obj = activitiesFilter(limitations);
+            setOurActivities(activities_obj);
+        }
+        else {
+            let activities_obj = activitiesFilter(null);
             setOurActivities(activities_obj);
         }
     }, [limitations])
