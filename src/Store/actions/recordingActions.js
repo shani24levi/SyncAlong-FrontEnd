@@ -3,6 +3,7 @@ import {
     REC_LOADING,
     GET_CURR_REC,
     CLEAR_REC,
+    SET_RECORDING,
 } from './types';
 import { recording } from '../../servises';
 
@@ -17,7 +18,7 @@ export const setLoading = (val) => {
 
 export const createRecordingById = (formData, id) => dispatch => {
     dispatch(setLoading(true));
-    recording.createRecordingById(formData,id)
+    recording.createRecordingById(formData, id)
         .then(
             rec => {
                 console.log("rec", rec.data.data);
@@ -29,7 +30,7 @@ export const createRecordingById = (formData, id) => dispatch => {
             }
         );
     function success(rec) {
-        return { type: GET_CURR_REC, payload: rec.data.data }
+        return { type: SET_RECORDING, payload: rec.data.data }
     }
 };
 

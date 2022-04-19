@@ -23,8 +23,8 @@ import LoadingModal from '../../modal/LoadingModal';
 import SeccsesAlert from '../../alrets/SeccsesAlert';
 import WorningAlert from '../../alrets/WorningAlert';
 
-import { createRecordingById } from '../../../Store/actions/recordingActions';
-import { setActiveMeeting } from '../../../Store/actions/meetingActions';
+import { createRecordingById, clearLogoutREC } from '../../../Store/actions/recordingActions';
+import { setActiveMeeting, setMeetingComplited } from '../../../Store/actions/meetingActions';
 
 import { useReactMediaRecorder } from 'react-media-recorder';
 import isEmpty from '../../../validation/isEmpty';
@@ -37,7 +37,7 @@ function VideoContext({ meeting }) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const { mediapipeOfTrainee, conectReq, setConectReq, callUser, answerCall,
+    const { roomId, mediapipeOfTrainee, conectReq, setConectReq, callUser, answerCall,
         accseptScheduleMeetingCall, yourSocketId, setSyncScore,
         setRecognition, setSettingUserInFrame, setPeer1inFrame, setPeer2inFrame,
         peer2inFrame, peer1inFrame, recognition, mediaPipeInitilaize,
@@ -66,14 +66,13 @@ function VideoContext({ meeting }) {
     const [oneTime, setOneTime] = useState(true);
     const [prossingEndMeeting, setProssingEndMeeting] = useState(false);
 
-
     const [stop, setStop] = useState(false);
     const stopRef = useRef(stop);
     stopRef.current = stop;
     const Audio = useRef();
-
     const user = useSelector((state) => state.auth.user);
-
+    const recording = useSelector((state) => state.recording);
+    const meetings = useSelector((state) => state.meetings);
 
     const { status, startRecording, stopRecording, mediaBlobUrl } = useReactMediaRecorder({ screen: true });
     const statusRecord = async (str) => {
@@ -188,38 +187,33 @@ function VideoContext({ meeting }) {
         return true //end of all session
     }
 
-    useEffect(async () => {
-        if (activitiesEnded == true) {
-            Audio?.current?.play();
-            user.role === 'trainer' && statusRecord("stop");
-            await delay(15000);
-            if (recognition !== 'restart') {
-                setProssingEndMeeting(true);
-                //save meeting..... notify...
-                // if (user.role === 'trainer' && status === 'stopped' && mediaBlobUrl) {
-                //         console.log("can save recording");
-                //         window.open(mediaBlobUrl, "_blank").focus();
-                //         const blob = await fetch(mediaBlobUrl).then(res => res.blob());
-                //         const myFile = new File([blob], "demo.mp4", { type: 'video/mp4' });
-                //         console.log(blob);
-                //         let formData = new FormData();
-                //         formData.append('file', myFile);
-                //         console.log('formData', formData.getAll('file'));
-                //         dispatch(createRecordingById(formData, meeting._id));
-                //     }
-                //     else {
-                //         console.log("cannot save recording because mediaBlobUrl is undefined");
-                //     }
-                //get meeting by this room id and naviget to that page
+    const saveMeetingRecording = async () => {
+        user.role === 'trainer' && statusRecord("stop");
+        if (recognition === 'leave') {
+            //save meeting..... notify...
+            if (user.role === 'trainer' && status === 'stopped' && mediaBlobUrl) {
+                console.log("can save recording");
+                window.open(mediaBlobUrl, "_blank").focus();
+                const blob = await fetch(mediaBlobUrl).then(res => res.blob());
+                const myFile = new File([blob], "demo.mp4", { type: 'video/mp4' });
+                console.log(blob);
+                let formData = new FormData();
+                formData.append('file', myFile);
+                console.log('formData', formData.getAll('file'));
+                dispatch(createRecordingById(formData, meeting._id));
+                //this call updates the server as a meeting complited....
             }
             else {
-                Audio?.current?.pause();
-                setActivitiesEnded(false);
-                setCurrActivity(0);
-                setStop(false);
-                user.role === 'trainer' && setRecognition('start')
+                console.log("cannot save recording because mediaBlobUrl is undefined");
             }
+        }
+    }
 
+    useEffect(async () => {
+        if (activitiesEnded == true) {
+            console.log('activitiesEnded', activitiesEnded);
+            Audio?.current?.play();
+            user.role === 'trainer' && statusRecord("stop");
             // if (user.role === 'trainer') {
             //     statusRecord("stop");
             //     if (status === 'stopped') {
@@ -244,13 +238,33 @@ function VideoContext({ meeting }) {
             // console.log("go to repoet for meeting with id: ", meeting._id);
             //navigate('/meeting/report', { state: { meeting_id: meeting._id, me: myName, you: yourName } })
         }
-        else Audio?.current?.pause();
+        else {
+            Audio?.current?.pause();
+            user.role === 'trainer' && statusRecord('start')
+        }
     }, [activitiesEnded])
+
+    useEffect(async () => {
+        if (meetings?.meetings_complited.find(el => el._id === meeting._id) && user.role === 'trainer') {
+            //after its done notify the trainee
+            console.log('socket?.on("prossesDone", roomId);');
+            socket?.on("closeRoom", roomId);
+        }
+    }, [meetings.meetings_complited])
+
+    useEffect(async () => {
+        if (recording?.meeting === meeting._id && recording?.recording) {
+            //update the start of meetings 
+            dispatch(setMeetingComplited(meeting, { status: false, urlRoom: recording.recording }));
+            dispatch(clearLogoutREC());
+            //after its done notify the trainee
+        }
+    }, [recording])
 
     const prevActivitySession = () => {
         if (currActivity === 0) {
             setDisplayErrorMessage('No prev activity to go back to.... whold you like to contine?');
-            swalAlret();
+            //swalAlret();
             return;
         }
         else {
@@ -264,7 +278,7 @@ function VideoContext({ meeting }) {
     const nextActivitySession = () => {
         if (currActivity === meeting.activities.length - 1) { //the last activiry in the list . ther is no next ....
             setDisplayErrorMessage('No next activity to go to.... whold you like to contine this activity?');
-            swalAlret();
+            //swalAlret();
             return;
         }
         else {
@@ -294,31 +308,29 @@ function VideoContext({ meeting }) {
         }
     }, [peer2inFrame, peer1inFrame]);
 
-    useEffect(() => {
+    useEffect(async () => {
         //when me or you said someting 
         if (recognition == 'start') {
-            //setQuestion(false);
             console.log('starting,,,');
             swalAction('Start');
         }
         if (recognition == 'restart') {
+            setActivitiesEnded(false);
             setCurrActivity(0);
             setStop(false);
-            swalAction('Restart');
-        }
-        if (recognition == 'repeat') {
-
+            swalAction('ReStartung Now...');
+            user.role === 'trainer' && statusRecord('start');
+            activitiesSession();
         }
         if (recognition == 'continue') {
-            //setQuestion(false);
             setStop(false);
             console.log('continue,,,,');
-            if (activitiesEnded) {
-                console.log('Activity ENDED yoo can go back or restart');
-                setDisplayErrorMessage('Session Ended , would you like to start over?');
-                swalAlret();
-            }
-            else swalAction('Continue');
+            // if (activitiesEnded) {
+            //     console.log('Activity ENDED yoo can go back or restart');
+            //     setDisplayErrorMessage('Session Ended , would you like to start over?');
+            //     // swalAlret();
+            // }
+            // else swalAction('Continue');
         }
         else if (recognition == 'stop') {
             setStop(true);
@@ -341,6 +353,9 @@ function VideoContext({ meeting }) {
             setActivitiesEnded(true);
             setStop(true);
             console.log('leave....');
+            //save data
+            await saveMeetingRecording();
+            //clear starts
         }
     }, [recognition]);
 
@@ -433,7 +448,7 @@ function VideoContext({ meeting }) {
     }, [accseptScheduleMeetingCall, mediaPipeInitilaize, isPeerHere, call, callAccepted, mediapipeOfTrainee]);
 
     useEffect(async () => {
-        if (callAccepted) {
+        if (callAccepted && mediapipeOfTrainee) {
             //when user answer the call the set this meeting as active
             //set it in db to seport reconect 
             !isEmpty(meeting) && !meeting.status && dispatch(setActiveMeeting(meeting, true));
@@ -460,7 +475,7 @@ function VideoContext({ meeting }) {
             {mediaPipeInitilaize !== 'none' && <LoadingModal title="Load Identification" />}
             {isPeerHere && mediaPipeInitilaize === 'none' && !mediapipeOfTrainee && myRole === 'trainer' && yourName && <LoadingModal title={`Waiting to ${yourName}..`} />}
             {conectReq && <LoadingModal title="Conecting..." />}
-            {activitiesEnded && <EndMeeting />}
+            {activitiesEnded && <EndMeeting setProssingEndMeeting={setProssingEndMeeting} setRecognition={setRecognition} />}
             {prossingEndMeeting && <LoadingModal title="Proccing Data" />}
             {
                 callAccepted && !callEnded && question && session &&

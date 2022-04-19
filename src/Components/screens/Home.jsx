@@ -27,7 +27,6 @@ const Home = ({ socket }) => {
     const [meeting, setMeeting] = useState(false);
     const [date, setDate] = useState(0);
     const [dateToMeeting, setDateToMeeting] = useState(0);
-
     const [trineeOnline, setTrineeOnline] = useState({});
 
     ///call to set state of user and profile 

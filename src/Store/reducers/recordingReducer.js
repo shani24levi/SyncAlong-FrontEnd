@@ -5,6 +5,7 @@ import {
     REC_LOADING,
     GET_CURR_REC,
     CLEAR_REC,
+    SET_RECORDING
 } from '../actions/types';
 
 const initialState = {
@@ -27,8 +28,8 @@ export default function (state = initialState, action) {
                 recording: null,
                 meeting: null,
             };
-        case GET_CURR_REC:
-            console.log('GET_CURR_REC', action.payload);
+        case SET_RECORDING:
+            console.log('SET_RECORDING', action.payload);
             return {
                 ...state,
                 loading: false,

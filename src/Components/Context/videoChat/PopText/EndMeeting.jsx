@@ -17,10 +17,14 @@ const style = {
     p: 4,
 };
 
-function EndMeeting(props) {
+function EndMeeting({ setProssingEndMeeting, setRecognition }) {
     const [open, setOpen] = React.useState(true);
     const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+    const handleClose = () => {
+        setOpen(false);
+        setProssingEndMeeting(true); //not voice reconution- leave
+        setRecognition('leave');
+    }
     const [time, setTime] = useState(10);
 
     useEffect(() => {

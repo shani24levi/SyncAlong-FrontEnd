@@ -690,8 +690,27 @@ function ContextProvider({ children, socket, profile }) {
   };
 
   const lisiningForDisconectPeerInRoom = () => {
+    //whan im left the socket and im in a sstion then reconect me and continue
+    socket?.on("disconnected", (reason) => {
+      console.log("disconnect", reason);
+      if (reason === "ping timeout" || reason === "transport error") {
+        if (callAccepted) {
+          socket?.connect();
+          let userId = user._id
+          let roomId = meetings.active_meeting._id
+          socket?.emit('reconect', (userId, roomId));
+        }
+      }
+    });
+
     socket?.on('userLeft', (userId) => {
-      console.log('------------------userLeft ', userId);
+      if (callAccepted) {
+        console.log('userLeft ,im in active meeting,i need to waite for his reConect ', userId);
+        //setPeerDisConected(true);
+      }
+      else {
+        console.log('userLeft ', userId);
+      }
       //Clear the state of yourSocketId
       //im waiting in the room... 
       //waiting for notify that you are back!
@@ -701,6 +720,13 @@ function ContextProvider({ children, socket, profile }) {
       //reconect when your midiapipe is up 
       //userLeft(userId);
     });
+
+    socket?.on("reconect", (user) => {
+      if (user.userId === user._id)
+        setMySocketId(user.socketId);
+      else setYourSocketId(user.socketId);
+    });
+
   };
 
   const lisiningRoomClosed = () => {
@@ -708,10 +734,17 @@ function ContextProvider({ children, socket, profile }) {
     // and i can be on my way to the room .... and not be notifyied by this .
     socket?.on('closeRoom', (roomId) => {
       console.log('closeRoom ', roomId);
-      //Clear the state of all and return to home page
-      dispatch(closeActiveMeeting()); //no need to update db becose peer2 alrady done that
-      leaveCall();
-      navigate('/home');
+      if (location.pathname !== '/video-room') {
+        //Clear the state of all and return to home page
+        dispatch(closeActiveMeeting()); //no need to update db becose peer2 alrady done that
+        leaveCall();
+        navigate('/home');
+        return;
+      }
+      else {
+        leaveCall();
+        navigate('/home', { state: { meeting_id: roomId, me: myName, you: yourName } });
+      }
     });
   };
 

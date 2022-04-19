@@ -9,7 +9,8 @@ import {
     GET_ACTIVE_MEETING,
     DELETE_MEETING,
     CLEAR_MEETINGS,
-    CLOSE_ACTIVE_MEETING
+    CLOSE_ACTIVE_MEETING,
+    SET_MEETING_COMPKITED
 } from '../actions/types';
 
 const initialState = {
@@ -115,6 +116,16 @@ export default function (state = initialState, action) {
                 ...state,
                 loading: false,
                 active_meeting: (action.payload && action.payload?.status) ? action.payload : null
+            };
+        case SET_MEETING_COMPKITED:
+            console.log("SET_MEETING_COMPKITED", action.payload);
+            return {
+                ...state,
+                loading: false,
+                active_meeting: !action.payload?.status && null,
+                meetings: !state.meetings ? null : state.meetings.filter(m => m._id !== action.payload._id),
+                all_meetings: state.all_meetings.map(m => { if (m._id !== action.payload._id) m = action.payload }),
+                meetings_complited: !state.meetings_complited ? null : state.meetings_complited.push(action.payload),
             };
         case GET_ACTIVE_MEETING:
             console.log("GET_ACTIVE_MEETING", action.payload);
