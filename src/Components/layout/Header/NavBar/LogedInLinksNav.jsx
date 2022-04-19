@@ -20,6 +20,7 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 // core components styling
 import { makeStyles } from "@material-ui/core/styles";
 import componentStyles from "../../../../assets/material-ui-style/componenets/auth-navbar";
+import { capitalize } from '../../../../helpers';
 const useStyles = makeStyles(componentStyles);
 
 const LogedInLinksNav = (props) => {
@@ -136,21 +137,7 @@ const LogedInLinksNav = (props) => {
                     sx={{ width: 56, height: 56 }}
                     className={classes.spacing}
                 />
-                {user.name}
-            </ListItem>
-            <ListItem
-                onClick={() => navigate('meeting/report', { state: { meeting_id: '623c91b9ebfc668d5b26c226' } })}
-                classes={{
-                    root: classes.listItemRoot,
-                }}
-            >
-                <Box
-                    component={InfoOutlinedIcon}
-                    width="1.25rem!important"
-                    height="1.25rem!important"
-                    marginRight=".5rem!important"
-                />
-                SyncReports
+                {capitalize(user.name)}
             </ListItem>
             <ListItem
                 component={Link}

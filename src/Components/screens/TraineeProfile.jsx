@@ -230,7 +230,7 @@ function TraineeProfile(props) {
                                         {capitalize(trainee.user.user)}
                                     </Typography>
                                     <Typography fontWeight={600} sx={{ py: 1 }}>
-                                        Role: {capitalize(trainee.user.user)}
+                                        Role: {capitalize(trainee.user.role)}
                                     </Typography>
                                 </TextWrapper>
 

@@ -17,7 +17,7 @@ import ScrollTop from '../scrollToTop/ScrollTop';
 import ReConectCall from '../popupCall/ReConectCall';
 
 const Home = ({ socket }) => {
-    const { setYourSocketId, yourSocketId, upcamingMeeting, traineeEntered, setMyTraineeEntered, scheduleMeetingPopUpCall } = useContext(SocketContext);
+    const { activeMeetingPopUp, setYourSocketId, yourSocketId, upcamingMeeting, traineeEntered, setMyTraineeEntered, scheduleMeetingPopUpCall } = useContext(SocketContext);
     // const scheduleMeetingPopUpCall = { id: 'ddd', trainee: { user: 'nam2', avatar: '22' }, trainer: { user: 'name1', avatar: '233' } }
     const dispatch = useDispatch();
     const user = useSelector(state => state.auth.user);
@@ -81,7 +81,7 @@ const Home = ({ socket }) => {
     }, [meetings.upcoming_meeting])
 
     useEffect(() => {
-        if (!isEmpty(meetings.active_meeting)) {
+        if (!isEmpty(meetings.active_meeting) || activeMeetingPopUp) {
             //chack the this meeting is valid - today only
             let today = new Date();
             console.log(today.getDate(), new Date(meetings.active_meeting.date).getDate());
@@ -105,13 +105,15 @@ const Home = ({ socket }) => {
             });
             //  }
         }
-    }, [meetings.active_meeting])
+    }, [meetings.active_meeting, activeMeetingPopUp])
+
 
     return (
         <>
             <div id="back-to-top-anchor" />
             {!isEmpty(scheduleMeetingPopUpCall) && <PopUpCall />}
             {!isEmpty(meetings.active_meeting) && !isEmpty(yourSocketId) && <ReConectCall />}
+            {!isEmpty(meetings.active_meeting) && !isEmpty(yourSocketId) && activeMeetingPopUp && <ReConectCall />}
             {user?._id && !user?.profile_id && <ErrorAlert title="Please set up profile details" />}
             {!meetings.meetings && (isEmpty(upcamingMeeting) || !upcamingMeeting) && <WorningAlert title="No futuer meetings found" />}
             {!isEmpty(trineeOnline.user) && <SeccsesAlert name={trineeOnline.user.user} title=' is online' />}

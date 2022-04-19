@@ -9,6 +9,7 @@ import { set } from 'date-fns';
 import { dateFormat } from '../../Utils/dateFormat';
 import { Button, IconButton } from '@material-ui/core';
 import buttonsStyles from "../../assets/theme/buttons";
+import isEmpty from '../../validation/isEmpty';
 const buttonStyle = makeStyles(buttonsStyles);
 
 const RootStyle = styled(Card)(({ theme }) => ({
@@ -37,6 +38,7 @@ const IconWrapperStyle = styled('div')(({ theme }) => ({
 }));
 
 function MeetingCard({ setlastMeeting, traineeId, filterBy }) {
+    console.log(setlastMeeting, traineeId, filterBy);
     const navigate = useNavigate();
     const btnClasses = buttonStyle();
     const meetings = useSelector(state => state.meetings);
@@ -44,27 +46,26 @@ function MeetingCard({ setlastMeeting, traineeId, filterBy }) {
 
     useEffect(() => {
         let meeting;
-        if (filterBy === 'future' && traineeId) {
+        if (filterBy === 'future' && traineeId && meetings?.upcoming_meeting) {
             if (meetings.upcoming_meeting.trainee._id === traineeId)
                 meeting = meetings.upcoming_meeting;
             else
                 meeting = meetings.all_meetings.find(i => i.trainee._id === traineeId);
         }
-        else if ((filterBy === 'last') && traineeId) {
-            meeting = meetings.meetings_complited.find(i => i.trainee._id === traineeId && !meeting?.urlRoom);
+        else if ((filterBy === 'last') && traineeId && meetings?.meetings_complited) {
+            meeting = meetings?.meetings_complited.find(i => i.trainee._id === traineeId && !meeting?.urlRoom);
             setlastMeeting(meeting)
         }
         setMeeting(meeting);
     }, [meetings])
 
-    console.log(filterBy, meetingcard, traineeId);
     return (
         <RootStyle>
             <IconWrapperStyle>
                 <EventAvailableIcon icon="ant-design:android-filled" width={24} height={24} />
             </IconWrapperStyle>
             {
-                meetingcard ?
+                !isEmpty(meetingcard) ?
                     <>
                         <Typography variant="h6">{`${dateFormat(meetingcard.date)}`}</Typography>
                         {

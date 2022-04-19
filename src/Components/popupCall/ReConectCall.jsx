@@ -30,7 +30,7 @@ const Transition = forwardRef(function Transition(props, ref) {
 });
 
 function ReConectCall(props) {
-    const { setYourSocketId, yourSocketId, setMySocketId, setCallTrainee, socket, setAccseptScheduleMeetingCall, scheduleMeetingPopUpCall, setScheduleMeetingPopUpCall, setIsModalVisible, isModalVisible, Audio, answerCall, call, callAccepted } = useContext(SocketContext);
+    const { setActiveMeetingPopUp, setYourSocketId, yourSocketId, setMySocketId, setCallTrainee, socket, setAccseptScheduleMeetingCall, scheduleMeetingPopUpCall, setScheduleMeetingPopUpCall, setIsModalVisible, isModalVisible, Audio, answerCall, call, callAccepted } = useContext(SocketContext);
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const classes = useStyles();
@@ -44,6 +44,7 @@ function ReConectCall(props) {
     }, [isModalVisible])
 
     const showModal = (showVal) => {
+        setActiveMeetingPopUp(false);
         let roomId = currMeeting._id;
         let from = user._id;
         let to = currMeeting.tariner._id !== user._id ? currMeeting.tariner._id : currMeeting.trainee._id;
@@ -71,6 +72,7 @@ function ReConectCall(props) {
     };
 
     const handleClose = (showVal) => {
+        setActiveMeetingPopUp(false);
         setIsModalVisible(showVal);
         Audio.current.pause();
         //remove from state the active meeting
@@ -81,7 +83,6 @@ function ReConectCall(props) {
         socket?.emit('closeRoom', roomId);
     };
 
-    console.log(!isEmpty(currMeeting), !isEmpty(yourSocketId))
     return (
         <>
             {/* {(!isEmpty(currMeeting)) && !isEmpty(yourSocketId)( */}

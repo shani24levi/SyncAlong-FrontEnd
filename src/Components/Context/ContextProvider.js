@@ -33,7 +33,7 @@ function ContextProvider({ children, socket, profile }) {
   const [call, setCall] = useState({});
   const [mySocketId, setMySocketId] = useState(null);
   const [yourSocketId, setYourSocketId] = useState(null);
-  const [isConnectedFriend, setIsConnectedFriend] = useState(true);
+  // const [isConnectedFriend, setIsConnectedFriend] = useState(true);
   const [yourInfo, setYourInfo] = useState({});
   const [traineeEntered, setMyTraineeEntered] = useState(null);
   const [roomId, setRoomId] = useState(null);
@@ -68,7 +68,7 @@ function ContextProvider({ children, socket, profile }) {
   const [mediapipeOfTrainee, setMediapipeOfTrainee] = useState(false);
   const [upcomingMeetingToNow, setUpcomingMeetingToNow] = useState(false);
   const [callTrainee, setCallTrainee] = useState(false);
-
+  const [activeMeetingPopUp, setActiveMeetingPopUp] = useState(false);
 
   const [emoji, setEmoji] = useState(null);
   const myVideo = useRef();
@@ -419,10 +419,10 @@ function ContextProvider({ children, socket, profile }) {
     myVideo.current?.srcObject && setHolistic(myVideo);
   }, [stream]);
 
-  useEffect(() => {
-    if (!yourSocketId) setIsConnectedFriend(false);
-    else setIsConnectedFriend(true);
-  }, [yourSocketId]);
+  // useEffect(() => {
+  //   if (!yourSocketId) setIsConnectedFriend(false);
+  //   else setIsConnectedFriend(true);
+  // }, [yourSocketId]);
 
   useEffect(() => {
     //The one who receives the points of the other and is responsible for sending to the server the request for synchronization
@@ -515,16 +515,14 @@ function ContextProvider({ children, socket, profile }) {
   }, [mediaPipeInitilaize]);
 
 
-  //for lisiner of user entered now
   useEffect(() => {
-    // console.log('userEnteredNow', profile.profile, user);
     if (!isEmpty(userEnteredNow)) {
+      //for notify trainer when his trainee entered
       if (
         !isEmpty(profile.profile) &&
         user.role === 'trainer' &&
         profile.profile?.trainerOf
       ) {
-        // console.log('lisinig whos is enterd ....');
         profile.profile?.trainerOf.map((trainee) => {
           if (trainee === userEnteredNow.userId) {
             console.log(trainee, userEnteredNow.userId);
@@ -533,12 +531,18 @@ function ContextProvider({ children, socket, profile }) {
           }
         });
       }
+      // for pop up when you have an active meeting
+      if (!isEmpty(meetings?.active_meeting)) {
+        if ((user.role === 'trainer' && userEnteredNow.userId === meetings.active_meeting.trainee._id) ||
+          (user.role === 'trainee' && userEnteredNow.userId === meetings.active_meeting.tariner._id)) {
+          setActiveMeetingPopUp(true);
+        }
+      }
     }
   }, [userEnteredNow]);
 
   useEffect(() => {
     if (upcomingMeetingToNow && !isEmpty(upcamingMeeting) && yourSocketId) {
-      //console.log('hererererrere');
       socket?.emit('calltoTrainee', yourSocketId);
       setUpcomingMeetingToNow(false);
     }
@@ -566,13 +570,9 @@ function ContextProvider({ children, socket, profile }) {
   const [MeetingIsNOW, setMeetingIsNOW] = useState(false);
 
   useEffect(() => {
-    console.log('meetings', meetings?.meetings);
-    if (!meetings?.meetings || meetings?.meetings?.length === 0) {
-      return;
-    }
     setUpcamingMeeting(meetings.upcoming_meeting);
     meetingsListener();
-  }, [meetings?.meetings]);
+  }, [meetings?.meetings, meetings?.upcoming_meeting]);
 
   function meetingsListener() {
     // loop function
@@ -586,8 +586,6 @@ function ContextProvider({ children, socket, profile }) {
       //console.log('aj', new Date(), 'date+3', date);
       //console.log('a', currentTime, upcomingMeeting, currentTime < upcomingMeeting);
       if (!upcomingMeeting) {
-        //set new upcamong meeting or brack from loop
-        console.log('somthing is NOT OK with date meeting!!!!');
         return;
       }
       if (currentTime < upcomingMeeting - 5000) {
@@ -686,7 +684,7 @@ function ContextProvider({ children, socket, profile }) {
 
   const lisiningAccseptScheduleMeetingCall = () => {
     socket?.on('accseptScheduleMeetingCall', (id) => {
-      console.log('-------------------accseptScheduleMeetingCall of you -----------------------');
+      console.log('accseptScheduleMeetingCall of you');
       setAccseptPeer2ScheduleMeetingCall(id);
     });
   };
@@ -706,6 +704,8 @@ function ContextProvider({ children, socket, profile }) {
   };
 
   const lisiningRoomClosed = () => {
+    //TO DO - case im not in the room then im not getting this 
+    // and i can be on my way to the room .... and not be notifyied by this .
     socket?.on('closeRoom', (roomId) => {
       console.log('closeRoom ', roomId);
       //Clear the state of all and return to home page
@@ -984,6 +984,8 @@ function ContextProvider({ children, socket, profile }) {
         sendPosesByPeers,
         poseFarFrame,
         accseptPeer2ScheduleMeetingCall, setAccseptPeer2ScheduleMeetingCall,
+
+        activeMeetingPopUp, setActiveMeetingPopUp,
       }}
     >
       {children}

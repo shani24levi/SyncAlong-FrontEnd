@@ -51,8 +51,12 @@ export default function (state = initialState, action) {
         }
 
         else if (type === 'delete') {
-            if (state.upcoming_meeting._id === meeting._id) {
-                if (state.meetings && state.meetings.lenght !== 0) return state.meetings[0]
+            console.log(state.meetings);
+            if (state.upcoming_meeting._id === meeting) {
+                let mm = state.meetings
+                if (mm) mm = mm.filter(m => m._id !== meeting)
+                console.log('mm', mm);
+                if (mm && mm.lenght !== 0) return mm[0]
                 else return null
             } else return state.upcoming_meeting;
         }
@@ -84,7 +88,7 @@ export default function (state = initialState, action) {
             console.log('GET_ALL_MEETINGS.payload', action.payload);
             let meetingsComplited = action.payload ? action.payload.filter(el => !isEmpty(el.urlRoom)) : null;
             let activeMeeting = action.payload ? action.payload.find(el => el.status === true) : null;
-            console.log('meetings_complited', isEmpty(meetingsComplited), meetingsComplited.lenght);
+            console.log('meetings_complited', isEmpty(meetingsComplited));
             console.log('activeMeeting', activeMeeting);
 
             return {
@@ -96,12 +100,12 @@ export default function (state = initialState, action) {
             };
         case CREATE_MEETING:
             console.log(action.payload.data.data);
-            let add_all = [...state.all_meetings, action.payload.data.data]
-            let meetings = [...state.meetings, action.payload.data.data]
+            let add_all = state.all_meetings ? [...state.all_meetings, action.payload.data.data] : null
+            let meetings = state.all_meetings ? [...state.meetings, action.payload.data.data] : null
             return {
                 ...state,
                 all_meetings: !state.all_meetings ? [action.payload.data.data] : add_all.sort((a, b) => { return a.date - b.date }),//  [...state.all_meetings, action.payload.data.data],
-                meetings: !state.meetings ? [action.payload] : meetings.sort((a, b) => { return a.date - b.date }), // [...state.meetings, action.payload.data.data],
+                meetings: !state.meetings ? [action.payload.data.data] : meetings.sort((a, b) => { return a.date - b.date }), // [...state.meetings, action.payload.data.data],
                 upcoming_meeting: setUpcomingMeeting(action.payload.data.data, 'add'),
                 loading: false,
             };

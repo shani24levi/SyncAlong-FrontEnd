@@ -17,6 +17,7 @@ import ScrollTop from '../scrollToTop/ScrollTop';
 import MeetingCard from './MeetingCard';
 import DaterPicker from './datePicker/DaterPicker';
 import { dateFormat } from '../../Utils/dateFormat';
+import Loader from '../loder/Loder';
 
 const Wrapper = styled('div')`
   min-height: 100vh;
@@ -91,7 +92,7 @@ function TraineeView({ trainee }) {
   const [open, setOpen] = React.useState(false);
   const [lastMeeting, setlastMeetingState] = useState(null);
 
-  //console.log('id', id, location.state.trainee);
+  console.log('id', trainee.user._id);
 
   const setlastMeeting = (lastMeeting) => {
     console.log('kckckc', lastMeeting);
@@ -103,85 +104,94 @@ function TraineeView({ trainee }) {
       <div id="back-to-top-anchor" />
       <Wrapper>
         <Banner />
-        <Grid
-          container
-          height="100%"
-          justifyContent="flex-start"
-          sx={{ padding: '0rem 4rem' }}>
-          <Container>
-            <PhotoWrapper>
-              <Photo>
-                <Avatar
-                  src={trainee.user.avatar}
-                  sx={{
-                    bgcolor: "#8c3db9",
-                    padding: '0px !important',
-                    border: '5px solid #8c3db9',
-                  }}>
-                </Avatar>
-              </Photo>
-              <span style={{ flexGrow: 1 }}></span>
+        {
+          trainee.user._id ?
+            <Grid
+              container
+              height="100%"
+              justifyContent="flex-start"
+              sx={{ padding: '0rem 4rem' }}>
+              <Container>
+                <PhotoWrapper>
+                  <Photo>
+                    <Avatar
+                      src={trainee.user.avatar}
+                      sx={{
+                        bgcolor: "#8c3db9",
+                        padding: '0px !important',
+                        border: '5px solid #8c3db9',
+                      }}>
+                    </Avatar>
+                  </Photo>
+                  <span style={{ flexGrow: 1 }}></span>
 
-              <IconButton
-                onClick={() => setOpen(true)}
-                aria-label="add to wish list"
-                size="large"
-                color="inherit"
-              >
-                <AddCircleOutlineIcon fontSize="large" />
-              </IconButton>
+                  <IconButton
+                    onClick={() => setOpen(true)}
+                    aria-label="add to wish list"
+                    size="large"
+                    color="inherit"
+                  >
+                    <AddCircleOutlineIcon fontSize="large" />
+                  </IconButton>
 
-              <IconButton
-                onClick={() => navigate(`/profile/trainee/${trainee.user._id}`, { state: { trainee: trainee } })}
-                aria-label="go to trainee profile"
-                size="large"
-                color="inherit"
-              >
-                <AccountCircleIcon fontSize="large" />
-              </IconButton>
-            </PhotoWrapper>
+                  <IconButton
+                    onClick={() => navigate(`/profile/trainee/${trainee.user._id}`, { state: { trainee: trainee } })}
+                    aria-label="go to trainee profile"
+                    size="large"
+                    color="inherit"
+                  >
+                    <AccountCircleIcon fontSize="large" />
+                  </IconButton>
+                </PhotoWrapper>
 
-            <TextWrapper>
-              <Typography variant="h5" fontWeight={700}>
-                Hello To {capitalize(trainee.user.user)}
-              </Typography>
-              <Typography fontWeight={600} sx={{ py: 1 }}>
-                Ceated by {capitalize(user.user)}'s user at {dateFormat(trainee.user.createdAt)}
-              </Typography>
-            </TextWrapper>
+                <TextWrapper>
+                  <Typography variant="h5" fontWeight={700}>
+                    Hello To {capitalize(trainee.user.user)}
+                  </Typography>
+                  <Typography fontWeight={600} sx={{ py: 1 }}>
+                    Ceated by {capitalize(user.user)}'s user at {dateFormat(trainee.user.createdAt)}
+                  </Typography>
+                </TextWrapper>
 
-            <Grid container sx={{ py: 2 }} justifyContent={'space-around'}>
-              <Grid
-                container
-                direction="column"
-                item
-                xs={12}
-                md={5}
-                spacing={1}>
-                <Grid item fontWeight={700}>
-                  Last Meeting
+                <Grid container sx={{ py: 2 }} justifyContent={'space-around'}>
+                  <Grid
+                    container
+                    direction="column"
+                    item
+                    xs={12}
+                    md={5}
+                    spacing={1}>
+                    <Grid item fontWeight={700}>
+                      Last Meeting
+                    </Grid>
+                    <Grid item lg={4} >
+                      <MeetingCard setlastMeeting={setlastMeeting} traineeId={trainee.user._id} filterBy='last' />
+                    </Grid>
+                  </Grid>
+                  <Grid
+                    container
+                    direction="column"
+                    item
+                    xs={12}
+                    md={5}
+                    spacing={1}>
+                    <Grid item fontWeight={700}>
+                      Future meeting
+                    </Grid>
+                    <Grid item lg={4}>
+                      <MeetingCard traineeId={trainee.user._id} filterBy='future' />
+                    </Grid>
+                  </Grid>
                 </Grid>
-                <Grid item lg={4} ><MeetingCard setlastMeeting={setlastMeeting} traineeId={trainee.user._id} filterBy='last' /></Grid>
-              </Grid>
-              <Grid
-                container
-                direction="column"
-                item
-                xs={12}
-                md={5}
-                spacing={1}>
-                <Grid item fontWeight={700}>
-                  Future meeting
-                </Grid>
-                <Grid item lg={4}><MeetingCard traineeId={trainee.user._id} filterBy='future' /></Grid>
-              </Grid>
+                <Divider light style={{ backgroundColor: '#f5f5f5', marginBottom: '2%' }} />
+
+                <MainConextTrainee trainee={trainee} lastMeeting={lastMeeting} />
+              </Container>
             </Grid>
-            <Divider light style={{ backgroundColor: '#f5f5f5', marginBottom: '2%' }} />
-
-            <MainConextTrainee trainee={trainee} lastMeeting={lastMeeting} />
-          </Container>
-        </Grid>
-      </Wrapper>
+            :
+            <Loader />
+        }
+      </Wrapper >
 
       <Dialog
         open={open}

@@ -28,6 +28,8 @@ import { setActiveMeeting } from '../../../Store/actions/meetingActions';
 
 import { useReactMediaRecorder } from 'react-media-recorder';
 import isEmpty from '../../../validation/isEmpty';
+import ReConect from "../../../assets/sounds/reconect.mp3";
+import EndMeeting from './PopText/EndMeeting';
 const useStyles = makeStyles(componentStyles);
 
 function VideoContext({ meeting }) {
@@ -62,12 +64,14 @@ function VideoContext({ meeting }) {
     const [activitiesEnded, setActivitiesEnded] = useState(false);
     const [isPeerHere, setIsPeerHere] = useState(yourSocketId ? true : false);
     const [oneTime, setOneTime] = useState(true);
+    const [prossingEndMeeting, setProssingEndMeeting] = useState(false);
+
 
     const [stop, setStop] = useState(false);
     const stopRef = useRef(stop);
     stopRef.current = stop;
+    const Audio = useRef();
 
-    const images = { thumbs_up: thumbs_up, victory: victory, stop: stop };
     const user = useSelector((state) => state.auth.user);
 
 
@@ -84,13 +88,27 @@ function VideoContext({ meeting }) {
         }
     }
 
-
     useEffect(() => {
         navigator.mediaDevices.getUserMedia({ video: true, audio: true })
             .then((currentStream) => {
                 setStream(currentStream);
             })
             .catch((error) => { console.log(`Error when open camera: ${error}`) });
+
+        //set starte in case of re-conect this page agin with different meeting
+        setStartActivity(false);
+        setDemo(false);
+        setActivityTime(false);
+        setCurrActivity(0);
+        setSync(false);
+        setSendCurrPoses(false);
+        setDisplayErrorMessage(null);
+        setSession(false);
+        setQuestion(false);
+        setActivitiesEnded(false);
+        setIsPeerHere(yourSocketId ? true : false);
+        setOneTime(true);
+        setStop(false);
     }, []);
 
     useEffect(async () => {
@@ -122,12 +140,7 @@ function VideoContext({ meeting }) {
     }, [activity_now]);
 
     const activitiesSession = async () => {
-        console.log("start Meeting and recorder");
-        if (user.role === 'trainer') {
-            statusRecord("start");
-        }
         for (let i = currActivity; i < meeting.activities.length; i++) {
-            //for (const i in meeting.activities) {
             setSyncScore(0);
             setCurrActivity(i);
             console.log(i, ' this activity is ....', meeting.activities[i]);
@@ -177,30 +190,61 @@ function VideoContext({ meeting }) {
 
     useEffect(async () => {
         if (activitiesEnded == true) {
-            if (user.role === 'trainer') {
-                statusRecord("stop");
-                if (status === 'stopped') {
-                    if (mediaBlobUrl && status === 'stopped') {
-                        console.log("can save recording");
-                        window.open(mediaBlobUrl, "_blank").focus();
-                        const blob = await fetch(mediaBlobUrl).then(res => res.blob());
-                        const myFile = new File([blob], "demo.mp4", { type: 'video/mp4' });
-                        console.log(blob);
-                        let formData = new FormData();
-                        formData.append('file', myFile);
-                        console.log('formData', formData.getAll('file'));
-                        dispatch(createRecordingById(formData, meeting._id));
-                    }
-                    else {
-                        console.log("cannot save recording because mediaBlobUrl is undefined");
-                    }
-                } else console.log("cannot save recording because the status is not stopped");
+            Audio?.current?.play();
+            user.role === 'trainer' && statusRecord("stop");
+            await delay(15000);
+            if (recognition !== 'restart') {
+                setProssingEndMeeting(true);
+                //save meeting..... notify...
+                // if (user.role === 'trainer' && status === 'stopped' && mediaBlobUrl) {
+                //         console.log("can save recording");
+                //         window.open(mediaBlobUrl, "_blank").focus();
+                //         const blob = await fetch(mediaBlobUrl).then(res => res.blob());
+                //         const myFile = new File([blob], "demo.mp4", { type: 'video/mp4' });
+                //         console.log(blob);
+                //         let formData = new FormData();
+                //         formData.append('file', myFile);
+                //         console.log('formData', formData.getAll('file'));
+                //         dispatch(createRecordingById(formData, meeting._id));
+                //     }
+                //     else {
+                //         console.log("cannot save recording because mediaBlobUrl is undefined");
+                //     }
+                //get meeting by this room id and naviget to that page
             }
-            swalEndMeeting();
-            await delay(2000);
-            console.log("go to repoet for meeting with id: ", meeting._id);
-            navigate('/meeting/report', { state: { meeting_id: meeting._id, me: myName, you: yourName } })
+            else {
+                Audio?.current?.pause();
+                setActivitiesEnded(false);
+                setCurrActivity(0);
+                setStop(false);
+                user.role === 'trainer' && setRecognition('start')
+            }
+
+            // if (user.role === 'trainer') {
+            //     statusRecord("stop");
+            //     if (status === 'stopped') {
+            //         if (mediaBlobUrl && status === 'stopped') {
+            //             console.log("can save recording");
+            //             window.open(mediaBlobUrl, "_blank").focus();
+            //             const blob = await fetch(mediaBlobUrl).then(res => res.blob());
+            //             const myFile = new File([blob], "demo.mp4", { type: 'video/mp4' });
+            //             console.log(blob);
+            //             let formData = new FormData();
+            //             formData.append('file', myFile);
+            //             console.log('formData', formData.getAll('file'));
+            //             dispatch(createRecordingById(formData, meeting._id));
+            //         }
+            //         else {
+            //             console.log("cannot save recording because mediaBlobUrl is undefined");
+            //         }
+            //     } else console.log("cannot save recording because the status is not stopped");
+            // }
+            // swalEndMeeting();
+            // await delay(2000);
+            // console.log("go to repoet for meeting with id: ", meeting._id);
+            //navigate('/meeting/report', { state: { meeting_id: meeting._id, me: myName, you: yourName } })
         }
+        else Audio?.current?.pause();
     }, [activitiesEnded])
 
     const prevActivitySession = () => {
@@ -371,23 +415,6 @@ function VideoContext({ meeting }) {
         else if (accseptScheduleMeetingCall && accseptPeer2ScheduleMeetingCall && !isEmpty(yourSocketId)) setIsPeerHere(true);
     }, [accseptScheduleMeetingCall, accseptPeer2ScheduleMeetingCall, yourSocketId]);
 
-    // const is_call_accepted = () => {
-    //     setTimeout(function () {
-    //         let currentTime = new Date().getTime();
-    //         let currentTime2 = new Date();
-    //         const datePose3min = currentTime2.setMinutes(currentTime2.getMinutes() + 3)
-    //         let plas3minTime = datePose3min.getTime();
-
-    //         if (callAccepted) {
-    //             return true;
-    //         } else if (currentTime > plas3minTime && !callAccepted) {
-    //             is_call_accepted();
-    //         } else if (currentTime <= plas3minTime || !callAccepted) {
-    //             return false;
-    //         }
-    //     }, 5000);
-    // }
-
     useEffect(() => {
         console.log('spossss to do somting');
         console.log(accseptScheduleMeetingCall, myRole, mediaPipeInitilaize, isPeerHere, mediapipeOfTrainee, oneTime);
@@ -397,11 +424,6 @@ function VideoContext({ meeting }) {
             setOneTime(false);
             setConectReq(true)
             callUser();
-            // let is_accepted = is_call_accepted(); //lisghing to callAccepted for 3 min
-            // if (!is_accepted) { //false not concted after 3 min of waiting....
-            //     console.log('Try to re conect - send callUser agin');
-            //     setOneTime(true);
-            // }
         }
         //trainee answerrrs....
         if (accseptScheduleMeetingCall && user.role === 'trainee' && mediaPipeInitilaize === 'none' && call.isReceivingCall && !callAccepted) {
@@ -410,17 +432,20 @@ function VideoContext({ meeting }) {
         }
     }, [accseptScheduleMeetingCall, mediaPipeInitilaize, isPeerHere, call, callAccepted, mediapipeOfTrainee]);
 
-    useEffect(() => {
+    useEffect(async () => {
         if (callAccepted) {
             //when user answer the call the set this meeting as active
             //set it in db to seport reconect 
-            console.log('====================================');
-            console.log('meeting-callAccepted', meeting, callAccepted);
-            console.log('====================================');
-            !isEmpty(meeting) && dispatch(setActiveMeeting(meeting, true));
+            !isEmpty(meeting) && !meeting.status && dispatch(setActiveMeeting(meeting, true));
+
+            console.log("start Meeting and recorder");
+            await delay(5000);
+            if (user.role === 'trainer') {
+                statusRecord("start");
+            }
+
         }
     }, [callAccepted]);
-
 
     return (
         <>
@@ -435,11 +460,13 @@ function VideoContext({ meeting }) {
             {mediaPipeInitilaize !== 'none' && <LoadingModal title="Load Identification" />}
             {isPeerHere && mediaPipeInitilaize === 'none' && !mediapipeOfTrainee && myRole === 'trainer' && yourName && <LoadingModal title={`Waiting to ${yourName}..`} />}
             {conectReq && <LoadingModal title="Conecting..." />}
-
+            {activitiesEnded && <EndMeeting />}
+            {prossingEndMeeting && <LoadingModal title="Proccing Data" />}
             {
                 callAccepted && !callEnded && question && session &&
                 <FunQuestionPopUp name={myName} />
             }
+            <audio src={ReConect} loop ref={Audio} />
             <Grid container className={classes.gridContainer}>
                 {stream && (
                     <Paper className={classes.paper}>
@@ -510,6 +537,9 @@ function VideoContext({ meeting }) {
                     setRecognition('start')
                 }}>Ok</Button>
 
+                <Button onClick={() => {
+                    setActivitiesEnded(true);
+                }}>PopUpEnd</Button>
 
                 <Button onClick={() => {
                     setSyncScore(0.8)

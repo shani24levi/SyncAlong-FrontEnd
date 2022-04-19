@@ -51,9 +51,6 @@ function CheckboxActivities({ activities, setActivities, traineeId }) {
             let limits = trainee.profile.limitations.concat(trainee.profile.limitations);
             unique = [...new Set(limits)];
         }
-        console.log('====================================');
-        console.log('unique', unique);
-        console.log('====================================');
         setOutLimitations(unique);
     }, [trainee])
 
