@@ -494,7 +494,7 @@ function ContextProvider({ children, socket, profile }) {
       };
       if (recognition === 'leave') {
         console.log('leave clear', roomId);
-        //leaveCall();
+       // leaveCall();
       }
       socket?.emit('sendNotification', data);
     }
@@ -726,8 +726,9 @@ function ContextProvider({ children, socket, profile }) {
       }
     });
 
-    socket?.on('userLeft', (userId) => {
-      if (callAccepted) {
+    socket?.on('userLeft', (userId, reason) => {
+      if (callAccepted && reason === "transport close") {
+        connectionRef.current.destroy();
         console.log('userLeft ,im in active meeting,i need to waite for his reConect ', userId);
         //setPeerDisConected(true);
       }
@@ -928,7 +929,7 @@ function ContextProvider({ children, socket, profile }) {
     stream.getTracks().forEach(function (track) {
       track.stop();
     });
-    clearRoomStates();
+    //clearRoomStates();
     // window.location.reload();
   };
   //===================socket calls when meeting in now============================//

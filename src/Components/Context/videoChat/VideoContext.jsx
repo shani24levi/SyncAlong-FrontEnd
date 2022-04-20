@@ -8,6 +8,7 @@ import Swal from 'sweetalert2';
 import { CircularProgress } from "@material-ui/core";
 import { delay } from '../../../helpers';
 import Timer from './timer/Timer';
+import RecordView from './ReactMediaRecorder';
 import HorizontalGauge from 'react-horizontal-gauge';
 import { Helmet } from "react-helmet";
 
@@ -33,27 +34,6 @@ import EndMeeting from './PopText/EndMeeting';
 const useStyles = makeStyles(componentStyles);
 
 function VideoContext({ meeting }) {
-
-    const RecordView = () => {
-        const {
-          status,
-          startRecording,
-          stopRecording,
-          mediaBlobUrl
-        } = useReactMediaRecorder({
-          screen: true,
-          facingMode: { exact: "environment" }
-        });
-      
-        return (
-          <div>
-            <p>{status}</p>
-            <button onClick={startRecording}>Start Recording</button>
-            <button onClick={stopRecording}>Stop Recording</button>
-            <video src={mediaBlobUrl} controls autoPlay loop />
-          </div>
-        );
-      };
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -86,6 +66,10 @@ function VideoContext({ meeting }) {
     const [oneTime, setOneTime] = useState(true);
     const [prossingEndMeeting, setProssingEndMeeting] = useState(false);
 
+    const [statusBool, setStatusBool] = useState(false);
+    const [status, setStatus] = useState(false);
+    const [mediaBlobUrl, setMediaBlobUrl] = useState(null);
+    
     const [stop, setStop] = useState(false);
     const stopRef = useRef(stop);
     stopRef.current = stop;
@@ -94,34 +78,36 @@ function VideoContext({ meeting }) {
     const recording = useSelector((state) => state.recording);
     const meetings = useSelector((state) => state.meetings);
 
-    const [isActivity, setIsActivity] = useState(false);
-    const { status, pauseRecording, startRecording, stopRecording, mediaBlobUrl } = useReactMediaRecorder({ screen: true });
-    useEffect(()=>{
-        console.log(isActivity, status,mediaBlobUrl);
-    }, [isActivity]);
-    const statusRecord = async (str) => {
-        if (str == "start") {
-            startRecording();
-            console.log(status);
-            setIsActivity(true);
-            let index = 0;
-            while(status !== 'recording' && index < 10000){
-                setIsActivity(!isActivity);
-                index++;
-            }
-            return null;
-        } else {
-            pauseRecording();
-            stopRecording();
-            setIsActivity(false);
-            let index = 0;
-            while(status !== 'stopped' && index < 10000){
-                setIsActivity(!isActivity);
-                index++;
-            }
-            return null;
-        }
-    }
+    // const [isActivity, setIsActivity] = useState(false);
+    // const { status, pauseRecording, startRecording, stopRecording, mediaBlobUrl } = useReactMediaRecorder({ screen: true });
+    // useEffect(()=>{
+    //     console.log(isActivity, status,mediaBlobUrl);
+    // }, [isActivity]);
+    // const statusRecord = async (str) => {
+    //     if (str == "start") {
+    //         startRecording();
+    //         console.log(status);
+    //         setIsActivity(true);
+    //         // let index = 0;
+    //         // while(status !== 'recording' && index < 10000){
+    //         //     setIsActivity(!isActivity);
+    //         //     index++;
+    //         // }
+    //         // return null;
+    //     } else {
+    //         pauseRecording();
+    //         console.log('status pause' ,status);
+    //         stopRecording();
+    //         console.log('status stop' ,status);
+    //         setIsActivity(false);
+    //         // let index = 0;
+    //         // while(status !== 'stopped' && index < 10000){
+    //         //     setIsActivity(!isActivity);
+    //         //     index++;
+    //         // }
+    //         // return null;
+    //     }
+    // }
 
     const lisiningForConnected = () => {
         setIsPeerHere(false);
@@ -247,16 +233,18 @@ function VideoContext({ meeting }) {
         return true //end of all session
     }
 
+    useEffect(() => {
+        console.log('status,mediaBlobUrl', status, mediaBlobUrl);
+        if(status === 'stopped' && mediaBlobUrl){
+            saveMeetingRecording()
+          }
+    }, [status,mediaBlobUrl])
+
     const saveMeetingRecording = async () => {
         if (user.role === 'trainer') {
-            console.log('status', status, new Date());
-            statusRecord("stop");
-            await delay(5000);
-            console.log('status', status, new Date());
-            statusRecord("stop");
-            await delay(5000);
-            console.log('status', status, new Date());
-        }
+            // setStatusBool(false);
+            // console.log('status,mediaBlobUrl', status, mediaBlobUrl);
+            // await delay(3000);
         if (recognition === 'leave') {
             //save meeting..... notify...
             if (user.role === 'trainer' && status === 'stopped' && mediaBlobUrl) {
@@ -268,50 +256,26 @@ function VideoContext({ meeting }) {
                 let formData = new FormData();
                 formData.append('file', myFile);
                 console.log('formData', formData.getAll('file'));
-                dispatch(createRecordingById(formData, meeting._id));
+                //dispatch(createRecordingById(formData, meeting._id));
                 //this call updates the server as a meeting complited....
             }
             else {
                 console.log("cannot save recording because mediaBlobUrl is undefined");
             }
         }
+    }
         await delay(2000);
         console.log("go to repoet for meeting with id: ", meeting._id);
-        navigate('/meeting/report', { state: { meeting_id: meeting._id, me: myName, you: yourName } })
+        //navigate('/meeting/report', { state: { meeting_id: meeting._id, me: myName, you: yourName } })
     }
 
     useEffect(async () => {
         if (activitiesEnded == true) {
             console.log('activitiesEnded', activitiesEnded);
             Audio?.current?.play();
-            // user.role === 'trainer' && statusRecord("stop");
-            // if (user.role === 'trainer') {
-            //     statusRecord("stop");
-            //     if (status === 'stopped') {
-            //         if (mediaBlobUrl && status === 'stopped') {
-            //             console.log("can save recording");
-            //             window.open(mediaBlobUrl, "_blank").focus();
-            //             const blob = await fetch(mediaBlobUrl).then(res => res.blob());
-            //             const myFile = new File([blob], "demo.mp4", { type: 'video/mp4' });
-            //             console.log(blob);
-            //             let formData = new FormData();
-            //             formData.append('file', myFile);
-            //             console.log('formData', formData.getAll('file'));
-            //             dispatch(createRecordingById(formData, meeting._id));
-            //         }
-            //         else {
-            //             console.log("cannot save recording because mediaBlobUrl is undefined");
-            //         }
-            //     } else console.log("cannot save recording because the status is not stopped");
-            // }
-            // swalEndMeeting();
-            // await delay(2000);
-            // console.log("go to repoet for meeting with id: ", meeting._id);
-            // navigate('/meeting/report', { state: { meeting_id: meeting._id, me: myName, you: yourName } })
         }
         else {
             Audio?.current?.pause();
-           // user.role === 'trainer' && statusRecord('start')
         }
     }, [activitiesEnded])
 
@@ -390,7 +354,7 @@ function VideoContext({ meeting }) {
             setCurrActivity(0);
             setStop(false);
             swalAction('ReStartung Now...');
-            user.role === 'trainer' && statusRecord('start');
+            //user.role === 'trainer' && statusRecord('start');
             activitiesSession();
         }
         if (recognition == 'continue') {
@@ -421,11 +385,12 @@ function VideoContext({ meeting }) {
             console.log('next....');
         }
         else if (recognition == 'leave') {
-            setActivitiesEnded(true);
+           // setActivitiesEnded(true);
             setStop(true);
             console.log('leave....');
             //save data
-            await saveMeetingRecording();
+            setStatusBool(false);
+            //await saveMeetingRecording();
             //clear starts
         }
     }, [recognition]);
@@ -528,10 +493,9 @@ function VideoContext({ meeting }) {
 
             console.log("start Meeting and recorder");
             await delay(5000);
-            if (user.role === 'trainer') {
-                statusRecord("start");
+            if (user.role === 'trainer' && mediapipeOfTrainee) {
+                setStatusBool(true);
             }
-
         }
     }, [callAccepted]);
 
@@ -556,6 +520,7 @@ function VideoContext({ meeting }) {
             }
             <audio src={ReConect} loop ref={Audio} />
             <Grid container className={classes.gridContainer}>
+                {user.role === 'trainer' &&  <RecordView setStatus={setStatus} statusBool={statusBool} setStatusBool={setStatusBool} setMediaBlobUrl={setMediaBlobUrl} /> }
                 {stream && (
                     <Paper className={classes.paper}>
                         <Grid item xs={12} md={6} style={{ textAlign: "center" }}>
@@ -632,40 +597,42 @@ function VideoContext({ meeting }) {
                 <Button onClick={() => {
                     setSyncScore(0.8)
                 }}>sync</Button>
-                <Button onClick={async () => {
+
+                {/* <Button onClick={async () => {
                     if (user.role === 'trainer') {
-                        statusRecord("start");
+                        startRecording();
+                        //statusRecord("start");
                     }
-                }}>Recorderrrr666r</Button>
+                }}>start recording</Button>
 
                 <Button onClick={async () => {
                     if (user.role === 'trainer') {
                         console.log('status', status, new Date());
                         statusRecord("stop");
                         // await delay(5000);
-                        // console.log('status', status, new Date());
-                        // statusRecord("stop");
+                        console.log('status333', status);
+                        statusRecord("stop");
                         // await delay(5000);
                         // console.log('status', status, new Date());
                         console.log(status, mediaBlobUrl);
-                        if (status === 'stopped') {
-                            if (mediaBlobUrl && status === 'stopped') {
-                                console.log("can save recording");
-                                window.open(mediaBlobUrl, "_blank").focus();
-                                const blob = await fetch(mediaBlobUrl).then(res => res.blob());
-                                const myFile = new File([blob], "demo.mp4", { type: 'video/mp4' });
-                                console.log(blob);
-                                let formData = new FormData();
-                                formData.append('file', myFile);
-                                console.log('formData', formData.getAll('file'));
-                                dispatch(createRecordingById(formData, meeting._id));
-                            }
-                            else {
-                                console.log("cannot save recording because mediaBlobUrl is undefined");
-                            }
-                        } else console.log("cannot save recording because the status is not stopped");
+                    //     if (status === 'stopped') {
+                    //         if (mediaBlobUrl && status === 'stopped') {
+                    //             console.log("can save recording");
+                    //             window.open(mediaBlobUrl, "_blank").focus();
+                    //             const blob = await fetch(mediaBlobUrl).then(res => res.blob());
+                    //             const myFile = new File([blob], "demo.mp4", { type: 'video/mp4' });
+                    //             console.log(blob);
+                    //             let formData = new FormData();
+                    //             formData.append('file', myFile);
+                    //             console.log('formData', formData.getAll('file'));
+                    //             dispatch(createRecordingById(formData, meeting._id));
+                    //         }
+                    //         else {
+                    //             console.log("cannot save recording because mediaBlobUrl is undefined");
+                    //         }
+                    //     } else console.log("cannot save recording because the status is not stopped");
                     }
-                }}>Recorder</Button>
+                }}>stop Recorder</Button> */}
                 <br/>
             </>}
 
