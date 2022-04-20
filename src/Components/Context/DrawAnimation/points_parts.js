@@ -40,11 +40,31 @@ const bottom_activities = [
     'gump-sides', 'zomba'
 ]
 
+const activity_ar = {
+    'bird': [
+        'hands-x', 'hands-y', 'swim-hands', 'swing-hands',
+        "left-hand-up", "right-hand-up", 'crazy',
+    ],
+    'glasses': [
+        'left-leg-up', 'right-leg-up', 'legs-both-up',
+        '90leging-right', '90leging-left',
+    ],
+    'rainbow': [
+        'poshup', 'baly-run', 'baly-legs', 'back-down', 'toch-flor', 'claping', 'all-up-1',
+        'gamp', 'legs-gumping', 'open-close', 'kicks', 'pray', 'right-all', 'up-dwon-both',
+        'gump-sides', 'zomba'
+    ]
+}
 const center_part = [11, 12, 23, 24];
 const joints_keys = [13, 14, 25, 26]; //13:right-hand, 14:left-hand, 25:right-leg, 26:left-leg
+
+
+
+
 
 module.exports = {
     upper_part, bottom_part,
     upper_activities, bottom_activities,
-    center_part, joints_keys
+    center_part, joints_keys,
+    activity_ar,
 };
