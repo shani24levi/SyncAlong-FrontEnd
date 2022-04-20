@@ -37,7 +37,7 @@ function VideoContext({ meeting }) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const { roomId, mediapipeOfTrainee, conectReq, setConectReq, callUser, answerCall,
+    const { setRoomId, mySocketId, roomId, mediapipeOfTrainee, conectReq, setConectReq, callUser, answerCall,
         accseptScheduleMeetingCall, yourSocketId, setSyncScore,
         setRecognition, setSettingUserInFrame, setPeer1inFrame, setPeer2inFrame,
         peer2inFrame, peer1inFrame, recognition, mediaPipeInitilaize,
@@ -74,26 +74,66 @@ function VideoContext({ meeting }) {
     const recording = useSelector((state) => state.recording);
     const meetings = useSelector((state) => state.meetings);
 
-    const { status, startRecording, stopRecording, mediaBlobUrl } = useReactMediaRecorder({ screen: true });
+    const [isActivity, setIsActivity] = useState(false);
+    const { status, pauseRecording, startRecording, stopRecording, mediaBlobUrl } = useReactMediaRecorder({ screen: true });
+    useEffect(()=>{
+        console.log(isActivity, status,mediaBlobUrl);
+    }, [isActivity]);
     const statusRecord = async (str) => {
         if (str == "start") {
             startRecording();
             console.log(status);
+            setIsActivity(true);
+            let index = 0;
+            while(status !== 'recording' && index < 10000){
+                setIsActivity(!isActivity);
+                index++;
+            }
             return null;
         } else {
+            pauseRecording();
             stopRecording();
-            console.log(status);
+            setIsActivity(false);
+            let index = 0;
+            while(status !== 'stopped' && index < 10000){
+                setIsActivity(!isActivity);
+                index++;
+            }
             return null;
         }
     }
 
+    const lisiningForConnected = () => {
+        setIsPeerHere(false);
+        //lisinig for changes in the array of users caming in to the app
+        socket?.on('connected', (socketId, users) => {
+          console.log("i am connected");
+          console.log('user?._id', user, meeting, meetings);
+          if (user?._id) {
+            //addUser(socket, userId,roomID)
+            let conected = users.find(el => el.userId === user?._id)
+            if (conected)
+              console.log("i am connected - you disConect");
+            else {
+              let userId = user?._id;
+              socket?.emit("reconect", userId, meeting?._id);
+            }
+          }
+    
+        });
+        //close lisining to event when your socket exists
+        yourSocketId && socket.off('getNewUserAddToApp');
+      };
+
     useEffect(() => {
-        navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+        lisiningForConnected();
+        navigator.mediaDevices.getUserMedia({ video: true })//audio: true
             .then((currentStream) => {
                 setStream(currentStream);
             })
             .catch((error) => { console.log(`Error when open camera: ${error}`) });
 
+        setRoomId(meeting._id)
         //set starte in case of re-conect this page agin with different meeting
         setStartActivity(false);
         setDemo(false);
@@ -188,11 +228,19 @@ function VideoContext({ meeting }) {
     }
 
     const saveMeetingRecording = async () => {
-        user.role === 'trainer' && statusRecord("stop");
+        if (user.role === 'trainer') {
+            console.log('status', status, new Date());
+            statusRecord("stop");
+            await delay(5000);
+            console.log('status', status, new Date());
+            statusRecord("stop");
+            await delay(5000);
+            console.log('status', status, new Date());
+        }
         if (recognition === 'leave') {
             //save meeting..... notify...
             if (user.role === 'trainer' && status === 'stopped' && mediaBlobUrl) {
-                console.log("can save recording");
+                console.log("can save recording", mediaBlobUrl);
                 window.open(mediaBlobUrl, "_blank").focus();
                 const blob = await fetch(mediaBlobUrl).then(res => res.blob());
                 const myFile = new File([blob], "demo.mp4", { type: 'video/mp4' });
@@ -207,13 +255,16 @@ function VideoContext({ meeting }) {
                 console.log("cannot save recording because mediaBlobUrl is undefined");
             }
         }
+        await delay(2000);
+        console.log("go to repoet for meeting with id: ", meeting._id);
+        navigate('/meeting/report', { state: { meeting_id: meeting._id, me: myName, you: yourName } })
     }
 
     useEffect(async () => {
         if (activitiesEnded == true) {
             console.log('activitiesEnded', activitiesEnded);
             Audio?.current?.play();
-            user.role === 'trainer' && statusRecord("stop");
+            // user.role === 'trainer' && statusRecord("stop");
             // if (user.role === 'trainer') {
             //     statusRecord("stop");
             //     if (status === 'stopped') {
@@ -236,30 +287,30 @@ function VideoContext({ meeting }) {
             // swalEndMeeting();
             // await delay(2000);
             // console.log("go to repoet for meeting with id: ", meeting._id);
-            //navigate('/meeting/report', { state: { meeting_id: meeting._id, me: myName, you: yourName } })
+            // navigate('/meeting/report', { state: { meeting_id: meeting._id, me: myName, you: yourName } })
         }
         else {
             Audio?.current?.pause();
-            user.role === 'trainer' && statusRecord('start')
+           // user.role === 'trainer' && statusRecord('start')
         }
     }, [activitiesEnded])
 
-    useEffect(async () => {
-        if (meetings?.meetings_complited.find(el => el._id === meeting._id) && user.role === 'trainer') {
-            //after its done notify the trainee
-            console.log('socket?.on("prossesDone", roomId);');
-            socket?.on("closeRoom", roomId);
-        }
-    }, [meetings.meetings_complited])
+    // useEffect(async () => {
+    //     if (meetings?.meetings_complited.find(el => el._id === meeting._id) && user.role === 'trainer') {
+    //         //after its done notify the trainee
+    //         console.log('socket?.on("prossesDone", roomId);');
+    //         socket?.on("closeRoom", roomId);
+    //     }
+    // }, [meetings.meetings_complited])
 
-    useEffect(async () => {
-        if (recording?.meeting === meeting._id && recording?.recording) {
-            //update the start of meetings 
-            dispatch(setMeetingComplited(meeting, { status: false, urlRoom: recording.recording }));
-            dispatch(clearLogoutREC());
-            //after its done notify the trainee
-        }
-    }, [recording])
+    // useEffect(async () => {
+    //     if (recording?.meeting === meeting._id && recording?.recording) {
+    //         //update the start of meetings 
+    //         dispatch(setMeetingComplited(meeting, { status: false, urlRoom: recording.recording }));
+    //         dispatch(clearLogoutREC());
+    //         //after its done notify the trainee
+    //     }
+    // }, [recording])
 
     const prevActivitySession = () => {
         if (currActivity === 0) {
@@ -423,12 +474,13 @@ function VideoContext({ meeting }) {
 
     //Handles the request for automatic connection of the chat after the two users connect with the library
     useEffect(() => {
+
         console.log('====================================');
-        console.log('accseptScheduleMeetingCall', accseptScheduleMeetingCall, accseptPeer2ScheduleMeetingCall, 'yourSocketId', yourSocketId);
+        console.log('accseptScheduleMeetingCall', isPeerHere,accseptScheduleMeetingCall, accseptPeer2ScheduleMeetingCall, 'yourSocketId', yourSocketId);
         console.log('====================================');
         if (accseptScheduleMeetingCall && !accseptPeer2ScheduleMeetingCall && !isEmpty(yourSocketId)) setIsPeerHere(false);
         else if (accseptScheduleMeetingCall && accseptPeer2ScheduleMeetingCall && !isEmpty(yourSocketId)) setIsPeerHere(true);
-    }, [accseptScheduleMeetingCall, accseptPeer2ScheduleMeetingCall, yourSocketId]);
+    }, [accseptScheduleMeetingCall, accseptPeer2ScheduleMeetingCall, yourSocketId, mySocketId]);
 
     useEffect(() => {
         console.log('spossss to do somting');
@@ -441,11 +493,12 @@ function VideoContext({ meeting }) {
             callUser();
         }
         //trainee answerrrs....
+        console.log(accseptScheduleMeetingCall, user.role , mediaPipeInitilaize , call, callAccepted);
         if (accseptScheduleMeetingCall && user.role === 'trainee' && mediaPipeInitilaize === 'none' && call.isReceivingCall && !callAccepted) {
             setConectReq(true)
             answerCall();
         }
-    }, [accseptScheduleMeetingCall, mediaPipeInitilaize, isPeerHere, call, callAccepted, mediapipeOfTrainee]);
+    }, [accseptScheduleMeetingCall, mediaPipeInitilaize, isPeerHere, call, callAccepted, mediapipeOfTrainee, yourSocketId]);
 
     useEffect(async () => {
         if (callAccepted && mediapipeOfTrainee) {
@@ -563,11 +616,17 @@ function VideoContext({ meeting }) {
                     if (user.role === 'trainer') {
                         statusRecord("start");
                     }
-                }}>Recorder</Button>
+                }}>Recorderrrr666r</Button>
 
                 <Button onClick={async () => {
                     if (user.role === 'trainer') {
+                        console.log('status', status, new Date());
                         statusRecord("stop");
+                        // await delay(5000);
+                        // console.log('status', status, new Date());
+                        // statusRecord("stop");
+                        // await delay(5000);
+                        // console.log('status', status, new Date());
                         if (status === 'stopped') {
                             if (mediaBlobUrl && status === 'stopped') {
                                 console.log("can save recording");

@@ -72,6 +72,7 @@ const getMeetingsById = (id) => {
 }
 
 const setActiveMeeting = (id, status) => {
+    console.log(id, status);
     return axios
         .put(`${URL}/${MEETINGS}/${id}`, { status })
         .then(meetings => { return meetings })

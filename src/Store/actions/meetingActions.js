@@ -83,21 +83,16 @@ export const setActiveMeeting = (meeting, status) => dispatch => {
     meeting.status = status;
     console.log('status', status, meeting);
     dispatch(setLoading(true));
-    if (status) {
-        meetingsService.setActiveMeeting(meeting._id, status)
-            .then(
-                meetings => {
-                    dispatch(success(meeting))
-                },
-                error => {
-                    console.log('error', error);
-                    dispatch(success(null));
-                }
-            );
-    }
-    else {
-        dispatch(success(null))
-    }
+    meetingsService.setActiveMeeting(meeting._id, status)
+        .then(
+            meetings => {
+                dispatch(success(meeting))
+            },
+            error => {
+                console.log('error', error);
+                dispatch(success(null));
+            }
+        );
     function success(meeting) { return { type: SET_ACTIVE_MEETING, payload: meeting } }
 }
 

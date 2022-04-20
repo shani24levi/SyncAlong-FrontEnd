@@ -136,10 +136,13 @@ export default function (state = initialState, action) {
             };
         case CLOSE_ACTIVE_MEETING:
             console.log("CLOSE_ACTIVE_MEETING")
+            let meeting = state.active_meeting;
             return {
                 ...state,
                 loading: false,
-                active_meeting: null
+                active_meeting: null,
+                all_meetings: state.all_meetings.map(m => { if (m._id !== meeting._id) m.status = false }),
+                meetings: !state.meetings ? null : state.meetings.filter(m => m._id !== meeting._id),
             };
 
 

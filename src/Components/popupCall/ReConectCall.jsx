@@ -30,7 +30,7 @@ const Transition = forwardRef(function Transition(props, ref) {
 });
 
 function ReConectCall(props) {
-    const { setActiveMeetingPopUp, setYourSocketId, yourSocketId, setMySocketId, setCallTrainee, socket, setAccseptScheduleMeetingCall, scheduleMeetingPopUpCall, setScheduleMeetingPopUpCall, setIsModalVisible, isModalVisible, Audio, answerCall, call, callAccepted } = useContext(SocketContext);
+    const { socket, setActiveMeetingPopUp, setYourSocketId, yourSocketId, setMySocketId, setCallTrainee, setAccseptScheduleMeetingCall, scheduleMeetingPopUpCall, setScheduleMeetingPopUpCall, setIsModalVisible, isModalVisible, Audio, answerCall, call, callAccepted } = useContext(SocketContext);
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const classes = useStyles();
@@ -75,12 +75,12 @@ function ReConectCall(props) {
         setActiveMeetingPopUp(false);
         setIsModalVisible(showVal);
         Audio.current.pause();
-        //remove from state the active meeting
-        !isEmpty(currMeeting) && dispatch(setActiveMeeting(currMeeting, false));
         //in this case peer2 is in the room waits.....
         //if closed room thire them send to the peer in the room the notification
         let roomId = currMeeting._id;
         socket?.emit('closeRoom', roomId);
+        //remove from state the active meeting
+        !isEmpty(currMeeting) && dispatch(setActiveMeeting(currMeeting, false));
     };
 
     return (

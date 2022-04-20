@@ -407,6 +407,8 @@ function ContextProvider({ children, socket, profile }) {
     lisiningAccseptScheduleMeetingCall();
     lisiningForDisconectPeerInRoom();
     lisiningRoomClosed();
+    //lisiningForConnected();
+    lisiningReConected();
   }, [socket]);
 
   useEffect(() => {
@@ -492,7 +494,7 @@ function ContextProvider({ children, socket, profile }) {
       };
       if (recognition === 'leave') {
         console.log('leave clear', roomId);
-        leaveCall();
+        //leaveCall();
       }
       socket?.emit('sendNotification', data);
     }
@@ -618,6 +620,27 @@ function ContextProvider({ children, socket, profile }) {
     yourSocketId && socket.off('getNewUserAddToApp');
   };
 
+  // const lisiningForConnected = () => {
+  //   //lisinig for changes in the array of users caming in to the app
+  //   socket?.on('connected', (socketId, users) => {
+  //     console.log("i am connected");
+  //     console.log('user?._id', user, roomId, meetings);
+  //     if (user?._id) {
+  //       //addUser(socket, userId,roomID)
+  //       let not_conected = users.find(el => el.userId === user?._id)
+  //       if (!not_conected)
+  //         console.log("i am connected - you disConect");
+  //       else {
+  //         let userId = user?._id;
+  //         socket?.emit("reconect", userId, meetings.active_meeting?._id);
+  //       }
+  //     }
+
+  //   });
+  //   //close lisining to event when your socket exists
+  //   yourSocketId && socket.off('getNewUserAddToApp');
+  // };
+
   const lisiningForCamingCalls = () => {
     socket?.on('callUser', ({ from, name: callerName, signal }) => {
       setCall({ isReceivingCall: true, from, name: callerName, signal });
@@ -740,6 +763,24 @@ function ContextProvider({ children, socket, profile }) {
         leaveCall();
         navigate('/home');
         return;
+      }
+      else {
+        leaveCall();
+        navigate('/home', { state: { meeting_id: roomId, me: myName, you: yourName } });
+      }
+    });
+  };
+
+  const lisiningReConected = () => {
+    let id=user?._id
+    socket?.on('reconect', (users) => {
+      console.log('reconect ', users, id);
+      if (location.pathname !== '/video-room') {
+        users.forEach(user => {
+          console.log('reconect foreach ', user.userId, id);
+          if (user.userId === id) setMySocketId(user.socketId);
+          else setYourSocketId(user.socketId);
+        })
       }
       else {
         leaveCall();
