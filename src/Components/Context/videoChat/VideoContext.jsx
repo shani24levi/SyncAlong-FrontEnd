@@ -34,6 +34,26 @@ const useStyles = makeStyles(componentStyles);
 
 function VideoContext({ meeting }) {
 
+    const RecordView = () => {
+        const {
+          status,
+          startRecording,
+          stopRecording,
+          mediaBlobUrl
+        } = useReactMediaRecorder({
+          screen: true,
+          facingMode: { exact: "environment" }
+        });
+      
+        return (
+          <div>
+            <p>{status}</p>
+            <button onClick={startRecording}>Start Recording</button>
+            <button onClick={stopRecording}>Stop Recording</button>
+            <video src={mediaBlobUrl} controls autoPlay loop />
+          </div>
+        );
+      };
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -62,7 +82,7 @@ function VideoContext({ meeting }) {
     const [session, setSession] = useState(false);
     const [question, setQuestion] = useState(false);
     const [activitiesEnded, setActivitiesEnded] = useState(false);
-    const [isPeerHere, setIsPeerHere] = useState(yourSocketId ? true : false);
+    const [isPeerHere, setIsPeerHere] = useState(false);
     const [oneTime, setOneTime] = useState(true);
     const [prossingEndMeeting, setProssingEndMeeting] = useState(false);
 
@@ -627,6 +647,7 @@ function VideoContext({ meeting }) {
                         // statusRecord("stop");
                         // await delay(5000);
                         // console.log('status', status, new Date());
+                        console.log(status, mediaBlobUrl);
                         if (status === 'stopped') {
                             if (mediaBlobUrl && status === 'stopped') {
                                 console.log("can save recording");
@@ -645,7 +666,7 @@ function VideoContext({ meeting }) {
                         } else console.log("cannot save recording because the status is not stopped");
                     }
                 }}>Recorder</Button>
-
+                <br/>
             </>}
 
 

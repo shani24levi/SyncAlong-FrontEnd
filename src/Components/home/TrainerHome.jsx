@@ -25,6 +25,8 @@ import { delay } from '../../helpers';
 import Carousel from '../card/Carousel/Carousel';
 import Loader from '../loder/Loder';
 import ListedMeetings from './trainer/listTable/ListedMeetings';
+import { useReactMediaRecorder } from "react-media-recorder";
+
 const buttonStyle = makeStyles(buttonsStyles);
 
 const useStyles = makeStyles({

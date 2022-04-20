@@ -514,7 +514,7 @@ function ContextProvider({ children, socket, profile }) {
       setOneTime(false);
       socket?.emit('t', { yourSocketId, roomId });
     }
-  }, [mediaPipeInitilaize]);
+  }, [mediaPipeInitilaize, yourSocketId]);
 
 
   useEffect(() => {
@@ -791,7 +791,7 @@ function ContextProvider({ children, socket, profile }) {
 
   //===================socket calls when user in room and whant to call============================//
   function answerCall() {
-    //console.log('answerCall');
+    console.log('answerCall');
     setCallAccepted(true);
     //set me as a peer and difiend my data
     const peer = new Peer({ initiator: false, trickle: false, stream });
@@ -824,6 +824,7 @@ function ContextProvider({ children, socket, profile }) {
     //when i get a signel that call is answered - i get data about the single
     // console.time('timer1-answerCall');
     peer.on('signal', (data) => {
+      console.log(yourSocketId);
       socket.emit('answerCall', { signal: data, to: yourSocketId });
       setConectReq(false);
       // console.timeEnd('timer1-answerCall');
