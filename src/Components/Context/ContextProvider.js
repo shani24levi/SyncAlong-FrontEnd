@@ -514,7 +514,7 @@ function ContextProvider({ children, socket, profile }) {
       setOneTime(false);
       socket?.emit('t', { yourSocketId, roomId });
     }
-  }, [mediaPipeInitilaize, yourSocketId]);
+  }, [mediaPipeInitilaize, oneTime, yourSocketId]);
 
 
   useEffect(() => {
@@ -781,6 +781,7 @@ function ContextProvider({ children, socket, profile }) {
           if (user.userId === id) setMySocketId(user.socketId);
           else setYourSocketId(user.socketId);
         })
+        setOneTime(true);
       }
       else {
         leaveCall();
