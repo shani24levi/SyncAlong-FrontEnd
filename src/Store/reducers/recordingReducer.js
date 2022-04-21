@@ -33,7 +33,7 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 loading: false,
-                recording: action.payload,
+                recording: action.payload.url,
                 meeting: action.payload ? action.payload.meeting_id : null
             }
         default:

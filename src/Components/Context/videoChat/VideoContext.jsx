@@ -31,6 +31,7 @@ import { useReactMediaRecorder } from 'react-media-recorder';
 import isEmpty from '../../../validation/isEmpty';
 import ReConect from "../../../assets/sounds/reconect.mp3";
 import EndMeeting from './PopText/EndMeeting';
+import Camara from '../Camara/Camara';
 const useStyles = makeStyles(componentStyles);
 
 function VideoContext({ meeting }) {
@@ -69,7 +70,7 @@ function VideoContext({ meeting }) {
     const [statusBool, setStatusBool] = useState(false);
     const [status, setStatus] = useState(false);
     const [mediaBlobUrl, setMediaBlobUrl] = useState(null);
-    
+
     const [stop, setStop] = useState(false);
     const stopRef = useRef(stop);
     stopRef.current = stop;
@@ -77,62 +78,45 @@ function VideoContext({ meeting }) {
     const user = useSelector((state) => state.auth.user);
     const recording = useSelector((state) => state.recording);
     const meetings = useSelector((state) => state.meetings);
+    //  let camera = null;
+    const [camera, setCamera] = useState(null);
 
-    // const [isActivity, setIsActivity] = useState(false);
-    // const { status, pauseRecording, startRecording, stopRecording, mediaBlobUrl } = useReactMediaRecorder({ screen: true });
-    // useEffect(()=>{
-    //     console.log(isActivity, status,mediaBlobUrl);
-    // }, [isActivity]);
-    // const statusRecord = async (str) => {
-    //     if (str == "start") {
-    //         startRecording();
-    //         console.log(status);
-    //         setIsActivity(true);
-    //         // let index = 0;
-    //         // while(status !== 'recording' && index < 10000){
-    //         //     setIsActivity(!isActivity);
-    //         //     index++;
-    //         // }
-    //         // return null;
-    //     } else {
-    //         pauseRecording();
-    //         console.log('status pause' ,status);
-    //         stopRecording();
-    //         console.log('status stop' ,status);
-    //         setIsActivity(false);
-    //         // let index = 0;
-    //         // while(status !== 'stopped' && index < 10000){
-    //         //     setIsActivity(!isActivity);
-    //         //     index++;
-    //         // }
-    //         // return null;
-    //     }
-    // }
 
     const lisiningForConnected = () => {
         setIsPeerHere(false);
         //lisinig for changes in the array of users caming in to the app
         socket?.on('connected', (socketId, users) => {
-          console.log("i am connected");
-          console.log('user?._id', user, meeting, meetings);
-          if (user?._id) {
-            //addUser(socket, userId,roomID)
-            let conected = users.find(el => el.userId === user?._id)
-            if (conected)
-              console.log("i am connected - you disConect");
-            else {
-              let userId = user?._id;
-              socket?.emit("reconect", userId, meeting?._id);
+            console.log("i am connected");
+            console.log('user?._id', user, meeting, meetings);
+            if (user?._id) {
+                //addUser(socket, userId,roomID)
+                let conected = users.find(el => el.userId === user?._id)
+                if (conected)
+                    console.log("i am connected - you disConect");
+                else {
+                    let userId = user?._id;
+                    socket?.emit("reconect", userId, meeting?._id);
+                }
             }
-          }
-    
+
         });
         //close lisining to event when your socket exists
         yourSocketId && socket.off('getNewUserAddToApp');
-      };
+    };
 
     useEffect(() => {
         lisiningForConnected();
+        //setCamera(new Camara);
+        // console.log('create stream', camera);
+        // camera.init(setStream);
+        // let streamCreate = camera.getStream();
+        // console.log('sreamCreate', streamCreate)
+        // if(!streamCreate || streamCreate === 'error'){
+        //     setStream(null)
+        // }elsee
+        //     setStream(streamCreate)
+        // }
+
         navigator.mediaDevices.getUserMedia({ video: true })//audio: true
             .then((currentStream) => {
                 setStream(currentStream);
@@ -155,6 +139,15 @@ function VideoContext({ meeting }) {
         setOneTime(true);
         setStop(false);
     }, []);
+
+    // useEffect(() => {
+    //     if (camera) {
+    //         console.log('create stream', camera);
+    //         camera.init(setStream);
+    //         let streamCreate = camera.getStream();
+    //         console.log('sreamCreate', streamCreate)
+    //     }
+    // }, [camera])
 
     useEffect(async () => {
         if (currData && !stop) {
@@ -235,35 +228,33 @@ function VideoContext({ meeting }) {
 
     useEffect(() => {
         console.log('status,mediaBlobUrl', status, mediaBlobUrl);
-        if(status === 'stopped' && mediaBlobUrl){
+        if (status === 'stopped' && mediaBlobUrl) {
             saveMeetingRecording()
-          }
-    }, [status,mediaBlobUrl])
+        }
+    }, [status, mediaBlobUrl])
 
     const saveMeetingRecording = async () => {
         if (user.role === 'trainer') {
-            // setStatusBool(false);
-            // console.log('status,mediaBlobUrl', status, mediaBlobUrl);
-            // await delay(3000);
-        if (recognition === 'leave') {
-            //save meeting..... notify...
-            if (user.role === 'trainer' && status === 'stopped' && mediaBlobUrl) {
-                console.log("can save recording", mediaBlobUrl);
-                window.open(mediaBlobUrl, "_blank").focus();
-                const blob = await fetch(mediaBlobUrl).then(res => res.blob());
-                const myFile = new File([blob], "demo.mp4", { type: 'video/mp4' });
-                console.log(blob);
-                let formData = new FormData();
-                formData.append('file', myFile);
-                console.log('formData', formData.getAll('file'));
-                //dispatch(createRecordingById(formData, meeting._id));
-                //this call updates the server as a meeting complited....
-            }
-            else {
-                console.log("cannot save recording because mediaBlobUrl is undefined");
+            if (recognition === 'leave') {
+                //save meeting..... notify...
+                if (user.role === 'trainer' && status === 'stopped' && mediaBlobUrl) {
+                    console.log("can save recording", mediaBlobUrl);
+                    window.open(mediaBlobUrl, "_blank").focus();
+                    const blob = await fetch(mediaBlobUrl).then(res => res.blob());
+                    const myFile = new File([blob], "demo.mp4", { type: 'video/mp4' });
+                    console.log(blob);
+                    let formData = new FormData();
+                    formData.append('file', myFile);
+                    console.log('formData', formData.getAll('file'));
+                    //dispatch(stause: false)
+                    dispatch(createRecordingById(formData, meeting._id));
+                    //this call updates the server as a meeting complited....
+                }
+                else {
+                    console.log("cannot save recording because mediaBlobUrl is undefined");
+                }
             }
         }
-    }
         await delay(2000);
         console.log("go to repoet for meeting with id: ", meeting._id);
         //navigate('/meeting/report', { state: { meeting_id: meeting._id, me: myName, you: yourName } })
@@ -385,7 +376,10 @@ function VideoContext({ meeting }) {
             console.log('next....');
         }
         else if (recognition == 'leave') {
-           // setActivitiesEnded(true);
+            // setActivitiesEnded(true);
+            // console.log('leave camera', camera, camera?.getStream())
+            // camera?.getStream() && camera.distroy();
+            //setStream(null);
             setStop(true);
             console.log('leave....');
             //save data
@@ -459,9 +453,8 @@ function VideoContext({ meeting }) {
 
     //Handles the request for automatic connection of the chat after the two users connect with the library
     useEffect(() => {
-
         console.log('====================================');
-        console.log('accseptScheduleMeetingCall', isPeerHere,accseptScheduleMeetingCall, accseptPeer2ScheduleMeetingCall, 'yourSocketId', yourSocketId);
+        console.log('accseptScheduleMeetingCall', isPeerHere, accseptScheduleMeetingCall, accseptPeer2ScheduleMeetingCall, 'yourSocketId', yourSocketId);
         console.log('====================================');
         if (accseptScheduleMeetingCall && !accseptPeer2ScheduleMeetingCall && !isEmpty(yourSocketId)) setIsPeerHere(false);
         else if (accseptScheduleMeetingCall && accseptPeer2ScheduleMeetingCall && !isEmpty(yourSocketId)) setIsPeerHere(true);
@@ -478,7 +471,7 @@ function VideoContext({ meeting }) {
             callUser();
         }
         //trainee answerrrs....
-        console.log(accseptScheduleMeetingCall, user.role , mediaPipeInitilaize , call, callAccepted);
+        console.log(accseptScheduleMeetingCall, user.role, mediaPipeInitilaize, call, callAccepted);
         if (accseptScheduleMeetingCall && user.role === 'trainee' && mediaPipeInitilaize === 'none' && call.isReceivingCall && !callAccepted) {
             setConectReq(true)
             answerCall();
@@ -520,7 +513,7 @@ function VideoContext({ meeting }) {
             }
             <audio src={ReConect} loop ref={Audio} />
             <Grid container className={classes.gridContainer}>
-                {user.role === 'trainer' &&  <RecordView setStatus={setStatus} statusBool={statusBool} setStatusBool={setStatusBool} setMediaBlobUrl={setMediaBlobUrl} /> }
+                {user.role === 'trainer' && <RecordView setStatus={setStatus} statusBool={statusBool} setStatusBool={setStatusBool} setMediaBlobUrl={setMediaBlobUrl} />}
                 {stream && (
                     <Paper className={classes.paper}>
                         <Grid item xs={12} md={6} style={{ textAlign: "center" }}>
@@ -570,9 +563,9 @@ function VideoContext({ meeting }) {
             </Grid>
 
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                {meeting.activities.map(i => {
+                {meeting.activities.map((i, ii) => {
                     return (
-                        <Box key={i} sx={{ borderRadius: '16px' }} className={classes.activityList} style={{ color: meeting.activities[currActivity] === i ? 'blue' : 'black' }}>{i}</Box>
+                        <Box key={ii} sx={{ borderRadius: '16px' }} className={classes.activityList} style={{ color: meeting.activities[currActivity] === i ? 'blue' : 'black' }}>{i}</Box>
                     )
                 })
                 }
@@ -633,7 +626,7 @@ function VideoContext({ meeting }) {
                     //     } else console.log("cannot save recording because the status is not stopped");
                     }
                 }}>stop Recorder</Button> */}
-                <br/>
+                <br />
             </>}
 
 

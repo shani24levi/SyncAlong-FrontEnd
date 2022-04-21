@@ -360,7 +360,8 @@ function ContextProvider({ children, socket, profile }) {
   };
 
   const setHolistic = (video) => {
-    console.log('video', video);
+
+    console.log('create mediapipe');
     const userPose = new Holistic({
       locateFile: (file) => {
         return `https://cdn.jsdelivr.net/npm/@mediapipe/holistic/${file}`;
@@ -382,6 +383,7 @@ function ContextProvider({ children, socket, profile }) {
       video.current !== null &&
       location.pathname === '/video-room'
     ) {
+      console.log('start camera for mediapipe', video.current.video)
       camera = new cam.Camera(video.current.video, {
         onFrame: async () => {
           await userPose.send({ image: video?.current?.video });
@@ -412,9 +414,14 @@ function ContextProvider({ children, socket, profile }) {
   }, [socket]);
 
   useEffect(() => {
-    if (!stream) return;
+    console.log('stream', stream);
+    if (!stream) {
+      // camera && camera.stop();
+      return;
+    }
     if (location.pathname !== '/video-room') {
       console.log('stream return');
+      // camera && camera.stop();
       return;
     }
     myVideo.current.srcObject = stream;
@@ -439,27 +446,37 @@ function ContextProvider({ children, socket, profile }) {
       //get the same time of poses as you
       console.log('my_array_poses', array_poses);
 
-      found_el = array_poses.find(
-        (el) => el.time === yourDataResived.end_time_of_colection
-      );
-      //if its not colected at the same time
-      //get the next after
-      if (!found_el || found_el === undefined) {
-        for (const el of array_poses) {
-          if (el.time > yourDataResived.end_time_of_colection) {
-            found_el = el;
-            break;
-          }
+      if (array_poses.length >= 2) {
+        if (array_poses[array_poses.length - 2].time === yourDataResived.end_time_of_colection) {
+          found_el = array_poses[array_poses.length - 2];
+        }
+        else {
+          found_el = array_poses[array_poses.length - 1];
         }
       }
+      else found_el = array_poses[array_poses.length - 1];
 
-      if (!found_el || found_el === undefined) {
-        ///whan you computer is faster then me
-        //you send time of: 00:00:02 , i get it in 00:00:01
-        //and my last colection is in 00:00:00
-        //then get my last one in the array .
-        found_el = array_poses[array_poses.length - 1]; //set it to the last
-      }
+      // found_el = array_poses.find(
+      //   (el) => el.time === yourDataResived.end_time_of_colection
+      // );
+      // //if its not colected at the same time
+      // //get the next after
+      // if (!found_el || found_el === undefined) {
+      //   for (const el of array_poses) {
+      //     if (el.time > yourDataResived.end_time_of_colection) {
+      //       found_el = el;
+      //       break;
+      //     }
+      //   }
+      // }
+
+      // if (!found_el || found_el === undefined) {
+      //   ///whan you computer is faster then me
+      //   //you send time of: 00:00:02 , i get it in 00:00:01
+      //   //and my last colection is in 00:00:00
+      //   //then get my last one in the array .
+      //   found_el = array_poses[array_poses.length - 1]; //set it to the last
+      // }
 
       console.log('posesArry now...found_el...', found_el);
       //send me & you data to socket for sync calculation
@@ -494,7 +511,7 @@ function ContextProvider({ children, socket, profile }) {
       };
       if (recognition === 'leave') {
         console.log('leave clear', roomId);
-       // leaveCall();
+        // leaveCall();
       }
       socket?.emit('sendNotification', data);
     }
@@ -773,7 +790,7 @@ function ContextProvider({ children, socket, profile }) {
   };
 
   const lisiningReConected = () => {
-    let id=user?._id
+    let id = user?._id
     socket?.on('reconect', (users) => {
       console.log('reconect ', users, id);
       if (location.pathname !== '/video-room') {
@@ -798,8 +815,8 @@ function ContextProvider({ children, socket, profile }) {
     //set me as a peer and difiend my data
     const peer = new Peer({ initiator: false, trickle: false, stream });
     setMeAsPeer(peer);
-    // peer._debug = console.log;
-
+    peer._debug = console.log;
+    // 
     peer.on('error', (err) => {
       // console.log('error with peer', err);
       // console.log('peer', peer);
@@ -813,14 +830,14 @@ function ContextProvider({ children, socket, profile }) {
     });
     peer.on('connect', () => {
       //console.log("poseLandmarks: ", poseLandmarks_ref.current);
-      let state = peer._pc?.connectionState;
-      // console.log("datachannel", state, "peer", peer);
+      let state = peer._pc?.iceConnectionState;
+      console.log("datachannel", state, "peer", peer);
       if (
         poseLandmarks_ref.current !== null &&
         poseLandmarks_ref.current !== undefined &&
         state != undefined && state != null && state == 'connected'
       )
-        peer?.send(JSON.stringify(poseLandmarks_ref.current));
+        peer && peer?.send(JSON.stringify(poseLandmarks_ref.current));
     });
 
     //when i get a signel that call is answered - i get data about the single
@@ -854,8 +871,9 @@ function ContextProvider({ children, socket, profile }) {
     // }
     const peer = new Peer({ initiator: true, trickle: false, stream });
     setMeAsPeer(peer);
-    //peer._debug = console.log;
+    peer._debug = console.log;
 
+    // this._pc.iceConnectionState
     peer.on('error', (err) => {
       //console.log('error with peer', err);
       // console.log('peer', peer);
@@ -869,15 +887,19 @@ function ContextProvider({ children, socket, profile }) {
     });
     peer.on('connect', () => {
       // console.log("poseLandmarks: ", poseLandmarks_ref.current);
-      let state = peer._pc?.connectionState;
-      // console.log("datachannel", state, "peer", peer);
+      let state = peer._pc?.iceConnectionState;
+      //im tal you my state of peer 
+      //socke?.emie("myStatePeer",state,yourSocketId);
+      console.log("datachannel", state, "peer", peer);
       if (
+        //state2()
         poseLandmarks_ref.current !== null &&
         poseLandmarks_ref.current !== undefined &&
         state != undefined && state != null && state == 'connected'
       )
-        peer?.send(JSON.stringify(poseLandmarks_ref.current));
-    });
+        peer && peer?.send(JSON.stringify(poseLandmarks_ref.current));
+    }
+    );
 
     // console.time('timer2-callUser');
     peer.on('signal', (data) => {

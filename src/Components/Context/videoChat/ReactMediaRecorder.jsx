@@ -16,7 +16,7 @@ function RecordView({setStatus,statusBool, setStatusBool, setMediaBlobUrl}) {
       useEffect(() => {
           console.log('statusBool',statusBool);
           if(statusBool) handleStartRecording(startRecording);
-          else handleStopRecording(startRecording);
+          else handleStopRecording(stopRecording);
       }, [statusBool])
       
   const [isRecording, setIsRecording] = useState(false);
@@ -49,7 +49,6 @@ function RecordView({setStatus,statusBool, setStatusBool, setMediaBlobUrl}) {
     setStatus(status);
     setMediaBlobUrl(mediaBlobUrl)
   }, [statusBool])
- 
 
   return (
           <div>
