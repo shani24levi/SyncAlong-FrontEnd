@@ -7,7 +7,8 @@ import {
     DELETE_MEETING,
     CLEAR_MEETINGS,
     CLOSE_ACTIVE_MEETING,
-    SET_MEETING_COMPKITED
+    SET_MEETING_COMPKITED,
+    SET_MEETING_COMPKITED_URL
 } from './types';
 import { meetingsService } from '../../servises';
 import { redirect } from '../../helpers';
@@ -98,11 +99,24 @@ export const setActiveMeeting = (meeting, status) => dispatch => {
 
 export const setMeetingComplited = (meeting, data) => dispatch => {
     meeting.status = data.status;
-    meeting.urlRoom = data.urlRoom;
+    meeting.urlRoom = data.urlRoom; //"Processing"
+    console.log('status', meeting);
+    dispatch(setLoading(true));
+    dispatch(success(meeting))
+    function success(meeting) {
+        return {
+            type: SET_MEETING_COMPKITED,
+            payload: meeting
+        }
+    }
+}
+
+export const setComplitedWithUrl = (meeting, data) => dispatch => {
+    meeting.urlRoom = data.urlRoom; //"Processing"
     console.log('status', data, meeting);
     dispatch(setLoading(true));
     if (data)
-        return { type: SET_MEETING_COMPKITED, payload: meeting }
+        return { type: SET_MEETING_COMPKITED_URL, payload: meeting }
     else
         console.log('lll');
 }

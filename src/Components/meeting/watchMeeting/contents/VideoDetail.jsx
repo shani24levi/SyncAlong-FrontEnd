@@ -1,6 +1,7 @@
 import React from 'react';
 import { Grid, Container } from '@material-ui/core';
 import { styled } from '@mui/material/styles';
+import Loader from '../../../loder/Loder';
 
 const Ifram = styled('div')`
 position: relative;
@@ -52,14 +53,16 @@ function VideoDetail({ video }) {
     console.log('====================================');
     console.log('video.urlRoom', video.urlRoom);
     console.log('====================================');
+
     return (
         <Grid item xs={12} md={8}>
-            <Ifram>
-                {/* <iframe className="responsive-iframe" src={video.urlRoom}></iframe> */}
-                <video controls className="responsive-iframe" src={video.urlRoom} ></video>
-
-                {/* src="https://www.youtube.com/embed/tgbNymZ7vqY" */}
-            </Ifram>
+            {video.urlRoom === "Processing"
+                ? <Loader />
+                :
+                <Ifram>
+                    <video controls className="responsive-iframe" src={video.urlRoom} ></video>
+                </Ifram>
+            }
             <Details >
                 <div className="details-title">
                     {video.title}

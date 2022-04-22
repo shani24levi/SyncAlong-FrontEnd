@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { SocketContext } from '../ContextProvider';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
+import { Container } from '@material-ui/core';
 
 function SpeachRecognition(props) {
     const { setRecognition, mediaPipeInitilaize } = useContext(SocketContext);
@@ -59,13 +60,13 @@ function SpeachRecognition(props) {
     const startListening = () => { SpeechRecognition.startListening({ continuous: true }) }
 
     return (
-        <div>
+        <Container>
             <p>Microphone: {listening ? 'on' : 'off'}</p>
             <button onClick={startListening}>Start</button>
             <button onClick={SpeechRecognition.stopListening}>Stop</button>
             <button onClick={resetTranscript}>Reset</button>
             <p>{transcript}</p>
-        </div>
+        </Container>
     );
 }
 

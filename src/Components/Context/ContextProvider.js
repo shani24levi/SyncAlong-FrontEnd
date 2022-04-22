@@ -1,7 +1,8 @@
 import React, { createContext, useState, useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { closeActiveMeeting } from '../../Store/actions/meetingActions';
+import { closeActiveMeeting, setComplitedWithUrl } from '../../Store/actions/meetingActions';
+import { clearLogoutREC } from '../../Store/actions/recordingActions';
 import Peer from 'simple-peer/simplepeer.min.js';
 import { Holistic } from '@mediapipe/holistic';
 import * as holistic from '@mediapipe/holistic';
@@ -48,6 +49,9 @@ function ContextProvider({ children, socket, profile }) {
   const [mediaPipeInitilaize, setMediaPipeInitilaize] = useState('');
   const [peer, setMeAsPeer] = useState(null);
   const [recognition, setRecognition] = useState(null);
+
+  const [prossingEndMeeting, setProssingEndMeeting] = useState(false);
+
 
   const syncScoreRef = useRef(syncScore);
   syncScoreRef.current = syncScore;
@@ -420,6 +424,7 @@ function ContextProvider({ children, socket, profile }) {
     //lisiningForConnected();
     lisiningReConected();
     lisiningStatePeer();
+    lisiningMeetingComplited();
   }, [socket]);
 
   useEffect(() => {
@@ -518,10 +523,6 @@ function ContextProvider({ children, socket, profile }) {
         time: new Date().toLocaleString(),
         roomId
       };
-      if (recognition === 'leave') {
-        console.log('leave clear', roomId);
-        // leaveCall();
-      }
       socket?.emit('sendNotification', data);
     }
   }, [recognition]);
@@ -583,6 +584,33 @@ function ContextProvider({ children, socket, profile }) {
       socket?.emit('accseptScheduleMeetingCall', yourSocketId);
     }
   }, [accseptScheduleMeetingCall, yourSocketId]);
+
+  //for moving from pages and whanting to update when the recirding of meeting has been comploted.....
+  //it is here becouse i wants it to appen any page.
+  const recording = useSelector((state) => state.recording);
+
+  useEffect(async () => {
+    if (recording?.meeting && recording?.recording) {
+      //find this meeting in the complited_list
+      if (meetings.meetings_complited.length !== 0 && user.role === 'trainer') {
+        let meeting = meetings.meetings_complited.find(el => el._id === recording?.meeting)
+        //update the start of meetings 
+        dispatch(setComplitedWithUrl(meeting, { status: false, urlRoom: recording.recording }));
+        dispatch(clearLogoutREC());
+
+        //updats the peer if his here
+        socket?.emit("getSocketId", meeting.trainee._id, user => {
+          console.log('getSocketId', meeting.trainee._id, user);
+          let data = {
+            to: user.socketId,
+            meeting: meeting,
+            recording: recording?.recording
+          }
+          socket?.emit("meetingComplited", data);
+        });
+      }
+    }
+  }, [recording])
 
 
   //======================helpers func==============================//
@@ -707,6 +735,9 @@ function ContextProvider({ children, socket, profile }) {
     socket?.on('notification', (notification) => {
       //console.log('notification..notification..notification ', notification);
       setRecognition(notification);
+      if (notification === 'leave') {
+        setProssingEndMeeting(true);
+      }
     });
   };
 
@@ -753,10 +784,11 @@ function ContextProvider({ children, socket, profile }) {
     });
 
     socket?.on('userLeft', (userId, reason) => {
-      if (callAccepted && reason === "transport close") {
-        connectionRef.current.destroy();
+      console.log('userLeft', userId, reason, callAccepted);
+      if (reason === "transport close") {
+        leaveCall()
+        //connectionRef.current.destroy();
         console.log('userLeft ,im in active meeting,i need to waite for his reConect ', userId);
-        //setPeerDisConected(true);
       }
       else {
         console.log('userLeft ', userId);
@@ -775,15 +807,31 @@ function ContextProvider({ children, socket, profile }) {
       if (user.userId === user._id)
         setMySocketId(user.socketId);
       else setYourSocketId(user.socketId);
-    });
 
+      //when im in the room waiting 
+      //you come in - you dont have my accsept
+      //i tall you agin 
+      console.log(location.pathname, user.role);
+      if (location.pathname === '/video-room') {
+        if (user.role === 'trainee') {
+          //all states are cleard when you left the meeting
+          console.log('i accsept Schedule MeetingCall to', yourSocketId);
+          socket?.emit('accseptScheduleMeetingCall', yourSocketId);
+          socket?.emit('t', { yourSocketId, roomId });
+        }
+        if (user.role === 'trainer') {
+          //all states are cleard when you left the meeting
+          socket?.emit('accseptScheduleMeetingCall', yourSocketId);
+        }
+      }
+    });
   };
 
   const lisiningRoomClosed = () => {
     //TO DO - case im not in the room then im not getting this 
     // and i can be on my way to the room .... and not be notifyied by this .
-    socket?.on('closeRoom', (roomId) => {
-      console.log('closeRoom ', roomId);
+    socket?.on('closeRoom', (meeting) => {
+      console.log('closeRoom ', meeting);
       if (location.pathname !== '/video-room') {
         //Clear the state of all and return to home page
         dispatch(closeActiveMeeting()); //no need to update db becose peer2 alrady done that
@@ -792,8 +840,9 @@ function ContextProvider({ children, socket, profile }) {
         return;
       }
       else {
-        leaveCall();
-        navigate('/home', { state: { meeting_id: roomId, me: myName, you: yourName } });
+        dispatch(setMeetingComplited(meeting, { status: false, urlRoom: "Processing" }));
+        navigate(`/meeting/watch/${meeting._id}`);
+        //leaveCall();
       }
     });
   };
@@ -821,6 +870,13 @@ function ContextProvider({ children, socket, profile }) {
     socket?.on('statePeer', (state) => {
       console.log('state of you is: ', state);
       setPeerStateConected(state)
+    });
+  };
+
+  const lisiningMeetingComplited = () => {
+    socket?.on('meetingComplited', (data) => {
+      console.log('meetingComplited', data);
+      dispatch(setComplitedWithUrl(data.meeting, { status: false, urlRoom: data.recording }));
     });
   };
 
@@ -928,7 +984,7 @@ function ContextProvider({ children, socket, profile }) {
 
     peer.on('data', (data) => {
       data = JSON.parse(data);
-      console.log('data', data);
+      // console.log('data', data);
       onResults2({ poseLandmarks: data });
     });
     peer.on('connect', () => {
@@ -1023,10 +1079,10 @@ function ContextProvider({ children, socket, profile }) {
     setCallEnded(true);
     connectionRef.current.destroy();
     // stop both video and audio
-    stream.getTracks().forEach(function (track) {
-      track.stop();
-    });
-    //clearRoomStates();
+    // stream.getTracks().forEach(function (track) {
+    //   track.stop();
+    // });
+    clearRoomStates();
     // window.location.reload();
   };
   //===================socket calls when meeting in now============================//
@@ -1063,32 +1119,33 @@ function ContextProvider({ children, socket, profile }) {
 
     setAccseptScheduleMeetingCall(false);
     setAccseptPeer2ScheduleMeetingCall(false);
-    setConectReq(false);
-    setOneTime(true);
-    setMediapipeOfTrainee(false);
-    setUpcomingMeetingToNow(false);
-    setCallTrainee(false);
+    //setConectReq(false);
+    //setOneTime(true);
+    //setMediapipeOfTrainee(false);
+    //setUpcomingMeetingToNow(false);
+    //setCallTrainee(false);
 
     setCallAccepted(false);
     setCallEnded(false);
-    setStream(null);
-    setMyName('');
-    setYourName('');
+    //setStream(null);
+    //setMyName('');
+    //setYourName('');
     setCall({});
     setMySocketId(null);
     setYourSocketId(null);
-    setYourInfo({});
-    setRoomId(null);
-    setStartMeeting(false);
-    setPosesArry([]);
-    setMyRole(null);
-    setYourDataResived(null);
-    setSyncScore(null);
-    setActivityNow(null);
-    setIsModalVisible(true);
-    setMediaPipeInitilaize('');
-    setMeAsPeer(null);
+    //setYourInfo({});
+    //setRoomId(null);
+    //setStartMeeting(false);
+    //setPosesArry([]);
+    //setMyRole(null);
+    //setYourDataResived(null);
+    //setSyncScore(null);
+    //setActivityNow(null);
+    //setIsModalVisible(true);
+    //setMediaPipeInitilaize('');
+    //setMeAsPeer(null);
     setRecognition(null);
+    setProssingEndMeeting(false);
   }
 
   return (
@@ -1160,7 +1217,8 @@ function ContextProvider({ children, socket, profile }) {
         accseptPeer2ScheduleMeetingCall, setAccseptPeer2ScheduleMeetingCall,
 
         activeMeetingPopUp, setActiveMeetingPopUp,
-        erorrWithPeerConection, setErorrWithPeerConection
+        erorrWithPeerConection, setErorrWithPeerConection,
+        prossingEndMeeting, setProssingEndMeeting
       }}
     >
       {children}

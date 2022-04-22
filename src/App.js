@@ -40,6 +40,8 @@ import TraineeProfile from './Components/screens/TraineeProfile';
 const App = (props) => {
   const navigate = useNavigate();
   const [socket, setSocket] = useState(null);
+  // const recording = useSelector((state) => state.recording);
+  // const meetings = useSelector((state) => state.meetings);
 
   useEffect(() => {
     setSocket(io(`${URL}`));

@@ -10,7 +10,8 @@ import {
     DELETE_MEETING,
     CLEAR_MEETINGS,
     CLOSE_ACTIVE_MEETING,
-    SET_MEETING_COMPKITED
+    SET_MEETING_COMPKITED,
+    SET_MEETING_COMPKITED_URL
 } from '../actions/types';
 
 const initialState = {
@@ -21,20 +22,6 @@ const initialState = {
     active_meeting: null, //meeting thet both users clicked joinRoom and not click closeRoom
     meetings_complited: null, //status=false && urlRoom is difiend - in order to watch 
 }
-
-
-
-// const dates = [
-//     new Date('July 20, 2021 20:17:40'),
-//     new Date('August 19, 2021 23:15:30'),
-//     new Date('July 20, 2021 23:15:30'),
-//     new Date('August 19, 2021 20:17:40')
-//   ];
-
-//   dates.sort(function (a, b) {
-//     return a - b
-//   });
-
 
 export default function (state = initialState, action) {
     const setUpcomingMeeting = (meeting, type) => {
@@ -125,8 +112,18 @@ export default function (state = initialState, action) {
                 active_meeting: !action.payload?.status && null,
                 meetings: !state.meetings ? null : state.meetings.filter(m => m._id !== action.payload._id),
                 all_meetings: state.all_meetings.map(m => { if (m._id !== action.payload._id) m = action.payload }),
-                meetings_complited: !state.meetings_complited ? null : state.meetings_complited.push(action.payload),
+                meetings_complited: !state.meetings_complited ? [action.payload] : [...state.meetings_complited, action.payload] //  state.meetings_complited.push(action.payload),
             };
+        case SET_MEETING_COMPKITED_URL:
+            console.log("SET_MEETING_COMPKITED_URL", action.payload);
+            return {
+                ...state,
+                loading: false,
+                all_meetings: state.all_meetings.map(m => { if (m._id !== action.payload._id) m = action.payload }),
+                meetings_complited: !state.meetings_complited ? null : state.meetings_complited.map(m => { if (m._id !== action.payload._id) m = action.payload }),
+            };
+
+
         case GET_ACTIVE_MEETING:
             console.log("GET_ACTIVE_MEETING", action.payload);
             return {

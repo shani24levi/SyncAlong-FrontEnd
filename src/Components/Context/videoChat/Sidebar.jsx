@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Button, TextField, Grid, Typography, Container, Paper } from '@material-ui/core';
+import { Button, TextField, Grid, Typography, Container, Paper, Box } from '@material-ui/core';
 import { Assignment, Phone, PhoneDisabled } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
 import { SocketContext } from '../ContextProvider';
@@ -40,7 +40,8 @@ const Sidebar = (props) => {
   const classes = useStyles();
 
   return (
-    <Container maxWidth="xl" className={classes.container}>
+    //  <Container maxWidth="xl" className={classes.container}>
+    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
       <Paper elevation={10} className={classes.paper}>
         <form className={classes.root} noValidate autoComplete="off">
           <Grid container className={classes.gridContainer}>
@@ -71,7 +72,8 @@ const Sidebar = (props) => {
         </form>
         {props.children}
       </Paper>
-    </Container>
+    </Box>
+    //</Container>
   );
 }
 
