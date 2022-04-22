@@ -17,7 +17,7 @@ import ScrollTop from '../scrollToTop/ScrollTop';
 import ReConectCall from '../popupCall/ReConectCall';
 
 const Home = ({ socket }) => {
-    const { activeMeetingPopUp, setYourSocketId, yourSocketId, upcamingMeeting, traineeEntered, setMyTraineeEntered, scheduleMeetingPopUpCall } = useContext(SocketContext);
+    const { erorrWithPeerConection, setErorrWithPeerConection, activeMeetingPopUp, setYourSocketId, yourSocketId, upcamingMeeting, traineeEntered, setMyTraineeEntered, scheduleMeetingPopUpCall } = useContext(SocketContext);
     // const scheduleMeetingPopUpCall = { id: 'ddd', trainee: { user: 'nam2', avatar: '22' }, trainer: { user: 'name1', avatar: '233' } }
     const dispatch = useDispatch();
     const user = useSelector(state => state.auth.user);
@@ -106,6 +106,13 @@ const Home = ({ socket }) => {
         }
     }, [meetings.active_meeting, activeMeetingPopUp])
 
+    useEffect(async () => {
+        if (erorrWithPeerConection) {
+            await delay(4000);
+            setErorrWithPeerConection(false);
+        }
+    }, [erorrWithPeerConection])
+
 
     return (
         <>
@@ -116,6 +123,7 @@ const Home = ({ socket }) => {
             {user?._id && !user?.profile_id && <ErrorAlert title="Please set up profile details" />}
             {!meetings.meetings && (isEmpty(upcamingMeeting) || !upcamingMeeting) && <WorningAlert title="No futuer meetings found" />}
             {!isEmpty(trineeOnline.user) && <SeccsesAlert name={trineeOnline.user.user} title=' is online' />}
+            {erorrWithPeerConection && <WorningAlert title={'Try To Conect Agin to ssestion'} />}
             {
                 user.role === 'trainer'
                     ?

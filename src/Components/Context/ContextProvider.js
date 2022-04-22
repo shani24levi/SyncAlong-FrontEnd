@@ -69,6 +69,14 @@ function ContextProvider({ children, socket, profile }) {
   const [upcomingMeetingToNow, setUpcomingMeetingToNow] = useState(false);
   const [callTrainee, setCallTrainee] = useState(false);
   const [activeMeetingPopUp, setActiveMeetingPopUp] = useState(false);
+  const [peerStateConected, setPeerStateConected] = useState(null);
+  const [erorrWithPeerConection, setErorrWithPeerConection] = useState(false);
+  const [myState, setMyState] = useState(null);
+  const myStateRef = useRef(myState);
+  myStateRef.current = myState;
+
+  const peerStateConectedRef = useRef(peerStateConected);
+  peerStateConectedRef.current = peerStateConected;
 
   const [emoji, setEmoji] = useState(null);
   const myVideo = useRef();
@@ -411,6 +419,7 @@ function ContextProvider({ children, socket, profile }) {
     lisiningRoomClosed();
     //lisiningForConnected();
     lisiningReConected();
+    lisiningStatePeer();
   }, [socket]);
 
   useEffect(() => {
@@ -792,7 +801,7 @@ function ContextProvider({ children, socket, profile }) {
   const lisiningReConected = () => {
     let id = user?._id
     socket?.on('reconect', (users) => {
-      console.log('reconect ', users, id);
+      console.log('reconect ', users, user, id);
       if (location.pathname !== '/video-room') {
         users.forEach(user => {
           console.log('reconect foreach ', user.userId, id);
@@ -808,6 +817,13 @@ function ContextProvider({ children, socket, profile }) {
     });
   };
 
+  const lisiningStatePeer = () => {
+    socket?.on('statePeer', (state) => {
+      console.log('state of you is: ', state);
+      setPeerStateConected(state)
+    });
+  };
+
   //===================socket calls when user in room and whant to call============================//
   function answerCall() {
     console.log('answerCall');
@@ -815,7 +831,7 @@ function ContextProvider({ children, socket, profile }) {
     //set me as a peer and difiend my data
     const peer = new Peer({ initiator: false, trickle: false, stream });
     setMeAsPeer(peer);
-    peer._debug = console.log;
+    //peer._debug = console.log;
     // 
     peer.on('error', (err) => {
       // console.log('error with peer', err);
@@ -831,13 +847,43 @@ function ContextProvider({ children, socket, profile }) {
     peer.on('connect', () => {
       //console.log("poseLandmarks: ", poseLandmarks_ref.current);
       let state = peer._pc?.iceConnectionState;
-      console.log("datachannel", state, "peer", peer);
+
+      let data = { state, yourSocketId }
+      if (myStateRef?.current !== state) {
+        setMyState(state);
+        console.log("myState ,myStateRef, state", myState, myStateRef?.current, state);
+        socket?.emit("statePeer", data);
+      }
+      //console.log("datachannel", state, "peer", peer);
       if (
+        peerStateConectedRef.current === 'connected' &&
         poseLandmarks_ref.current !== null &&
         poseLandmarks_ref.current !== undefined &&
         state != undefined && state != null && state == 'connected'
       )
         peer && peer?.send(JSON.stringify(poseLandmarks_ref.current));
+      else if (
+        (state === 'connected' && peerStateConectedRef.current !== 'connected') ||
+        (state !== 'connected' && peerStateConectedRef.current === 'connected')) {
+        console.log("peerStateConected state", peerStateConected, state);
+        let waitingTime = true;
+        while (waitingTime && (state !== 'connected' || peerStateConectedRef.current !== 'connected')) {
+          let currTime = new Date().getTime();
+          let date = new Date();
+          date.getMinutes(date.getMinutes() + 2);
+          let timeIn10sec = date.getTime();
+
+          if (currTime >= timeIn10sec) waitingTime = false;
+        }
+
+        if (!waitingTime && (state !== 'connected' && peerStateConectedRef.current !== 'connected')) {
+          setErorrWithPeerConection(true);
+          //set the meeting back to futer meeting and not as active meeting...
+          //dispach(setActiveMeeting(meeting,false))
+          //leaveCall();
+          //navigate('/home')
+        }
+      }
     });
 
     //when i get a signel that call is answered - i get data about the single
@@ -871,7 +917,7 @@ function ContextProvider({ children, socket, profile }) {
     // }
     const peer = new Peer({ initiator: true, trickle: false, stream });
     setMeAsPeer(peer);
-    peer._debug = console.log;
+    // peer._debug = console.log;
 
     // this._pc.iceConnectionState
     peer.on('error', (err) => {
@@ -882,22 +928,51 @@ function ContextProvider({ children, socket, profile }) {
 
     peer.on('data', (data) => {
       data = JSON.parse(data);
-      //console.log('data', data);
+      console.log('data', data);
       onResults2({ poseLandmarks: data });
     });
     peer.on('connect', () => {
       // console.log("poseLandmarks: ", poseLandmarks_ref.current);
       let state = peer._pc?.iceConnectionState;
       //im tal you my state of peer 
-      //socke?.emie("myStatePeer",state,yourSocketId);
-      console.log("datachannel", state, "peer", peer);
+      let data = { state, yourSocketId }
+
+      if (myStateRef?.current !== state) {
+        setMyState(state);
+        console.log("myState ,myStateRef, state", myState, myStateRef?.current, state);
+        socket?.emit("statePeer", data);
+      }
+      // console.log("datachannel", state, "peer", peer);
       if (
-        //state2()
+        peerStateConectedRef.current === 'connected' &&
         poseLandmarks_ref.current !== null &&
         poseLandmarks_ref.current !== undefined &&
         state != undefined && state != null && state == 'connected'
       )
         peer && peer?.send(JSON.stringify(poseLandmarks_ref.current));
+      else if (
+        (state === 'connected' && peerStateConectedRef.current !== 'connected') ||
+        (state !== 'connected' && peerStateConectedRef.current === 'connected')) {
+        console.log('peerStateConected state', peerStateConectedRef.current, state);
+        let waitingTime = true;
+        while (waitingTime && (state !== 'connected' || peerStateConectedRef.current !== 'connected')) {
+          let currTime = new Date().getTime();
+          let date = new Date();
+          date.getMinutes(date.getMinutes() + 2);
+          let timeIn10sec = date.getTime();
+
+          if (currTime >= timeIn10sec) waitingTime = false;
+        }
+
+        if (!waitingTime && (state !== 'connected' && peerStateConectedRef.current !== 'connected')) {
+          console.log('peerStateConected state', peerStateConectedRef.current, state);
+          setErorrWithPeerConection(true);
+          //set the meeting back to futer meeting and not as active meeting...
+          //dispach(setActiveMeeting(meeting,false))
+          //leaveCall();
+          // navigate('/home')
+        }
+      }
     }
     );
 
@@ -1085,6 +1160,7 @@ function ContextProvider({ children, socket, profile }) {
         accseptPeer2ScheduleMeetingCall, setAccseptPeer2ScheduleMeetingCall,
 
         activeMeetingPopUp, setActiveMeetingPopUp,
+        erorrWithPeerConection, setErorrWithPeerConection
       }}
     >
       {children}

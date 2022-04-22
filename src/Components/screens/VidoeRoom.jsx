@@ -8,9 +8,10 @@ import Sidebar from '../Context/videoChat/Sidebar';
 import Notifications from '../Context/videoChat/Notifications';
 import PopUpCall from '../Context/videoChat/PopUpCall';
 import ScrollTop from '../scrollToTop/ScrollTop';
+import ErrorAlert from '../alrets/ErrorAlert';
 
 function VidoeRoom({ socket }) {
-    const { setMyRole, setRoomId, setMySocketId, setYourSocketId, setYourInfo, setMyName, setYourName } = useContext(SocketContext);
+    const { erorrWithPeerConection, setMyRole, setRoomId, setMySocketId, setYourSocketId, setYourInfo, setMyName, setYourName } = useContext(SocketContext);
     const location = useLocation();
     const user = useSelector(state => state.auth.user)
     const [me, setMe] = useState(user.role === 'trainer' ? location.state.meeting.tariner : location.state.meeting.tariner);
@@ -54,6 +55,7 @@ function VidoeRoom({ socket }) {
 
     return (
         <>
+            {erorrWithPeerConection && <ErrorAlert title={'Error connecting Peer'} />}
             <div id="back-to-top-anchor" />
             <VideoContext meeting={location.state.meeting} />
             <Sidebar>
