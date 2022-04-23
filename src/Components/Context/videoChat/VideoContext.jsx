@@ -25,7 +25,7 @@ import SeccsesAlert from '../../alrets/SeccsesAlert';
 import WorningAlert from '../../alrets/WorningAlert';
 
 import { createRecordingById, clearLogoutREC } from '../../../Store/actions/recordingActions';
-import { setActiveMeeting, setMeetingComplited } from '../../../Store/actions/meetingActions';
+import { setActiveMeeting, setMeetingComplited, closeActiveMeeting } from '../../../Store/actions/meetingActions';
 
 import isEmpty from '../../../validation/isEmpty';
 import ReConect from "../../../assets/sounds/reconect.mp3";
@@ -52,6 +52,7 @@ function VideoContext({ meeting }) {
         accseptPeer2ScheduleMeetingCall, setAccseptPeer2ScheduleMeetingCall,
     } = useContext(SocketContext);
     const classes = useStyles();
+    let location = useLocation();
     const [start, setStartActivity] = useState(false);
     const [showDemo, setDemo] = useState(false);
     const [activityTime, setActivityTime] = useState(false);
@@ -103,8 +104,28 @@ function VideoContext({ meeting }) {
         yourSocketId && socket.off('getNewUserAddToApp');
     };
 
+    const lisiningRoomClosed = () => {
+        //TO DO - case im not in the room then im not getting this 
+        // and i can be on my way to the room .... and not be notifyied by this .
+        socket?.on('closeRoom', (meetingId) => {
+            console.log('closeRoom ', meetingId);
+            console.log('herer', user?.role, meetings, meetings.active_meeting);
+            let meeting = meetings.active_meeting;
+            if (!meetings.active_meeting)
+                meeting = meetings.all_meetings.find(el => el._id === meetingId);
+            //Clear the state of all and return to home page
+            user?.role === 'trainer' && dispatch(closeActiveMeeting()); //no need to update db becose peer2 alrady done that
+            user?.role === 'trainee' && meeting && dispatch(setMeetingComplited(meeting, { status: false, urlRoom: "Processing" }));
+            leaveCall();
+            navigate(`/meeting/watch/${meetingId}`);
+            return;
+        });
+    };
+
     useEffect(() => {
         lisiningForConnected();
+        lisiningRoomClosed();
+
         //setCamera(new Camara);
         // console.log('create stream', camera);
         // camera.init(setStream);
@@ -247,7 +268,8 @@ function VideoContext({ meeting }) {
                     console.log('formData', formData.getAll('file'));
                     dispatch(setMeetingComplited(meeting, { status: false, urlRoom: "Processing" }));
                     //this call updates the server as a meeting complited....
-                    // dispatch(createRecordingById(formData, meeting._id));
+                    dispatch(createRecordingById(formData, meeting._id));
+                    //navigate(`/meeting/watch/${meetingId}`);
                 }
                 else {
                     console.log("cannot save recording because mediaBlobUrl is undefined");
@@ -272,8 +294,9 @@ function VideoContext({ meeting }) {
         console.log('meetings?.meetings_complited', meetings?.meetings_complited);
         if (meetings?.meetings_complited.find(el => el._id === meeting._id) && user.role === 'trainer') {
             //after its done notify the trainee
-            console.log('socket?.on("prossesDone", roomId);', meeting._id);
-            socket?.emit("closeRoom", meeting);
+            console.log('socket?.on("prossesDone", roomId);', meeting);
+            let meetingId = meeting._id;
+            socket?.emit("closeRoom", meetingId);
             navigate(`/meeting/watch/${meeting._id}`);
         }
     }, [meetings])

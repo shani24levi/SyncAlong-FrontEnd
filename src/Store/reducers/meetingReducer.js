@@ -40,7 +40,7 @@ export default function (state = initialState, action) {
 
         else if (type === 'delete') {
             console.log(state.meetings);
-            if (state.upcoming_meeting._id === meeting) {
+            if (state.upcoming_meeting?._id === meeting) {
                 let mm = state.meetings
                 if (mm) mm = mm.filter(m => m._id !== meeting)
                 console.log('mm', mm);
@@ -79,10 +79,13 @@ export default function (state = initialState, action) {
             console.log('meetings_complited', isEmpty(meetingsComplited));
             console.log('activeMeeting', activeMeeting);
 
+            // console.log(meetingsComplited);
+            // meetingsComplited.sort((a, b) => { console.log(a, b); return a.dateEnd - b.dateEnd })
+            // console.log('meetingsComplited', meetingsComplited);
             return {
                 ...state,
                 all_meetings: action.payload,
-                meetings_complited: !isEmpty(meetingsComplited) ? meetingsComplited : null,
+                meetings_complited: !isEmpty(meetingsComplited) ? meetingsComplited.sort((a, b) => { return a.dateEnd - b.dateEnd }) : null,
                 active_meeting: activeMeeting,
                 loading: false,
             };
@@ -111,18 +114,21 @@ export default function (state = initialState, action) {
                 loading: false,
                 active_meeting: !action.payload?.status && null,
                 meetings: !state.meetings ? null : state.meetings.filter(m => m._id !== action.payload._id),
-                all_meetings: state.all_meetings.map(m => { if (m._id !== action.payload._id) m = action.payload }),
-                meetings_complited: !state.meetings_complited ? [action.payload] : [...state.meetings_complited, action.payload] //  state.meetings_complited.push(action.payload),
+                all_meetings: state.all_meetings.map(m => (m?._id === action.payload?._id) ? m = action.payload : m),
+                meetings_complited: !state.meetings_complited ? [action.payload] : [...state.meetings_complited, action.payload],//  state.meetings_complited.push(action.payload),
+                upcoming_meeting: setUpcomingMeeting(action.payload._id, 'delete'),
+
             };
         case SET_MEETING_COMPKITED_URL:
             console.log("SET_MEETING_COMPKITED_URL", action.payload);
+            //state.meetings_complited && state.meetings_complited.map(m => (m?._id === action.payload?._id) ? m = action.payload : m);
+            //state.meetings_complited.sort((a, b) => { return a.date - b.date })
             return {
                 ...state,
                 loading: false,
-                all_meetings: state.all_meetings.map(m => { if (m._id !== action.payload._id) m = action.payload }),
-                meetings_complited: !state.meetings_complited ? null : state.meetings_complited.map(m => { if (m._id !== action.payload._id) m = action.payload }),
+                all_meetings: state.all_meetings.map(m => (m?._id === action.payload?._id) ? m = action.payload : m),
+                meetings_complited: !state.meetings_complited ? null : state.meetings_complited.map(m => (m?._id === action.payload?._id) ? m = action.payload : m),//state.meetings_complited.sort((a, b) => { return a.dateEnd - b.dateEnd }) // state.meetings_complited.map(m => (m?._id === action.payload?._id) ? m = action.payload : m),
             };
-
 
         case GET_ACTIVE_MEETING:
             console.log("GET_ACTIVE_MEETING", action.payload);

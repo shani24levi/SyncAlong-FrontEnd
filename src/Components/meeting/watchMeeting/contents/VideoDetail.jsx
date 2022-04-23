@@ -1,7 +1,11 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Grid, Container } from '@material-ui/core';
 import { styled } from '@mui/material/styles';
 import Loader from '../../../loder/Loder';
+import { dateFormat } from '../../../../Utils/dateFormat';
+import { capitalize } from '../../../../helpers';
+import PurpleChartCard from '../../../charts/PurpleChartCard';
 
 const Ifram = styled('div')`
 position: relative;
@@ -50,31 +54,37 @@ animation-duration: 2s;
 `;
 
 function VideoDetail({ video }) {
+    const user = useSelector(state => state.auth.user);
     console.log('====================================');
     console.log('video.urlRoom', video.urlRoom);
     console.log('====================================');
 
     return (
-        <Grid item xs={12} md={8}>
-            {video.urlRoom === "Processing"
-                ? <Loader />
-                :
-                <Ifram>
-                    <video controls className="responsive-iframe" src={video.urlRoom} ></video>
-                </Ifram>
-            }
-            <Details >
-                <div className="details-title">
-                    {video.title}
-                </div>
-                <div className="details-channel-title">
-                    {video.title}
-                </div>
-                <div>
-                    {video.date}
-                </div>
-            </Details>
-        </Grid>
+        <>
+            <Grid item xs={12} md={8} lg={8}>
+                {video.urlRoom === "Processing"
+                    ? <Loader />
+                    :
+                    <Ifram>
+                        <video controls className="responsive-iframe" src={video.urlRoom} ></video>
+                    </Ifram>
+                }
+                <Details >
+                    <div className="details-title">
+                        {` Meeting Name:  ${capitalize(video.title)}`}
+                    </div>
+                    <div className="details-channel-title">
+                        {`Participants : You & ${user.role === 'trainer' ? capitalize(video.trainee.user) : capitalize(video.tariner.user)}`}
+                    </div>
+                    <div>
+                        {`Meeting Ended At: ${dateFormat(video.dateEnd)}`}
+                    </div>
+                </Details>
+                <Grid item xs={12} md={12} sx={{ pt: '16px !important' }}>
+                    <PurpleChartCard time={dateFormat(video.date)} totalSync={'37'} />
+                </Grid>
+            </Grid>
+        </>
     );
 }
 

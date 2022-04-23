@@ -1,7 +1,7 @@
 import React, { createContext, useState, useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { closeActiveMeeting, setComplitedWithUrl } from '../../Store/actions/meetingActions';
+import { closeActiveMeeting, setComplitedWithUrl, setMeetingComplited } from '../../Store/actions/meetingActions';
 import { clearLogoutREC } from '../../Store/actions/recordingActions';
 import Peer from 'simple-peer/simplepeer.min.js';
 import { Holistic } from '@mediapipe/holistic';
@@ -420,7 +420,7 @@ function ContextProvider({ children, socket, profile }) {
     lisiningTraineeCall();
     lisiningAccseptScheduleMeetingCall();
     lisiningForDisconectPeerInRoom();
-    lisiningRoomClosed();
+    // lisiningRoomClosed();
     //lisiningForConnected();
     lisiningReConected();
     lisiningStatePeer();
@@ -592,11 +592,11 @@ function ContextProvider({ children, socket, profile }) {
   useEffect(async () => {
     if (recording?.meeting && recording?.recording) {
       //find this meeting in the complited_list
+      console.log('recording?.meeting', recording?.meeting, meetings.meetings_complited.length);
       if (meetings.meetings_complited.length !== 0 && user.role === 'trainer') {
         let meeting = meetings.meetings_complited.find(el => el._id === recording?.meeting)
         //update the start of meetings 
-        dispatch(setComplitedWithUrl(meeting, { status: false, urlRoom: recording.recording }));
-        dispatch(clearLogoutREC());
+        console.log('meeting', meeting);
 
         //updats the peer if his here
         socket?.emit("getSocketId", meeting.trainee._id, user => {
@@ -604,10 +604,15 @@ function ContextProvider({ children, socket, profile }) {
           let data = {
             to: user.socketId,
             meeting: meeting,
-            recording: recording?.recording
+            recording: recording?.recording,
+            dateEnd: recording.dateEnd
           }
+          console.log('data', data);
           socket?.emit("meetingComplited", data);
         });
+
+        dispatch(setComplitedWithUrl(meeting, { status: false, urlRoom: recording.recording, dateEnd: recording.dateEnd }));
+        dispatch(clearLogoutREC());
       }
     }
   }, [recording])
@@ -827,25 +832,34 @@ function ContextProvider({ children, socket, profile }) {
     });
   };
 
-  const lisiningRoomClosed = () => {
-    //TO DO - case im not in the room then im not getting this 
-    // and i can be on my way to the room .... and not be notifyied by this .
-    socket?.on('closeRoom', (meeting) => {
-      console.log('closeRoom ', meeting);
-      if (location.pathname !== '/video-room') {
-        //Clear the state of all and return to home page
-        dispatch(closeActiveMeeting()); //no need to update db becose peer2 alrady done that
-        leaveCall();
-        navigate('/home');
-        return;
-      }
-      else {
-        dispatch(setMeetingComplited(meeting, { status: false, urlRoom: "Processing" }));
-        navigate(`/meeting/watch/${meeting._id}`);
-        //leaveCall();
-      }
-    });
-  };
+  // const lisiningRoomClosed = () => {
+  //   //TO DO - case im not in the room then im not getting this 
+  //   // and i can be on my way to the room .... and not be notifyied by this .
+  //   socket?.on('closeRoom', (meetingId) => {
+  //     console.log('closeRoom ', meetingId);
+  //     if (location.pathname !== '/video-room') {
+  //       console.log('herer', user?.role, meetings, meetings.active_meeting);
+  //       let meeting = meetings.active_meeting;
+  //       if (!meetings.active_meeting)
+  //         meeting = meetings.all_meetings.find(el => el._id === meetingId);
+  //       //Clear the state of all and return to home page
+  //       user?.role === 'trainer' && dispatch(closeActiveMeeting()); //no need to update db becose peer2 alrady done that
+  //       user?.role === 'trainee' && meeting && dispatch(setMeetingComplited(meeting, { status: false, urlRoom: "Processing" }));
+  //       leaveCall();
+  //       // user?.role === 'trainee' &&
+  //       navigate(`/meeting/watch/${meetingId}`);
+  //       return;
+  //     }
+  //     else {
+  //       let id = meetings.meetings.active_meeting._id;
+  //       console.log('herer');
+  //       console.log('close', id, meetings.active_meeting);
+  //       dispatch(setMeetingComplited(meetings.active_meeting, { status: false, urlRoom: "Processing" }));
+  //       navigate(`/meeting/watch/${id}`);
+  //       leaveCall();
+  //     }
+  //   });
+  // };
 
   const lisiningReConected = () => {
     let id = user?._id
@@ -876,7 +890,7 @@ function ContextProvider({ children, socket, profile }) {
   const lisiningMeetingComplited = () => {
     socket?.on('meetingComplited', (data) => {
       console.log('meetingComplited', data);
-      dispatch(setComplitedWithUrl(data.meeting, { status: false, urlRoom: data.recording }));
+      dispatch(setComplitedWithUrl(data.meeting, { status: false, urlRoom: data.recording, dateEnd: data.dateEnd }));
     });
   };
 
@@ -916,8 +930,11 @@ function ContextProvider({ children, socket, profile }) {
         poseLandmarks_ref.current !== null &&
         poseLandmarks_ref.current !== undefined &&
         state != undefined && state != null && state == 'connected'
-      )
+      ) {//i want see what perspectiveOrigin: i
+        //console.log("you", peerStateConectedRef.current);
+        //console.log("me", state);
         peer && peer?.send(JSON.stringify(poseLandmarks_ref.current));
+      }
       else if (
         (state === 'connected' && peerStateConectedRef.current !== 'connected') ||
         (state !== 'connected' && peerStateConectedRef.current === 'connected')) {

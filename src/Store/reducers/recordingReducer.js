@@ -12,7 +12,7 @@ const initialState = {
     loading: false,
     recording: null,
     meeting: null,
-
+    dateEnd: null
 }
 
 export default function (state = initialState, action) {
@@ -27,6 +27,7 @@ export default function (state = initialState, action) {
                 loading: false,
                 recording: null,
                 meeting: null,
+                dateEnd: null
             };
         case SET_RECORDING:
             console.log('SET_RECORDING', action.payload);
@@ -34,7 +35,8 @@ export default function (state = initialState, action) {
                 ...state,
                 loading: false,
                 recording: action.payload.url,
-                meeting: action.payload ? action.payload.meeting_id : null
+                meeting: action.payload ? action.payload.meeting_id : null,
+                dateEnd: action.payload.dateEnd
             }
         default:
             return state;

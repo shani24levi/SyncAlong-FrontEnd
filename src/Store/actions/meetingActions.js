@@ -98,6 +98,7 @@ export const setActiveMeeting = (meeting, status) => dispatch => {
 }
 
 export const setMeetingComplited = (meeting, data) => dispatch => {
+    console.log('setMeetingComplited', meeting, data);
     meeting.status = data.status;
     meeting.urlRoom = data.urlRoom; //"Processing"
     console.log('status', meeting);
@@ -112,13 +113,18 @@ export const setMeetingComplited = (meeting, data) => dispatch => {
 }
 
 export const setComplitedWithUrl = (meeting, data) => dispatch => {
+    console.log('setComplitedWithUrl', meeting, data);
     meeting.urlRoom = data.urlRoom; //"Processing"
+    meeting.dateEnd = data.dateEnd; // end time of meeting when save with url..
     console.log('status', data, meeting);
     dispatch(setLoading(true));
-    if (data)
-        return { type: SET_MEETING_COMPKITED_URL, payload: meeting }
-    else
-        console.log('lll');
+    dispatch(success(meeting))
+    function success(meeting) {
+        return {
+            type: SET_MEETING_COMPKITED_URL,
+            payload: meeting
+        }
+    };
 }
 
 export const closeActiveMeeting = () => dispatch => {
