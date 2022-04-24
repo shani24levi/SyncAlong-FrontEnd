@@ -27,7 +27,7 @@ const themeColors = {
     },
     primary: {
         main: "#5e72e4",
-        dark: "#233dd2",
+        dark: "rgb(69, 39, 160)",
         snackbar: "#7889e8",
         badgeBg: "#eaecfb",
         badgeBgHover: "#2a44db",

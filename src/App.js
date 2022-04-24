@@ -40,8 +40,6 @@ import TraineeProfile from './Components/screens/TraineeProfile';
 const App = (props) => {
   const navigate = useNavigate();
   const [socket, setSocket] = useState(null);
-  // const recording = useSelector((state) => state.recording);
-  // const meetings = useSelector((state) => state.meetings);
 
   useEffect(() => {
     setSocket(io(`${URL}`));
@@ -57,6 +55,7 @@ const App = (props) => {
 
   useEffect(() => {
     //chake for authrisiation and redirect to relevat page.
+    console.log('props.auth.user?._id ', props.auth.user?._id);
     if (props.auth.user?._id !== undefined) {
       return;
     }
@@ -73,8 +72,10 @@ const App = (props) => {
         props.logoutUser();
         navigate('/auth/login')
       }
-      else
-        navigate('/home')
+      else {
+        console.log('localStorage.user', localStorage.user);
+        navigate('/home');
+      }
     }
   }, [])
 

@@ -110,12 +110,6 @@ const theme = createTheme({
                 backgroundColor: "#ffff",
             },
         },
-        // MuiPaper: {
-        //     root: {
-        //         backgroundColor: "#171941 !important",
-        //         color: "white !important",
-        //     },
-        // },
         MuiFormHelperText: {
             root: {
                 color: "#faf7f791",
@@ -130,7 +124,6 @@ const theme = createTheme({
                 color: "#e3d6d661 !important",
             },
         },
-
         MuiPickersDay: {
             root: {
                 "&$selected:hover": {

@@ -41,7 +41,7 @@ const WelcomContainer = () => {
                     </Box>
                 </Box>
             </Container>
-            <Box
+            {/* <Box
                 position="absolute"
                 zIndex="100"
                 height="70px"
@@ -72,7 +72,7 @@ const WelcomContainer = () => {
                         points="2560 0 2560 100 0 100"
                     />
                 </Box>
-            </Box>
+            </Box> */}
         </Box>
     );
 }

@@ -12,7 +12,6 @@ import { useNavigate } from 'react-router-dom'
 import { dateFormat } from '../../Utils/dateFormat';
 import buttonsStyles from "../../assets/theme/buttons";
 import QuickStartBtn from './QuickStartBtn';
-import QuickStartBtn2 from './quickStartBtn/QuickStartBtn';
 import ListBoxTop from '../listBox/ListBoxTop';
 import DoughnutChart from '../charts/DoughnutChart';
 import ProgressUserView from './trainer/ProgressUserView';
@@ -142,7 +141,6 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
                 <Grid container alignItems='center' justifyContent='center' spacing={1} >
                     <Grid item xs={3} md={4}>
                         <QuickStartBtn />
-                        {/* <QuickStartBtn2 /> */}
                     </Grid>
                     <Grid item xs={9} md={8}>
                         <Search />

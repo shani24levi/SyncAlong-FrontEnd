@@ -301,15 +301,6 @@ function VideoContext({ meeting }) {
         }
     }, [meetings])
 
-    // useEffect(async () => {
-    //     if (recording?.meeting === meeting._id && recording?.recording) {
-    //         //update the start of meetings 
-    //         dispatch(setMeetingComplited(meeting, { status: false, urlRoom: recording.recording }));
-    //         dispatch(clearLogoutREC());
-    //         //after its done notify the trainee
-    //     }
-    // }, [recording])
-
     const prevActivitySession = () => {
         if (currActivity === 0) {
             setDisplayErrorMessage('No prev activity to go back to.... whold you like to contine?');
@@ -601,6 +592,12 @@ function VideoContext({ meeting }) {
                 </Box>
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                     {/* <Grid container justifyContent='space-between'> */}
+                    <Button onClick={() => {
+                        setSettingUserInFrame(true)
+                        setPeer2inFrame(true)
+                        setPeer1inFrame(true)
+                    }}>inFrame</Button>
+
                     <Button onClick={() => {
                         setRecognition('start')
                     }}>Ok</Button>
