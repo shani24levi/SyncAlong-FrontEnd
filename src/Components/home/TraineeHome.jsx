@@ -6,13 +6,17 @@ import { makeStyles, useTheme, styled, alpha } from "@material-ui/core/styles";
 import { Box, Card, Container, Grid } from "@material-ui/core";
 import NextMeetingTime from '../meeting/NextMeetingTime';
 // core components
-import componentStyles from "../../assets/material-ui-style/componenets/auth-header";
+//import componentStyles from "../../assets/material-ui-style/componenets/auth-header";
+import componentStyles from "../../assets/material-ui-style/componenets/avatars";
+
 import PopUpCall from '../popupCall/PopUpCall';
 import HeaderWaves from './trainee/HeaderWaves';
 import CircelsHeader from '../layout/Header/CircelsHeader';
-import { Avatar, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material';
+import { Avatar, AvatarGroup, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material';
 import TableChartOutlinedIcon from '@mui/icons-material/TableChartOutlined';
 const useStyles = makeStyles(componentStyles);
+//const avatarStyles = makeStyles(avatarsStyles);
+
 
 
 // styles
@@ -41,6 +45,8 @@ const CardAvatar = styled(Card)(({ theme }) => ({
 function TraineeHome({ meeting, date }) {
     const { callTrainee, upcomingMeetingToNow, scheduleMeetingPopUpCall, upcamingMeeting } = useContext(SocketContext);
     const classes = useStyles();
+    //const classes = avatarStyles();
+
     const theme = useTheme();
     const user = useSelector(state => state.auth.user);
 
@@ -65,7 +71,7 @@ function TraineeHome({ meeting, date }) {
                             xs={12}
                             md={6} lg={6}
                         >
-                            <CardWrapper border={false} content={false} >
+                            <CardWrapper>
                                 <Box sx={{ p: 2 }}>
                                     <List sx={{ py: 0 }}>
                                         <ListItem alignItems="center" disableGutters sx={{ py: 0 }}>
@@ -109,7 +115,7 @@ function TraineeHome({ meeting, date }) {
                             xs={12}
                             md={6} lg={6}
                         >
-                            <CardWrapper border={false} content={false} >
+                            <CardWrapper >
                                 <Box sx={{ p: 2 }}>
                                     <List sx={{ py: 0 }}>
                                         <ListItem alignItems="center" disableGutters sx={{ py: 0 }}>
@@ -155,11 +161,11 @@ function TraineeHome({ meeting, date }) {
                             md={12} lg={12}
                         >
                             <CardAvatar>
-                                <Avatar
-                                    alt="avatar"
-                                    src={user.avatar}
-                                // className={classes.largelarge}
-                                />
+                                <AvatarGroup max={4}>
+                                    <Avatar alt="you" src={user.avatar} className={classes.middle} />
+                                    <Avatar alt="me" src={user.avatar} className={classes.middle} />
+                                </AvatarGroup>
+
                             </CardAvatar>
                         </Grid>
                         <Grid
@@ -167,7 +173,7 @@ function TraineeHome({ meeting, date }) {
                             xs={12}
                             md={12} lg={12}
                         >
-                            <CardWrapper border={false} content={false} className="page-header header-filter">
+                            <CardWrapper className="page-header header-filter">
                                 <Grid className="index-page">
                                     <CircelsHeader />
                                     <Box sx={{ p: 2 }}>
@@ -213,7 +219,7 @@ function TraineeHome({ meeting, date }) {
                 </Container>
             </Box>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
-                <path fill="#fff" fill-opacity="1" d="M0,128L40,133.3C80,139,160,149,240,154.7C320,160,400,160,480,149.3C560,139,640,117,720,112C800,107,880,117,960,144C1040,171,1120,213,1200,213.3C1280,213,1360,171,1400,149.3L1440,128L1440,0L1400,0C1360,0,1280,0,1200,0C1120,0,1040,0,960,0C880,0,800,0,720,0C640,0,560,0,480,0C400,0,320,0,240,0C160,0,80,0,40,0L0,0Z"></path>
+                <path fill="#fff" fillOpacity="1" d="M0,128L40,133.3C80,139,160,149,240,154.7C320,160,400,160,480,149.3C560,139,640,117,720,112C800,107,880,117,960,144C1040,171,1120,213,1200,213.3C1280,213,1360,171,1400,149.3L1440,128L1440,0L1400,0C1360,0,1280,0,1200,0C1120,0,1040,0,960,0C880,0,800,0,720,0C640,0,560,0,480,0C400,0,320,0,240,0C160,0,80,0,40,0L0,0Z"></path>
             </svg>
         </>
     );

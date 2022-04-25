@@ -90,8 +90,8 @@ const ScheduleMeetings = (props) => {
     //     },
     // ];
 
-    console.log('firstTime', firstTime);
-    console.log('modalData', modalData);
+    // console.log('firstTime', firstTime);
+    // console.log('modalData', modalData);
     console.log(meetingEvents);
     return (
         <>
