@@ -74,6 +74,10 @@ function VideoContext({ meeting }) {
     const [stop, setStop] = useState(false);
     const stopRef = useRef(stop);
     stopRef.current = stop;
+    const currActivityRef = useRef(currActivity);
+    currActivityRef.current = currActivity;
+
+
     const Audio = useRef();
     const user = useSelector((state) => state.auth.user);
     const recording = useSelector((state) => state.recording);
@@ -175,7 +179,7 @@ function VideoContext({ meeting }) {
 
     useEffect(async () => {
         setSync(true);
-        if (syncScore >= 0.85) {
+        if (syncScore >= 0.75) {
             console.log('sync.....', syncScore);
         }
         else {
@@ -188,8 +192,11 @@ function VideoContext({ meeting }) {
     }, [activity_now]);
 
     const activitiesSession = async () => {
-        for (let i = currActivity; i < meeting.activities.length; i++) {
+        setStop(false);
+        console.log('currActivity', currActivityRef.current);
+        for (let i = currActivityRef.current; i < meeting.activities.length; i++) {
             setSyncScore(0);
+            console.log('i', i);
             setCurrActivity(i);
             console.log(i, ' this activity is ....', meeting.activities[i]);
             setActivityNow(meeting.activities[i]);
@@ -197,6 +204,7 @@ function VideoContext({ meeting }) {
             recognition === 'start' && await delay(5000);
             //set the start activity to display
 
+            console.log('stopRef.current', stopRef.current);
             if (stopRef.current) return false;
             setStartActivity(true);
             setSyncScore(0);
@@ -292,45 +300,40 @@ function VideoContext({ meeting }) {
         }
     }, [meetings])
 
-    // useEffect(async () => {
-    //     if (recording?.meeting === meeting._id && recording?.recording) {
-    //         //update the start of meetings 
-    //         dispatch(setMeetingComplited(meeting, { status: false, urlRoom: recording.recording }));
-    //         dispatch(clearLogoutREC());
-    //         //after its done notify the trainee
-    //     }
-    // }, [recording])
-
-    const prevActivitySession = () => {
+    const prevActivitySession = async () => {
         if (currActivity === 0) {
             setDisplayErrorMessage('No prev activity to go back to.... whold you like to contine?');
-            //swalAlret();
+            swalAlret();
             return;
         }
         else {
             setCurrActivity(currActivity - 1);
-            //setRecognition('');
             setStop(false);
-            activitiesSession(); //contineu the activities
+            await delay(2000);
+            console.log('stopRef.current', stopRef.current);
+            await activitiesSession(); //contineu the activities
         }
     }
 
-    const nextActivitySession = () => {
+    const nextActivitySession = async () => {
+        console.log('next func', currActivity, meeting.activities.length - 1);
         if (currActivity === meeting.activities.length - 1) { //the last activiry in the list . ther is no next ....
             setDisplayErrorMessage('No next activity to go to.... whold you like to contine this activity?');
-            //swalAlret();
+            swalAlret();
             return;
         }
         else {
+            console.log('next func elssseeee');
             setCurrActivity(currActivity + 1);
-            //setRecognition('continue');
             setStop(false);
-            activitiesSession(); //contineu the activities
+            await delay(2000);
+            console.log('stopRef.current', stopRef.current);
+            await activitiesSession(); //contineu the activities
         }
     }
 
     useEffect(async () => {
-        if (session && peer2inFrame && peer1inFrame && (recognition === 'start' || recognition === 'continue')) {
+        if (session && peer2inFrame && peer1inFrame && recognition === 'start') {
             console.log('recognition', recognition);
             setQuestion(false);
             setStop(false);
@@ -358,35 +361,36 @@ function VideoContext({ meeting }) {
             setActivitiesEnded(false);
             setCurrActivity(0);
             setStop(false);
+            await delay(2000);
+            console.log('stopRef.current', stopRef.current);
             swalAction('ReStartung Now...');
-            //user.role === 'trainer' && statusRecord('start');
-            activitiesSession();
+            await activitiesSession();
         }
         if (recognition == 'continue') {
             setStop(false);
+            await delay(2000);
+            console.log('stopRef.current', stopRef.current);
             console.log('continue,,,,');
-            // if (activitiesEnded) {
-            //     console.log('Activity ENDED yoo can go back or restart');
-            //     setDisplayErrorMessage('Session Ended , would you like to start over?');
-            //     // swalAlret();
-            // }
-            // else swalAction('Continue');
+            await activitiesSession();
         }
         else if (recognition == 'stop') {
             setStop(true);
-            swalAction('Stop');
+            await delay(2000);
+            console.log('stopRef.current', stopRef.current);
             console.log('stop....');
         }
         else if (recognition == 'prev') {
             setStop(true);
-            swalAction('Prev');
-            prevActivitySession();
+            await delay(2000);
+            console.log('stopRef.current', stopRef.current);
+            await prevActivitySession();
             console.log('prev....');
         }
         else if (recognition == 'next') {
             setStop(true);
-            swalAction('Next');
-            nextActivitySession();
+            await delay(2000);
+            console.log('stopRef.current', stopRef.current);
+            await nextActivitySession();
             console.log('next....');
         }
         else if (recognition == 'leave') {
@@ -576,9 +580,9 @@ function VideoContext({ meeting }) {
             </Grid>
 
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                {meeting.activities.map((i, ii) => {
+                {meeting.activities.map(i => {
                     return (
-                        <Box key={ii} sx={{ borderRadius: '16px' }} className={classes.activityList} style={{ color: meeting.activities[currActivity] === i ? 'blue' : 'black' }}>{i}</Box>
+                        <Box key={i} sx={{ borderRadius: '16px' }} className={classes.activityList} style={{ color: meeting.activities[currActivity] === i ? 'blue' : 'black' }}>{i}</Box>
                     )
                 })
                 }
@@ -607,7 +611,21 @@ function VideoContext({ meeting }) {
                     <Button onClick={() => {
                         setSyncScore(0.8)
                     }}>sync</Button>
-                    {/* </Grid> */}
+
+                    <Button onClick={() => {
+                        sendMyPoses(timeOfColectionPose, posesArry, meeting.activities[currActivity])
+                    }}>syncSendByFraime-p1-to-p2</Button>
+
+
+                    <Button onClick={async () => {
+                        let data = {
+                            poses: poseFarFrame,
+                            time: timeOfColectionPose,
+                            getMilliseconds: new Date(timeOfColectionPose).getMilliseconds()
+                        }
+                        await sendPosesByPeers(data, meeting.activities[currActivity])
+                    }}>syncSendByFraime-both-firstTraineeeeeee</Button>
+
                 </Box>
                 <br />
             </>}

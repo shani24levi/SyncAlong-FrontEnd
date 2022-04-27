@@ -92,7 +92,7 @@ export default function (state = initialState, action) {
         case CREATE_MEETING:
             console.log(action.payload.data.data);
             let add_all = state.all_meetings ? [...state.all_meetings, action.payload.data.data] : null
-            let meetings = state.all_meetings ? [...state.meetings, action.payload.data.data] : null
+            let meetings = state.meetings ? [...state.meetings, action.payload.data.data] : null
 
             // let meetings = state.meetings ? [...state.meetings, action.payload.data.data] : null
             return {
