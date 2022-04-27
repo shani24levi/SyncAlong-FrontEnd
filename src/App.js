@@ -3,7 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@material-ui/styles";
 import theme from "./assets/theme/theme";
 import PropTypes from "prop-types";
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 //socket
 import { io } from 'socket.io-client';
 import { URL } from './Utils/globalVaribals';
@@ -39,6 +39,8 @@ import TraineeProfile from './Components/screens/TraineeProfile';
 
 const App = (props) => {
   const navigate = useNavigate();
+  const location = useLocation();
+
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
@@ -72,9 +74,15 @@ const App = (props) => {
         props.logoutUser();
         navigate('/auth/login')
       }
-      else {
-        console.log('localStorage.user', localStorage.user);
+      else{
         navigate('/home');
+        // console.log('location.pathname', location.pathname, location.pathname === '/');
+        // if(location.pathname.toString() == '/'){
+        //   console.log("go home");
+        //   navigate('/home');
+        // }else{
+        //   console.log('go to ', location.pathname);
+        // }
       }
     }
   }, [])

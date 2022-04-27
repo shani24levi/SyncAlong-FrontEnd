@@ -41,15 +41,20 @@ const bottom_activities = [
 ]
 
 const activity_ar = {
-    'bird': [
-        'hands-x', 'hands-y', 'swim-hands', 'swing-hands',
-        "left-hand-up", "right-hand-up", 'crazy',
+    'rainbow': [
+        'hands-x', 'swim-hands', 'swing-hands',
     ],
-    'glasses': [
+    'bird': [
+        'hands-y', "left-hand-up", "right-hand-up",
+    ],
+    'zombie': [
+        'crazy',
+    ],
+    'horse': [
         'left-leg-up', 'right-leg-up', 'legs-both-up',
         '90leging-right', '90leging-left',
     ],
-    'rainbow': [
+    'rain': [
         'poshup', 'baly-run', 'baly-legs', 'back-down', 'toch-flor', 'claping', 'all-up-1',
         'gamp', 'legs-gumping', 'open-close', 'kicks', 'pray', 'right-all', 'up-dwon-both',
         'gump-sides', 'zomba'

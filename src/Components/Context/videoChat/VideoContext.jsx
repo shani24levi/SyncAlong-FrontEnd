@@ -30,7 +30,7 @@ import { setActiveMeeting, setMeetingComplited, closeActiveMeeting } from '../..
 import isEmpty from '../../../validation/isEmpty';
 import ReConect from "../../../assets/sounds/reconect.mp3";
 import EndMeeting from './PopText/EndMeeting';
-import Camara from '../Camara/Camara';
+import Camara from '../Camera/Camera';
 const useStyles = makeStyles(componentStyles);
 
 function VideoContext({ meeting }) {
@@ -126,7 +126,7 @@ function VideoContext({ meeting }) {
         lisiningForConnected();
         lisiningRoomClosed();
 
-        //setCamera(new Camara);
+        setCamera(new Camera);
         // console.log('create stream', camera);
         // camera.init(setStream);
         // let streamCreate = camera.getStream();
@@ -159,14 +159,15 @@ function VideoContext({ meeting }) {
         setStop(false);
     }, []);
 
-    // useEffect(() => {
-    //     if (camera) {
-    //         console.log('create stream', camera);
-    //         camera.init(setStream);
-    //         let streamCreate = camera.getStream();
-    //         console.log('sreamCreate', streamCreate)
-    //     }
-    // }, [camera])
+    useEffect(() => {
+        if (camera) {
+            console.log('create stream', camera);
+            await camera.init(setStream);
+            let streamCreate = camera.getStream();
+            setStream(streamCreate);
+            console.log('sreamCreate', streamCreate)
+        }
+    }, [camera])
 
     useEffect(async () => {
         if (currData && !stop) {
