@@ -39,10 +39,7 @@ import TraineeProfile from './Components/screens/TraineeProfile';
 
 const App = (props) => {
   const navigate = useNavigate();
-  let location = useLocation();
   const [socket, setSocket] = useState(null);
-  // const recording = useSelector((state) => state.recording);
-  // const meetings = useSelector((state) => state.meetings);
 
   useEffect(() => {
     setSocket(io(`${URL}`));
@@ -74,14 +71,13 @@ const App = (props) => {
         props.logoutUser();
         navigate('/auth/login')
       }
-      else{
-        console.log('location.pathname', location.pathname, location.pathname === '/');
-        if(location.pathname.toString() == '/'){
+      else {
+        navigate('/home');
+        if (location.pathname.toString() == '/') {
           console.log("go home");
           navigate('/home');
-        }else{
+        } else {
           console.log('go to ', location.pathname);
-          
           // navigate(location.pathname);
         }
       }

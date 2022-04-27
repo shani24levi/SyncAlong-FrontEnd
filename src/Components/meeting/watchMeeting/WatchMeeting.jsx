@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { getAllMeetings } from '../../../Store/actions/meetingActions';
 import { Grid, Container } from '@material-ui/core';
 import SearchBar from '../../search/SearchBar';
 import VideoDetail from './contents/VideoDetail';
@@ -10,10 +11,18 @@ import isEmpty from '../../../validation/isEmpty';
 import PurpleChartCard from '../../charts/PurpleChartCard';
 
 function WatchMeeting() {
+    const dispatch = useDispatch();
     const { id } = useParams();
     const meetings = useSelector(state => state.meetings.meetings_complited);
     const [selectedVideo, setSelectedVideo] = useState(null);
     const [videos, setVideos] = useState(null);
+
+    useEffect(() => {
+        if (id && isEmpty(meetings)) {
+            dispatch(getAllMeetings());
+        }
+        else return <>error</>;
+    }, [])
 
     //console.log('meetings', meetings);
     useEffect(() => {
@@ -42,8 +51,7 @@ function WatchMeeting() {
                 }
                 <VideoList
                     onVideoSelect={selectedVideo => setSelectedVideo({ selectedVideo })}
-                    videos={meetings.slice(0, 4)} />
-            </Grid>
+                    videos={meetings ? meetings.slice(0, 4) : null} />            </Grid>
 
             <PurpleChartCard time={(selectedVideo?.date)} totalSync={'37'} />
         </Container>

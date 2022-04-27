@@ -190,7 +190,7 @@ function ContextProvider({ children, socket, profile }) {
   };
 
   const is_sync = () => {
-    if (syncScoreRef?.current >= 0.75) return true;
+    if (syncScoreRef?.current >= 0.85) return true;
     return false;
   };
 
@@ -229,7 +229,7 @@ function ContextProvider({ children, socket, profile }) {
     let inframe = calculatingUserInFrame(results);
     let syncing = is_sync();
     let activity = now_activity();
-    if (syncScoreRef?.current < 0.75) {
+    if (syncScoreRef?.current < 0.85) {
       canvasCtx.globalCompositeOperation = 'source-in';
       canvasCtx.fillStyle = 'rgba(255,0,0,0.1)';
       canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
@@ -240,7 +240,7 @@ function ContextProvider({ children, socket, profile }) {
       canvasCtx.globalCompositeOperation = 'source-over';
     }
 
-    if (syncScoreRef?.current >= 0.75) {
+    if (syncScoreRef?.current >= 0.85) {
       canvasCtx.globalCompositeOperation = 'source-in';
       canvasCtx.fillStyle = 'rgba(0,255,0,0.1)';
       canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
@@ -293,7 +293,7 @@ function ContextProvider({ children, socket, profile }) {
     let inframe = calculatingUserInFrame(results);
     let syncing = is_sync();
     let activity = now_activity();
-    if (syncScoreRef?.current < 0.75) {
+    if (syncScoreRef?.current < 0.85) {
       canvasCtx.globalCompositeOperation = 'source-in';
       canvasCtx.fillStyle = 'rgba(255,0,0,0.1)';
       canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
@@ -304,7 +304,7 @@ function ContextProvider({ children, socket, profile }) {
       canvasCtx.globalCompositeOperation = 'source-over';
     }
 
-    if (syncScoreRef?.current >= 0.75) {
+    if (syncScoreRef?.current >= 0.85) {
       canvasCtx.globalCompositeOperation = 'source-in';
       canvasCtx.fillStyle = 'rgba(0,255,0,0.1)';
       canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);

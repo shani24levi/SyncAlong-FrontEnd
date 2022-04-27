@@ -65,9 +65,7 @@ export default function (state = initialState, action) {
                 meetings_complited: null
             };
         case GET_FUTURE_MEETINGS:
-            console.log("GET_FUTURE_MEETINGS", action.payload)
-            action.payload = action.payload?.filter(el => el.status === true);
-            console.log("GET_FUTURE_MEETINGS", action.payload)
+            action.payload = action.payload?.filter(el => el.status !== true);
             return {
                 ...state,
                 meetings: !action.payload ? null : action.payload,
@@ -94,7 +92,9 @@ export default function (state = initialState, action) {
         case CREATE_MEETING:
             console.log(action.payload.data.data);
             let add_all = state.all_meetings ? [...state.all_meetings, action.payload.data.data] : null
-            let meetings = state.meetings ? [...state.meetings, action.payload.data.data] : null
+            let meetings = state.all_meetings ? [...state.meetings, action.payload.data.data] : null
+
+            // let meetings = state.meetings ? [...state.meetings, action.payload.data.data] : null
             return {
                 ...state,
                 all_meetings: !state.all_meetings ? [action.payload.data.data] : add_all.sort((a, b) => { return a.date - b.date }),//  [...state.all_meetings, action.payload.data.data],

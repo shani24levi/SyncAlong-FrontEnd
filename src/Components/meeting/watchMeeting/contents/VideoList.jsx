@@ -17,7 +17,7 @@ function VideoList({ videos }) {
                 More Activities
             </Typography>
             {
-                videos.map((meeting, i) => {
+                videos && videos.map((meeting, i) => {
                     return <VideoListItem key={i} video={meeting} />
                 })
             }

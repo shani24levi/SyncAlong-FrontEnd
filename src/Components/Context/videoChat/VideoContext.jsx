@@ -126,7 +126,7 @@ function VideoContext({ meeting }) {
         setCamera(new Camera());
         lisiningForConnected();
         lisiningRoomClosed();
-        
+
         // navigator.mediaDevices.getUserMedia({ video: true })//audio: true
         //     .then((currentStream) => {
         //         setStream(currentStream);
@@ -149,7 +149,7 @@ function VideoContext({ meeting }) {
         setStop(false);
     }, []);
 
-    useEffect(async() => {
+    useEffect(async () => {
         if (camera) {
             console.log('create stream', camera);
             await camera.init(setStream);
@@ -160,22 +160,22 @@ function VideoContext({ meeting }) {
     }, [camera])
 
     useEffect(async () => {
-        if (currData && !stop) {
-            let data = {
-                poses: poseFarFrame,
-                time: timeOfColectionPose,
-                getMilliseconds: new Date(timeOfColectionPose).getMilliseconds()
-            }
-            await sendPosesByPeers(data, meeting.activities[currActivity])
-        }
-        // if (currData && myDelayOnConection && !stop) {
-        //     await sendMyPoses(timeOfColectionPose, posesArry, meeting.activities[currActivity])
+        // if (currData && !stop) {
+        //     let data = {
+        //         poses: poseFarFrame,
+        //         time: timeOfColectionPose,
+        //         getMilliseconds: new Date(timeOfColectionPose).getMilliseconds()
+        //     }
+        //     await sendPosesByPeers(data, meeting.activities[currActivity])
         // }
+        if (currData && myDelayOnConection && !stop) {
+            await sendMyPoses(timeOfColectionPose, posesArry, meeting.activities[currActivity])
+        }
     }, [posesArry, currData, poseFarFrame]);
 
     useEffect(async () => {
         setSync(true);
-        if (syncScore >= 0.75) {
+        if (syncScore >= 0.85) {
             console.log('sync.....', syncScore);
         }
         else {
@@ -524,7 +524,7 @@ function VideoContext({ meeting }) {
                 callAccepted && !callEnded && question && session &&
                 <FunQuestionPopUp name={myName} />
             }
-            <audio src={ReConect} loop ref={Audio} />
+            {/* <audio src={ReConect} loop ref={Audio} /> */}
             {user.role === 'trainer' && <RecordView setStatus={setStatus} statusBool={statusBool} setStatusBool={setStatusBool} setMediaBlobUrl={setMediaBlobUrl} />}
             <Grid container className={classes.gridContainer}>
                 {stream && (
@@ -590,6 +590,12 @@ function VideoContext({ meeting }) {
                 </Box>
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                     {/* <Grid container justifyContent='space-between'> */}
+                    <Button onClick={() => {
+                        setSettingUserInFrame(true)
+                        setPeer2inFrame(true)
+                        setPeer1inFrame(true)
+                    }}>inFrame</Button>
+
                     <Button onClick={() => {
                         setRecognition('start')
                     }}>Ok</Button>
