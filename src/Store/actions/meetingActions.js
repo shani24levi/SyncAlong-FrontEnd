@@ -28,7 +28,7 @@ export const futureMeetings = () => dispatch => {
     meetingsService.futureMeetings()
         .then(
             meetings => {
-                //  console.log('meetingsmeetings', meetings.data);
+                 console.log('futureMeetings', meetings.data);
                 dispatch({
                     type: GET_FUTURE_MEETINGS,
                     payload: meetings.data

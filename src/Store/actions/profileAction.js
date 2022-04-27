@@ -58,6 +58,7 @@ export const setCurrentProfile = () => dispatch => {
     profileService.getProfile()
         .then(
             profile => {
+                console.log('success get profile', profile.data);
                 dispatch(success(profile.data));
                 dispatch(clear());
             },

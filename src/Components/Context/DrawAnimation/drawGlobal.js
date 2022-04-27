@@ -13,7 +13,7 @@ class Draw  extends React.Component {
 
   Init = () => {
     console.log('Init');
-    this.left_hand = []; this.right_hand = []; this.left_leg = []; this.right_leg = [];
+    this.left_hand = [], this.right_hand = [], this.left_leg = [], this.right_leg = [];
     this.dxBird = this.width; this.dyBird = 0; this.dxBird2 = 0; this.dyBird2 = 0; 
     this.index = 0; this.cahngeWalk = true;
   }
@@ -288,6 +288,7 @@ class Draw  extends React.Component {
     drawR();
   }
   draw = () => {
+    // console.log(this.left_hand, this.right_hand)
     for(const ar in activity_ar) {
       for(const activity in activity_ar[ar]) {
         if(activity_ar[ar][activity] === this.activity){

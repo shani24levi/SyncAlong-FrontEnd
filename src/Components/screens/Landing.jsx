@@ -27,6 +27,7 @@ const Landing = (props) => {
                     />
                 </Grid>
             </Grid>
+            {/* <Header /> */}
         </>
     );
 }

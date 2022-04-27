@@ -2,7 +2,6 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Box, Container, Grid } from "@material-ui/core";
 import NextMeetingTime from '../../meeting/NextMeetingTime';
-
 import "./style.css";
 
 function HeaderWaves({ meeting, date, upcamingMeeting }) {
@@ -20,18 +19,9 @@ function HeaderWaves({ meeting, date, upcamingMeeting }) {
                         //color={theme.palette.grey[100]}
                         >
                             <Grid item lg={5} md={6} xs={12}>
-                                <h1 style={{ padding: '10px' }}>Welcome {user.user}!</h1>
-                                {meeting
-                                    ?
-                                    <>
-                                        <h3>your up coming meeting is in :</h3>
-                                        <NextMeetingTime upcamingMeeting={upcamingMeeting} date={!date ? 0 : date} />
-                                    </>
-                                    :
-                                    <>
-                                        <h3>No up coming meeting</h3>
-                                    </>
-                                }
+                                <h1>Welcome {user.user}!</h1>
+                                <h3>your up coming meeting is in :</h3>
+                                {meeting && <NextMeetingTime upcamingMeeting={upcamingMeeting} date={!date ? 0 : date} />}
                             </Grid>
                         </Box>
                     </Box>

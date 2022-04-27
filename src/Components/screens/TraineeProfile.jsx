@@ -174,6 +174,7 @@ function TraineeProfile(props) {
                             justifyContent="flex-start"
                             sx={{ padding: '0rem 4rem' }}>
                             <Container>
+
                                 <PhotoWrapper>
                                     <Photo>
                                         <Box sx={{

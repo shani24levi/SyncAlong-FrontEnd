@@ -80,7 +80,7 @@ function ReConectCall(props) {
         let roomId = currMeeting._id;
         socket?.emit('closeRoom', roomId);
         //remove from state the active meeting
-        !isEmpty(currMeeting) && dispatch(setActiveMeeting(currMeeting, false));
+        // !isEmpty(currMeeting) && dispatch(setActiveMeeting(currMeeting, true));
     };
 
     return (

@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom'
 import { dateFormat } from '../../Utils/dateFormat';
 import buttonsStyles from "../../assets/theme/buttons";
 import QuickStartBtn from './QuickStartBtn';
-import PopUpQuickStart from '../popupCall/PopUpQuickStart';
+import QuickStartBtn2 from './quickStartBtn/QuickStartBtn';
 import ListBoxTop from '../listBox/ListBoxTop';
 import DoughnutChart from '../charts/DoughnutChart';
 import ProgressUserView from './trainer/ProgressUserView';
@@ -25,7 +25,7 @@ import { delay } from '../../helpers';
 import Carousel from '../card/Carousel/Carousel';
 import Loader from '../loder/Loder';
 import ListedMeetings from './trainer/listTable/ListedMeetings';
-import VideoCameraFrontIcon from '@mui/icons-material/VideoCameraFront';
+import { useReactMediaRecorder } from "react-media-recorder";
 
 const buttonStyle = makeStyles(buttonsStyles);
 
@@ -74,7 +74,6 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
     const theme = useTheme();
     const profile = useSelector(state => state.profile.profile)
     const [errorDisplay, setErrorDisplay] = useState(false);
-    const [quickStartOpen, setQuickStartOpen] = useState(false);
     const meetings = useSelector(state => state.meetings);
     const my_trainees = useSelector(state => state.profile.trainees_profiles);
     const trainee_profile_called = useSelector(state => state.profile.trainee_profile_called);
@@ -134,35 +133,19 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
         }
     }
 
-    const quickStart = () => {
-        console.log('ddd');
-        setQuickStartOpen(true);
-    }
-    //console.log('my_trainees && my_trainees', isEmpty(my_trainees));
-
-    console.log(!isEmpty(my_trainees));
     return (
         <>
             <Container maxWidth="xl">
-                {quickStartOpen && <PopUpQuickStart quickStartOpen={quickStartOpen} setQuickStartOpen={setQuickStartOpen} />}
                 {errorDisplay && <ErrorAlert name={upcamingMeeting.trainee.user} title=" is not online in order to conect joined meeting" />}
                 <Grid container alignItems='center' justifyContent='center' spacing={1} >
                     <Grid item xs={3} md={4}>
-                        <Button
-                            color='primary'
-                            variant="contained"
-                            startIcon={<VideoCameraFrontIcon />}
-                            className={btnClasses.purpleRoundEmpty}
-                            onClick={() => quickStart()}
-                            fullWidth>
-                            Quick Start
-                        </Button>
+                        <QuickStartBtn />
+                        {/* <QuickStartBtn2 /> */}
                     </Grid>
                     <Grid item xs={9} md={8}>
                         <Search />
                     </Grid>
                 </Grid>
-
                 {
                     profile && !trainee_profile_called ?
                         <Loader /> :

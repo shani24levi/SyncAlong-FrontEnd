@@ -783,6 +783,7 @@ function ContextProvider({ children, socket, profile }) {
           socket?.connect();
           let userId = user._id
           let roomId = meetings.active_meeting._id
+          console.log('reconnect now');
           socket?.emit('reconect', (userId, roomId));
         }
       }

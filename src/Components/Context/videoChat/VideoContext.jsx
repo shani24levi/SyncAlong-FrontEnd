@@ -123,25 +123,15 @@ function VideoContext({ meeting }) {
     };
 
     useEffect(() => {
+        setCamera(new Camera());
         lisiningForConnected();
         lisiningRoomClosed();
-
-        setCamera(new Camera);
-        // console.log('create stream', camera);
-        // camera.init(setStream);
-        // let streamCreate = camera.getStream();
-        // console.log('sreamCreate', streamCreate)
-        // if(!streamCreate || streamCreate === 'error'){
-        //     setStream(null)
-        // }elsee
-        //     setStream(streamCreate)
-        // }
-
-        navigator.mediaDevices.getUserMedia({ video: true })//audio: true
-            .then((currentStream) => {
-                setStream(currentStream);
-            })
-            .catch((error) => { console.log(`Error when open camera: ${error}`) });
+        
+        // navigator.mediaDevices.getUserMedia({ video: true })//audio: true
+        //     .then((currentStream) => {
+        //         setStream(currentStream);
+        //     })
+        //     .catch((error) => { console.log(`Error when open camera: ${error}`) });
 
         setRoomId(meeting._id);
         //set starte in case of re-conect this page agin with different meeting
@@ -293,7 +283,7 @@ function VideoContext({ meeting }) {
 
     useEffect(async () => {
         console.log('meetings?.meetings_complited', meetings?.meetings_complited);
-        if (meetings?.meetings_complited.find(el => el._id === meeting._id) && user.role === 'trainer') {
+        if (meetings?.meetings_complited && meetings?.meetings_complited.find(el => el._id === meeting._id) && user.role === 'trainer') {
             //after its done notify the trainee
             console.log('socket?.on("prossesDone", roomId);', meeting);
             let meetingId = meeting._id;
@@ -301,6 +291,15 @@ function VideoContext({ meeting }) {
             navigate(`/meeting/watch/${meeting._id}`);
         }
     }, [meetings])
+
+    // useEffect(async () => {
+    //     if (recording?.meeting === meeting._id && recording?.recording) {
+    //         //update the start of meetings 
+    //         dispatch(setMeetingComplited(meeting, { status: false, urlRoom: recording.recording }));
+    //         dispatch(clearLogoutREC());
+    //         //after its done notify the trainee
+    //     }
+    // }, [recording])
 
     const prevActivitySession = () => {
         if (currActivity === 0) {
@@ -391,10 +390,8 @@ function VideoContext({ meeting }) {
             console.log('next....');
         }
         else if (recognition == 'leave') {
-            // setActivitiesEnded(true);
-            // console.log('leave camera', camera, camera?.getStream())
-            // camera?.getStream() && camera.distroy();
-            //setStream(null);
+            camera && camera.distroy();
+            setActivitiesEnded(true);
             setStop(true);
             console.log('leave....');
             //save data
@@ -593,12 +590,6 @@ function VideoContext({ meeting }) {
                 </Box>
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                     {/* <Grid container justifyContent='space-between'> */}
-                    <Button onClick={() => {
-                        setSettingUserInFrame(true)
-                        setPeer2inFrame(true)
-                        setPeer1inFrame(true)
-                    }}>inFrame</Button>
-
                     <Button onClick={() => {
                         setRecognition('start')
                     }}>Ok</Button>
