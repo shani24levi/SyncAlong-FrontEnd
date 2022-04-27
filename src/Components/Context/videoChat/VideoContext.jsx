@@ -159,7 +159,7 @@ function VideoContext({ meeting }) {
         setStop(false);
     }, []);
 
-    useEffect(() => {
+    useEffect(async() => {
         if (camera) {
             console.log('create stream', camera);
             await camera.init(setStream);
