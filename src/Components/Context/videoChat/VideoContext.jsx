@@ -30,7 +30,7 @@ import { setActiveMeeting, setMeetingComplited, closeActiveMeeting } from '../..
 import isEmpty from '../../../validation/isEmpty';
 import ReConect from "../../../assets/sounds/reconect.mp3";
 import EndMeeting from './PopText/EndMeeting';
-import Camara from '../Camera/Camera';
+import Camera from '../Camera/Camera';
 const useStyles = makeStyles(componentStyles);
 
 function VideoContext({ meeting }) {
