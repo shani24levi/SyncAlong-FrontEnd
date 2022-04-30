@@ -39,39 +39,6 @@ function Meetings(props) {
     const location = useLocation();
     const user = useSelector(state => state.auth.user)
     const meetings = useSelector(state => state.meetings)
-    //const [myMeetings, setMyMeetings] = useState(null);
-
-    // let meetings = [ //meeting is set form db 
-    //     {
-    //         _id: '1',
-    //         tariner: {
-    //             "_id": '61f41299f214dbc605e23778',
-    //             "user": 'shani-trainer',
-    //             "role": "trainer"
-    //         },
-    //         trainee: {
-    //             "_id": '6214b44405ebc47e36303a6b',
-    //             "user": "grma-trainee of shani",
-    //             "role": "trainee"
-    //         },
-    //         date: Date.now(),
-    //         time: '1:2 am',
-    //         activities: ['hands-x', 'hands-y', 'swing-hands', 'swim-hands',
-    //             'gamp', 'legs-gumping', 'open-close'],
-    //         video: "https://www.youtube.com/watch?v=0T75yyeotrU"
-    //     },
-    // ]
-
-    // useEffect(() => {
-    //     if (!meetings.all_meetings || isEmpty(meetings.all_meetings)) {
-    //         dispatch(getAllMeetings());
-    //     }
-    // }, [])
-
-
-    // useEffect(() => {
-    //     setMyMeetings(meetings.all_meetings)
-    // }, [meetings.all_meetings])
 
     const handleConect = (meeting) => {
         console.log('whats to conect to meeting of id ', meeting._id);
@@ -110,17 +77,6 @@ function Meetings(props) {
                     <MeetingsScours meetings={meetings.meetings_complited} />
             }
 
-            {/* <Grid container spacing={5} justifyContent='center'>
-                {
-                    meetings.map((meeting, i) => {
-                        return (
-                            <Grid key={i} item m="auto">
-                                <MeetingItemCard meeting={meeting} handleConect={handleConect} />
-                            </Grid>
-                        )
-                    })
-                }
-            </Grid> */}
             <ScrollTop />
         </Container>
     );

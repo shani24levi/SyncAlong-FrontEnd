@@ -7,8 +7,8 @@ const getSyncsById = (id) => {
     return axios
         .get(`${URL}/${SYNC}/${id}`)
         .then(syncs => {
-            console.log('syncs', syncs);
-            return syncs
+            console.log('syncs', syncs.data);
+            return syncs.data.data
         })
         .catch(err => {
             return Promise.reject(err.response.data);

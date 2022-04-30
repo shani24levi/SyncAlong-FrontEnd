@@ -44,7 +44,7 @@ transition: all .2s ease-in;
 
 
 function VideoListItem({ video }) {
-    console.log(video);
+    //console.log(video);
     return (
         <LinkStyled>
             <Link to={{ pathname: `/meeting/watch/${video._id}` }}>

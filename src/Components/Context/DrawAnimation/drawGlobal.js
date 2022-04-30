@@ -12,7 +12,7 @@ class Draw extends React.Component {
   }
 
   Init = () => {
-    console.log('Init');
+    // console.log('Init');
     this.left_hand = [], this.right_hand = [], this.left_leg = [], this.right_leg = [];
     this.dxBird = this.width; this.dyBird = 0; this.dxBird2 = 0; this.dyBird2 = 0;
     this.index = 0; this.cahngeWalk = true;
@@ -47,7 +47,7 @@ class Draw extends React.Component {
     if (flag.includes(2)) arr.push(16);
     if (flag.includes(3)) arr.push(27);
     if (flag.includes(4)) arr.push(28);
-    console.log('arr', arr)
+    // console.log('arr', arr)
     for (let i in arr) {
       i = arr[i];
       let x1 = this.results.poseLandmarks[i].x * this.width;
@@ -65,28 +65,28 @@ class Draw extends React.Component {
           startX: parseInt(x1), startY: parseInt(y1), endX: parseInt(dx), endY: parseInt(dy),
           color: '#' + Math.floor(Math.random() * 16777215).toString(16)
         });
-        console.log(this.right_hand, length);
+        // console.log(this.right_hand, length);
       }
       if (i === 16) {
         await this.left_hand.push({
           startX: parseInt(x1), startY: parseInt(y1), endX: parseInt(dx), endY: parseInt(dy),
           color: '#' + Math.floor(Math.random() * 16777215).toString(16)
         });
-        console.log(this.left_hand);
+        // console.log(this.left_hand);
       }
       if (i === 27) {
         await this.left_leg.push({
           startX: parseInt(x1), startY: parseInt(y1), endX: parseInt(dx), endY: parseInt(dy),
           color: '#' + Math.floor(Math.random() * 16777215).toString(16)
         });
-        console.log(this.left_leg);
+        // console.log(this.left_leg);
       }
       if (i === 28) {
         await this.right_leg.push({
           startX: parseInt(x1), startY: parseInt(y1), endX: parseInt(dx), endY: parseInt(dy),
           color: '#' + Math.floor(Math.random() * 16777215).toString(16)
         });
-        console.log(this.right_leg);
+        // console.log(this.right_leg);
       }
     }
     const my_array = {
@@ -95,10 +95,10 @@ class Draw extends React.Component {
       left_leg: this.left_leg,
       right_leg: this.right_leg
     }
-    console.log(my_array)
+    // console.log(my_array)
     for (const index in my_array) {
       const part = my_array[index];
-      console.log(index, part)
+      // console.log(index, part)
       let end = part.length, start = end > 10 ? end - 10 : 0;
 
       part.splice(start, end).forEach((line => {
@@ -108,7 +108,7 @@ class Draw extends React.Component {
       }))
     }
 
-    console.log(this);
+    // console.log(this);
   }
 
   drawBird = () => {
@@ -120,7 +120,7 @@ class Draw extends React.Component {
 
     const distance = Math.sqrt(Math.abs(x1 - x2) + Math.abs(y1 - y2)) * 10;
 
-    console.log('distance', distance);
+    // console.log('distance', distance);
     const { birdGIFPos, birdGIFNeg } = require('./Array_AR/bird');
     const index = this.index % birdGIFPos.length;
     this.index += 1;
@@ -157,7 +157,8 @@ class Draw extends React.Component {
   }
 
   drawGlasses = () => {
-    console.log(this.results.poseLandmarks, this.ctx, this.width, this.height);
+    // console.log('start droe', new Date().toLocaleString('en-GB'));
+    // console.log(this.results.poseLandmarks, this.ctx, this.width, this.height);
     const { glasses } = require('./Array_AR/glasses');
     const { horseGIFPos, horseGIFNeg } = require('./Array_AR/horse');
     let x1 = this.results.poseLandmarks[7].x * this.width;
@@ -171,8 +172,10 @@ class Draw extends React.Component {
     img.src = glasses[0];
     img.width = distanceWidth;
     img.height = distanceHeight;
-    console.log(img.src, x1, y1);
+    // console.log(img.src, x1, y1);
+    // console.log('start ctx', new Date().toLocaleString('en-GB'));
     this.ctx.drawImage(img, (this.results.poseLandmarks[0].x * this.width) - img.width / 2, (this.results.poseLandmarks[0].y * this.height) - img.height / 2, img.width, img.height);
+    // console.log('end ctx', new Date().toLocaleString('en-GB'));
 
     const index = this.index % horseGIFNeg.length;
     let imgZ = new Image()
@@ -192,7 +195,7 @@ class Draw extends React.Component {
       this.cahngeWalk = true;
     }
     imgZ.width = 200; imgZ.height = 200;
-    console.log(this.dxBird, imgZ.height, imgZ.width);
+    // console.log(this.dxBird, imgZ.height, imgZ.width);
     this.ctx.drawImage(imgZ, this.dxBird, 300, 100, 100);
     this.ctx.drawImage(imgZ, this.dxBird, 400, 100, 100);
 
@@ -240,7 +243,7 @@ class Draw extends React.Component {
       }
     }
     imgZ.width = 200; imgZ.height = 200;
-    console.log(this.dxBird, imgZ.height, imgZ.width);
+    // console.log(this.dxBird, imgZ.height, imgZ.width);
     this.ctx.drawImage(imgZ, this.dxBird, 300, 100, 100);
     this.ctx.drawImage(imgZ, this.dxBird, 400, 100, 100);
 
@@ -290,6 +293,7 @@ class Draw extends React.Component {
   }
   draw = () => {
     // console.log(this.left_hand, this.right_hand)
+    // this.drawGlasses(); return;
     for (const ar in activity_ar) {
       for (const activity in activity_ar[ar]) {
         if (activity_ar[ar][activity] === this.activity) {

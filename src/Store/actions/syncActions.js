@@ -29,7 +29,7 @@ export const getSync = (id) => dispatch => {
             }
         );
     function success(syncs) {
-        return { type: GET_CURR_SYNCS, payload: syncs.data.data }
+        return { type: GET_CURR_SYNCS, payload: { syncs, id } }
     }
 };
 

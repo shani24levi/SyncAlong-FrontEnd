@@ -137,6 +137,16 @@ function ContextProvider({ children, socket, profile }) {
         for (var i = 0; p.poseLandmarks && i < p.poseLandmarks.length; i++) {
           p.poseLandmarks[i].x = p.poseLandmarks[i].x * width;
           p.poseLandmarks[i].y = p.poseLandmarks[i].y * height;
+
+          if (mediaPipeLandmarks('RIGHR_HIP') === i ||
+            mediaPipeLandmarks('LEFT_HIP') === i ||
+            mediaPipeLandmarks('RIGHR_KNEE') === i ||
+            mediaPipeLandmarks('LEFT_KNEE') === i ||
+            mediaPipeLandmarks('RIGHR_ANKLE') === i ||
+            mediaPipeLandmarks('LEFT_ANKLE') === i) {
+            p.poseLandmarks[i].x = p.poseLandmarks[i].x * 10;
+            p.poseLandmarks[i].y = p.poseLandmarks[i].y * 10;
+          }
         }
         // console.log("new poseLandmarks", p.poseLandmarks);
         return p.poseLandmarks;
@@ -456,6 +466,9 @@ function ContextProvider({ children, socket, profile }) {
         yourDataResived.end_time_of_colection,
         typeof yourDataResived.end_time_of_colection
       );
+      let time = new Date().toLocaleString('en-GB');
+      console.log('yourDataResived', new Date().toLocaleString('en-GB'), new Date(time).getMilliseconds());
+
 
       //get the same time of poses as you
       console.log('my_array_poses', array_poses);
@@ -494,6 +507,7 @@ function ContextProvider({ children, socket, profile }) {
 
       console.log('posesArry now...found_el...', found_el);
       //send me & you data to socket for sync calculation
+      console.log('start sendOurPoses', new Date().toLocaleString('en-GB'), new Date().getMilliseconds());
       found_el &&
         socket.emit('sendOurPoses', {
           me: found_el,
@@ -502,6 +516,8 @@ function ContextProvider({ children, socket, profile }) {
           time: yourDataResived.end_time_of_colection,
           roomId
         });
+      console.log('end sendOurPoses', new Date().toLocaleString('en-GB'), new Date().getMilliseconds());
+
       setYourDataResived(null);
     }
   }, [array_poses, yourDataResived]);
@@ -711,9 +727,10 @@ function ContextProvider({ children, socket, profile }) {
     socket?.on('resivingPoses', (data) => {
       console.log(
         data,
-        'resiving time of your data:',
+        'resiving time of your data at:',
         new Date().toLocaleString('en-GB')
       );
+      console.log(new Date().toLocaleString('en-GB'), new Date().getMilliseconds());
       setYourDataResived(data);
     });
   };
@@ -728,11 +745,13 @@ function ContextProvider({ children, socket, profile }) {
     socket?.on('syncScore', (sync_score) => {
       console.log('///...score.../// ', sync_score);
       setSyncScore(sync_score);
+      console.log(new Date().toLocaleString('en-GB'), new Date().getMilliseconds());
     });
     //for eyal
     socket?.on('resivingSyncScoure', (sync_score) => {
       console.log('///...score.../// ', sync_score, new Date().toLocaleString('en-GB'));
       setSyncScore(sync_score);
+      console.log(new Date().toLocaleString('en-GB'), new Date().getMilliseconds());
     });
   };
 
@@ -1108,6 +1127,7 @@ function ContextProvider({ children, socket, profile }) {
   //===================socket for sync func============================//
   const sendMyPoses = async (time, poses, activity) => {
     let start = new Date().toLocaleString('en-GB');
+    console.log(new Date().toLocaleString('en-GB'), new Date().getMilliseconds());
     let data = {
       from: mySocketId,
       to: yourSocketId,
@@ -1118,6 +1138,7 @@ function ContextProvider({ children, socket, profile }) {
     };
     console.log('data im sending ..', data);
     socket.emit('sendPoses', data); //peer1 send his poses to peer2
+    console.log(new Date().toLocaleString('en-GB'), new Date().getMilliseconds());
   };
 
   const sendPosesByPeers = async (dataTo, activity) => {
@@ -1125,9 +1146,11 @@ function ContextProvider({ children, socket, profile }) {
       poses: dataTo.poses,
       time: dataTo.time
     };
+    console.log(new Date().toLocaleString('en-GB'), new Date().getMilliseconds());
     let trainer = myRole === 'trainer' ? true : false;
     console.log('sendPosesByPeers im sending ..', data, new Date().toLocaleString('en-GB'), 'milisec : ', new Date().getMilliseconds());
     socket.emit('sendPosesByPeers', data, mySocketId, yourSocketId, trainer, activity, roomId);
+    console.log(new Date().toLocaleString('en-GB'), new Date().getMilliseconds());
   }
 
   const clearRoomStates = () => {

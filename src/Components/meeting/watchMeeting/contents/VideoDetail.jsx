@@ -55,9 +55,6 @@ animation-duration: 2s;
 
 function VideoDetail({ video }) {
     const user = useSelector(state => state.auth.user);
-    console.log('====================================');
-    console.log('video.urlRoom', video.urlRoom);
-    console.log('====================================');
 
     return (
         <>
@@ -80,9 +77,11 @@ function VideoDetail({ video }) {
                         {`Meeting Ended At: ${dateFormat(video.dateEnd)}`}
                     </div>
                 </Details>
+
                 <Grid item xs={12} md={12} sx={{ pt: '16px !important' }}>
                     <PurpleChartCard time={dateFormat(video.date)} totalSync={'37'} />
                 </Grid>
+
             </Grid>
         </>
     );

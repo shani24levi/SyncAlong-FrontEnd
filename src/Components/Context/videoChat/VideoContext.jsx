@@ -164,26 +164,26 @@ function VideoContext({ meeting }) {
     }, [camera])
 
     useEffect(async () => {
-        // if (currData && !stop) {
-        //     let data = {
-        //         poses: poseFarFrame,
-        //         time: timeOfColectionPose,
-        //         getMilliseconds: new Date(timeOfColectionPose).getMilliseconds()
-        //     }
-        //     await sendPosesByPeers(data, meeting.activities[currActivity])
-        // }
-        if (currData && myDelayOnConection && !stop) {
-            await sendMyPoses(timeOfColectionPose, posesArry, meeting.activities[currActivity])
+        if (currData && !stop) {
+            let data = {
+                poses: poseFarFrame,
+                time: timeOfColectionPose,
+                getMilliseconds: new Date(timeOfColectionPose).getMilliseconds()
+            }
+            await sendPosesByPeers(data, meeting.activities[currActivity])
         }
+        // if (currData && myDelayOnConection && !stop) {
+        //     await sendMyPoses(timeOfColectionPose, posesArry, meeting.activities[currActivity])
+        // }
     }, [posesArry, currData, poseFarFrame]);
 
     useEffect(async () => {
         setSync(true);
         if (syncScore >= 0.75) {
-            console.log('sync.....', syncScore);
+            console.log('sync.....', syncScore, new Date().toLocaleString('en-GB'));
         }
         else {
-            console.log('Not sync.....', syncScore);
+            console.log('Not sync.....', syncScore, new Date().toLocaleString('en-GB'));
         }
     }, [syncScore]);
 
@@ -613,6 +613,7 @@ function VideoContext({ meeting }) {
                     }}>sync</Button>
 
                     <Button onClick={() => {
+                        console.log('click', new Date().toLocaleString('en-GB'), new Date().getMilliseconds());
                         sendMyPoses(timeOfColectionPose, posesArry, meeting.activities[currActivity])
                     }}>syncSendByFraime-p1-to-p2</Button>
 
@@ -623,6 +624,7 @@ function VideoContext({ meeting }) {
                             time: timeOfColectionPose,
                             getMilliseconds: new Date(timeOfColectionPose).getMilliseconds()
                         }
+                        console.log('click', new Date().toLocaleString('en-GB'), new Date().getMilliseconds());
                         await sendPosesByPeers(data, meeting.activities[currActivity])
                     }}>syncSendByFraime-both-firstTraineeeeeee</Button>
 

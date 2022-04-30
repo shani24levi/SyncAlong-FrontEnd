@@ -32,8 +32,8 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 loading: false,
-                all_syncs: action.payload,
-                meeting: action.payload ? action.payload[0].meeting_id : null
+                all_syncs: action.payload.syncs.length === 0 ? null : action.payload.syncs,
+                meeting: action.payload.id
             }
         default:
             return state;

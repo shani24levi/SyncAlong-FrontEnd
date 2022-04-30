@@ -5,7 +5,7 @@ import { Typography } from '@mui/material';
 
 
 function VideoList({ videos }) {
-    console.log('videos', videos);
+    //console.log('videos', videos);
     return (
         <Grid item xs={12} md={4}>
             {/* <Box

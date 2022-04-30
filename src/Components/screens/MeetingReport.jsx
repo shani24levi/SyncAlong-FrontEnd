@@ -38,7 +38,6 @@ function MeetingReport(props) {
             {sync ?
                 <SyncScoreView meeting_id={meeting_id} my_name={my_name} your_name={your_name} />
                 : <CircularProgress color="secondary" size="20px" />
-
             }
         </>
     );
