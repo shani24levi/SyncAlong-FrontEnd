@@ -124,10 +124,9 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
         }
         else {
             Swal.fire({
-                title: 'Cant conect',
+                title: 'No Meeting to Conect',
                 width: 600,
                 padding: '3em',
-                showCancelButton: true,
                 background: '#fff',
                 backdrop: `rgba(0,0,123,0.4)`
             })
@@ -135,10 +134,8 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
     }
 
     const quickStart = () => {
-        console.log('ddd');
         setQuickStartOpen(true);
     }
-    //console.log('my_trainees && my_trainees', isEmpty(my_trainees));
 
     console.log(!isEmpty(my_trainees));
     return (
@@ -181,7 +178,7 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
                             {meetings?.meetings && meetings?.meetings?.lenght != 0 && meeting && !isEmpty(upcamingMeeting) && (date !== 0 || date !== NaN) && <NextMeetingTime upcamingMeeting={upcamingMeeting} date={!date ? 0 : date} />}
                             <Box
                                 component="span"
-                                m={1} //margin
+                                m={1}
                                 className={`${classes.topLeftBox} ${classes.box}`}
                             >
                                 <Button

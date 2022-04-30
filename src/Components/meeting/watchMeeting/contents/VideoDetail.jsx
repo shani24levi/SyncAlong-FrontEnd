@@ -6,6 +6,10 @@ import Loader from '../../../loder/Loder';
 import { dateFormat } from '../../../../Utils/dateFormat';
 import { capitalize } from '../../../../helpers';
 import PurpleChartCard from '../../../charts/PurpleChartCard';
+import SyncView from '../../../syncscore/SyncView';
+import isEmpty from '../../../../validation/isEmpty';
+
+
 
 const Ifram = styled('div')`
 position: relative;
@@ -53,7 +57,7 @@ animation-duration: 2s;
 }
 `;
 
-function VideoDetail({ video }) {
+function VideoDetail({ video, syncs }) {
     const user = useSelector(state => state.auth.user);
 
     return (
@@ -79,7 +83,14 @@ function VideoDetail({ video }) {
                 </Details>
 
                 <Grid item xs={12} md={12} sx={{ pt: '16px !important' }}>
-                    <PurpleChartCard time={dateFormat(video.date)} totalSync={'37'} />
+                    {
+                        !isEmpty(syncs)
+                            ? <SyncView selectedVideo={video} syncs={syncs} />
+                            : <Loader />
+                    }
+
+                    {/* <SyncView selectedVideo={video} syncs={syncs} /> */}
+                    {/* <PurpleChartCard time={dateFormat(video.date)} totalSync={'37'} syncs={syncs} /> */}
                 </Grid>
 
             </Grid>

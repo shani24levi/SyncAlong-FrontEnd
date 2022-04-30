@@ -1,7 +1,10 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from "react-router-dom";
 import { styled } from '@mui/material/styles';
 import { Avatar } from '@mui/material';
+import { Typography } from '@material-ui/core';
+import { dateFormat } from '../../../Utils/dateFormat';
 
 const Wrapper = styled('div')`
   .thumb {
@@ -25,7 +28,6 @@ const Wrapper = styled('div')`
   }
   .channel-avatar img {
     position: relative;
-    top: 5px;
   }
   .video-info {
     flex: 1 1 0;
@@ -47,39 +49,34 @@ const Wrapper = styled('div')`
 `;
 
 function VideoCard({ video }) {
-    return (
-        <Wrapper>
-            <Link to={`/meeting/watch/${video._id}`}>
-                <img className="thumb" src={'https://www.irganim.com/images/itempics/165_large.jpg'} alt={video.title} />
-            </Link>
-            <div className="video-info-container">
-                <div className="channel-avatar">
-                    {/* {!hideAvatar && ( */}
-                    <Avatar
-                        style={{ marginRight: "0.8rem" }}
-                        src='https://www.irganim.com/images/itempics/165_large.jpg' //{video?.user.avatar}
-                        alt={`channel avatar`}
-                    />
-                    {/* )} */}
-                </div>
-                <div className="video-info">
-                    <Link to={`/meeting/watch/${video._id}`}>
-                        <h4 className="truncate">{video.title}</h4>
-                    </Link>
-                    {/* {!noUsername && (
-              <Link to={`/channel/${video.user.id}`}>
-                <span className="secondary">{video.user.username}</span>
-              </Link>
-            )} */}
-                    <p className="secondary leading-4">
-                        <span> views</span> <span>•</span>{" "}
-                        {/* <span>{formatCreatedAt(video.createdAt)}</span> */}
-                    </p>
-                </div>
-                {/* <DeleteVideoDropdown video={video} /> */}
-            </div>
-        </Wrapper>
-    );
+  const user = useSelector(state => state.auth.user)
+
+  return (
+    <Wrapper>
+      <Link to={`/meeting/watch/${video._id}`}>
+        <img className="thumb" src={'https://www.irganim.com/images/itempics/165_large.jpg'} alt={video.title} />
+      </Link>
+      <div className="video-info-container">
+        <div className="channel-avatar">
+          <Avatar
+            style={{ marginRight: "0.8rem" }}
+            src={user.role === 'trainer' ? video?.trainee.avatar : video?.tariner.avatar}
+            alt={`channel avatar`}
+          />
+        </div>
+        <div className="video-info">
+          <Link to={`/meeting/watch/${video._id}`}>
+            <h2 className="truncate">Meeting : {video.title}</h2>
+            <h4 className="truncate">{dateFormat(video.dateEnd)}</h4>
+          </Link>
+          <Typography className="secondary leading-4">
+            <span> With</span> <span>•</span>{" "}
+            <span>{user.role === 'trainer' ? video?.trainee.user : video?.tariner.user}</span>
+          </Typography>
+        </div>
+      </div>
+    </Wrapper>
+  );
 }
 
 export default VideoCard;

@@ -24,12 +24,8 @@ function TraineesUsers({ profile }) {
     const [mytrainees, setMyTrainees] = React.useState(trainees);
     const [search, setSearch] = React.useState('');
 
-    // useEffect(()=>{ 
-    //     dispatch(getTraineesProfiles([profile?.trainerOf]));
-    // },[])
     console.log("profile", trainees);
     const navigate = useNavigate();
-
 
     const onSearch = (search) => {
         console.log(search);

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Paper, styled, Grid, Button } from '@mui/material';
 import BookmarksRoundedIcon from '@mui/icons-material/BookmarksRounded';
 import WorkRoundedIcon from '@mui/icons-material/WorkRounded';
@@ -7,6 +8,7 @@ import { useNavigate } from 'react-router-dom'
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import EventNoteIcon from '@mui/icons-material/EventNote';
 import { setDate } from 'date-fns/esm';
+import isEmpty from '../../validation/isEmpty';
 
 const Wrapper = styled(Paper)`
   height: 300px;
@@ -68,20 +70,23 @@ const AbsoluteGrid = styled(Grid)`
   .UserCard_topics {
     text-overflow: ellipsis;
   }
-`;
+`; 9
 
 function UserCard({ trainee }) {
   const navigate = useNavigate();
   const [date, setDate] = useState(null);
+  const meetings = useSelector(state => state.meetings)
+
 
   useEffect(() => {
-    if (trainee.profile?.meetings.length !== 0)
-      setDate(new Date(trainee.profile?.meetings[0]?.date))
+    if (trainee.profile && !isEmpty(meetings.meetings) || meetings.meetings.leght !== 0) {
+      let trainee_meeting = meetings.meetings.find(el => el.trainee._id === trainee.user._id);
+      !isEmpty(trainee_meeting) && setDate(new Date(trainee_meeting.date))
+    }
   }, [trainee])
 
 
   return (
-    // <Button onClick={() => navigate(`/trainee/${trainee.user._id}`, { state: { trainee: trainee } })} >
     <Link to={{ pathname: `/trainee/${trainee.user._id}`, state: { trainee: trainee } }}>
       <Wrapper elevation={4}>
         <StyledImage src={trainee.user.avatar} />
@@ -93,7 +98,6 @@ function UserCard({ trainee }) {
           <Grid item>
             <EventNoteIcon />
             Upcoming Meeting:
-            {/* <span>{trainee.profile?.meetings.length !== 0 ? trainee.profile?.meetings[0]?.date.toString() : ' - '}</span> */}
           </Grid>
           <Grid item>{trainee.profile?.relation ? trainee.profile.relation : ''}</Grid>
           <Grid item className="UserCard_text">

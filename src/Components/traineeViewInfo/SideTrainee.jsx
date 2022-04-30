@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 // import { Grid, Container, Button, Box, Card, Paper } from '@material-ui/core';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { getSync } from '../../Store/actions/syncActions'
 import TraineeSideCard from '../card/TraineeSideCard';
 import { useTheme } from '@mui/material/styles';
 import { Avatar, Button, CardActions, CardContent, Divider, Grid, Menu, MenuItem, Typography } from '@mui/material';
@@ -11,13 +12,26 @@ import KeyboardArrowUpOutlinedIcon from '@mui/icons-material/KeyboardArrowUpOutl
 import KeyboardArrowDownOutlinedIcon from '@mui/icons-material/KeyboardArrowDownOutlined';
 import PurpleChartCard from '../charts/PurpleChartCard';
 import { dateFormat } from '../../Utils/dateFormat';
+import isEmpty from '../../validation/isEmpty';
 
 function SideTrainee({ lastMeeting }) {
     const theme = useTheme();
+    const dispatch = useDispatch();
+    let syncs = useSelector((state) => state.syncs?.all_syncs);
     const [anchorEl, setAnchorEl] = useState(null);
+
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
+
+    useEffect(() => {
+        console.log('lastMeeting', lastMeeting);
+        if (!isEmpty(lastMeeting)) {
+            dispatch(getSync(lastMeeting._id));
+        }
+        else return <>error</>;
+    }, [lastMeeting])
+
     const handleClose = () => {
         setAnchorEl(null);
     };
@@ -67,7 +81,10 @@ function SideTrainee({ lastMeeting }) {
                             </Grid>
                         </Grid>
                         <Grid item xs={12} sx={{ pt: '16px !important' }}>
-                            <PurpleChartCard time={lastMeeting ? dateFormat(lastMeeting?.date) : ''} totalSync={'37'} />
+                            {
+                                !isEmpty(syncs) &&
+                                <PurpleChartCard time={lastMeeting ? dateFormat(lastMeeting?.date) : ''} totalSync={'37'} syncs={syncs} />
+                            }
                         </Grid>
                         <Grid item xs={12}>
                             <Grid container direction="column">
@@ -277,12 +294,6 @@ function SideTrainee({ lastMeeting }) {
                         </Grid>
                     </Grid>
                 </CardContent>
-                {/* <CardActions sx={{ p: 1.25, pt: 0, justifyContent: 'center' }}>
-                        <Button size="small" disableElevation>
-                            View All
-                            <ChevronRightOutlinedIcon />
-                        </Button>
-                    </CardActions> */}
             </TraineeSideCard>
         </>
     );

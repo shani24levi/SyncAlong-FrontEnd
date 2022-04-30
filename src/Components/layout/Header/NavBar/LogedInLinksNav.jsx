@@ -116,7 +116,6 @@ const LogedInLinksNav = (props) => {
             >
                 <Box
                     component={NotificationsIcon}
-                    color='#fff'
                     width="1.25rem!important"
                     height="1.25rem!important"
                     marginRight=".5rem!important"

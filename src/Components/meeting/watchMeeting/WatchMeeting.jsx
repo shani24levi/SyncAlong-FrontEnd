@@ -40,7 +40,6 @@ function WatchMeeting() {
     const videoSearch = () => {
 
     }
-    //console.log('selectedVideo', selectedVideo, id);
 
     return (
         <Container>
@@ -50,18 +49,19 @@ function WatchMeeting() {
                     !selectedVideo ?
                         <Loader />
                         :
-                        <VideoDetail video={selectedVideo} />
+                        <VideoDetail video={selectedVideo} syncs={syncs} />
                 }
                 <VideoList
                     onVideoSelect={selectedVideo => setSelectedVideo({ selectedVideo })}
-                    videos={meetings ? meetings.slice(0, 4) : null} />            </Grid>
+                    videos={meetings} />
+                {/* ? meetings.slice(0, 4) : null} />            */}
+            </Grid>
 
-            {
+            {/* {
                 !isEmpty(syncs)
                     ? <SyncView selectedVideo={selectedVideo} syncs={syncs} />
                     : <Loader />
-            }
-            {/* <PurpleChartCard time={(selectedVideo?.date)} totalSync={'37'} /> */}
+            } */}
         </Container>
     );
 }

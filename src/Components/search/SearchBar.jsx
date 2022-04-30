@@ -7,7 +7,7 @@ text-align: center;
 background: #191e38;
 
 input {
-    width: 75%;
+    width:100%;
     color: #52629D !important;
     font-family: "Open Sans", sans-serif;
     font-weight: 300;
@@ -17,18 +17,23 @@ input {
     font-size: 36px;
     height: auto;
     line-height: 48px;
-    caret-color: #fff;
+    text-align: center;
 }
 `;
 
-function SearchBar(props) {
-    const [term, setTerm] = useState('');
+function SearchBar({ onSearch }) {
+    const [search, setSearch] = React.useState('');
+    const onSearchInputChange = ({ target: { value } }) => {
+        console.log(value);
+        setSearch(value);
+        onSearch(value);
+    }
+
     return (
         <Wrapper className="search-bar">
             <input
                 placeholder="Search"
-                value={term}
-                onChange={event => setTerm(event.target.value)} />
+                value={search} onChange={onSearchInputChange} />
         </Wrapper>
     );
 }

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Container, Box, Grid, Button } from '@mui/material';
+import { Container, Box, Grid, Button, Typography } from '@mui/material';
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { alpha, styled } from '@mui/material/styles';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
@@ -9,7 +9,8 @@ import { TextField } from '@mui/material';
 import VideoGrid from './styles.meeting.sorce/VideoGrid';
 import VideoCard from './VideoCard';
 import componentStyles from "../../../assets/theme/buttons";
-import Search from '../../search/Search';
+import Search from '../../search/SearchBar';
+import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
 const useStyles = makeStyles(componentStyles);
 
 
@@ -28,8 +29,9 @@ function MeetingsScours({ meetings }) {
         setValue(newValue);
     };
 
-    console.log(meetings);
     const meetings_filtered = meetings.filter(i => i?.title?.toString().toLowerCase().includes(search) || i.trainee.user.toString().toLowerCase().includes(search));
+    console.log('meetings', meetings_filtered);
+
     return (
         <Container maxWidth="xl">
             <Box sx={{
@@ -42,7 +44,7 @@ function MeetingsScours({ meetings }) {
             }}>
                 <Grid container alignItems='center' justifyContent='center' spacing={3} >
                     <Grid item xs={12} md={6}>
-                        <Search />
+                        <Search onSearch={onSearch} />
                     </Grid>
                     <Grid item xs={12} md={6}>
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -74,12 +76,28 @@ function MeetingsScours({ meetings }) {
                     </Grid>
                 </Grid>
             </Box>
+            {meetings_filtered.length !== 0
+                ? <VideoGrid>
+                    {meetings_filtered.map((m) => {
+                        return (
+                            <VideoCard key={m._id} video={m} />
+                        )
+                    })}
+                </VideoGrid>
+                :
+                <Box m="auto"
+                    alignItems="center"
+                    justifyContent="center"
+                    textAlign="center"
+                    minHeight="100px"
+                    marginTop="160px"
+                    marginBottom="160px"
+                >
+                    <OndemandVideoIcon style={{ height: '80px', width: '80px' }} />
+                    <Typography variant='h5'>{"No Meeting Found"}</Typography>
+                </Box>
 
-            <VideoGrid>
-                {meetings
-                    ? meetings_filtered.map((m) => <VideoCard key={m._id} video={m} />)
-                    : null}
-            </VideoGrid>
+            }
         </Container>
     );
 }
