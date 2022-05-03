@@ -6,8 +6,6 @@ import StartCard from '../../card/StartCard';
 
 function TraineesCard(props) {
     const my_trainees = useSelector(state => state.profile.trainees_profiles);
-
-    // console.log('my_trainees', my_trainees);
     return (
         <>
             {

@@ -12,6 +12,8 @@ import HeaderWaves from './trainee/HeaderWaves';
 import CircelsHeader from '../layout/Header/CircelsHeader';
 import { Avatar, AvatarGroup, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material';
 import TableChartOutlinedIcon from '@mui/icons-material/TableChartOutlined';
+import PopUpCallQuickMeeting from '../popupCall/PopUpCallQuickMeeting';
+import isEmpty from '../../validation/isEmpty';
 const useStyles = makeStyles(componentStyles);
 
 
@@ -38,7 +40,7 @@ const CardAvatar = styled(Card)(({ theme }) => ({
 
 
 function TraineeHome({ meeting, date }) {
-    const { callTrainee, upcomingMeetingToNow, scheduleMeetingPopUpCall, upcamingMeeting } = useContext(SocketContext);
+    const { callQuickMeeting, setCallQuickMeeting, callTrainee, upcomingMeetingToNow, scheduleMeetingPopUpCall, upcamingMeeting } = useContext(SocketContext);
     const classes = useStyles();
     const theme = useTheme();
     const user = useSelector(state => state.auth.user);
@@ -51,6 +53,7 @@ function TraineeHome({ meeting, date }) {
         <>
             <HeaderWaves meeting={meeting} date={date} upcamingMeeting={upcamingMeeting} />
             {callTrainee && <PopUpCall />}
+            {!isEmpty(callQuickMeeting) && <PopUpCallQuickMeeting currMeeting={callQuickMeeting} />}
 
             <Box
                 position="relative"

@@ -54,6 +54,7 @@ function ContextProvider({ children, socket, profile }) {
 
   const [prossingEndMeeting, setProssingEndMeeting] = useState(false);
   const [errorUserLeft, setErrorUserLeft] = useState(false);
+  const [callQuickMeeting, setCallQuickMeeting] = useState(null);
 
 
   const syncScoreRef = useRef(syncScore);
@@ -444,6 +445,7 @@ function ContextProvider({ children, socket, profile }) {
     lisiningReConected();
     lisiningStatePeer();
     lisiningMeetingComplited();
+    calltoTraineeQuickMeeting();
   }, [socket]);
 
   useEffect(() => {
@@ -691,6 +693,14 @@ function ContextProvider({ children, socket, profile }) {
 
   //===============lisiners=========================//
 
+  const calltoTraineeQuickMeeting = () => {
+    socket?.on('calltoTraineeQuickMeeting', (quickMeeting) => {
+      console.log('quickMeeting', quickMeeting);
+      //need to update tarinee meeting starte befor set up the calll.....
+      setCallQuickMeeting(quickMeeting)
+      //setCallTrainee(true);
+    });
+  }
   const lisiningForNewUsers = () => {
     //lisinig for changes in the array of users caming in to the app
     socket?.on('getNewUserAddToApp', (user) => {
@@ -1284,6 +1294,7 @@ function ContextProvider({ children, socket, profile }) {
         OneTimeCall, setOneTimeCall,
         peerClose,
         setMediapipeOfTrainee, setCallAccepted, setCall,
+        callQuickMeeting, setCallQuickMeeting
 
       }}
     >

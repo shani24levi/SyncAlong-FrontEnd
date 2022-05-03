@@ -8,11 +8,13 @@ import componentStyles from "../../../../assets/theme/buttons";
 // import UserCard from '../../UserCard';
 import UserCardProfile from '../../../card/UserCardProfile';
 import CardContiner from '../../../card/CardContiner';
+import ElderlyWomanIcon from '@mui/icons-material/ElderlyWoman';
 import { Link } from 'react-router-dom';
 
 import { getTraineesProfiles } from '../../../../Store/actions/profileAction';
 import { useEffect } from 'react';
 import SearchAnimation from '../../../search/SearchAnimation';
+import isEmpty from '../../../../validation/isEmpty';
 
 const useStyles = makeStyles(componentStyles);
 
@@ -32,7 +34,11 @@ function TraineesUsers({ profile }) {
         setSearch(search.toLowerCase());
     };
 
-    const mytrainees_filtered = mytrainees.filter(i => i.user.user.toString().toLowerCase().includes(search));
+    let mytrainees_filtered = mytrainees;
+    if (!isEmpty(mytrainees))
+        mytrainees_filtered = mytrainees.filter(i => i.trainee.user.toString().toLowerCase().includes(search));
+
+    //const mytrainees_filtered = mytrainees.filter(i => i.user.user.toString().toLowerCase().includes(search));
 
     return (
         <>
@@ -53,11 +59,19 @@ function TraineesUsers({ profile }) {
                 {
                     <>
                         {
-                            trainees?.length == 0
+                            trainees?.length == 0 || isEmpty(trainees)
                                 ?
-                                <CardContiner title="No Trainees listed...">
-                                    <Typography>No Trainees listed...</Typography>
-                                </CardContiner>
+                                <Box m="auto"
+                                    alignItems="center"
+                                    justifyContent="center"
+                                    textAlign="center"
+                                    minHeight="80px"
+                                    marginTop="100px"
+                                    marginBottom="100px"
+                                >
+                                    <ElderlyWomanIcon style={{ height: '80px', width: '80px', color: '#fff' }} />
+                                    <Typography variant='h5'>{"No Users Found"}</Typography>
+                                </Box>
                                 :
                                 <>
                                     <Grid container justifyContent='center' >

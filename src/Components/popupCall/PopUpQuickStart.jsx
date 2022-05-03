@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState, forwardRef } from 'react';
 import { SocketContext } from '../Context/ContextProvider';
 import { useSelector, useDispatch } from 'react-redux';
-import { craeteMeetings, setActiveMeeting } from '../../Store/actions/meetingActions';
+import { craeteMeetings, setActiveMeeting, clearCreatedQuickMeeting } from '../../Store/actions/meetingActions';
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { useNavigate } from 'react-router-dom';
 import PhoneEnabledIcon from '@mui/icons-material/PhoneEnabled';
@@ -38,19 +38,20 @@ const Transition = forwardRef(function Transition(props, ref) {
 
 
 function PopUpQuickStart({ quickStartOpen, setQuickStartOpen }) {
-    const { socket, yourSocketId, setMySocketId, setCallTrainee, setAccseptScheduleMeetingCall, scheduleMeetingPopUpCall, setScheduleMeetingPopUpCall } = useContext(SocketContext);
+    const { socket, setYourSocketId, yourSocketId, setMySocketId, setCallTrainee, setAccseptScheduleMeetingCall } = useContext(SocketContext);
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const classes = useStyles();
     const user = useSelector(state => state.auth.user);
     const profile = useSelector(state => state.profile);
-    const currMeeting = useSelector(state => state.meetings);
+    const meeting = useSelector(state => state.meetings);
     const [onlineTrainees, setOnlineTrainees] = useState([]);
     const [offlineTrainees, setOfflineTrainees] = useState([]);
     const [socketsCalls, setSocketsCalls] = useState(false);
     const [createMeetingProcces, setCreateMeetingProcces] = useState(false);
     const [userSelcted, setUserSelcted] = useState(null);
     const [activities, setActivities] = useState(null);
+    const [quickMeeting, setQuickMeeting] = useState(null);
 
 
     useEffect(async () => {
@@ -122,12 +123,52 @@ function PopUpQuickStart({ quickStartOpen, setQuickStartOpen }) {
         return random5;
     }
 
+    useEffect(() => {
+        console.log('meeting.meeeting_created', meeting.meeeting_created);
+        if (!isEmpty(meeting.meeeting_created)) {
+            setQuickMeeting(meeting.meeeting_created);
+            let userTrainee = onlineTrainees.find(el => el.userId === userSelcted)
+            !isEmpty(userTrainee) && setYourSocketId(userTrainee.socketId);
+            socket?.emit("getSocketId", user._id, user => {
+                console.log('getSocketId', user);
+                setMySocketId(user.socketId);
+            });
+
+            let roomId = meeting.meeeting_created._id;
+            let from = meeting.meeeting_created.tariner._id;
+            let to = meeting.meeeting_created.trainee._id;
+
+            let data = {
+                yourSocketId: userSelcted.socketId,
+                quickMeeting: meeting.meeeting_created
+            }
+
+            socket?.emit('calltoTraineeQuickMeeting', data);
+            socket?.emit("joinUser", from, to, roomId, users => {
+                console.log('getUsers', users);
+            });
+            socket?.off("joinUser");
+            setAccseptScheduleMeetingCall(true);
+            setCreateMeetingProcces(false);
+
+            dispatch(setActiveMeeting(meeting.meeeting_created, true));
+            // dispatch(clearCreatedQuickMeeting());
+            navigate('/video-room', { state: { meeting: meeting.meeeting_created } });
+        }
+    }, [meeting.meeeting_created])
+
     const craeteMeeting = () => {
         if (!isEmpty(userSelcted) && !isEmpty(activities)) {
             setCreateMeetingProcces(true);
-            // dispatch(craeteMeetings());
-            // dispatch(setActiveMeeting());
-            // setCallTrainee();
+            let date = new Date();
+            date.setHours(date.getMonth() + 3); //to avoide pop up meeting nowwww
+            let newMeeting = {
+                title: `random${new Date()}`,
+                trainee: userSelcted.userId,
+                date,
+                activities: activities,
+            }
+            dispatch(craeteMeetings(newMeeting));
         }
     }
 
@@ -148,6 +189,7 @@ function PopUpQuickStart({ quickStartOpen, setQuickStartOpen }) {
         <Dialog
             open={quickStartOpen}
             TransitionComponent={Transition}
+            onClose={() => handleClose()}
             keepMounted
             aria-describedby="alert-dialog-slide-description"
         >

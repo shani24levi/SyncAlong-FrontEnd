@@ -47,7 +47,7 @@ const Heading = styled('h6')(({ theme }) => ({
 }))
 
 
-function StartCard({ title, subtitle, avatar, trainee }) {
+function StartCard({ title, subtitle, avatar, m }) {
     const navigate = useNavigate();
 
     return (
@@ -63,7 +63,7 @@ function StartCard({ title, subtitle, avatar, trainee }) {
                 </Box>
             </ContentBox>
             <Tooltip title="View Details" placement="top" arrow>
-                <Button endIcon={<ArrowRightAltIcon />} onClick={() => navigate('/trainee/view', { state: { trainee_id: trainee.user._id, trainee: trainee } })}>
+                <Button endIcon={<ArrowRightAltIcon />} onClick={() => navigate(`/meeting/watch/${m._id}`)}>
                 </Button>
             </Tooltip>
         </StyledCard>

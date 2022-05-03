@@ -8,7 +8,8 @@ import {
     CLEAR_MEETINGS,
     CLOSE_ACTIVE_MEETING,
     SET_MEETING_COMPKITED,
-    SET_MEETING_COMPKITED_URL
+    SET_MEETING_COMPKITED_URL,
+    CLEARE_QUICK_MEETING
 } from './types';
 import { meetingsService } from '../../servises';
 import { redirect } from '../../helpers';
@@ -28,7 +29,7 @@ export const futureMeetings = () => dispatch => {
     meetingsService.futureMeetings()
         .then(
             meetings => {
-                 console.log('futureMeetings', meetings.data);
+                console.log('futureMeetings', meetings.data);
                 dispatch({
                     type: GET_FUTURE_MEETINGS,
                     payload: meetings.data
@@ -131,6 +132,12 @@ export const closeActiveMeeting = () => dispatch => {
     dispatch(setLoading(true));
     return { type: CLOSE_ACTIVE_MEETING }
 }
+
+export const clearCreatedQuickMeeting = () => dispatch => {
+    dispatch(setLoading(true));
+    return { type: CLEARE_QUICK_MEETING }
+}
+
 
 
 export const getActiveMeeting = () => dispatch => {

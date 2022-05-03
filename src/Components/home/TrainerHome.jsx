@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState, useRef } from 'react';
 import { SocketContext } from '../Context/ContextProvider';
 import { styled } from '@mui/system'
-import { Grid, Container, Button, Box, Card } from '@material-ui/core';
+import { Grid, Container, Button, Box, Card, Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { useSelector } from 'react-redux';
 import isEmpty from '../../validation/isEmpty';
@@ -53,17 +53,6 @@ const useStyles = makeStyles({
         alignItems: "center"
     }
 });
-
-const Title = styled('span')(() => ({
-    fontSize: '1rem',
-    fontWeight: '500',
-    textTransform: 'capitalize',
-}))
-
-const SubTitle = styled('span')(({ theme }) => ({
-    fontSize: '0.875rem',
-    //color: theme.palette.text.secondary,
-}))
 
 //Trainer will have his data , graph and lists
 function TrainerHome({ meeting, date, dateToMeeting }) {
@@ -137,7 +126,6 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
         setQuickStartOpen(true);
     }
 
-    console.log(!isEmpty(my_trainees));
     return (
         <>
             <Container maxWidth="xl">
@@ -161,9 +149,13 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
                 </Grid>
 
                 {
-                    profile && !trainee_profile_called ?
-                        <Loader /> :
-                        <>
+                    profile && !trainee_profile_called
+                        ? <>
+                            {
+                                isEmpty(profile.trainees_profiles) ? <></> : <Loader />
+                            }
+                        </>
+                        : <>
                             {
                                 !isEmpty(my_trainees) ? <Carousel /> : <></>
                             }
@@ -171,7 +163,6 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
 
                 }
                 <Grid container alignItems='center' alignContent='center' spacing={2}>
-                    {/* {my_trainees && my_trainees.lenght != 0 && <TraineesCard />} */}
                     <Grid item xs={12} md={12}>
                         <CardContiner title="Your Upcoming Meeting" subtitle={dateToMeeting === 0 ? '' : `At ${dateFormat(dateToMeeting.toString())}`} >
                             {!isEmpty(upcamingMeeting) && 'Participants :  ' + upcamingMeeting?.tariner.user + ' && ' + upcamingMeeting?.trainee.user}
@@ -207,21 +198,25 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
 
                 </Grid>
 
-                <Grid container spacing={3}>
-                    <Grid item lg={8} md={8} sm={12} xs={12}>
-                        <ListBoxTop />
+                {
+                    !isEmpty(meetings.meetings_complited) &&
+                    <Grid container spacing={3}>
+                        <Grid item lg={8} md={8} sm={12} xs={12}>
+                            <ListBoxTop meetings_complited={meetings.meetings_complited} />
+                        </Grid>
+                        <Grid item lg={4} md={4} sm={12} xs={12}>
+                            <Card sx={{ px: 3, py: 2, m: 3 }}>
+                                <Typography component="h5" style={{ padding: '10px' }}>Sessions Amount</Typography>
+                                <DoughnutChart
+                                    height="300px"
+                                    meetings_complited={meetings.meetings_complited}
+                                />
+                            </Card>
+                            {/* <ProgressUserView /> */}
+                        </Grid>
                     </Grid>
-                    <Grid item lg={4} md={4} sm={12} xs={12}>
-                        <Card sx={{ px: 3, py: 2, mb: 3 }}>
-                            <Title>your sessions</Title>
-                            <SubTitle>Last 30 days</SubTitle>
-                            <DoughnutChart
-                                height="300px"
-                            />
-                        </Card>
-                        <ProgressUserView />
-                    </Grid>
-                </Grid>
+                }
+
             </Container>
         </>
 

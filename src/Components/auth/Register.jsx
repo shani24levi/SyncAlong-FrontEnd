@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import {
     Grid, Paper, Avatar, FilledInput, FormControl, TextField, Button, Typography, Link,
-    Card, CardContent, CardHeader, InputAdornment, Box, FormControlLabel, Checkbox,
+    Card, CardContent, CardHeader, InputAdornment, Box, FormControlLabel, Checkbox, CircularProgress,
 } from '@material-ui/core'
 import Email from "@material-ui/icons/Email";
 import Lock from "@material-ui/icons/Lock";
@@ -90,69 +90,6 @@ const Register = (props) => {
 
                     <Grid item>
                         <Card classes={{ root: classes.cardRoot }}>
-                            <CardHeader
-                                className={classes.cardHeader}
-                                title={
-                                    <Box
-                                        fontSize="80%"
-                                        fontWeight="400"
-                                        component="small"
-                                        color={theme.palette.grey[600]}
-                                    >
-                                        Sign up with
-                                    </Box>
-                                }
-                                titleTypographyProps={{
-                                    component: Box,
-                                    textAlign: "center",
-                                    marginBottom: "1rem!important",
-                                    marginTop: ".5rem!important",
-                                    fontSize: "1rem!important",
-                                }}
-                                subheader={
-                                    <Box textAlign="center">
-                                        <Box
-                                            component={Button}
-                                            variant="contained"
-                                            marginRight="2rem!important"
-                                            classes={{ root: classes.buttonRoot }}
-                                        >
-                                            <Box component="span" marginRight="4px">
-                                                <Box
-                                                    alt="..."
-                                                    component="img"
-                                                    width="20px"
-                                                    className={classes.buttonImg}
-                                                    src=
-                                                    "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Facebook_icon_2013.svg/1200px-Facebook_icon_2013.svg.png"
-                                                ></Box>
-                                            </Box>
-                                            <Box component="span" marginLeft=".75rem">
-                                                FaceBook
-                                            </Box>
-                                        </Box>
-                                        <Button
-                                            variant="contained"
-                                            classes={{ root: classes.buttonRoot }}
-                                        >
-                                            <Box component="span" marginRight="4px">
-                                                <Box
-                                                    alt="..."
-                                                    component="img"
-                                                    width="20px"
-                                                    className={classes.buttonImg}
-                                                    src=
-                                                    "https://freesvg.org/img/1534129544.png"
-
-                                                ></Box>
-                                            </Box>
-                                            <Box component="span" marginLeft=".75rem">
-                                                Google
-                                            </Box>
-                                        </Button>
-                                    </Box>
-                                }
-                            ></CardHeader>
                             <CardContent classes={{ root: classes.cardContent }}>
                                 <Box
                                     color={theme.palette.grey[600]}
@@ -162,7 +99,7 @@ const Register = (props) => {
                                     fontSize="1rem"
                                 >
                                     <Box fontSize="80%" fontWeight="400" component="small">
-                                        Or sign up with credentials
+                                        Sign up with credentials
                                     </Box>
                                 </Box>
                                 <Box component="form" noValidate onSubmit={onsubmit}>
@@ -259,31 +196,13 @@ const Register = (props) => {
                                         {errors["pass"] && !changed && <Typography color="error" variant="body2"> {errors["pass"]}</Typography>}
                                     </FormControl>
 
-                                    <FormControlLabel
-                                        value="end"
-                                        control={<Checkbox color="primary" />}
-                                        label={
-                                            <>
-                                                I agree with the{" "}
-                                                <Box
-                                                    color={theme.palette.primary.main}
-                                                    component="a"
-                                                    textDecoration="none"
-                                                >
-                                                    Privacy Policy
-                                                </Box>
-                                            </>
-                                        }
-                                        labelPlacement="end"
-                                        classes={{
-                                            root: classes.formControlLabelRoot,
-                                            label: classes.formControlLabelLabel,
-                                        }}
-                                    />
                                     <Box textAlign="center" marginTop="1.5rem" marginBottom="1.5rem">
                                         <Button type="submit" color="primary" variant="contained" className={btnClasses.purpleDefult} disabled={props.loading}>
-                                            Create account
-                                            {props.loading && <i className="fa fa-refresh fa-spin" style={{ marginRight: "5px" }} />}
+                                            {props.loading ? (
+                                                <CircularProgress color="secondary" size="20px" />
+                                            ) : (
+                                                "Create account"
+                                            )}
                                         </Button>
                                     </Box>
                                 </Box>

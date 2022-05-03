@@ -222,11 +222,11 @@ const theme = createTheme({
                 maxWidth: 1500,
             },
         },
-        MuiIconButton: {
-            label: {
-                color: "#ffffff !important",
-            },
-        },
+        // MuiIconButton: {
+        //     label: {
+        //         color: "#ffffff !important",
+        //     },
+        // },
         MuiDataGrid: {
             root: {
                 color: "#ffffff !important",

@@ -133,58 +133,6 @@ const Login = (props) => {
                         <h2>Sign In</h2>
                     </Grid>
                     <Card classes={{ root: classes.cardRoot }}>
-                        <CardHeader
-                            className={classes.cardHeader}
-                            title={
-                                <Box
-                                    fontSize="80%"
-                                    fontWeight="400"
-                                    component="small"
-                                    color={theme.palette.grey[600]}
-                                >
-                                    Sign up with
-                                </Box>
-                            }
-                            titleTypographyProps={{
-                                component: Box,
-                                textAlign: "center",
-                                marginBottom: "1rem!important",
-                                marginTop: ".5rem!important",
-                                fontSize: "1rem!important",
-                            }}
-                            subheader={
-                                <Box textAlign="center">
-                                    <Box
-                                        component={Button}
-                                        variant="contained"
-                                        marginRight="2rem!important"
-                                        classes={{ root: classes.buttonRoot }}
-                                    >
-                                        <Box component="span" marginRight="4px">
-                                            <Box
-                                                alt="..."
-                                                component="img"
-                                                width="20px"
-                                                className={classes.buttonImg}
-                                                src=
-                                                "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Facebook_icon_2013.svg/1200px-Facebook_icon_2013.svg.png"
-                                            ></Box>
-                                        </Box>
-                                        <Box component="span" marginLeft=".75rem">
-                                            FaceBook
-                                        </Box>
-                                    </Box>
-                                    <Button
-                                        variant="contained"
-                                        classes={{ root: classes.buttonRoot }}
-                                    >
-                                        <Box component="span" marginLeft=".75rem">
-                                            Google
-                                        </Box>
-                                    </Button>
-                                </Box>
-                            }
-                        ></CardHeader>
                         <CardContent classes={{ root: classes.cardContent }}>
                             <Box component="form" noValidate onSubmit={onsubmit}>
                                 <TextField
@@ -223,10 +171,6 @@ const Login = (props) => {
                                             : errors["pass"] && !changed && <Typography color="error" variant="body2"> {errors["pass"]}</Typography>
                                     }
                                 />
-                                {/* {submitted && !pass &&
-                                    <Typography color="error" variant="body2"> *Password is required</Typography>
-                                } */}
-                                {/* {errors["pass"] && !changed && <Typography color="error" variant="body2"> {errors["pass"]}</Typography>} */}
                                 <FormControlLabel
                                     control={
                                         <Checkbox

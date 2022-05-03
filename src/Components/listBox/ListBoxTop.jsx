@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { Box, styled, useTheme } from '@mui/system'
 import {
     Card,
@@ -17,7 +18,12 @@ import {
 import { Button, Grid } from '@material-ui/core';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
-function ListBoxTop(props) {
+function ListBoxTop({ meetings_complited }) {
+    const profile = useSelector(state => state.profile);
+    const [trainee, setTrainee] = useState(null);
+    const [traineeId, setTraineeId] = useState(null);
+
+
     const CardHeader = styled('div')(() => ({
         paddingLeft: '24px',
         paddingRight: '24px',
@@ -33,7 +39,7 @@ function ListBoxTop(props) {
         textTransform: 'capitalize',
     }))
 
-    const ProductTable = styled(Table)(() => ({
+    const SyncTable = styled(Table)(() => ({
         minWidth: 400,
         whiteSpace: 'pre',
         '& Typography': {
@@ -62,28 +68,26 @@ function ListBoxTop(props) {
         boxShadow: '0 0 2px 0 rgba(0, 0, 0, 0.12), 0 2px 2px 0 rgba(0, 0, 0, 0.24)',
     }))
 
+    console.log(' profile.trainees_profiles', profile.trainees_profiles);
     return (
         <Card elevation={3} sx={{ pt: '20px', mb: 3 }}>
             <CardHeader>
-                <Title>top sync scoure</Title>
+                <Title>Top sync</Title>
                 <Grid container alignItems='flex-end' justifyContent='flex-end'>
                     <Select size="small" defaultValue="this_month">
                         <MenuItem value="this_month">All Users</MenuItem>
-                        <MenuItem value="last_month">Grama1</MenuItem>
-                        <MenuItem value="last_month">Grama2</MenuItem>
-                    </Select>
-
-                    <Select size="small" defaultValue="this_month">
-                        <MenuItem value="this_month">ToDay</MenuItem>
-                        <MenuItem value="last_month">This 3 Days</MenuItem>
-                        <MenuItem value="last_month">This Week</MenuItem>
-                        <MenuItem value="last_month">This Month</MenuItem>
+                        {
+                            profile.trainees_profiles && profile.trainees_profiles?.map((trainee, i) => {
+                                return <MenuItem value={trainee.user._id} key={i} onClick={() => setTraineeId(trainee.user._id)}>
+                                    {trainee.user.username}</MenuItem>
+                            })
+                        }
                     </Select>
                 </Grid>
             </CardHeader>
 
             <Box overflow="auto">
-                <ProductTable>
+                <SyncTable>
                     <TableHead>
                         <TableRow>
                             <TableCell sx={{ px: 3 }} colSpan={4}>
@@ -93,7 +97,7 @@ function ListBoxTop(props) {
                                 Total Sync
                             </TableCell>
                             <TableCell sx={{ px: 0 }} colSpan={2}>
-                                Session Time
+                                Amount Of Activities
                             </TableCell>
                             <TableCell sx={{ px: 0 }} colSpan={1}>
                                 View
@@ -154,7 +158,7 @@ function ListBoxTop(props) {
                             </TableRow>
                         ))}
                     </TableBody>
-                </ProductTable>
+                </SyncTable>
             </Box>
         </Card>
     );

@@ -611,6 +611,7 @@ function VideoContext({ meeting }) {
         }
     }, [callAccepted]);
 
+    console.log('isPeerHere && yourName ', isPeerHere && yourName);
     return (
         <>
             {(errorUserLeft || erorrWithPeerConection) && <ErrorAlert title="Peer DisConected..." />}

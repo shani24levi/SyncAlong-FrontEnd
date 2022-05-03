@@ -11,7 +11,8 @@ import {
     CLEAR_MEETINGS,
     CLOSE_ACTIVE_MEETING,
     SET_MEETING_COMPKITED,
-    SET_MEETING_COMPKITED_URL
+    SET_MEETING_COMPKITED_URL,
+    CLEARE_QUICK_MEETING,
 } from '../actions/types';
 
 const initialState = {
@@ -21,6 +22,7 @@ const initialState = {
     upcoming_meeting: null,// upcomung meeting myte be also the active meeting
     active_meeting: null, //meeting thet both users clicked joinRoom and not click closeRoom
     meetings_complited: null, //status=false && urlRoom is difiend - in order to watch 
+    meeeting_created: null,
 }
 
 export default function (state = initialState, action) {
@@ -62,8 +64,16 @@ export default function (state = initialState, action) {
                 meetings: null,
                 upcoming_meeting: null,
                 active_meeting: null,
-                meetings_complited: null
+                meetings_complited: null,
+                meeeting_created: null,
             };
+        case CLEARE_QUICK_MEETING:
+            return {
+                ...state,
+                loading: false,
+                meeeting_created: null,
+            };
+
         case GET_FUTURE_MEETINGS:
             action.payload = action.payload?.filter(el => el.status !== true);
             return {
@@ -100,6 +110,7 @@ export default function (state = initialState, action) {
                 all_meetings: !state.all_meetings ? [action.payload.data.data] : add_all.sort((a, b) => { return a.date - b.date }),//  [...state.all_meetings, action.payload.data.data],
                 meetings: !state.meetings ? [action.payload.data.data] : meetings.sort((a, b) => { return a.date - b.date }), // [...state.meetings, action.payload.data.data],
                 upcoming_meeting: setUpcomingMeeting(action.payload.data.data, 'add'),
+                meeeting_created: action.payload.data.data,
                 loading: false,
             };
         case SET_ACTIVE_MEETING:
@@ -107,7 +118,8 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 loading: false,
-                active_meeting: (action.payload && action.payload?.status) ? action.payload : null
+                active_meeting: (action.payload && action.payload?.status) ? action.payload : null,
+                meeeting_created: null,
             };
         case SET_MEETING_COMPKITED:
             console.log("SET_MEETING_COMPKITED", action.payload);
