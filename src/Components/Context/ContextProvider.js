@@ -26,6 +26,8 @@ function ContextProvider({ children, socket, profile }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
+  const activeMeeting = useSelector((state) => state.meetings.active_meeting);
+  const [yourId, setYourId] = useState('');
   const [callAccepted, setCallAccepted] = useState(false);
   const [callEnded, setCallEnded] = useState(false);
   const [stream, setStream] = useState();
@@ -51,6 +53,7 @@ function ContextProvider({ children, socket, profile }) {
   const [recognition, setRecognition] = useState(null);
 
   const [prossingEndMeeting, setProssingEndMeeting] = useState(false);
+  const [errorUserLeft, setErrorUserLeft] = useState(false);
 
 
   const syncScoreRef = useRef(syncScore);
@@ -76,8 +79,16 @@ function ContextProvider({ children, socket, profile }) {
   const [peerStateConected, setPeerStateConected] = useState(null);
   const [erorrWithPeerConection, setErorrWithPeerConection] = useState(false);
   const [myState, setMyState] = useState(null);
+  const [startingDelay, setStartingDelay] = useState(false);
+  const [currActivity, setCurrActivity] = useState(0);
+  const [OneTimeCall, setOneTimeCall] = useState(true);
+
+  const [frame, setFrame] = useState(0);
   const myStateRef = useRef(myState);
   myStateRef.current = myState;
+
+  const frameeRef = useRef(frame);
+  frameeRef.current = frame;
 
   const peerStateConectedRef = useRef(peerStateConected);
   peerStateConectedRef.current = peerStateConected;
@@ -90,8 +101,6 @@ function ContextProvider({ children, socket, profile }) {
   let camera = null;
   const myCanvasRef = useRef();
   const userCanvasRef = useRef();
-  let userPoseAngle = null;
-  let repsCounter = 0;
   const Audio = useRef();
 
   let location = useLocation();
@@ -114,6 +123,7 @@ function ContextProvider({ children, socket, profile }) {
   const [array_poses, setPosesArray] = useState([]);
   const [pose_results, setPose_Results] = useState([]);
   const [poseFarFrame, setPoseFarFrame] = useState([]);
+
 
   const collectionUserPose = (results) => {
     //calls inside of the midiapipe loop thets runs fer frams
@@ -382,7 +392,6 @@ function ContextProvider({ children, socket, profile }) {
   };
 
   const setHolistic = (video) => {
-
     console.log('create mediapipe');
     const userPose = new Holistic({
       locateFile: (file) => {
@@ -423,7 +432,7 @@ function ContextProvider({ children, socket, profile }) {
     lisiningForCamingCalls();
     lisiningResivingPoses();
     lisiningResivingSyncScore();
-    lisiningMassagesInMyRoom();
+    // lisiningMassagesInMyRoom();
     lisiningNotifications();
     !peer2inFrame && lisiningPeer2InFrame();
     lisiningMediaPipe();
@@ -452,10 +461,10 @@ function ContextProvider({ children, socket, profile }) {
     myVideo.current?.srcObject && setHolistic(myVideo);
   }, [stream]);
 
-  // useEffect(() => {
-  //   if (!yourSocketId) setIsConnectedFriend(false);
-  //   else setIsConnectedFriend(true);
-  // }, [yourSocketId]);
+  useEffect(() => {
+    console.log('FyourId', yourId, yourInfo);
+  }, [yourId]);
+
 
   useEffect(() => {
     //The one who receives the points of the other and is responsible for sending to the server the request for synchronization
@@ -531,6 +540,9 @@ function ContextProvider({ children, socket, profile }) {
   useEffect(() => {
     //set notificatiion to peer2 that peer1(me speeking...) said somethong....
     if (recognition) {
+      if (recognition === 'start') {
+        setStartingDelay(true);
+      }
       console.log('recognition', recognition);
       let data = {
         from: mySocketId,
@@ -682,9 +694,6 @@ function ContextProvider({ children, socket, profile }) {
   const lisiningForNewUsers = () => {
     //lisinig for changes in the array of users caming in to the app
     socket?.on('getNewUserAddToApp', (user) => {
-      // console.log('new user enter to app', user);
-      // console.log('yourInfo', yourInfo);
-      // console.log('yourSocketId', yourSocketId); //yor socket id camming form meeting conect page / else its undidiend
       setUserEnteredNow(user);
 
       if (MeetingIsNOW && !yourSocketId && yourInfo) {
@@ -735,23 +744,45 @@ function ContextProvider({ children, socket, profile }) {
     });
   };
 
-  const lisiningMassagesInMyRoom = () => {
-    socket?.on('responsRoomId', (res) => {
-      console.log('user entered to this room you are allrady in!!!', res);
-    });
-  };
-
   const lisiningResivingSyncScore = () => {
     socket?.on('syncScore', (sync_score) => {
-      console.log('///...score.../// ', sync_score);
-      setSyncScore(sync_score);
+      console.log('///...score.../// now:', syncScoreRef.current, "new : ", sync_score);
+      if (syncScoreRef.current >= 0.75 && sync_score <= 0.75 ||
+        syncScoreRef.current <= 0.75 && sync_score >= 0.75
+      ) {
+        console.log(syncScoreRef.current, ">= 0.75 &&", sync_score, "<= 0.75 ||",
+          syncScoreRef.current, "<= 0.75 &&", sync_score, ">= 0.75");
+        if (frameeRef.current === 2) {
+          console.log("frameeRef.current", frameeRef.current);
+          setSyncScore(sync_score);
+          setFrame(0);
+        }
+        setFrame(frame + 1);
+      }
+      else setSyncScore(sync_score);
       console.log(new Date().toLocaleString('en-GB'), new Date().getMilliseconds());
     });
     //for eyal
     socket?.on('resivingSyncScoure', (sync_score) => {
-      console.log('///...score.../// ', sync_score, new Date().toLocaleString('en-GB'));
-      setSyncScore(sync_score);
-      console.log(new Date().toLocaleString('en-GB'), new Date().getMilliseconds());
+      console.log('///...score.../// now:', syncScoreRef.current, "new : ", sync_score);
+      if (syncScoreRef.current === 0) { //first init
+        setSyncScore(sync_score);
+        return;
+      }
+      if (syncScoreRef.current >= 0.75 && sync_score <= 0.75 ||
+        syncScoreRef.current <= 0.75 && sync_score >= 0.75
+      ) {
+        console.log(syncScoreRef.current, ">= 0.75 &&", sync_score, "<= 0.75 ||",
+          syncScoreRef.current, "<= 0.75 &&", sync_score, ">= 0.75");
+
+        if (frameeRef.current === 2) {
+          console.log("frameeRef.current", frameeRef.current);
+          setSyncScore(sync_score);
+          setFrame(0);
+        }
+        setFrame(frame + 1);
+      }
+      else setSyncScore(sync_score);
     });
   };
 
@@ -794,6 +825,8 @@ function ContextProvider({ children, socket, profile }) {
   };
 
   const lisiningForDisconectPeerInRoom = () => {
+    let mypeer = null;
+    if (!isEmpty(meetings.active_meeting)) mypeer = user.role === 'trainer' ? meetings.active_meeting.trainee._id : meetings.active_meeting.tariner._id
     //whan im left the socket and im in a sstion then reconect me and continue
     socket?.on("disconnected", (reason) => {
       console.log("disconnect", reason);
@@ -806,26 +839,6 @@ function ContextProvider({ children, socket, profile }) {
           socket?.emit('reconect', (userId, roomId));
         }
       }
-    });
-
-    socket?.on('userLeft', (userId, reason) => {
-      console.log('userLeft', userId, reason, callAccepted);
-      if (reason === "transport close") {
-        leaveCall()
-        //connectionRef.current.destroy();
-        console.log('userLeft ,im in active meeting,i need to waite for his reConect ', userId);
-      }
-      else {
-        console.log('userLeft ', userId);
-      }
-      //Clear the state of yourSocketId
-      //im waiting in the room... 
-      //waiting for notify that you are back!
-      //whan you are back to the room - im setting your new socketID
-      //sand to you that im accept the call
-      //if i left the room also then room is closed for good and no recording has saved.
-      //reconect when your midiapipe is up 
-      //userLeft(userId);
     });
 
     socket?.on("reconect", (user) => {
@@ -1003,11 +1016,7 @@ function ContextProvider({ children, socket, profile }) {
 
   const callUser = () => {
     console.log('callUser');
-    // console.log('isConnectedFriend', isConnectedFriend);
-    // if (!isConnectedFriend) {
-    //   //sec user has no socketId - cant do connection
-    //   return;
-    // }
+    let tryingConect = 0;
     const peer = new Peer({ initiator: true, trickle: false, stream });
     setMeAsPeer(peer);
     // peer._debug = console.log;
@@ -1047,18 +1056,20 @@ function ContextProvider({ children, socket, profile }) {
         (state === 'connected' && peerStateConectedRef.current !== 'connected') ||
         (state !== 'connected' && peerStateConectedRef.current === 'connected')) {
         console.log('peerStateConected state', peerStateConectedRef.current, state);
-        let waitingTime = true;
-        while (waitingTime && (state !== 'connected' || peerStateConectedRef.current !== 'connected')) {
-          let currTime = new Date().getTime();
-          let date = new Date();
-          date.getMinutes(date.getMinutes() + 2);
-          let timeIn10sec = date.getTime();
+        tryingConect = tryingConect + 1;
 
-          if (currTime >= timeIn10sec) waitingTime = false;
-        }
+        // let waitingTime = true;
+        // while (waitingTime && (state !== 'connected' || peerStateConectedRef.current !== 'connected')) {
+        //   let currTime = new Date().getTime();
+        //   let date = new Date();
+        //   date.getMinutes(date.getMinutes() + 2);
+        //   let timeIn10sec = date.getTime();
 
-        if (!waitingTime && (state !== 'connected' && peerStateConectedRef.current !== 'connected')) {
-          console.log('peerStateConected state', peerStateConectedRef.current, state);
+        //   if (currTime >= timeIn10sec) waitingTime = false;
+        // }
+
+        if (tryingConect === 60) {
+          tryingConect = 0;
           setErorrWithPeerConection(true);
           //set the meeting back to futer meeting and not as active meeting...
           //dispach(setActiveMeeting(meeting,false))
@@ -1122,6 +1133,11 @@ function ContextProvider({ children, socket, profile }) {
     clearRoomStates();
     // window.location.reload();
   };
+
+  const peerClose = () => {
+    connectionRef.current.destroy();
+    //connectionRef.current.close();
+  }
   //===================socket calls when meeting in now============================//
   //===================pop up to bouth===========================//
   //===================socket for sync func============================//
@@ -1146,11 +1162,11 @@ function ContextProvider({ children, socket, profile }) {
       poses: dataTo.poses,
       time: dataTo.time
     };
-    console.log(new Date().toLocaleString('en-GB'), new Date().getMilliseconds());
+    //console.log(new Date().toLocaleString('en-GB'), new Date().getMilliseconds());
     let trainer = myRole === 'trainer' ? true : false;
-    console.log('sendPosesByPeers im sending ..', data, new Date().toLocaleString('en-GB'), 'milisec : ', new Date().getMilliseconds());
+    console.log('////sending ..', data, new Date().toLocaleString('en-GB'), new Date().getMilliseconds());
     socket.emit('sendPosesByPeers', data, mySocketId, yourSocketId, trainer, activity, roomId);
-    console.log(new Date().toLocaleString('en-GB'), new Date().getMilliseconds());
+    //console.log(new Date().toLocaleString('en-GB'), new Date().getMilliseconds());
   }
 
   const clearRoomStates = () => {
@@ -1259,7 +1275,16 @@ function ContextProvider({ children, socket, profile }) {
 
         activeMeetingPopUp, setActiveMeetingPopUp,
         erorrWithPeerConection, setErorrWithPeerConection,
-        prossingEndMeeting, setProssingEndMeeting
+        prossingEndMeeting, setProssingEndMeeting,
+
+        errorUserLeft, setErrorUserLeft,
+        setYourId,
+        startingDelay, setStartingDelay,
+        currActivity, setCurrActivity,
+        OneTimeCall, setOneTimeCall,
+        peerClose,
+        setMediapipeOfTrainee, setCallAccepted, setCall,
+
       }}
     >
       {children}

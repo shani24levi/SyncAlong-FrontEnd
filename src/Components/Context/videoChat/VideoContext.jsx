@@ -10,11 +10,6 @@ import { delay } from '../../../helpers';
 import Timer from './timer/Timer';
 import RecordView from './ReactMediaRecorder';
 import HorizontalGauge from 'react-horizontal-gauge';
-import { Helmet } from "react-helmet";
-
-import victory from "../../../assets/signs/victory.png"
-import thumbs_up from "../../../assets/signs/thumbs_up.png"
-import stop from "../../../assets/signs/stop.png"
 //styleing 
 import componentStyles from "../../../assets/material-ui-style/componenets/video";
 import SpeachRecognition from './SpeachRecognition';
@@ -37,7 +32,7 @@ function VideoContext({ meeting }) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const { prossingEndMeeting, setProssingEndMeeting, leaveCall, setRoomId, mySocketId, roomId, mediapipeOfTrainee, conectReq, setConectReq, callUser, answerCall,
+    const { erorrWithPeerConection, setYourSocketId, peerClose, setMediapipeOfTrainee, setCallAccepted, setCall, OneTimeCall, setOneTimeCall, currActivity, setCurrActivity, setStartingDelay, startingDelay, setYourId, prossingEndMeeting, setProssingEndMeeting, leaveCall, setRoomId, mySocketId, roomId, mediapipeOfTrainee, conectReq, setConectReq, callUser, answerCall,
         accseptScheduleMeetingCall, yourSocketId, setSyncScore,
         setRecognition, setSettingUserInFrame, setPeer1inFrame, setPeer2inFrame,
         peer2inFrame, peer1inFrame, recognition, mediaPipeInitilaize,
@@ -50,13 +45,14 @@ function VideoContext({ meeting }) {
         sendPosesByPeers,
         poseFarFrame,
         accseptPeer2ScheduleMeetingCall, setAccseptPeer2ScheduleMeetingCall,
+        errorUserLeft, setErrorUserLeft,
     } = useContext(SocketContext);
     const classes = useStyles();
     let location = useLocation();
     const [start, setStartActivity] = useState(false);
     const [showDemo, setDemo] = useState(false);
     const [activityTime, setActivityTime] = useState(false);
-    const [currActivity, setCurrActivity] = useState(0);
+    // const [currActivity, setCurrActivity] = useState(0);
     const [sync, setSync] = useState(false);
     const [currData, setSendCurrPoses] = useState(false);
     const [displayErrorMessage, setDisplayErrorMessage] = useState(null);
@@ -64,7 +60,11 @@ function VideoContext({ meeting }) {
     const [question, setQuestion] = useState(false);
     const [activitiesEnded, setActivitiesEnded] = useState(false);
     const [isPeerHere, setIsPeerHere] = useState(false);
-    const [oneTime, setOneTime] = useState(true);
+    const [userLeftInSession, setUserLeftInSession] = useState(null);
+    const userLeftInSessionRef = useRef(userLeftInSession);
+    userLeftInSessionRef.current = userLeftInSession;
+
+    //const [oneTime, setOneTime] = useState(true);
     //const [prossingEndMeeting, setProssingEndMeeting] = useState(false);
 
     const [statusBool, setStatusBool] = useState(false);
@@ -82,8 +82,8 @@ function VideoContext({ meeting }) {
     const user = useSelector((state) => state.auth.user);
     const recording = useSelector((state) => state.recording);
     const meetings = useSelector((state) => state.meetings);
-    //  let camera = null;
     const [camera, setCamera] = useState(null);
+    const [activityOn, setActivityOn] = useState(false);
 
 
     const lisiningForConnected = () => {
@@ -126,17 +126,98 @@ function VideoContext({ meeting }) {
         });
     };
 
-    useEffect(() => {
-        setCamera(new Camera());
+    const lisiningForUserLeftActiveRoom = async () => {
+        let mypeer = null;
+        if (!isEmpty(meeting)) mypeer = user.role === 'trainer' ? meeting.trainee._id : meeting.tariner._id
+
+        socket?.on('userLeft', (userId, reason) => {
+            console.log(user.role, meeting.trainee._id, meeting.tariner._id);
+            console.log('userLeft', userId, reason, "yourId:", mypeer, meeting);
+            if (reason === "transport close") {
+                // try to reconect 
+                console.log(!isEmpty(meeting), userId === mypeer, callAccepted);
+                if (!isEmpty(meeting) && userId === mypeer) {
+                    //  peerClose();
+                    setUserLeftInSession(mypeer);
+                    //clear my start the is requierd for re-conect
+                    setAccseptPeer2ScheduleMeetingCall(false);
+                    myRole == 'trainer' && setMediapipeOfTrainee(false);
+                    setCallAccepted(false);
+                    setCall({});
+                    setOneTimeCall(true);
+                    setIsPeerHere(false);
+                    setYourSocketId(null);
+                    setConectReq(false);
+
+                    //let user know about peer disconected
+                    setErrorUserLeft(true);
+                }
+                console.log('userLeft ,im in active meeting,i need to waite for his reConect ', userId);
+            }
+            else {
+                console.log('some user userLeft ', userId);
+            }
+        });
+        await delay(2000);
+    }
+
+    const lisiningMassagesInMyRoom = () => {
+        socket?.on('responsRoomId', (res) => {
+            console.log('user entered to this room you are allrady in!!!', res, userLeftInSessionRef.current);
+            console.log('res===yourId', res, userLeftInSessionRef.current);
+            if (!isEmpty(userLeftInSessionRef.current) && res === userLeftInSessionRef.current) {
+                //you reconceted to the room and we need to conect
+                //1.get you socket id
+                socket?.emit("getSocketId", res, user => {
+                    console.log('getSocketId', res, user);
+                    setYourSocketId(user.socketId);
+                    //2. send to you all start you need to conect to me agin
+                    let data = {
+                        from: mySocketId,
+                        to: yourSocketId,
+                        roomId,
+                        accseptScheduleMeetingCall: true,
+                        currActivity: currActivity,
+                    }
+                    setUserLeftInSession(null);
+                    socket?.emit("dataToReconect", data); //In the lissiner ill do the reconect after i get you dara from u 
+                });
+            }
+        });
+    };
+
+    const lisiningForDataToReconect = () => {
+        socket?.on('dataToReconect', (data) => {
+            console.log('i reconected and resived data from you', data);
+            setCurrActivity(data.currActivity);
+            setAccseptPeer2ScheduleMeetingCall(true);
+            if (myRole === 'trainer') {
+                //trainer is conect the call....
+                setMediapipeOfTrainee(true);
+            }
+            else if (myRole === 'trainee') {
+                //tell trainee to call me.......
+                console.log('/&&&callTrainer() &&&&do alone the call , whaiting to u..');
+            }
+        });
+    }
+
+    useEffect(async () => {
+        // setCamera(new Camera());
         lisiningForConnected();
         lisiningRoomClosed();
+        await lisiningForUserLeftActiveRoom();
+        lisiningMassagesInMyRoom();
+        lisiningForDataToReconect();
 
-        // navigator.mediaDevices.getUserMedia({ video: true })//audio: true
-        //     .then((currentStream) => {
-        //         setStream(currentStream);
-        //     })
-        //     .catch((error) => { console.log(`Error when open camera: ${error}`) });
+        navigator.mediaDevices.getUserMedia({ video: true })//audio: true
+            .then((currentStream) => {
+                setStream(currentStream);
+            })
+            .catch((error) => { console.log(`Error when open camera: ${error}`) });
 
+        console.log('setYourId', user.role === 'trainer' ? meeting.trainee._id : meeting.tariner._id);
+        setYourId(user.role === 'trainer' ? meeting.trainee._id : meeting.tariner._id)
         setRoomId(meeting._id);
         //set starte in case of re-conect this page agin with different meeting
         setStartActivity(false);
@@ -149,7 +230,7 @@ function VideoContext({ meeting }) {
         setSession(false);
         setActivitiesEnded(false);
         setIsPeerHere(yourSocketId ? true : false);
-        setOneTime(true);
+        setOneTimeCall(true);
         setStop(false);
     }, []);
 
@@ -162,6 +243,14 @@ function VideoContext({ meeting }) {
             console.log('sreamCreate', streamCreate)
         }
     }, [camera])
+
+    useEffect(() => {
+        if (errorUserLeft) {
+            setSendCurrPoses(false);
+            setStop(true);
+            setSyncScore(0);
+        }
+    }, [errorUserLeft])
 
     useEffect(async () => {
         if (currData && !stop) {
@@ -178,40 +267,45 @@ function VideoContext({ meeting }) {
     }, [posesArry, currData, poseFarFrame]);
 
     useEffect(async () => {
-        setSync(true);
-        if (syncScore >= 0.75) {
-            console.log('sync.....', syncScore, new Date().toLocaleString('en-GB'));
+        if (!activityOn && recognition === 'continue') {
+            await activitiesSession();
         }
-        else {
-            console.log('Not sync.....', syncScore, new Date().toLocaleString('en-GB'));
-        }
-    }, [syncScore]);
-
-    useEffect(async () => {
-        console.log('activity_now', activity_now);
-    }, [activity_now]);
+    }, [activityOn])
 
     const activitiesSession = async () => {
         setStop(false);
-        console.log('currActivity', currActivityRef.current);
+        startingDelay && delay(1000);
+        startingDelay && console.log('waited 1 sec befor starting/////');
+        setStartingDelay(false);
+        // setActive
+
+        if (activityOn && recognition === 'continue') return;//do not do the activity becouse the delay is on going now.....
         for (let i = currActivityRef.current; i < meeting.activities.length; i++) {
             setSyncScore(0);
-            console.log('i', i);
             setCurrActivity(i);
             console.log(i, ' this activity is ....', meeting.activities[i]);
             setActivityNow(meeting.activities[i]);
+            setActivityOn(true);
             //whait for 5 sec to garenty thet the bouth video loaded
             recognition === 'start' && await delay(5000);
             //set the start activity to display
 
             console.log('stopRef.current', stopRef.current);
-            if (stopRef.current) return false;
+            if (stopRef.current) {
+                setActivityOn(false);
+                setSyncScore(0);
+                return false;
+            }
             setStartActivity(true);
             setSyncScore(0);
             await delay(4000); //wait for the timer will end
             setStartActivity(false);
 
-            if (stopRef.current) return false;
+            if (stopRef.current) {
+                setActivityOn(false);
+                setSyncScore(0);
+                return false;
+            }
             setDemo(true);
             setSyncScore(0);
             await delay(5000); //wait for the demo 5 sec
@@ -222,7 +316,11 @@ function VideoContext({ meeting }) {
             console.log('stopRef1', stopRef.current);
             console.log('recognition1', recognition);
 
-            if (stopRef.current) return false;
+            if (stopRef.current) {
+                setActivityOn(false);
+                setSyncScore(0);
+                return false;
+            }
             setSendCurrPoses(true);
             setActivityTime(true);
             await delay(30000);
@@ -236,7 +334,12 @@ function VideoContext({ meeting }) {
             console.log('recognition2', recognition);
             console.log('stopRef1', stopRef.current);
 
-            if (stopRef.current) { setSyncScore(0); return false; }
+            if (stopRef.current) {
+                setActivityOn(false);
+                setSyncScore(0);
+                return false;
+            }
+
             console.log('end time of settings/.....', new Date().toLocaleString());
         }
         setSyncScore(0);
@@ -268,7 +371,6 @@ function VideoContext({ meeting }) {
                     dispatch(setMeetingComplited(meeting, { status: false, urlRoom: "Processing" }));
                     //this call updates the server as a meeting complited....
                     dispatch(createRecordingById(formData, meeting._id));
-                    //navigate(`/meeting/watch/${meetingId}`);
                 }
                 else {
                     console.log("cannot save recording because mediaBlobUrl is undefined");
@@ -479,11 +581,11 @@ function VideoContext({ meeting }) {
 
     useEffect(() => {
         console.log('spossss to do somting');
-        console.log(accseptScheduleMeetingCall, myRole, mediaPipeInitilaize, isPeerHere, mediapipeOfTrainee, oneTime);
+        console.log(accseptScheduleMeetingCall, myRole, mediaPipeInitilaize, isPeerHere, mediapipeOfTrainee, OneTimeCall);
 
         //trainer is calling to trainee......
-        if (accseptScheduleMeetingCall && user.role === 'trainer' && mediaPipeInitilaize === 'none' && isPeerHere && mediapipeOfTrainee && oneTime) {
-            setOneTime(false);
+        if (accseptScheduleMeetingCall && user.role === 'trainer' && mediaPipeInitilaize === 'none' && isPeerHere && mediapipeOfTrainee && OneTimeCall) {
+            setOneTimeCall(false);
             setConectReq(true)
             callUser();
         }
@@ -511,10 +613,11 @@ function VideoContext({ meeting }) {
 
     return (
         <>
+            {(errorUserLeft || erorrWithPeerConection) && <ErrorAlert title="Peer DisConected..." />}
             {
                 !isPeerHere && yourName && mediaPipeInitilaize === 'none' && <>
-                    <ErrorAlert name={yourName} title=" is not in the room yet" />
-                    <WorningAlert title="Try to call from the room" />
+                    <ErrorAlert name={yourName} title=" is not in the room" />
+                    {/* <WorningAlert title="Try to call from the room" /> */}
                 </>
             }
             {isPeerHere && mediaPipeInitilaize !== 'none' && <SeccsesAlert title="You will be conected after loading pose evaluation" />}
@@ -556,17 +659,10 @@ function VideoContext({ meeting }) {
                             <Typography variant="h5" gutterBottom>{yourName || 'Name'}</Typography>
                             <video style={{ transform: 'scaleX(-1)', display: 'none' }} playsInline ref={userVideo} autoPlay className={classes.video}> </video>
                             {
-                                // userCanvasRef.current ?
                                 <canvas
                                     style={{ transform: 'scaleX(-1)' }}
                                     ref={userCanvasRef} className={classes.video}> </canvas>
-                                // :
-                                //  <video style={{ transform: 'scaleX(-1)' }} playsInline ref={userVideo} autoPlay className={classes.video}> </video>
-
                             }
-                            {/* <canvas
-                                style={{ transform: 'scaleX(-1)' }}
-                                ref={userCanvasRef} className={classes.video}> </canvas> */}
                         </Grid>
                     </Paper>
                 )}
@@ -588,7 +684,7 @@ function VideoContext({ meeting }) {
                 }
             </Box>
 
-            {sync && <>
+            <>
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                     <HorizontalGauge height={100} width={300} min={0} max={10} value={syncScore * 10} />
                 </Box>
@@ -630,7 +726,7 @@ function VideoContext({ meeting }) {
 
                 </Box>
                 <br />
-            </>}
+            </>
 
             <SpeachRecognition />
         </>
