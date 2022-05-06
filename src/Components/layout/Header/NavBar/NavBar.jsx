@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 // @material-ui/core components
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { makeStyles, useTheme, styled } from "@material-ui/core/styles";
 import {
     AppBar, Box, Container, Divider, Hidden, IconButton, ListItem, Menu, Toolbar
 } from "@material-ui/core";
@@ -18,6 +18,10 @@ import { connect } from 'react-redux';
 import componentStyles from "../../../../assets/material-ui-style/componenets/auth-navbar";
 const useStyles = makeStyles(componentStyles);
 
+const StyledIconButton = styled(IconButton)`
+  &:hover {
+    background: none;
+  }`;
 
 const NavBar = (props) => {
     const classes = useStyles();
@@ -48,9 +52,15 @@ const NavBar = (props) => {
                         component={Box}
                         maxWidth="xl"
                     >
-                        <ListItem
-                            component={Link}
-                            to="/home"
+                        <IconButton
+                            disableElevation
+                            disableRipple
+                            // component={Link}
+                            // to="/home"
+                            variant="raised"
+                            style={{ backgroundColor: 'transparent' }}
+                            onClick={() => window.location.href = '/home'}
+
                         >
                             <Box
                                 alt="..."
@@ -59,7 +69,7 @@ const NavBar = (props) => {
                                 className={classes.headerImg}
                                 src={"/img/logo3.png"}
                             />
-                        </ListItem>
+                        </IconButton>
                         <Hidden lgUp implementation="css">
                             <IconButton
                                 edge="start"

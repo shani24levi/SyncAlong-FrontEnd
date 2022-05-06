@@ -68,10 +68,14 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
     const my_trainees = useSelector(state => state.profile.trainees_profiles);
     const trainee_profile_called = useSelector(state => state.profile.trainee_profile_called);
 
+    let abortController = new AbortController(); //why? => https://www.loginradius.com/blog/engineering/how-to-fix-memory-leaks-in-react/
     useEffect(async () => {
         if (errorDisplay) {
             await delay(3000);
             setErrorDisplay(false);
+        }
+        return () => {
+            abortController.abort();
         }
     }, [errorDisplay])
 

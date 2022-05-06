@@ -64,9 +64,6 @@ function VideoContext({ meeting }) {
     const userLeftInSessionRef = useRef(userLeftInSession);
     userLeftInSessionRef.current = userLeftInSession;
 
-    //const [oneTime, setOneTime] = useState(true);
-    //const [prossingEndMeeting, setProssingEndMeeting] = useState(false);
-
     const [statusBool, setStatusBool] = useState(false);
     const [status, setStatus] = useState(false);
     const [mediaBlobUrl, setMediaBlobUrl] = useState(null);
@@ -79,6 +76,7 @@ function VideoContext({ meeting }) {
 
 
     const Audio = useRef();
+    const videoStrem = useRef();
     const user = useSelector((state) => state.auth.user);
     const recording = useSelector((state) => state.recording);
     const meetings = useSelector((state) => state.meetings);
@@ -113,8 +111,8 @@ function VideoContext({ meeting }) {
         // and i can be on my way to the room .... and not be notifyied by this .
         socket?.on('closeRoom', (meetingId) => {
             console.log('closeRoom ', meetingId);
-            console.log('herer', user?.role, meetings, meetings.active_meeting);
-            let meeting = meetings.active_meeting;
+            console.log('herer', user?.role, meetings, meetings?.active_meeting);
+            let meeting = meetings?.active_meeting;
             if (!meetings.active_meeting)
                 meeting = meetings.all_meetings.find(el => el._id === meetingId);
             //Clear the state of all and return to home page
@@ -130,14 +128,14 @@ function VideoContext({ meeting }) {
         let mypeer = null;
         if (!isEmpty(meeting)) mypeer = user.role === 'trainer' ? meeting.trainee._id : meeting.tariner._id
 
-        socket?.on('userLeft', (userId, reason) => {
+        socket?.on('userLeft', async (userId, reason) => {
             console.log(user.role, meeting.trainee._id, meeting.tariner._id);
             console.log('userLeft', userId, reason, "yourId:", mypeer, meeting);
             if (reason === "transport close") {
                 // try to reconect 
                 console.log(!isEmpty(meeting), userId === mypeer, callAccepted);
                 if (!isEmpty(meeting) && userId === mypeer) {
-                    //  peerClose();
+                    //peerClose();
                     setUserLeftInSession(mypeer);
                     //clear my start the is requierd for re-conect
                     setAccseptPeer2ScheduleMeetingCall(false);
@@ -151,53 +149,13 @@ function VideoContext({ meeting }) {
 
                     //let user know about peer disconected
                     setErrorUserLeft(true);
+                    await delay(5000);
+                    window.location.href = '/home'
                 }
                 console.log('userLeft ,im in active meeting,i need to waite for his reConect ', userId);
             }
             else {
                 console.log('some user userLeft ', userId);
-            }
-        });
-        await delay(2000);
-    }
-
-    const lisiningMassagesInMyRoom = () => {
-        socket?.on('responsRoomId', (res) => {
-            console.log('user entered to this room you are allrady in!!!', res, userLeftInSessionRef.current);
-            console.log('res===yourId', res, userLeftInSessionRef.current);
-            if (!isEmpty(userLeftInSessionRef.current) && res === userLeftInSessionRef.current) {
-                //you reconceted to the room and we need to conect
-                //1.get you socket id
-                socket?.emit("getSocketId", res, user => {
-                    console.log('getSocketId', res, user);
-                    setYourSocketId(user.socketId);
-                    //2. send to you all start you need to conect to me agin
-                    let data = {
-                        from: mySocketId,
-                        to: yourSocketId,
-                        roomId,
-                        accseptScheduleMeetingCall: true,
-                        currActivity: currActivity,
-                    }
-                    setUserLeftInSession(null);
-                    socket?.emit("dataToReconect", data); //In the lissiner ill do the reconect after i get you dara from u 
-                });
-            }
-        });
-    };
-
-    const lisiningForDataToReconect = () => {
-        socket?.on('dataToReconect', (data) => {
-            console.log('i reconected and resived data from you', data);
-            setCurrActivity(data.currActivity);
-            setAccseptPeer2ScheduleMeetingCall(true);
-            if (myRole === 'trainer') {
-                //trainer is conect the call....
-                setMediapipeOfTrainee(true);
-            }
-            else if (myRole === 'trainee') {
-                //tell trainee to call me.......
-                console.log('/&&&callTrainer() &&&&do alone the call , whaiting to u..');
             }
         });
     }
@@ -207,16 +165,38 @@ function VideoContext({ meeting }) {
         lisiningForConnected();
         lisiningRoomClosed();
         await lisiningForUserLeftActiveRoom();
-        lisiningMassagesInMyRoom();
-        lisiningForDataToReconect();
+        //  lisiningMassagesInMyRoom();
+        //lisiningForDataToReconect();
 
         navigator.mediaDevices.getUserMedia({ video: true })//audio: true
             .then((currentStream) => {
                 setStream(currentStream);
-            })
-            .catch((error) => { console.log(`Error when open camera: ${error}`) });
+                videoStrem.current.srcObject = currentStream;
+                currentStream.getTracks().forEach(function (track) {
+                    pc.addTrack(track, currentStream)
+                })
+                    .catch((error) => { console.log(`Error when open camera: ${error}`) });
+            });
 
-        console.log('setYourId', user.role === 'trainer' ? meeting.trainee._id : meeting.tariner._id);
+        //RTC INIT
+        // const pc = new RTCPeerConnection(null);
+        // console.log('pc', pc);
+        // pc.onicecandidate = (e) => {
+        //     if (e.candidate) {
+        //         console.log(JSON.stringify(e.candidate));
+        //         socket?.on('candidate', { to: yourSocketId, candidate: e.candidate })
+        //     }
+        // }
+        // pc.oniceconnectionstatechange = (e) => {
+        //     console.log(e);
+        // };
+        // pc.ontrack = (e) => {
+        //     videoStrem.current.srcObject = e.streams[0];
+        //     console.log(e, e.streams[0]);
+        //     console.log('ontrack success');
+        // }
+        // pcRef.current = pc;
+
         setYourId(user.role === 'trainer' ? meeting.trainee._id : meeting.tariner._id)
         setRoomId(meeting._id);
         //set starte in case of re-conect this page agin with different meeting
@@ -611,7 +591,6 @@ function VideoContext({ meeting }) {
         }
     }, [callAccepted]);
 
-    console.log('isPeerHere && yourName ', isPeerHere && yourName);
     return (
         <>
             {(errorUserLeft || erorrWithPeerConection) && <ErrorAlert title="Peer DisConected..." />}

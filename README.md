@@ -1,12 +1,17 @@
 # SyncAlong-FrontEnd
-React Hooks with Redux using Material UI libary for ui-design
+React Hooks with Redux using Material UI libary for ui-design.
+1. WebRTC audio&video meetings app with user authentication using ReactJS.
+2. 
 
 ## Links
 
 - [SyncAlong-client](https://sync-along-app-2022.netlify.app)
 - [SyncAlong-API-Postman-Docs](https://documenter.getpostman.com/view/9310231/UVJkBYim/)
 
-## Features For Alpa
+## Peers Connection Logic and Implementations
+To connect two users over WebRTC, we exchange information to allow browsers to talk to each other. This process is called signaling and it is facilitated by using NodeJS and socket server chained to the express .0 engine to provide the plumbing. Other than signaling, no data has to be sent through a server. When a connection is successfully established and authentication and authorization are complete, stream data exchanged between peers is directed to a React component for rendering.
+
+## Features
 
 The app has the following features:
 

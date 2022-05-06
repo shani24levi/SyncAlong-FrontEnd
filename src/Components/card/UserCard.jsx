@@ -79,7 +79,8 @@ function UserCard({ trainee }) {
 
 
   useEffect(() => {
-    if (trainee.profile && !isEmpty(meetings.meetings) || meetings.meetings.leght !== 0) {
+    console.log('user card ', trainee.profile, isEmpty(meetings.meetings), meetings.meetings);
+    if (trainee.profile && !isEmpty(meetings.meetings) && meetings.meetings.length !== 0) {
       let trainee_meeting = meetings.meetings.find(el => el.trainee._id === trainee.user._id);
       !isEmpty(trainee_meeting) && setDate(new Date(trainee_meeting.date))
     }

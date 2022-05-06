@@ -35,8 +35,9 @@ function TraineesUsers({ profile }) {
     };
 
     let mytrainees_filtered = mytrainees;
+    console.log('mytrainees', mytrainees);
     if (!isEmpty(mytrainees))
-        mytrainees_filtered = mytrainees.filter(i => i.trainee.user.toString().toLowerCase().includes(search));
+        mytrainees_filtered = mytrainees.filter(i => i.user.user.toString().toLowerCase().includes(search));
 
     //const mytrainees_filtered = mytrainees.filter(i => i.user.user.toString().toLowerCase().includes(search));
 

@@ -103,7 +103,8 @@ function ContextProvider({ children, socket, profile }) {
   const myCanvasRef = useRef();
   const userCanvasRef = useRef();
   const Audio = useRef();
-
+  // const pcRef = useRef(new RTCPeerConnection(null));
+  // const candidates = useRef([]);
   let location = useLocation();
 
   const poseLandmarks_ref = useRef(null);
@@ -433,7 +434,7 @@ function ContextProvider({ children, socket, profile }) {
     lisiningForCamingCalls();
     lisiningResivingPoses();
     lisiningResivingSyncScore();
-    // lisiningMassagesInMyRoom();
+    lisiningResponsUsersInRoom();
     lisiningNotifications();
     !peer2inFrame && lisiningPeer2InFrame();
     lisiningMediaPipe();
@@ -446,6 +447,9 @@ function ContextProvider({ children, socket, profile }) {
     lisiningStatePeer();
     lisiningMeetingComplited();
     calltoTraineeQuickMeeting();
+    //PEER CONECRIONS -Syngling server req
+    // lisiningSDP();
+    // lisiningCandidate();
   }, [socket]);
 
   useEffect(() => {
@@ -693,6 +697,20 @@ function ContextProvider({ children, socket, profile }) {
 
   //===============lisiners=========================//
 
+  // const lisiningSDP = () => {
+  //   socket?.on('sdp', (data) => {
+  //     console.log('sdp', data);
+  //     setDesciption(data);
+  //   });
+  // }
+
+  // const lisiningCandidate = () => {
+  //   socket?.on('candidate', (candidate) => {
+  //     console.log('candidate', candidate);
+  //     candidates.current = [...candidates.current, candidate]
+  //   });
+  // }
+
   const calltoTraineeQuickMeeting = () => {
     socket?.on('calltoTraineeQuickMeeting', (quickMeeting) => {
       console.log('quickMeeting', quickMeeting);
@@ -834,6 +852,100 @@ function ContextProvider({ children, socket, profile }) {
     });
   };
 
+  const lisiningResponsUsersInRoom = () => {
+    // socket?.on(
+    // 	'getCandidate',
+    // 	async (data) => {//: { candidate, candidateSendID }
+    // 		console.log('get candidate');
+    // 		const pc = pcsRef.current[data.candidateSendID];
+    // 		if (!pc) return;
+    // 		await pc.addIceCandidate(new RTCIceCandidate(data.candidate));
+    // 		console.log('candidate add success');
+    // 	},
+    // );
+
+    socket?.on('responsRoomId', (res) => {
+      console.log('responsRoomId ', res);
+      if (res.length === 2) {
+        try {
+          const pc = new RTCPeerConnection(null);
+          console.log('pc', pc);
+
+          pc.onicecandidate = (e) => {
+            if (e.candidate)
+              console.log('onicecandidate', e);
+            // socket?.emit('candidate', {
+            //   candidate: e.candidate,
+            //   candidateSendID: socketRef.current.id,
+            //   candidateReceiveID: socketID,
+            // });
+
+            pc.oniceconnectionstatechange = (e) => {
+              console.log(e);
+            };
+
+            pc.ontrack = (e) => {
+              console.log(e, e.streams[0]);
+              console.log('ontrack success');
+              // setUsers((oldUsers) =>
+              //   oldUsers
+              //     .filter((user) => user.id !== mySocketId)
+              //     .concat({
+              //       id: mySocketId,
+              //       email,
+              //       stream: e.streams[0],
+              //     }),
+              // );
+            };
+
+            if (stream) {
+              console.log('localstream add');
+              stream.getTracks().forEach((track) => {
+                if (!stream) return;
+                pc.addTrack(track, stream);
+              });
+            } else {
+              console.log('no local stream');
+            }
+            console.log('pcccc', pc);
+          };
+
+          // pc.oniceconnectionstatechange = (e) => {
+          //   console.log(e);
+          // };
+
+          // pc.ontrack = (e) => {
+          //   console.log('ontrack success');
+          //   setUsers((oldUsers) =>
+          //     oldUsers
+          //       .filter((user) => user.id !== socketID)
+          //       .concat({
+          //         id: socketID,
+          //         email,
+          //         stream: e.streams[0],
+          //       }),
+          //   );
+          // };
+
+          // if (localStreamRef.current) {
+          //   console.log('localstream add');
+          //   localStreamRef.current.getTracks().forEach((track) => {
+          //     if (!localStreamRef.current) return;
+          //     pc.addTrack(track, localStreamRef.current);
+          //   });
+          // } else {
+          //   console.log('no local stream');
+          // }
+
+          return pc;
+        } catch (e) {
+          console.error(e);
+          return undefined;
+        }
+      }
+    });
+  };
+
   const lisiningForDisconectPeerInRoom = () => {
     let mypeer = null;
     if (!isEmpty(meetings.active_meeting)) mypeer = user.role === 'trainer' ? meetings.active_meeting.trainee._id : meetings.active_meeting.tariner._id
@@ -941,14 +1053,15 @@ function ContextProvider({ children, socket, profile }) {
   function answerCall() {
     console.log('answerCall');
     setCallAccepted(true);
+
     //set me as a peer and difiend my data
     const peer = new Peer({ initiator: false, trickle: false, stream });
     setMeAsPeer(peer);
     //peer._debug = console.log;
     // 
     peer.on('error', (err) => {
-      // console.log('error with peer', err);
-      // console.log('peer', peer);
+      console.log('error with peer', err);
+      console.log('peer', peer);
       answerCall();
     });
 
@@ -981,7 +1094,7 @@ function ContextProvider({ children, socket, profile }) {
       else if (
         (state === 'connected' && peerStateConectedRef.current !== 'connected') ||
         (state !== 'connected' && peerStateConectedRef.current === 'connected')) {
-        console.log("peerStateConected state", peerStateConected, state);
+        console.log("peerStateConected state p", peerStateConected, state, peer);
         let waitingTime = true;
         while (waitingTime && (state !== 'connected' || peerStateConectedRef.current !== 'connected')) {
           let currTime = new Date().getTime();
@@ -1065,7 +1178,7 @@ function ContextProvider({ children, socket, profile }) {
       else if (
         (state === 'connected' && peerStateConectedRef.current !== 'connected') ||
         (state !== 'connected' && peerStateConectedRef.current === 'connected')) {
-        console.log('peerStateConected state', peerStateConectedRef.current, state);
+        console.log('peerStateConected state p', peerStateConectedRef.current, state, peer);
         tryingConect = tryingConect + 1;
 
         // let waitingTime = true;
@@ -1145,7 +1258,10 @@ function ContextProvider({ children, socket, profile }) {
   };
 
   const peerClose = () => {
-    connectionRef.current.destroy();
+    console.log('peer close');
+    //setPeerStateConected(null);
+    // connectionRef.current.destroy();
+    // connectionRef.current = null;
     //connectionRef.current.close();
   }
   //===================socket calls when meeting in now============================//
@@ -1214,6 +1330,43 @@ function ContextProvider({ children, socket, profile }) {
     setRecognition(null);
     setProssingEndMeeting(false);
   }
+
+  //===================RTCPeerConnection============================//
+  //===================reprance: https://www.youtube.com/watch?v=5M3Jzs2NFSA ===========================//
+  //===================RTCPeerConnection for func============================//
+  // const createOffer = () => {
+  //   pcRef.current.createOffer({
+  //     offerToReceiveAudio: 1,
+  //     offerToReceiveVideo: 1,
+  //   }).then(sdp => {
+  //     console.log(JSON.stringify(sdp));
+  //     pcRef.current.setLocalDescription(sdp);
+  //     //tall peer
+  //     socket?.emit('sdp', { sdp, to: yourSocketId });
+  //   }).catch(e => console.log(e))
+  // }
+
+  // const createAnswer = () => {
+  //   pcRef.current.createAnswer({
+  //     offerToReceiveAudio: 1,
+  //     offerToReceiveVideo: 1,
+  //   }).then(sdp => console.log(JSON.stringify(sdp))).catch(e => console.log(e))
+  // }
+
+  // const setDesciption = (sdp) => {
+  //   if (sdp)
+  //     pcRef.current.setRemoteDescription(new RTCSessionDescription(JSON.stringify(sdp)))
+  // }
+
+  // const addCanidate = (sdp) => {
+  //   candidates.current.forEach(candidate => {
+  //     console.log(candidate);
+  //     pcRef.current.addIceCandidate(new RTCIceCandidate(JSON.stringify(candidate)))
+  //   })
+  // }
+
+  //===================RTCPeerConnection for func============================//
+
 
   return (
     <SocketContext.Provider
@@ -1294,7 +1447,9 @@ function ContextProvider({ children, socket, profile }) {
         OneTimeCall, setOneTimeCall,
         peerClose,
         setMediapipeOfTrainee, setCallAccepted, setCall,
-        callQuickMeeting, setCallQuickMeeting
+        callQuickMeeting, setCallQuickMeeting,
+        // pcRef,
+        // createOffer, createAnswer,
 
       }}
     >

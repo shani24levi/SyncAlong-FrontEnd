@@ -195,33 +195,38 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
                         </Grid>
 
                         <Grid item xs={12} sm={12}>
-                            <FormControl fullWidth>
-                                <InputLabel id="trainee-select-label">Trainee</InputLabel>
-                                <Select
-                                    labelId="trainee-select-label"
-                                    id="trainee-simple-select"
-                                    value={trainee}
-                                    label="Trainee"
-                                    onChange={e => {
-                                        console.log(e.target.value)
-                                        setTrainee(e.target.value)
-                                    }}
-                                    error={errors.traineeId}
-                                >
-                                    {
-                                        profile.trainees_profiles && profile.trainees_profiles?.map((trainee, i) => {
-                                            return <MenuItem value={trainee.user._id} key={i} onClick={() => setTraineeId(trainee.user._id)}>
-                                                <Avatar
-                                                    alt="avatar"
-                                                    src={trainee.user.avatar}
-                                                    sx={{ width: 56, height: 56 }}
-                                                />
-                                                {trainee.user.username}</MenuItem>
-                                        })
-                                    }
-                                </Select>
-                                {errors["traineeId"] && <Typography component="div" color="error" variant="body2"> {errors["traineeId"]}</Typography>}
-                            </FormControl>
+                            {/* <FormControl fullWidth> */}
+                            <InputLabel id="trainee-select-label">Trainee</InputLabel>
+                            <Select
+                                fullWidth
+                                defaultValue={profile.trainees_profiles[0].user._id}
+                                color="secondary"
+                                labelId="trainee-select-label"
+                                id="trainee-simple-select"
+                                value={trainee}
+                                label="Trainee"
+                                name="Trainee"
+                                onChange={e => {
+                                    console.log(e.target.value)
+                                    setTrainee(e.target.value)
+                                }}
+                                error={errors.traineeId}
+                            >
+                                {
+                                    profile.trainees_profiles && profile.trainees_profiles?.map((trainee, i) => {
+                                        return <MenuItem value={trainee.user._id} key={i} onClick={() => setTraineeId(trainee.user._id)}>
+                                            <Avatar
+                                                alt="avatar"
+                                                src={trainee.user.avatar}
+                                                sx={{ width: 56, height: 56 }}
+                                            />
+                                            <Typography>{trainee.user.username}</Typography>
+                                        </MenuItem>
+                                    })
+                                }
+                            </Select>
+                            {errors["traineeId"] && <Typography component="div" color="error" variant="body2"> {errors["traineeId"]}</Typography>}
+                            {/* </FormControl> */}
                         </Grid>
                         {
                             traineeId ?

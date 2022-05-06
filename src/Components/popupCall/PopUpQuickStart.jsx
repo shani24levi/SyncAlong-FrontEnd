@@ -13,7 +13,7 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CloseIcon from '@mui/icons-material/Close';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import CheckIcon from '@mui/icons-material/Check';
-import { CircularProgress } from "@material-ui/core";
+import { Card, CircularProgress, CardContent } from "@material-ui/core";
 
 import Box from '@mui/material/Box';
 import { IconButton, Typography } from '@mui/material';
@@ -232,8 +232,9 @@ function PopUpQuickStart({ quickStartOpen, setQuickStartOpen }) {
                                                         <Grid container spacing={1} justifyContent='center' sx={{ padingTop: '30px' }}>
                                                             {
                                                                 onlineTrainees.map(el => {
+                                                                    console.log('onlineTrainees', el);
                                                                     return (
-                                                                        <Grid item key={Number(el.user.user._id)}>
+                                                                        <Grid item key={el.user.user._id}>
                                                                             <Tooltip title={capitalize(el.user.user.user)} placement="top" arrow>
                                                                                 <IconButton aria-label="fingerprint" color="secondary" onClick={() => selctedUser(el)}>
                                                                                     <Avatar alt={el.user.user.user} src={el.user.user.avatar} className={classes.middle} />
@@ -259,10 +260,12 @@ function PopUpQuickStart({ quickStartOpen, setQuickStartOpen }) {
                                                             {
                                                                 offlineTrainees.map(el => {
                                                                     return (
-                                                                        <Grid item key={Number(el.user._id)}>
-                                                                            <Tooltip title={capitalize(el.user.user)} placement="top" arrow>
-                                                                                <Avatar alt={el.user.user} src={el.user.avatar} className={classes.middle} />
-                                                                            </Tooltip>
+                                                                        <Grid item key={el._id}>
+                                                                            <Avatar alt={el.user} src={el.avatar} className={classes.middle} />
+                                                                            <Typography
+                                                                                variant="h6"
+                                                                                align="center"
+                                                                            >{capitalize(el.user)}</Typography>
                                                                         </Grid>
                                                                     )
                                                                 })
@@ -287,21 +290,6 @@ function PopUpQuickStart({ quickStartOpen, setQuickStartOpen }) {
                                         <CloseIcon fontSize="large" />
                                     </IconButton>
                                     :
-                                    // <Grid
-                                    //     container
-                                    //     height="100%"
-                                    //     justifyContent="space-between"
-                                    //     sx={{ padding: '0rem 4rem' }}>
-
-                                    //     <IconButton
-                                    //         onClick={() => handleClose(false)}
-                                    //         aria-label="join"
-                                    //         size="large"
-                                    //         color="inherit"
-                                    //     >
-                                    //         <CloseIcon fontSize="large" />
-                                    //     </IconButton>
-
                                     <IconButton
                                         onClick={() => showModal(false)}
                                         aria-label="close"
