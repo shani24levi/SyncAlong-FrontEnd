@@ -11,6 +11,7 @@ import VideoCard from './VideoCard';
 import componentStyles from "../../../assets/theme/buttons";
 import Search from '../../search/SearchBar';
 import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
+import isEmpty from '../../../validation/isEmpty';
 const useStyles = makeStyles(componentStyles);
 
 
@@ -29,7 +30,9 @@ function MeetingsScours({ meetings }) {
         setValue(newValue);
     };
 
-    const meetings_filtered = meetings.filter(i => i?.title?.toString().toLowerCase().includes(search) || i.trainee.user.toString().toLowerCase().includes(search));
+    let meetings_filtered = meetings;
+    if (!isEmpty(meetings_filtered))
+        meetings_filtered = meetings.filter(i => i?.title?.toString().toLowerCase().includes(search) || i.trainee.user.toString().toLowerCase().includes(search));
     console.log('meetings', meetings_filtered);
 
     return (
@@ -76,14 +79,17 @@ function MeetingsScours({ meetings }) {
                     </Grid>
                 </Grid>
             </Box>
-            {meetings_filtered.length !== 0
-                ? <VideoGrid>
+            {!isEmpty(meetings_filtered) && meetings_filtered?.length !== 0
+                ?
+                <Grid container spacing={3}>
                     {meetings_filtered.map((m) => {
                         return (
-                            <VideoCard key={m._id} video={m} />
+                            <Grid item xs={6} md={4} lg={4} key={m._id}>
+                                <VideoCard key={m._id} video={m} />
+                            </Grid>
                         )
                     })}
-                </VideoGrid>
+                </Grid>
                 :
                 <Box m="auto"
                     alignItems="center"

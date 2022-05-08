@@ -68,7 +68,7 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
     const my_trainees = useSelector(state => state.profile.trainees_profiles);
     const trainee_profile_called = useSelector(state => state.profile.trainee_profile_called);
 
-    let abortController = new AbortController(); //why? => https://www.loginradius.com/blog/engineering/how-to-fix-memory-leaks-in-react/
+    let abortController = new AbortController(); //why? https://www.loginradius.com/blog/engineering/how-to-fix-memory-leaks-in-react/
     useEffect(async () => {
         if (errorDisplay) {
             await delay(3000);
@@ -130,6 +130,7 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
         setQuickStartOpen(true);
     }
 
+    console.log(';d;d;d;', profile, trainee_profile_called, isEmpty(my_trainees), profile?.trainerOf.length);
     return (
         <>
             <Container maxWidth="xl">
@@ -153,15 +154,11 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
                 </Grid>
 
                 {
-                    profile && !trainee_profile_called
-                        ? <>
-                            {
-                                isEmpty(profile.trainees_profiles) ? <></> : <Loader />
-                            }
-                        </>
+                    profile && !trainee_profile_called && profile?.trainerOf.length !== 0
+                        ? <Loader />
                         : <>
                             {
-                                !isEmpty(my_trainees) ? <Carousel /> : <></>
+                                !isEmpty(my_trainees) || profile?.trainerOf.length !== 0 ? <Carousel /> : <></>
                             }
                         </>
 

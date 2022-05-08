@@ -60,40 +60,48 @@ animation-duration: 2s;
 function VideoDetail({ video, syncs }) {
     const user = useSelector(state => state.auth.user);
 
+    console.log('====================================');
+    console.log(video, syncs);
+    console.log('====================================');
+
     return (
         <>
-            <Grid item xs={12} md={8} lg={8}>
-                {video.urlRoom === "Processing"
-                    ? <Loader />
-                    :
-                    <Ifram>
-                        <video controls className="responsive-iframe" src={video.urlRoom} ></video>
-                    </Ifram>
-                }
-                <Details >
-                    <div className="details-title">
-                        {` Meeting Name:  ${capitalize(video.title)}`}
-                    </div>
-                    <div className="details-channel-title">
-                        {`Participants : You & ${user.role === 'trainer' ? capitalize(video.trainee.user) : capitalize(video.tariner.user)}`}
-                    </div>
-                    <div>
-                        {`Meeting Ended At: ${dateFormat(video.dateEnd)}`}
-                    </div>
-                </Details>
-
-                <Grid item xs={12} md={12} sx={{ pt: '16px !important' }}>
-                    {
-                        !isEmpty(syncs)
-                            ? <SyncView selectedVideo={video} syncs={syncs} />
-                            : <Loader />
+            {video && syncs ?
+                <Grid item xs={12} md={8} lg={8}>
+                    {video.urlRoom === "Processing"
+                        ? <Loader />
+                        :
+                        <Ifram>
+                            <video controls className="responsive-iframe" src={video.urlRoom} ></video>
+                        </Ifram>
                     }
+                    <Details >
+                        <div className="details-title">
+                            {` Meeting Name:  ${capitalize(video.title)}`}
+                        </div>
+                        <div className="details-channel-title">
+                            {`Participants : You & ${user.role === 'trainer' ? capitalize(video.trainee.user) : capitalize(video.tariner.user)}`}
+                        </div>
+                        <div>
+                            {`Meeting Ended At: ${dateFormat(video.dateEnd)}`}
+                        </div>
+                    </Details>
 
-                    {/* <SyncView selectedVideo={video} syncs={syncs} /> */}
-                    {/* <PurpleChartCard time={dateFormat(video.date)} totalSync={'37'} syncs={syncs} /> */}
+                    <Grid item xs={12} md={12} sx={{ pt: '16px !important' }}>
+                        {
+                            !isEmpty(syncs)
+                                ? <SyncView selectedVideo={video} syncs={syncs} />
+                                : <Loader />
+                        }
+
+                        {/* <SyncView selectedVideo={video} syncs={syncs} /> */}
+                        {/* <PurpleChartCard time={dateFormat(video.date)} totalSync={'37'} syncs={syncs} /> */}
+                    </Grid>
+
                 </Grid>
-
-            </Grid>
+                :
+                <></>
+            }
         </>
     );
 }

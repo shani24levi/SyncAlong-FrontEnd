@@ -25,6 +25,7 @@ import DesktopDatePicker from '@mui/lab/DesktopDatePicker'
 import buttonsStyles from "../../../../assets/theme/buttons";
 import isEmpty from '../../../../validation/isEmpty';
 import CheckboxActivities from '../../../activieties-checkbox/CheckboxActivities';
+import inFutuer from '../../../../validation/inFutuer';
 const buttonStyle = makeStyles(buttonsStyles);
 
 
@@ -96,6 +97,12 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
             return;
         }
 
+        if (!inFutuer(value, new Date())) {
+            errors["inFutuer"] = "*Can not set meeting in past tense";
+            setErorrs(errors);
+            return;
+        }
+
         //add new ....
         if (modalCreate) {
             let data = {
@@ -143,9 +150,7 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
     //     return value.getDay() > todaysDate.getDay();
     // }
 
-    console.log('====================================');
-    console.log(traineeId);
-    console.log('====================================');
+    console.log('value', value, inFutuer(value, new Date()));
     return (
         <>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -199,7 +204,7 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
                             <InputLabel id="trainee-select-label">Trainee</InputLabel>
                             <Select
                                 fullWidth
-                                defaultValue={profile.trainees_profiles[0].user._id}
+                                // defaultValue={profile.trainees_profiles[0].user._id}
                                 color="secondary"
                                 labelId="trainee-select-label"
                                 id="trainee-simple-select"
@@ -263,6 +268,7 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
                             variant="contained"
                             onClick={onConfirm}
                             disabled={loading}
+
                         // sx={{ mt: 3, ml: 1 }}
                         >
                             {
@@ -273,6 +279,7 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
                             }
 
                         </Button>
+                        {errors["inFutuer"] && <Typography component="div" color="error" variant="body2" style={{ alignSelf: 'center', fontSize: 'x-large' }}> {errors["inFutuer"]}</Typography>}
                     </Box>
                 </Box>
             </LocalizationProvider>

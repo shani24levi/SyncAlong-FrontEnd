@@ -18,7 +18,7 @@ function WatchMeeting() {
     const meetings = useSelector(state => state.meetings.meetings_complited);
     let syncs = useSelector((state) => state.syncs?.all_syncs);
     const [selectedVideo, setSelectedVideo] = useState(null);
-    const [videos, setVideos] = useState(null);
+    const [sync, setSync] = useState(null);
 
     useEffect(() => {
         if (id && isEmpty(meetings)) {
@@ -28,11 +28,23 @@ function WatchMeeting() {
     }, [])
 
     useEffect(() => {
+        if (!isEmpty(syncs)) {
+            if (syncs[0].meeting_id._id !== id)
+                dispatch(getSync(id));
+            else if (syncs[0].meeting_id._id === id)
+                setSync(syncs)
+        }
+        else dispatch(getSync(id));
+    }, [syncs])
+
+
+    useEffect(() => {
         if (id && !isEmpty(meetings)) {
-            dispatch(getSync(id));
             let meeting = meetings.find(el => el._id === id);
             if (meeting) setSelectedVideo(meeting)
             else return <>error</>
+
+            // dispatch(getSync(id));
         }
         else return <>error</>;
     }, [meetings, id])
@@ -41,15 +53,18 @@ function WatchMeeting() {
 
     }
 
+    console.log('====================================');
+    console.log('selectedVideo', selectedVideo);
+    console.log('====================================');
     return (
         <Container>
             <SearchBar onSearchTermChange={videoSearch} />
             <Grid container spacing={3}>
                 {
-                    !selectedVideo ?
+                    !selectedVideo && !isEmpty(sync) && syncs[0].meeting_id._id === id ?
                         <Loader />
                         :
-                        <VideoDetail video={selectedVideo} syncs={syncs} />
+                        <VideoDetail video={selectedVideo} syncs={sync} />
                 }
                 <VideoList
                     onVideoSelect={selectedVideo => setSelectedVideo({ selectedVideo })}

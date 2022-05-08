@@ -25,7 +25,7 @@ function EndMeeting({ setProssingEndMeeting, setRecognition }) {
         setProssingEndMeeting(true); //not voice reconution- leave
         setRecognition('leave');
     }
-    const [time, setTime] = useState(10);
+    const [time, setTime] = useState(5);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -53,8 +53,8 @@ function EndMeeting({ setProssingEndMeeting, setRecognition }) {
                     <Box m="auto" className="container">
                         <Box m="auto">
                             <div className="sign">
-                                <span className="fast-flicker">ReStart?</span>
-                                <span className="flicker">Leave?</span>
+                                <span className="fast-flicker">GOOD{" "}</span>
+                                <span className="flicker">WORKOUT</span>
                             </div>
                         </Box>
                     </Box>

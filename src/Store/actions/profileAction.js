@@ -109,6 +109,7 @@ export const getAllTraineesProfiles = () => dispatch => {
     profileService.getAllTraineesProfiles()
         .then(
             profile => {
+                console.log('profile s', profile);
                 dispatch(success(profile));
                 dispatch(clear());
             },

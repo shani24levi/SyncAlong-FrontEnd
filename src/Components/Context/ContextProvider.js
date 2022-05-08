@@ -36,7 +36,6 @@ function ContextProvider({ children, socket, profile }) {
   const [call, setCall] = useState({});
   const [mySocketId, setMySocketId] = useState(null);
   const [yourSocketId, setYourSocketId] = useState(null);
-  // const [isConnectedFriend, setIsConnectedFriend] = useState(true);
   const [yourInfo, setYourInfo] = useState({});
   const [traineeEntered, setMyTraineeEntered] = useState(null);
   const [roomId, setRoomId] = useState(null);
@@ -103,10 +102,7 @@ function ContextProvider({ children, socket, profile }) {
   const myCanvasRef = useRef();
   const userCanvasRef = useRef();
   const Audio = useRef();
-  // const pcRef = useRef(new RTCPeerConnection(null));
-  // const candidates = useRef([]);
   let location = useLocation();
-
   const poseLandmarks_ref = useRef(null);
 
   //===================mediaPipe function inital==========================
@@ -286,7 +282,7 @@ function ContextProvider({ children, socket, profile }) {
     }
 
     if (results) {
-      if (syncing)
+      if (syncScoreRef.current)
         results.poseLandmarks && draw(canvasCtx, canvasElement, results, activity, "you");
     }
     canvasCtx.restore();
@@ -350,7 +346,7 @@ function ContextProvider({ children, socket, profile }) {
     }
 
     if (results) {
-      if (syncing)
+      if (syncScoreRef.current)
         results.poseLandmarks && draw(canvasCtx, canvasElement, results, activity);
 
       if (!inframe) {
@@ -447,9 +443,6 @@ function ContextProvider({ children, socket, profile }) {
     lisiningStatePeer();
     lisiningMeetingComplited();
     calltoTraineeQuickMeeting();
-    //PEER CONECRIONS -Syngling server req
-    // lisiningSDP();
-    // lisiningCandidate();
   }, [socket]);
 
   useEffect(() => {
@@ -622,7 +615,6 @@ function ContextProvider({ children, socket, profile }) {
   //for moving from pages and whanting to update when the recirding of meeting has been comploted.....
   //it is here becouse i wants it to appen any page.
   const recording = useSelector((state) => state.recording);
-
   useEffect(async () => {
     if (recording?.meeting && recording?.recording) {
       //find this meeting in the complited_list
@@ -694,23 +686,7 @@ function ContextProvider({ children, socket, profile }) {
       }
     }, 5000);
   }
-
   //===============lisiners=========================//
-
-  // const lisiningSDP = () => {
-  //   socket?.on('sdp', (data) => {
-  //     console.log('sdp', data);
-  //     setDesciption(data);
-  //   });
-  // }
-
-  // const lisiningCandidate = () => {
-  //   socket?.on('candidate', (candidate) => {
-  //     console.log('candidate', candidate);
-  //     candidates.current = [...candidates.current, candidate]
-  //   });
-  // }
-
   const calltoTraineeQuickMeeting = () => {
     socket?.on('calltoTraineeQuickMeeting', (quickMeeting) => {
       console.log('quickMeeting', quickMeeting);
@@ -780,12 +756,13 @@ function ContextProvider({ children, socket, profile }) {
       ) {
         console.log(syncScoreRef.current, ">= 0.75 &&", sync_score, "<= 0.75 ||",
           syncScoreRef.current, "<= 0.75 &&", sync_score, ">= 0.75");
+        console.log("frame::::", frameeRef.current, frame);
         if (frameeRef.current === 2) {
           console.log("frameeRef.current", frameeRef.current);
           setSyncScore(sync_score);
           setFrame(0);
         }
-        setFrame(frame + 1);
+        setFrame(frameeRef.current + 1);
       }
       else setSyncScore(sync_score);
       console.log(new Date().toLocaleString('en-GB'), new Date().getMilliseconds());
@@ -853,96 +830,8 @@ function ContextProvider({ children, socket, profile }) {
   };
 
   const lisiningResponsUsersInRoom = () => {
-    // socket?.on(
-    // 	'getCandidate',
-    // 	async (data) => {//: { candidate, candidateSendID }
-    // 		console.log('get candidate');
-    // 		const pc = pcsRef.current[data.candidateSendID];
-    // 		if (!pc) return;
-    // 		await pc.addIceCandidate(new RTCIceCandidate(data.candidate));
-    // 		console.log('candidate add success');
-    // 	},
-    // );
-
     socket?.on('responsRoomId', (res) => {
       console.log('responsRoomId ', res);
-      if (res.length === 2) {
-        try {
-          const pc = new RTCPeerConnection(null);
-          console.log('pc', pc);
-
-          pc.onicecandidate = (e) => {
-            if (e.candidate)
-              console.log('onicecandidate', e);
-            // socket?.emit('candidate', {
-            //   candidate: e.candidate,
-            //   candidateSendID: socketRef.current.id,
-            //   candidateReceiveID: socketID,
-            // });
-
-            pc.oniceconnectionstatechange = (e) => {
-              console.log(e);
-            };
-
-            pc.ontrack = (e) => {
-              console.log(e, e.streams[0]);
-              console.log('ontrack success');
-              // setUsers((oldUsers) =>
-              //   oldUsers
-              //     .filter((user) => user.id !== mySocketId)
-              //     .concat({
-              //       id: mySocketId,
-              //       email,
-              //       stream: e.streams[0],
-              //     }),
-              // );
-            };
-
-            if (stream) {
-              console.log('localstream add');
-              stream.getTracks().forEach((track) => {
-                if (!stream) return;
-                pc.addTrack(track, stream);
-              });
-            } else {
-              console.log('no local stream');
-            }
-            console.log('pcccc', pc);
-          };
-
-          // pc.oniceconnectionstatechange = (e) => {
-          //   console.log(e);
-          // };
-
-          // pc.ontrack = (e) => {
-          //   console.log('ontrack success');
-          //   setUsers((oldUsers) =>
-          //     oldUsers
-          //       .filter((user) => user.id !== socketID)
-          //       .concat({
-          //         id: socketID,
-          //         email,
-          //         stream: e.streams[0],
-          //       }),
-          //   );
-          // };
-
-          // if (localStreamRef.current) {
-          //   console.log('localstream add');
-          //   localStreamRef.current.getTracks().forEach((track) => {
-          //     if (!localStreamRef.current) return;
-          //     pc.addTrack(track, localStreamRef.current);
-          //   });
-          // } else {
-          //   console.log('no local stream');
-          // }
-
-          return pc;
-        } catch (e) {
-          console.error(e);
-          return undefined;
-        }
-      }
     });
   };
 
@@ -1146,8 +1035,8 @@ function ContextProvider({ children, socket, profile }) {
 
     // this._pc.iceConnectionState
     peer.on('error', (err) => {
-      //console.log('error with peer', err);
-      // console.log('peer', peer);
+      console.log('error with peer', err);
+      console.log('peer', peer);
       callUser();
     });
 
@@ -1331,43 +1220,6 @@ function ContextProvider({ children, socket, profile }) {
     setProssingEndMeeting(false);
   }
 
-  //===================RTCPeerConnection============================//
-  //===================reprance: https://www.youtube.com/watch?v=5M3Jzs2NFSA ===========================//
-  //===================RTCPeerConnection for func============================//
-  // const createOffer = () => {
-  //   pcRef.current.createOffer({
-  //     offerToReceiveAudio: 1,
-  //     offerToReceiveVideo: 1,
-  //   }).then(sdp => {
-  //     console.log(JSON.stringify(sdp));
-  //     pcRef.current.setLocalDescription(sdp);
-  //     //tall peer
-  //     socket?.emit('sdp', { sdp, to: yourSocketId });
-  //   }).catch(e => console.log(e))
-  // }
-
-  // const createAnswer = () => {
-  //   pcRef.current.createAnswer({
-  //     offerToReceiveAudio: 1,
-  //     offerToReceiveVideo: 1,
-  //   }).then(sdp => console.log(JSON.stringify(sdp))).catch(e => console.log(e))
-  // }
-
-  // const setDesciption = (sdp) => {
-  //   if (sdp)
-  //     pcRef.current.setRemoteDescription(new RTCSessionDescription(JSON.stringify(sdp)))
-  // }
-
-  // const addCanidate = (sdp) => {
-  //   candidates.current.forEach(candidate => {
-  //     console.log(candidate);
-  //     pcRef.current.addIceCandidate(new RTCIceCandidate(JSON.stringify(candidate)))
-  //   })
-  // }
-
-  //===================RTCPeerConnection for func============================//
-
-
   return (
     <SocketContext.Provider
       value={{
@@ -1440,6 +1292,8 @@ function ContextProvider({ children, socket, profile }) {
         erorrWithPeerConection, setErorrWithPeerConection,
         prossingEndMeeting, setProssingEndMeeting,
 
+        syncScoreRef,
+
         errorUserLeft, setErrorUserLeft,
         setYourId,
         startingDelay, setStartingDelay,
@@ -1448,9 +1302,6 @@ function ContextProvider({ children, socket, profile }) {
         peerClose,
         setMediapipeOfTrainee, setCallAccepted, setCall,
         callQuickMeeting, setCallQuickMeeting,
-        // pcRef,
-        // createOffer, createAnswer,
-
       }}
     >
       {children}

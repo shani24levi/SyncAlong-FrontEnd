@@ -53,7 +53,6 @@ const NavBar = (props) => {
                         maxWidth="xl"
                     >
                         <IconButton
-                            disableElevation
                             disableRipple
                             // component={Link}
                             // to="/home"

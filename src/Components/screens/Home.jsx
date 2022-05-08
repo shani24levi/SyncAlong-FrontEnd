@@ -33,7 +33,7 @@ const Home = ({ socket }) => {
     ///call to set state of user and profile 
     useEffect(() => {
         user?._id && socket?.emit("addUser", user?._id);
-        user?._id && user?.profile_id && profile?.profile === null && dispatch(setCurrentProfile());
+        user?._id && user?.profile_id && dispatch(setCurrentProfile());
     }, [user]);
 
     useEffect(() => {

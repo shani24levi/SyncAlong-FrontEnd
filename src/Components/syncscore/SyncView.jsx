@@ -126,7 +126,7 @@ function SyncView({ selectedVideo, syncs }) {
 
     return (
         <>
-            <PurpleChartCard time={dateFormat(selectedVideo.dateEnd)} totalSync={avgSync} syncs={allSync} />
+            <PurpleChartCard time={selectedVideo.dateEnd ? dateFormat(selectedVideo.dateEnd) : ''} totalSync={avgSync} syncs={allSync} />
             <HeatMapChart syncObjs={syncObjs} series={series} />
         </>
     );

@@ -33,7 +33,7 @@ function VideoContext({ meeting }) {
     const navigate = useNavigate();
 
     const { erorrWithPeerConection, setYourSocketId, peerClose, setMediapipeOfTrainee, setCallAccepted, setCall, OneTimeCall, setOneTimeCall, currActivity, setCurrActivity, setStartingDelay, startingDelay, setYourId, prossingEndMeeting, setProssingEndMeeting, leaveCall, setRoomId, mySocketId, roomId, mediapipeOfTrainee, conectReq, setConectReq, callUser, answerCall,
-        accseptScheduleMeetingCall, yourSocketId, setSyncScore,
+        accseptScheduleMeetingCall, yourSocketId, setSyncScore, syncScoreRef,
         setRecognition, setSettingUserInFrame, setPeer1inFrame, setPeer2inFrame,
         peer2inFrame, peer1inFrame, recognition, mediaPipeInitilaize,
         syncScore, myDelayOnConection, setPosesArray, array_poses,
@@ -74,9 +74,7 @@ function VideoContext({ meeting }) {
     const currActivityRef = useRef(currActivity);
     currActivityRef.current = currActivity;
 
-
     const Audio = useRef();
-    const videoStrem = useRef();
     const user = useSelector((state) => state.auth.user);
     const recording = useSelector((state) => state.recording);
     const meetings = useSelector((state) => state.meetings);
@@ -165,37 +163,12 @@ function VideoContext({ meeting }) {
         lisiningForConnected();
         lisiningRoomClosed();
         await lisiningForUserLeftActiveRoom();
-        //  lisiningMassagesInMyRoom();
-        //lisiningForDataToReconect();
 
-        navigator.mediaDevices.getUserMedia({ video: true })//audio: true
+        navigator.mediaDevices.getUserMedia({ video: true, audio: true })//audio: true
             .then((currentStream) => {
                 setStream(currentStream);
-                videoStrem.current.srcObject = currentStream;
-                currentStream.getTracks().forEach(function (track) {
-                    pc.addTrack(track, currentStream)
-                })
-                    .catch((error) => { console.log(`Error when open camera: ${error}`) });
-            });
-
-        //RTC INIT
-        // const pc = new RTCPeerConnection(null);
-        // console.log('pc', pc);
-        // pc.onicecandidate = (e) => {
-        //     if (e.candidate) {
-        //         console.log(JSON.stringify(e.candidate));
-        //         socket?.on('candidate', { to: yourSocketId, candidate: e.candidate })
-        //     }
-        // }
-        // pc.oniceconnectionstatechange = (e) => {
-        //     console.log(e);
-        // };
-        // pc.ontrack = (e) => {
-        //     videoStrem.current.srcObject = e.streams[0];
-        //     console.log(e, e.streams[0]);
-        //     console.log('ontrack success');
-        // }
-        // pcRef.current = pc;
+            })
+            .catch((error) => { console.log(`Error when open camera: ${error}`) });
 
         setYourId(user.role === 'trainer' ? meeting.trainee._id : meeting.tariner._id)
         setRoomId(meeting._id);
@@ -262,6 +235,7 @@ function VideoContext({ meeting }) {
         if (activityOn && recognition === 'continue') return;//do not do the activity becouse the delay is on going now.....
         for (let i = currActivityRef.current; i < meeting.activities.length; i++) {
             setSyncScore(0);
+            syncScoreRef.current = 0;
             setCurrActivity(i);
             console.log(i, ' this activity is ....', meeting.activities[i]);
             setActivityNow(meeting.activities[i]);

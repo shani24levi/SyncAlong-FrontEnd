@@ -3,6 +3,7 @@ import Draw from './drawGlobal';
 let my_Draw = null, your_Draw = null;
 let my_array = [], your_array = [];
 const draw = (ctx, canvas, results, activity_now = 'none', user = 'me') => {
+
   //console.log(user, my_Draw, your_Draw);
   if (user === 'me' && !my_Draw) {
     my_Draw = new Draw(ctx, canvas, activity_now);
