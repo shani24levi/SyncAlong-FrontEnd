@@ -9,7 +9,8 @@ import {
     CLOSE_ACTIVE_MEETING,
     SET_MEETING_COMPKITED,
     SET_MEETING_COMPKITED_URL,
-    CLEARE_QUICK_MEETING
+    CLEARE_QUICK_MEETING,
+    UPCOMING_MEETING_UPDATE
 } from './types';
 import { meetingsService } from '../../servises';
 import { redirect } from '../../helpers';
@@ -136,6 +137,19 @@ export const closeActiveMeeting = () => dispatch => {
 export const clearCreatedQuickMeeting = () => dispatch => {
     dispatch(setLoading(true));
     return { type: CLEARE_QUICK_MEETING }
+}
+
+
+export const upateUpComingMeeting = (meeting) => dispatch => {
+    dispatch(setLoading(true));
+    console.log("meeting", meeting);
+    dispatch(success(meeting))
+    function success(meeting) {
+        return {
+            type: UPCOMING_MEETING_UPDATE,
+            payload: meeting
+        }
+    };
 }
 
 

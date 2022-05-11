@@ -77,7 +77,6 @@ function CreateMeeting({ modalData, modalCreate, handelClose }) {
         }
         else if (close && isEmpty(err)) {
             console.log('//close model ');
-            //setClose(true)
             handelClose(); //close model 
         }
         return;

@@ -15,6 +15,7 @@ import isEmpty from '../../../validation/isEmpty';
 const useStyles = makeStyles(componentStyles);
 
 
+
 function MeetingsScours({ meetings }) {
     const classesBtn = useStyles();
     const theme = useTheme();

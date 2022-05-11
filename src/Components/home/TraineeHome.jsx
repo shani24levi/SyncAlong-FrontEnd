@@ -14,6 +14,8 @@ import { Avatar, AvatarGroup, List, ListItem, ListItemAvatar, ListItemText, Typo
 import TableChartOutlinedIcon from '@mui/icons-material/TableChartOutlined';
 import PopUpCallQuickMeeting from '../popupCall/PopUpCallQuickMeeting';
 import isEmpty from '../../validation/isEmpty';
+import WorningAlert from '../alrets/WorningAlert';
+import { delay } from '../../helpers';
 const useStyles = makeStyles(componentStyles);
 
 
@@ -40,21 +42,38 @@ const CardAvatar = styled(Card)(({ theme }) => ({
 
 
 function TraineeHome({ meeting, date }) {
-    const { callQuickMeeting, setCallQuickMeeting, callTrainee, upcomingMeetingToNow, scheduleMeetingPopUpCall, upcamingMeeting } = useContext(SocketContext);
+    const { updateMeetingAlrt, setUpdateMeetingAlrt, callQuickMeeting, setCallQuickMeeting, callTrainee, upcomingMeetingToNow, scheduleMeetingPopUpCall, upcamingMeeting } = useContext(SocketContext);
     const classes = useStyles();
     const theme = useTheme();
     const user = useSelector(state => state.auth.user);
+    const profile = useSelector(state => state.profile);
+    // const [trainer, setTrainer] = useState({});
+
+    // useEffect(() => {
+    //     if (!isEmpty(profile) && isEmpty(trainer)) {
+    //         setTrainer(profile.traineeOf?.user);
+    //     }
+    // }, [profile])
+
+
 
     // console.log('====================================');
     // console.log(callTrainee);
     // console.log('====================================');
+
+    useEffect(async () => {
+        if (updateMeetingAlrt) {
+            await delay(10000);
+            setUpdateMeetingAlrt(false);
+        }
+    }, [updateMeetingAlrt])
 
     return (
         <>
             <HeaderWaves meeting={meeting} date={date} upcamingMeeting={upcamingMeeting} />
             {callTrainee && <PopUpCall />}
             {!isEmpty(callQuickMeeting) && <PopUpCallQuickMeeting currMeeting={callQuickMeeting} />}
-
+            {updateMeetingAlrt && <WorningAlert title={`Up Coming Meeting is updating by ${profile.traineeOf?.user}`} />}
             <Box
                 position="relative"
                 paddingTop="4rem"

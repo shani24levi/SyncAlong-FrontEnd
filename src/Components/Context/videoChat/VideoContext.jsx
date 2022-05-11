@@ -32,9 +32,9 @@ function VideoContext({ meeting }) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const { erorrWithPeerConection, setYourSocketId, peerClose, setMediapipeOfTrainee, setCallAccepted, setCall, OneTimeCall, setOneTimeCall, currActivity, setCurrActivity, setStartingDelay, startingDelay, setYourId, prossingEndMeeting, setProssingEndMeeting, leaveCall, setRoomId, mySocketId, roomId, mediapipeOfTrainee, conectReq, setConectReq, callUser, answerCall,
+    const { setARdisplay, mediapipeOfTrainer, erorrWithPeerConection, setYourSocketId, peerClose, setMediapipeOfTrainee, setCallAccepted, setCall, OneTimeCall, setOneTimeCall, currActivity, setCurrActivity, setStartingDelay, startingDelay, setYourId, prossingEndMeeting, setProssingEndMeeting, leaveCall, setRoomId, mySocketId, roomId, mediapipeOfTrainee, conectReq, setConectReq, callUser, answerCall,
         accseptScheduleMeetingCall, yourSocketId, setSyncScore, syncScoreRef,
-        setRecognition, setSettingUserInFrame, setPeer1inFrame, setPeer2inFrame,
+        setRecognition, setSettingUserInFrame, setPeer2inFrame,
         peer2inFrame, peer1inFrame, recognition, mediaPipeInitilaize,
         syncScore, myDelayOnConection, setPosesArray, array_poses,
         timeOfColectionPose, delayBetweenUsers, setFlagTime, setFlagFeatch,
@@ -130,6 +130,9 @@ function VideoContext({ meeting }) {
             console.log(user.role, meeting.trainee._id, meeting.tariner._id);
             console.log('userLeft', userId, reason, "yourId:", mypeer, meeting);
             if (reason === "transport close") {
+                setARdisplay(false);
+                setSendCurrPoses(false);
+                setStop(true);
                 // try to reconect 
                 console.log(!isEmpty(meeting), userId === mypeer, callAccepted);
                 if (!isEmpty(meeting) && userId === mypeer) {
@@ -227,7 +230,7 @@ function VideoContext({ meeting }) {
 
     const activitiesSession = async () => {
         setStop(false);
-        startingDelay && delay(1000);
+        // startingDelay && delay(1000);
         startingDelay && console.log('waited 1 sec befor starting/////');
         setStartingDelay(false);
         // setActive
@@ -251,7 +254,6 @@ function VideoContext({ meeting }) {
                 return false;
             }
             setStartActivity(true);
-            setSyncScore(0);
             await delay(4000); //wait for the timer will end
             setStartActivity(false);
 
@@ -261,7 +263,6 @@ function VideoContext({ meeting }) {
                 return false;
             }
             setDemo(true);
-            setSyncScore(0);
             await delay(5000); //wait for the demo 5 sec
             setDemo(false);
 
@@ -275,14 +276,16 @@ function VideoContext({ meeting }) {
                 setSyncScore(0);
                 return false;
             }
+            setARdisplay(true);
             setSendCurrPoses(true);
             setActivityTime(true);
             await delay(30000);
             setPosesArray([]); //clear poses array after finishing 1 activity
             console.log('stop sending.......');
-            setSyncScore(0);
             setSendCurrPoses(false);
             setActivityTime(false);
+            setARdisplay(false);
+            setSyncScore(0);
 
             console.log('stop2', stop);
             console.log('recognition2', recognition);
@@ -297,6 +300,7 @@ function VideoContext({ meeting }) {
             console.log('end time of settings/.....', new Date().toLocaleString());
         }
         setSyncScore(0);
+        syncScoreRef.current = 0;
         setActivitiesEnded(true);
         return true //end of all session
     }
@@ -577,7 +581,8 @@ function VideoContext({ meeting }) {
             {isPeerHere && mediaPipeInitilaize !== 'none' && <SeccsesAlert title="You will be conected after loading pose evaluation" />}
             {isPeerHere && mediaPipeInitilaize === 'none' && <SeccsesAlert title="will be conected in few sec..." />}
             {mediaPipeInitilaize !== 'none' && <LoadingModal title="Load Identification" />}
-            {isPeerHere && mediaPipeInitilaize === 'none' && !mediapipeOfTrainee && myRole === 'trainer' && yourName && <LoadingModal title={`Waiting to ${yourName}..`} />}
+            {isPeerHere && mediaPipeInitilaize === 'none' && !mediapipeOfTrainee && user.role === 'trainer' && yourName && <LoadingModal title={`Waiting to ${yourName}..`} />}
+            {isPeerHere && mediaPipeInitilaize === 'none' && !mediapipeOfTrainer && user.role === 'trainee' && yourName && <LoadingModal title={`Waiting to ${yourName}..`} />}
             {conectReq && <LoadingModal title="Conecting..." />}
             {activitiesEnded && <EndMeeting setProssingEndMeeting={setProssingEndMeeting} setRecognition={setRecognition} />}
             {prossingEndMeeting && <LoadingModal title="Proccing Data" />}
@@ -647,7 +652,6 @@ function VideoContext({ meeting }) {
                     <Button onClick={() => {
                         setSettingUserInFrame(true)
                         setPeer2inFrame(true)
-                        setPeer1inFrame(true)
                     }}>inFrame</Button>
 
                     <Button onClick={() => {

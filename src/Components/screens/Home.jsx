@@ -64,6 +64,7 @@ const Home = ({ socket }) => {
     }, [traineeEntered]);
 
     useEffect(() => {
+        console.log('change meetings.upcoming_meeting', meetings.upcoming_meeting);
         if (!isEmpty(meetings.upcoming_meeting)) {
             console.log(meetings.upcoming_meeting);
             console.log(meetings.upcoming_meeting?.date);

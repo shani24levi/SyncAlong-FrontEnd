@@ -1,12 +1,17 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { Grid } from '@material-ui/core';
 import HeatMapChart from '../charts/HeatMapChart';
 import PurpleChartCard from '../charts/PurpleChartCard';
 import isEmpty from '../../validation/isEmpty';
 import { dateFormat } from '../../Utils/dateFormat';
+import MultyChart from '../charts/MultyChart';
+import DonutAvg from '../charts/DonutAvg';
+import SyncsLineChart from './SyncsLineChart';
 
 function SyncView({ selectedVideo, syncs }) {
     let [syncbyAct, setSyncByAct] = useState([]);
     let [syncObjs, setSyncObjs] = useState([]);
+    let [syncAvgs, setSyncAvgs] = useState([]);
     let [allSync, setAllSync] = useState([]);
     let [avgSync, setAvgSync] = useState(null);
 
@@ -33,21 +38,28 @@ function SyncView({ selectedVideo, syncs }) {
 
             while (size) {
                 let filterd = activity1.filter(el => el.activity === a);
-                //  console.log('filterd', filterd);
+                console.log('filterd', filterd);
                 let obj = { activity: filterd[0].activity, result: [], time: [] }
+                let sum = 0;
+                let count = 0;
                 filterd.map(el => {
                     obj.result.push(Number(el.result));
                     obj.time.push(el.time);
+                    sum = sum + Number(el.result);;
+                    count++;
                 })
+                let objAvg = { activity: filterd[0].activity, avg: sum / count }
+                setSyncAvgs((syncAvgs) => [...syncAvgs, objAvg]);
                 setSyncObjs((syncObjs) => [...syncObjs, obj]);
 
-                size = filterd.length < len;
+                size = len - filterd.length > 0;
+                console.log('size', size, " filterd.length < len", filterd.length, "<", len);
                 //  console.log(filterd.length, len, len - filterd.length);
                 if (size) {
                     activity1 = activity1.slice(filterd.length + 1, len) //activity1[filterd.length + 1].activity;
                     a = activity1[0].activity;
                     console.log(activity1);
-                    len = a.length;
+                    len = activity1.length;
                 }
             }
         }
@@ -69,11 +81,8 @@ function SyncView({ selectedVideo, syncs }) {
                 setAllSync(arr);
             }
 
-            console.log('====================================');
-            console.log('!isEmpty(syncObjs)', !isEmpty(syncObjs));
-            console.log('====================================');
             if (!isEmpty(syncObjs)) {
-                console.log('d', syncObjs);
+                //  console.log('d', syncObjs);
                 let sum = 0;
                 let count = 1;
 
@@ -86,7 +95,7 @@ function SyncView({ selectedVideo, syncs }) {
                         if (i !== 0 && el.time[i] === el.time[i - 1]) {
                             sum = sum + result;
                             count = count + 1;
-                            console.log('jjjj', el.time[i], el.time[i - 1], "sum", sum);
+                            //console.log('jjjj', el.time[i], el.time[i - 1], "sum", sum);
                         }
                         else {
                             console.log("sss", sum, count, sum / count);
@@ -95,7 +104,7 @@ function SyncView({ selectedVideo, syncs }) {
                             sum = 0;
                             count = 1;
                             j++;
-                            console.log('arr', arr);
+                            // console.log('arr', arr);
                         }
                     });
                     //console.log('arr', arr);
@@ -128,6 +137,8 @@ function SyncView({ selectedVideo, syncs }) {
         <>
             <PurpleChartCard time={selectedVideo.dateEnd ? dateFormat(selectedVideo.dateEnd) : ''} totalSync={avgSync} syncs={allSync} />
             <HeatMapChart syncObjs={syncObjs} series={series} />
+            <SyncsLineChart syncs={syncObjs} syncAvgs={syncAvgs} />
+            {/* <DonutAvg /> */}
         </>
     );
 }

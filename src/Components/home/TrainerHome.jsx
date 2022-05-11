@@ -81,7 +81,6 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
 
     const handelConectNow = () => {
         if (upcamingMeeting) {
-            console.log('cliclllllkkkk');
             //get your socket id
             socket?.emit("getSocketId", upcamingMeeting.tariner._id, user => {
                 console.log('getSocketId', upcamingMeeting.tariner._id, user);
@@ -130,7 +129,6 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
         setQuickStartOpen(true);
     }
 
-    console.log(';d;d;d;', profile, trainee_profile_called, isEmpty(my_trainees), profile?.trainerOf.length);
     return (
         <>
             <Container maxWidth="xl">
@@ -192,11 +190,6 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
                                 <></>
                         }
                     </Grid>
-
-                    <Grid item xs={12} md={6} lg={4}>
-                        {/* <AppCurrentVisits /> */}
-                    </Grid>
-
                 </Grid>
 
                 {

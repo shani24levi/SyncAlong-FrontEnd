@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom'
 import { Box, styled, useTheme } from '@mui/system'
 import {
     Card,
@@ -14,14 +15,18 @@ import {
     MenuItem,
     Select,
     Typography
-} from '@mui/material'
+} from '@mui/material';
+import ElderlyWomanIcon from '@mui/icons-material/ElderlyWoman';
 import { Button, Grid } from '@material-ui/core';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import isEmpty from '../../validation/isEmpty';
+import { dateFormat } from '../../Utils/dateFormat';
 
 function ListBoxTop({ meetings_complited }) {
     const profile = useSelector(state => state.profile);
     const [trainee, setTrainee] = useState(null);
     const [traineeId, setTraineeId] = useState(null);
+    const [filterdList, setFilterdList] = useState([]);
 
 
     const CardHeader = styled('div')(() => ({
@@ -68,11 +73,33 @@ function ListBoxTop({ meetings_complited }) {
         boxShadow: '0 0 2px 0 rgba(0, 0, 0, 0.12), 0 2px 2px 0 rgba(0, 0, 0, 0.24)',
     }))
 
-    console.log(' profile.trainees_profiles', profile.trainees_profiles);
+    useEffect(() => {
+        //all users 
+        if (isEmpty(traineeId)) {
+            let sliced5 = meetings_complited.slice(0, 5);
+            setFilterdList([]);
+            sliced5.map(el => {
+                setFilterdList(filterdList => [...filterdList, el])
+            })
+        }
+        else {
+            let users = meetings_complited.filter(el => el.trainee._id === traineeId);
+            let sliced5 = users.slice(0, 5);
+            setFilterdList([]);
+            sliced5.map(el => {
+                setFilterdList(filterdList => [...filterdList, el])
+            })
+        }
+    }, [traineeId])
+
+    console.log(' filterdList', filterdList);
+
+    const navigate = useNavigate();
+
     return (
         <Card elevation={3} sx={{ pt: '20px', mb: 3 }}>
             <CardHeader>
-                <Title>Top sync</Title>
+                <Title>Complited Meetings</Title>
                 <Grid container alignItems='flex-end' justifyContent='flex-end'>
                     <Select size="small" defaultValue="this_month">
                         <MenuItem value="this_month">All Users</MenuItem>
@@ -91,10 +118,10 @@ function ListBoxTop({ meetings_complited }) {
                     <TableHead>
                         <TableRow>
                             <TableCell sx={{ px: 3 }} colSpan={4}>
-                                Name
+                                User
                             </TableCell>
                             <TableCell sx={{ px: 0 }} colSpan={2}>
-                                Total Sync
+                                Time
                             </TableCell>
                             <TableCell sx={{ px: 0 }} colSpan={2}>
                                 Amount Of Activities
@@ -105,7 +132,7 @@ function ListBoxTop({ meetings_complited }) {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {productList.map((product, index) => (
+                        {filterdList.map((el, index) => (
                             <TableRow key={index} hover>
                                 <TableCell
                                     colSpan={4}
@@ -113,9 +140,9 @@ function ListBoxTop({ meetings_complited }) {
                                     sx={{ px: 0, textTransform: 'capitalize' }}
                                 >
                                     <Box display="flex" alignItems="center">
-                                        <Avatar src={product.imgUrl} />
+                                        <Avatar src={el.trainee.avatar} />
                                         <Typography sx={{ m: 0, ml: 4 }}>
-                                            {product.name}
+                                            {el.trainee.user}
                                         </Typography>
                                     </Box>
                                 </TableCell>
@@ -124,11 +151,10 @@ function ListBoxTop({ meetings_complited }) {
                                     colSpan={2}
                                     sx={{ px: 0, textTransform: 'capitalize' }}
                                 >
-                                    $
-                                    {product.price > 999
-                                        ? (product.price / 1000).toFixed(1) +
-                                        'k'
-                                        : product.price}
+                                    {" "}
+                                    {!isEmpty(el.dateEnd)
+                                        ? <>{dateFormat(el.dateEnd)}</>
+                                        : ""}
                                 </TableCell>
 
                                 <TableCell
@@ -136,27 +162,41 @@ function ListBoxTop({ meetings_complited }) {
                                     align="left"
                                     colSpan={2}
                                 >
-                                    {product.available ? (
-                                        product.available < 20 ? (
+                                    {el.activities ? (
+                                        el.activities.length <= 2 ? (
                                             <Small bgcolor={'red'}>
-                                                {product.available} available
+                                                {el.activities.length} actvitis
                                             </Small>
                                         ) : (
                                             <Small bgcolor={'blue'}>
-                                                in stock
+                                                {el.activities.length} actvitis
                                             </Small>
                                         )
                                     ) : (
                                         <Small bgcolor={'bgError'}>
-                                            out of stock
+                                            ?
                                         </Small>
                                     )}
                                 </TableCell>
                                 <TableCell sx={{ px: 0 }} colSpan={1}>
-                                    <Button endIcon={<VisibilityIcon />} />
+                                    <Button endIcon={<VisibilityIcon />} onClick={() => navigate(`/meeting/watch/${el._id}`)} />
                                 </TableCell>
                             </TableRow>
                         ))}
+
+                        {filterdList.length === 0 &&
+                            <Box m="auto"
+                                alignItems="center"
+                                justifyContent="center"
+                                textAlign="center"
+                                minHeight="50px"
+                                marginTop="50px"
+                                marginBottom="50px"
+                            >
+                                <ElderlyWomanIcon style={{ height: '50px', width: '50px' }} />
+                                <Typography variant='h6'>{"No Meetings Found"}</Typography>
+                            </Box>
+                        }
                     </TableBody>
                 </SyncTable>
             </Box>

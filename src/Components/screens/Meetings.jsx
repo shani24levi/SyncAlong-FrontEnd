@@ -32,7 +32,6 @@ const Wrapper = styled('div')`
   }
 `;
 
-
 function Meetings(props) {
     const navigate = useNavigate();
     const dispatch = useDispatch();

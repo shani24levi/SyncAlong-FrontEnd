@@ -7,75 +7,55 @@ import { useTheme } from '@mui/system'
 
 import ProgressBarVals from '../../charts/ProgressBarVals';
 import CardContiner from '../../card/CardContiner';
+import { capitalize } from '../../../helpers';
 
 
-function ProgressUserView(props) {
+function ProgressUserView({ trainee, lastMeeting }) {
     const theme = useTheme()
     const secondary = theme.palette.mode
 
+    console.log('====================================');
+    console.log(" trainee, lastMeeting", trainee, lastMeeting);
+    console.log('====================================');
     return (
-        <CardContiner title="Campaigns">
-            <Typography sx={{ color: secondary }}>Today</Typography>
+        <CardContiner title={`${capitalize(trainee.user.user)}'s Meetings & Syncs`}>
+            <Typography sx={{ color: secondary }}>Last meeting complited</Typography>
             <Box sx={{ pt: 1 }} />
             <ProgressBarVals
-                value={75}
+                value={100}
                 color="primary"
-                text="Google (102k)"
+                text="Activity Duration"
             />
             <Box sx={{ py: '4px' }} />
             <ProgressBarVals
                 value={45}
                 color="secondary"
-                text="Twitter (40k)"
+                text="High Syncing"
             />
             <Box sx={{ py: '4px' }} />
             <ProgressBarVals
                 value={75}
-                color="primary"
-                text="Tensor (80k)"
+                color="secondary"
+                text="Low Syncing"
             />
 
             <Box sx={{ py: '12px' }} />
-            <Typography sx={{ color: secondary }}>Yesterday</Typography>
+            <Typography sx={{ color: secondary }}>All Meetings</Typography>
             <Box sx={{ py: 1 }} />
             <ProgressBarVals
                 value={75}
                 color="primary"
-                text="Google (102k)"
+                text="Complited Meeting"
             />
             <Box sx={{ py: '4px' }} />
             <ProgressBarVals
                 value={45}
                 color="secondary"
-                text="Twitter (40k)"
+                text="Future Meeting"
             />
             <Box sx={{ py: '4px' }} />
-            <ProgressBarVals
-                value={75}
-                color="primary"
-                text="Tensor (80k)"
-            />
-
             <Box sx={{ py: '12px' }} />
-            <Typography sx={{ color: 'secondary' }}>Yesterday</Typography>
-            <Box sx={{ py: '8px' }} />
-            <ProgressBarVals
-                value={75}
-                color="primary"
-                text="Google (102k)"
-            />
-            <Box sx={{ py: '4px' }} />
-            <ProgressBarVals
-                value={45}
-                color="secondary"
-                text="Twitter (40k)"
-            />
-            <Box sx={{ py: '4px' }} />
-            <ProgressBarVals
-                value={75}
-                color="primary"
-                text="Tensor (80k)"
-            />
+
         </CardContiner>
     );
 }

@@ -43,8 +43,6 @@ function WatchMeeting() {
             let meeting = meetings.find(el => el._id === id);
             if (meeting) setSelectedVideo(meeting)
             else return <>error</>
-
-            // dispatch(getSync(id));
         }
         else return <>error</>;
     }, [meetings, id])
@@ -68,15 +66,8 @@ function WatchMeeting() {
                 }
                 <VideoList
                     onVideoSelect={selectedVideo => setSelectedVideo({ selectedVideo })}
-                    videos={meetings} />
-                {/* ? meetings.slice(0, 4) : null} />            */}
+                    videos={meetings ? meetings.slice(0, 14) : null} />
             </Grid>
-
-            {/* {
-                !isEmpty(syncs)
-                    ? <SyncView selectedVideo={selectedVideo} syncs={syncs} />
-                    : <Loader />
-            } */}
         </Container>
     );
 }

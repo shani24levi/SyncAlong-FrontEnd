@@ -19,8 +19,8 @@ function DoughnutChart({ height, meetings_complited }) {
         let traineesLabals = [];
         let traineesData = [];
         if (!isEmpty(meetings_complited) && !isEmpty(traineesProfile)) {
-            let count = 0;
             traineesProfile.map(el => {
+                let count = 0;
                 meetings_complited.map(t => {
                     if (el.user._id === t.trainee._id)
                         count++;

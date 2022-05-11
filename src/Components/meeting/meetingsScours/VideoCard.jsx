@@ -48,13 +48,22 @@ const Wrapper = styled('div')`
   }
 `;
 
+let activitiesImgs = [
+  'https://www.wcrf-uk.org/wp-content/uploads/2021/05/545112030-blog-header.png',
+  'https://churchviewmedicalpractice.com/images/health_images/physical-activity.jpg',
+  'https://www.kreedon.com/wp-content/uploads/2018/11/physicaleducation.jpg',
+  'https://www.acc.org//-/media/Non-Clinical/Images/2019/08/CARDIOLOGY/Cover-Story-Sports-1200x800.jpg',
+  'https://www.datocms-assets.com/43889/1616686394-illustration-sport-zero-dechets01plan-de-travail-1.jpg',
+  'https://sport-handicap-centrevaldeloire.fr/images/administration/diveriste.jpg',
+]
+
 function VideoCard({ video }) {
   const user = useSelector(state => state.auth.user)
 
   return (
     <Wrapper>
       <Link to={`/meeting/watch/${video._id}`}>
-        <img className="thumb" src={'https://www.irganim.com/images/itempics/165_large.jpg'} alt={video.title} />
+        <img className="thumb" src={activitiesImgs[Math.floor(Math.random() * activitiesImgs.length)]} alt={video.title} />
       </Link>
       <div className="video-info-container">
         <div className="channel-avatar">

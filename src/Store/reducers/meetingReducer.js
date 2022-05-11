@@ -13,6 +13,7 @@ import {
     SET_MEETING_COMPKITED,
     SET_MEETING_COMPKITED_URL,
     CLEARE_QUICK_MEETING,
+    UPCOMING_MEETING_UPDATE,
 } from '../actions/types';
 
 const initialState = {
@@ -72,6 +73,14 @@ export default function (state = initialState, action) {
                 ...state,
                 loading: false,
                 meeeting_created: null,
+            };
+        case UPCOMING_MEETING_UPDATE:
+            console.log("action.payload", action.payload);
+
+            return {
+                ...state,
+                loading: false,
+                upcoming_meeting: action.payload,
             };
 
         case GET_FUTURE_MEETINGS:

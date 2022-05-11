@@ -1,7 +1,7 @@
 import React, { createContext, useState, useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { closeActiveMeeting, setComplitedWithUrl, setMeetingComplited } from '../../Store/actions/meetingActions';
+import { closeActiveMeeting, setComplitedWithUrl, setMeetingComplited, upateUpComingMeeting } from '../../Store/actions/meetingActions';
 import { clearLogoutREC } from '../../Store/actions/recordingActions';
 import Peer from 'simple-peer/simplepeer.min.js';
 import { Holistic } from '@mediapipe/holistic';
@@ -54,7 +54,8 @@ function ContextProvider({ children, socket, profile }) {
   const [prossingEndMeeting, setProssingEndMeeting] = useState(false);
   const [errorUserLeft, setErrorUserLeft] = useState(false);
   const [callQuickMeeting, setCallQuickMeeting] = useState(null);
-
+  const [peerInDelay, setPeerInDelay] = useState(false);
+  const [updateMeetingAlrt, setUpdateMeetingAlrt] = useState(false);
 
   const syncScoreRef = useRef(syncScore);
   syncScoreRef.current = syncScore;
@@ -73,6 +74,7 @@ function ContextProvider({ children, socket, profile }) {
   const [conectReq, setConectReq] = useState(false);
   const [oneTime, setOneTime] = useState(true);
   const [mediapipeOfTrainee, setMediapipeOfTrainee] = useState(false);
+  const [mediapipeOfTrainer, setMediapipeOfTrainer] = useState(false);
   const [upcomingMeetingToNow, setUpcomingMeetingToNow] = useState(false);
   const [callTrainee, setCallTrainee] = useState(false);
   const [activeMeetingPopUp, setActiveMeetingPopUp] = useState(false);
@@ -82,6 +84,14 @@ function ContextProvider({ children, socket, profile }) {
   const [startingDelay, setStartingDelay] = useState(false);
   const [currActivity, setCurrActivity] = useState(0);
   const [OneTimeCall, setOneTimeCall] = useState(true);
+
+  const [ARdisplay, setARdisplay] = useState(false);
+  const ARdisplayRef = useRef(ARdisplay);
+  ARdisplayRef.current = ARdisplay;
+
+  const [frameN, setFrameNum] = useState(0);
+  const frameNum = useRef(frameN);
+  frameNum.current = frameN;
 
   const [frame, setFrame] = useState(0);
   const myStateRef = useRef(myState);
@@ -282,7 +292,7 @@ function ContextProvider({ children, socket, profile }) {
     }
 
     if (results) {
-      if (syncScoreRef.current)
+      if (syncScoreRef?.current >= 0.75)
         results.poseLandmarks && draw(canvasCtx, canvasElement, results, activity, "you");
     }
     canvasCtx.restore();
@@ -346,7 +356,7 @@ function ContextProvider({ children, socket, profile }) {
     }
 
     if (results) {
-      if (syncScoreRef.current)
+      if (syncScoreRef?.current >= 0.75)
         results.poseLandmarks && draw(canvasCtx, canvasElement, results, activity);
 
       if (!inframe) {
@@ -443,6 +453,7 @@ function ContextProvider({ children, socket, profile }) {
     lisiningStatePeer();
     lisiningMeetingComplited();
     calltoTraineeQuickMeeting();
+    lisiningUpdateUpcomingMeeting();
   }, [socket]);
 
   useEffect(() => {
@@ -568,6 +579,12 @@ function ContextProvider({ children, socket, profile }) {
       setOneTime(false);
       socket?.emit('t', { yourSocketId, roomId });
     }
+
+    if (mediaPipeInitilaize === 'none' && oneTime && myRole === 'trainer') {
+      setOneTime(false);
+      socket?.emit('t-trainer', { yourSocketId, roomId });
+    }
+
   }, [mediaPipeInitilaize, oneTime, yourSocketId]);
 
 
@@ -657,6 +674,20 @@ function ContextProvider({ children, socket, profile }) {
   const [MeetingIsNOW, setMeetingIsNOW] = useState(false);
 
   useEffect(() => {
+    if (!isEmpty(upcamingMeeting) && !isEmpty(meetings.upcoming_meeting) && meetings.upcoming_meeting?._id !== upcamingMeeting._id) {
+      //this is a neww upcaming meeting that the user taninee set now???
+      console.log("upcamingMeetingupcamingMeeting", upcamingMeeting);
+      //get the user socket and send to you the changes....
+      socket?.emit("getSocketId", meetings.upcoming_meeting.trainee._id, user => {
+        console.log("getSocketIduser", user);
+        let data = {
+          to: user.socketId,
+          meeting: meetings.upcoming_meeting,
+        }
+        console.log('data', data, "user.role", user.role);
+        socket?.emit("updateUpcomingMeeting", data);
+      });
+    }
     setUpcamingMeeting(meetings.upcoming_meeting);
     meetingsListener();
   }, [meetings?.meetings, meetings?.upcoming_meeting]);
@@ -695,6 +726,15 @@ function ContextProvider({ children, socket, profile }) {
       //setCallTrainee(true);
     });
   }
+
+  const lisiningUpdateUpcomingMeeting = () => {
+    socket?.on('updateUpcomingMeeting', (data) => {
+      console.log('updateUpcomingMeeting', data);
+      dispatch(upateUpComingMeeting(data.meeting));
+      setUpdateMeetingAlrt(true);
+    });
+  }
+
   const lisiningForNewUsers = () => {
     //lisinig for changes in the array of users caming in to the app
     socket?.on('getNewUserAddToApp', (user) => {
@@ -751,21 +791,26 @@ function ContextProvider({ children, socket, profile }) {
   const lisiningResivingSyncScore = () => {
     socket?.on('syncScore', (sync_score) => {
       console.log('///...score.../// now:', syncScoreRef.current, "new : ", sync_score);
+      if (!ARdisplayRef.current && syncScoreRef.current !== 0) {
+        setSyncScore(0);
+        return;
+      }
+      if (!ARdisplayRef.current) return;
       if (syncScoreRef.current >= 0.75 && sync_score <= 0.75 ||
         syncScoreRef.current <= 0.75 && sync_score >= 0.75
       ) {
-        console.log(syncScoreRef.current, ">= 0.75 &&", sync_score, "<= 0.75 ||",
-          syncScoreRef.current, "<= 0.75 &&", sync_score, ">= 0.75");
-        console.log("frame::::", frameeRef.current, frame);
+        // console.log(syncScoreRef.current, ">= 0.75 &&", sync_score, "<= 0.75 ||",
+        //   syncScoreRef.current, "<= 0.75 &&", sync_score, ">= 0.75");
+        // console.log("frame::::", frameeRef.current, frame);
         if (frameeRef.current === 2) {
-          console.log("frameeRef.current", frameeRef.current);
+          //  console.log("frameeRef.current", frameeRef.current);
           setSyncScore(sync_score);
           setFrame(0);
         }
         setFrame(frameeRef.current + 1);
       }
       else setSyncScore(sync_score);
-      console.log(new Date().toLocaleString('en-GB'), new Date().getMilliseconds());
+      // console.log(new Date().toLocaleString('en-GB'), new Date().getMilliseconds());
     });
     //for eyal
     socket?.on('resivingSyncScoure', (sync_score) => {
@@ -778,16 +823,21 @@ function ContextProvider({ children, socket, profile }) {
         syncScoreRef.current <= 0.75 && sync_score >= 0.75
       ) {
         console.log(syncScoreRef.current, ">= 0.75 &&", sync_score, "<= 0.75 ||",
-          syncScoreRef.current, "<= 0.75 &&", sync_score, ">= 0.75");
+          syncScoreRef.current, "<= 0.75 &&", sync_score, ">= 0.75",
+          "frameeRef.current", frameeRef.current);
+        console.log("frameeRef.current", frameeRef.current);
 
-        if (frameeRef.current === 2) {
+        if (frameeRef.current === 5) {
           console.log("frameeRef.current", frameeRef.current);
           setSyncScore(sync_score);
           setFrame(0);
         }
-        setFrame(frame + 1);
+        setFrame(frameeRef.current + 1);
       }
-      else setSyncScore(sync_score);
+      else {
+        setSyncScore(sync_score);
+        frameeRef.current !== 0 && setFrame(0);
+      }
     });
   };
 
@@ -795,6 +845,9 @@ function ContextProvider({ children, socket, profile }) {
     socket?.on('notification', (notification) => {
       //console.log('notification..notification..notification ', notification);
       setRecognition(notification);
+      if (notification === 'start') {
+        setPeerInDelay(true);
+      }
       if (notification === 'leave') {
         setProssingEndMeeting(true);
       }
@@ -812,6 +865,11 @@ function ContextProvider({ children, socket, profile }) {
     socket?.on('t', (id) => {
       console.log(id);
       setMediapipeOfTrainee(id);
+    });
+
+    socket?.on('t-trainer', (id) => {
+      console.log(id);
+      setMediapipeOfTrainer(id);
     });
   };
 
@@ -1173,14 +1231,18 @@ function ContextProvider({ children, socket, profile }) {
   };
 
   const sendPosesByPeers = async (dataTo, activity) => {
+    setFrameNum(frameN + 1);
+    // console.log("frameNum.current", frameNum.current);
     let data = {
       poses: dataTo.poses,
-      time: dataTo.time
+      time: dataTo.time,
+      frameNum: frameNum.current
     };
+    //let frameNum = frameNum.current;
     //console.log(new Date().toLocaleString('en-GB'), new Date().getMilliseconds());
-    let trainer = myRole === 'trainer' ? true : false;
-    console.log('////sending ..', data, new Date().toLocaleString('en-GB'), new Date().getMilliseconds());
-    socket.emit('sendPosesByPeers', data, mySocketId, yourSocketId, trainer, activity, roomId);
+    let trainer = peerInDelay; // myRole === 'trainer' ? true : false;
+    //console.log('////sending ..', data, new Date().toLocaleString('en-GB'), new Date().getMilliseconds());
+    socket.emit('sendPosesByPeers', data, mySocketId, yourSocketId, trainer, activity, roomId, { frameNum: frameNum.current });
     //console.log(new Date().toLocaleString('en-GB'), new Date().getMilliseconds());
   }
 
@@ -1300,8 +1362,13 @@ function ContextProvider({ children, socket, profile }) {
         currActivity, setCurrActivity,
         OneTimeCall, setOneTimeCall,
         peerClose,
+        mediapipeOfTrainer, setMediapipeOfTrainer,
         setMediapipeOfTrainee, setCallAccepted, setCall,
         callQuickMeeting, setCallQuickMeeting,
+        peerInDelay,
+        updateMeetingAlrt, setUpdateMeetingAlrt,
+
+        setARdisplay
       }}
     >
       {children}

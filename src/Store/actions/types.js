@@ -57,7 +57,7 @@ export const SET_RECORDING = 'SET_RECORDING';
 export const SET_MEETING_COMPKITED = 'SET_MEETING_COMPKITED';
 export const SET_MEETING_COMPKITED_URL = 'SET_MEETING_COMPKITED_URL';
 export const CLEARE_QUICK_MEETING = 'CLEARE_QUICK_MEETING';
-//export const  = '';
+export const UPCOMING_MEETING_UPDATE = 'UPCOMING_MEETING_UPDATE';
 //export const  = '';
 //export const  = '';
 
