@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import { useLocation, useNavigate } from 'react-router-dom'
 //socket
 import { io } from 'socket.io-client';
-import { URL } from './Utils/globalVaribals';
+import { URL, SOCKET_URL } from './Utils/globalVaribals';
 import { ContextProvider } from './Components/Context/ContextProvider';
 //redux 
 import { connect } from 'react-redux';
@@ -42,7 +42,7 @@ const App = (props) => {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    setSocket(io(`${URL}`));
+    setSocket(io(`${SOCKET_URL}`));
     // , {
     //   rejectUnauthorized: false, // WARN: please do not do this
     //   reconnection: true,

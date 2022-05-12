@@ -436,6 +436,10 @@ function ContextProvider({ children, socket, profile }) {
 
   //===================useEffects of states==========================
   useEffect(() => {
+    socket?.on("connect_error", (err) => {
+      console.log(`connect_error due to ${err.message}`);
+    });
+
     lisiningForNewUsers();
     lisiningForCamingCalls();
     lisiningResivingPoses();
