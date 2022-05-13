@@ -1,17 +1,18 @@
 import Draw from './drawGlobal';
 
-let my_Draw = null, your_Draw = null;
 let my_array = [], your_array = [];
+
+let my_Draw = null;
+let your_Draw = null
 const draw = (ctx, canvas, results, activity_now = 'none', user = 'me') => {
 
   //console.log(user, my_Draw, your_Draw);
   if (user === 'me' && !my_Draw) {
-    my_Draw = new Draw(ctx, canvas, activity_now);
+    my_Draw = new Draw(ctx, canvas, results, 'me', activity_now);
   }
   if (user === 'you' && !your_Draw) {
-    your_Draw = new Draw(ctx, canvas, activity_now);
+    your_Draw = new Draw(ctx, canvas, results, 'you', activity_now);
   }
-  // user === 'me' ? my_Draw.setArray(my_array) : your_Draw.setArray(your_array);
 
   user === 'me' ? my_Draw.setActivity(activity_now) : your_Draw.setActivity(activity_now);
   user === 'me' ? my_Draw.setResults(results) : your_Draw.setResults(results);

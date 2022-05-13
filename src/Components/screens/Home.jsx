@@ -85,7 +85,7 @@ const Home = ({ socket }) => {
         if (!isEmpty(meetings.active_meeting) || activeMeetingPopUp) {
             //chack the this meeting is valid - today only
             let today = new Date();
-            console.log(today.getDate(), new Date(meetings.active_meeting.date).getDate());
+            //console.log(today.getDate(), new Date(meetings.active_meeting?.date).getDate());
             if (today.getDate() !== new Date(meetings.active_meeting.date).getDate()) {
                 //NOT TODAY and Not closed meeting - then close this meeting,,,,
                 dispatch(setActiveMeeting(meetings.active_meeting, false));
