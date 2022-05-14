@@ -1,12 +1,12 @@
 import { bottom_activities, upper_activities, activity_ar } from './points_parts';
-import {getAngle, getDistance, getMiddle, } from './vectors';
+import { getAngle, getDistance, getMiddle, } from './vectors';
 
 let my_array = {
-  left_hand : new Array(), right_hand : new Array(), left_leg : new Array(), right_leg : new Array()
+  left_hand: new Array(), right_hand: new Array(), left_leg: new Array(), right_leg: new Array()
 }
 
 let your_array = {
-  left_hand : new Array(), right_hand : new Array(), left_leg : new Array(), right_leg : new Array()
+  left_hand: new Array(), right_hand: new Array(), left_leg: new Array(), right_leg: new Array()
 }
 
 //images
@@ -35,8 +35,8 @@ class Draw {
     this.results = results;
     this.user = user;
     this.Init();
-  } 
-  
+  }
+
   Init = () => {
     this.syncScore = 0;
     this.dxBird = this.width; this.dyBird = 0; this.dxBird2 = 0; this.dyBird2 = 0;
@@ -75,10 +75,10 @@ class Draw {
     if (flag.includes(2)) arr.push(16);
     if (flag.includes(3)) arr.push(27);
     if (flag.includes(4)) arr.push(28);
-  
-    let right_hand = []; 
-    let left_hand = []; 
-    let right_leg = []; 
+
+    let right_hand = [];
+    let left_hand = [];
+    let right_leg = [];
     let left_leg = [];
 
     for (let i in arr) {
@@ -92,62 +92,62 @@ class Draw {
 
       dx = dx > 0 && dy > 0 ? x1 + dx : x1 - dx;
       dy = dy > 0 ? y1 + dy : y1 - dy;
-      
-      if (i === 15) {
-        this.user === "me" ? 
-        my_array.right_hand.push({
-          startX: parseInt(x1), startY: parseInt(y1), endX: parseInt(dx), endY: parseInt(dy),
-          color: '#' + Math.floor(Math.random() * 16777215).toString(16)
-        })
-        :
-        your_array.right_hand.push({
-          startX: parseInt(x1), startY: parseInt(y1), endX: parseInt(dx), endY: parseInt(dy),
-          color: '#' + Math.floor(Math.random() * 16777215).toString(16)
-        })
 
-        this.user === "me" ? my_array.right_hand.refresh() : your_array.right_hand.refresh()
+      if (i === 15) {
+        this.user === "me" ?
+          my_array.right_hand.push({
+            startX: parseInt(x1), startY: parseInt(y1), endX: parseInt(dx), endY: parseInt(dy),
+            color: '#' + Math.floor(Math.random() * 16777215).toString(16)
+          })
+          :
+          your_array.right_hand.push({
+            startX: parseInt(x1), startY: parseInt(y1), endX: parseInt(dx), endY: parseInt(dy),
+            color: '#' + Math.floor(Math.random() * 16777215).toString(16)
+          })
+
+        //  this.user === "me" ? my_array.right_hand.refresh() : your_array.right_hand.refresh()
       }
       if (i === 16) {
-        this.user === "me" ? 
-        my_array.left_hand.push({
-          startX: parseInt(x1), startY: parseInt(y1), endX: parseInt(dx), endY: parseInt(dy),
-          color: '#' + Math.floor(Math.random() * 16777215).toString(16)
-        })
-        :
-        your_array.left_hand.push({
-          startX: parseInt(x1), startY: parseInt(y1), endX: parseInt(dx), endY: parseInt(dy),
-          color: '#' + Math.floor(Math.random() * 16777215).toString(16)
-        }) 
+        this.user === "me" ?
+          my_array.left_hand.push({
+            startX: parseInt(x1), startY: parseInt(y1), endX: parseInt(dx), endY: parseInt(dy),
+            color: '#' + Math.floor(Math.random() * 16777215).toString(16)
+          })
+          :
+          your_array.left_hand.push({
+            startX: parseInt(x1), startY: parseInt(y1), endX: parseInt(dx), endY: parseInt(dy),
+            color: '#' + Math.floor(Math.random() * 16777215).toString(16)
+          })
 
-        this.user === "me" ? my_array.left_hand.refresh() : your_array.left_hand.refresh()
+        // this.user === "me" ? my_array.left_hand.refresh() : your_array.left_hand.refresh()
       }
       if (i === 27) {
-        this.user === "me" ? 
-        my_array.left_leg.push({
-          startX: parseInt(x1), startY: parseInt(y1), endX: parseInt(dx), endY: parseInt(dy),
-          color: '#' + Math.floor(Math.random() * 16777215).toString(16)
-        })
-        :
-        your_array.left_leg.push({
-          startX: parseInt(x1), startY: parseInt(y1), endX: parseInt(dx), endY: parseInt(dy),
-          color: '#' + Math.floor(Math.random() * 16777215).toString(16)
-        }) 
+        this.user === "me" ?
+          my_array.left_leg.push({
+            startX: parseInt(x1), startY: parseInt(y1), endX: parseInt(dx), endY: parseInt(dy),
+            color: '#' + Math.floor(Math.random() * 16777215).toString(16)
+          })
+          :
+          your_array.left_leg.push({
+            startX: parseInt(x1), startY: parseInt(y1), endX: parseInt(dx), endY: parseInt(dy),
+            color: '#' + Math.floor(Math.random() * 16777215).toString(16)
+          })
 
-        this.user === "me" ? my_array.left_leg.refresh() : your_array.left_leg.refresh()
+        // this.user === "me" ? my_array.left_leg.refresh() : your_array.left_leg.refresh()
       }
       if (i === 28) {
-        this.user === "me" ? 
-        my_array.right_leg.push({
-          startX: parseInt(x1), startY: parseInt(y1), endX: parseInt(dx), endY: parseInt(dy),
-          color: '#' + Math.floor(Math.random() * 16777215).toString(16)
-        })
-        :
-        your_array.right_leg.push({
-          startX: parseInt(x1), startY: parseInt(y1), endX: parseInt(dx), endY: parseInt(dy),
-          color: '#' + Math.floor(Math.random() * 16777215).toString(16)
-        }) 
+        this.user === "me" ?
+          my_array.right_leg.push({
+            startX: parseInt(x1), startY: parseInt(y1), endX: parseInt(dx), endY: parseInt(dy),
+            color: '#' + Math.floor(Math.random() * 16777215).toString(16)
+          })
+          :
+          your_array.right_leg.push({
+            startX: parseInt(x1), startY: parseInt(y1), endX: parseInt(dx), endY: parseInt(dy),
+            color: '#' + Math.floor(Math.random() * 16777215).toString(16)
+          })
         // console.log(this.right_leg);
-        this.user === "me" ? my_array.right_leg.refresh() : your_array.right_leg.refresh()
+        // this.user === "me" ? my_array.right_leg.refresh() : your_array.right_leg.refresh()
 
       }
     }
@@ -185,30 +185,36 @@ class Draw {
         const part = array[index];
         let end = part.length, start = end > 10 ? end - 10 : 0;
         part.splice(start, end).forEach((line => {
-          if(line !== undefined && line.startX !== undefined && line.startY !== undefined && 
-            line.endX !== undefined && line.endY !== undefined && line.color !== undefined){
-            this.ctx.lineWidth = 7; 
+          if (line !== undefined && line.startX !== undefined && line.startY !== undefined &&
+            line.endX !== undefined && line.endY !== undefined && line.color !== undefined) {
+            this.ctx.lineWidth = 7;
             this.ctx.beginPath();
             this.ctx.moveTo(line.startX, line.startY); this.ctx.lineTo(line.endX, line.endY);
-            this.ctx.strokeStyle = line.color; 
+            this.ctx.strokeStyle = line.color;
             this.ctx.stroke();
           }
         }))
       }
     }
-    this.user === 'me' ? drawL(my_array): drawL(your_array)
+    this.user === 'me' ? drawL(my_array) : drawL(your_array)
   }
 
   drawBird = () => {
 
+    const eyeWidth = 205;
+    const eyesToMouth = 220;
+    const shoulderWidth = 517;
+    const hipToShoulderHeight = 745;
+    const upperArmLength = 327;
+    const forearmLength = 386;
     {
       const leftEye = this.results.poseLandmarks[2];
       const rightEye = this.results.poseLandmarks[5];
       const leftMouth = this.results.poseLandmarks[9];
       const rightMouth = this.results.poseLandmarks[10];
       const nose = this.results.poseLandmarks[0];
-    
-      if (leftEye && rightEye && leftMouth && rightMouth && nose){
+
+      if (leftEye && rightEye && leftMouth && rightMouth && nose) {
         const angle = getAngle(leftEye, rightEye);
         const distance = getDistance(leftEye, rightEye);
         const xScale = distance / eyeWidth;
@@ -219,7 +225,7 @@ class Draw {
         const head = new Image(); head.src = EyesBird;
         console.log('head', head.src);
         console.log('nose')
-        this.drawImage(head,  nose.x, nose.y, head.height * yScale, head.width * xScale, angle, 0.55, 0.8);
+        this.drawImage(head, nose.x, nose.y, head.height * yScale * 1.5, head.width * xScale * 1.5, angle, 0.55, 0.8);
       }
     }
     let x1 = this.results.poseLandmarks[12].x * this.width;
@@ -237,7 +243,7 @@ class Draw {
     y1 = this.results.poseLandmarks[20].y * this.height;
     x2 = this.results.poseLandmarks[21].x * this.width;
     y2 = this.results.poseLandmarks[21].y * this.height;
-    const step = 50
+    const step = 40
     this.dxBird += this.dxBird <= x2 ? step : -1 * step;
     this.dyBird += this.dyBird <= y2 ? step : -1 * step;
     if (this.dxBird < 0) this.dxBird = 0;
@@ -267,14 +273,14 @@ class Draw {
     img3.src = this.dxBird <= x2 ? birdGIFPos2[index] : birdGIFNeg2[index];
     img4.src = this.dxBird2 <= x1 ? birdGIFPos2[index] : birdGIFNeg2[index];
     if (this.activity.includes('left')) {
-      this.ctx.drawImage(img3, this.dxBird - 50, this.dyBird - 50, distance/5, distance/5);
+      this.ctx.drawImage(img3, this.dxBird - 50, this.dyBird - 50, distance / 5, distance / 5);
     }
     else if (this.activity.includes('right')) {
-      this.ctx.drawImage(img4, this.dxBird2 - 50, this.dyBird2 - 50, distance/5, distance/5);
+      this.ctx.drawImage(img4, this.dxBird2 - 50, this.dyBird2 - 50, distance / 5, distance / 5);
     }
     else {
-      this.ctx.drawImage(img3, this.dxBird, this.dyBird, distance/5, distance/5);
-      this.ctx.drawImage(img4, this.dxBird2, this.dyBird2, distance/5, distance/5);
+      this.ctx.drawImage(img3, this.dxBird, this.dyBird, distance / 5, distance / 5);
+      this.ctx.drawImage(img4, this.dxBird2, this.dyBird2, distance / 5, distance / 5);
     }
   }
 
@@ -334,9 +340,36 @@ class Draw {
 
     let imgFace = new Image(); imgFace.src = face[0];
     imgFace.width = distanceWidth; imgFace.height = distanceHeight;
-    this.ctx.drawImage(imgFace, (this.results.poseLandmarks[0].x * this.width) - (imgFace.width / 2) - 15,
-      (this.results.poseLandmarks[0].y * this.height) - (imgFace.height / 2) - 25,
-      imgFace.width, imgFace.height);
+    // this.ctx.drawImage(imgFace, (this.results.poseLandmarks[0].x * this.width) - (imgFace.width / 2) - 15,
+    //   (this.results.poseLandmarks[0].y * this.height) - (imgFace.height / 2) - 25,
+    //   imgFace.width, imgFace.height);
+    const eyeWidth = 205;
+    const eyesToMouth = 220;
+    const shoulderWidth = 517;
+    const hipToShoulderHeight = 745;
+    const upperArmLength = 327;
+    const forearmLength = 386;
+    {
+      const leftEye = this.results.poseLandmarks[2];
+      const rightEye = this.results.poseLandmarks[5];
+      const leftMouth = this.results.poseLandmarks[9];
+      const rightMouth = this.results.poseLandmarks[10];
+      const nose = this.results.poseLandmarks[0];
+
+      if (leftEye && rightEye && leftMouth && rightMouth && nose) {
+        const angle = getAngle(leftEye, rightEye);
+        const distance = getDistance(leftEye, rightEye);
+        const xScale = distance / eyeWidth;
+        const middleEye = getMiddle(leftEye, rightEye);
+        const middleMouth = getMiddle(leftMouth, rightMouth);
+        const mouthToEyeDistance = getDistance(middleEye, middleMouth);
+        const yScale = mouthToEyeDistance / eyesToMouth;
+        const head = new Image(); head.src = face[0];
+        console.log('head', head.src);
+        console.log('nose')
+        this.drawImage(head, nose.x, nose.y, head.height * yScale * 1.5, head.width * xScale * 1.5, angle, 0.55, 0.8);
+      }
+    }
 
     let index = this.index % lips.length;
     let imgLips = new Image(); imgLips.src = lips[index];
@@ -377,7 +410,7 @@ class Draw {
 
 
   }
-  
+
   drawRain = () => {
     let init = [];
     let maxParts = 1000;
@@ -440,8 +473,8 @@ class Draw {
       const leftMouth = this.results.poseLandmarks[9];
       const rightMouth = this.results.poseLandmarks[10];
       const nose = this.results.poseLandmarks[0];
-      
-      if (leftEye && rightEye && leftMouth && rightMouth && nose){
+
+      if (leftEye && rightEye && leftMouth && rightMouth && nose) {
         const angle = getAngle(leftEye, rightEye);
         const distance = getDistance(leftEye, rightEye);
         const xScale = distance / eyeWidth;
@@ -452,7 +485,7 @@ class Draw {
         const head = new Image(); head.src = Head;
         console.log('head', head.src);
         console.log('nose')
-        this.drawImage(head,  nose.x, nose.y, head.height * yScale, head.width * xScale, angle, 0.55, 0.8);
+        this.drawImage(head, nose.x, nose.y, head.height * yScale, head.width * xScale, angle, 0.55, 0.8);
       }
     }
     //Body
@@ -474,10 +507,10 @@ class Draw {
       }
     }
     //LeftUpperArm
-    { 
+    {
       const leftShoulder = this.results.poseLandmarks[11];
       const leftElbow = this.results.poseLandmarks[13];
-    
+
       if (leftShoulder && leftElbow) {
         const angle = getAngle(leftElbow, leftShoulder);
         const distance = getDistance(leftShoulder, leftElbow);
@@ -491,7 +524,7 @@ class Draw {
     {
       const rightShoulder = this.results.poseLandmarks[12];
       const rightElbow = this.results.poseLandmarks[14];
-    
+
       if (rightShoulder && rightElbow) {
         const angle = getAngle(rightElbow, rightShoulder);
         const distance = getDistance(rightShoulder, rightElbow);
@@ -506,7 +539,7 @@ class Draw {
     {
       const leftElbow = this.results.poseLandmarks[13];
       const leftWrist = this.results.poseLandmarks[15];
-    
+
       if (leftElbow && leftWrist) {
         const angle = getAngle(leftWrist, leftElbow);
         const distance = getDistance(leftElbow, leftWrist);
@@ -518,10 +551,10 @@ class Draw {
     }
 
     //RightForearm
-    { 
+    {
       const rightElbow = this.results.poseLandmarks[14];
       const rightWrist = this.results.poseLandmarks[16];
-      if (rightElbow && rightWrist){    
+      if (rightElbow && rightWrist) {
         const angle = getAngle(rightWrist, rightElbow);
         const distance = getDistance(rightElbow, rightWrist);
         const xScale = distance / forearmLength;
@@ -531,133 +564,136 @@ class Draw {
       }
     }
 
-    
+
     // LeftHand
-    { 
+    {
       const leftWrist = this.results.poseLandmarks[15];
       const leftIndex = this.results.poseLandmarks[19];
       const leftPinky = this.results.poseLandmarks[17];
-    
+
       const length = 125;
-    
+
       if (leftWrist && leftIndex && leftPinky) {
-          const middleFingers = getMiddle(leftIndex, leftPinky);
-          const angle = getAngle(middleFingers, leftWrist);
-          const distance = getDistance(leftWrist, middleFingers);
-          const xScale = distance / length;
-          const yScale = xScale;
-          const leftHand = new Image(); leftHand.src = LeftHand;
-          this.drawImage(leftHand, leftWrist.x, leftWrist.y, leftHand.height * yScale, leftHand.width * xScale, angle + 270, 0.5, 0);
-        }
+        const middleFingers = getMiddle(leftIndex, leftPinky);
+        const angle = getAngle(middleFingers, leftWrist);
+        const distance = getDistance(leftWrist, middleFingers);
+        const xScale = distance / length;
+        const yScale = xScale;
+        const leftHand = new Image(); leftHand.src = LeftHand;
+        this.drawImage(leftHand, leftWrist.x, leftWrist.y, leftHand.height * yScale, leftHand.width * xScale, angle + 270, 0.5, 0);
+      }
     }
 
     // RightHand
-    { 
+    {
       const rightWrist = this.results.poseLandmarks[16];
       const rightIndex = this.results.poseLandmarks[20];
       const rightPinky = this.results.poseLandmarks[18];
-      
+
       const length = 125;
-    
-        if (rightWrist && rightIndex && rightPinky) {
-          const middleFingers = getMiddle(rightIndex, rightPinky);
-          const angle = getAngle(middleFingers, rightWrist);
-          const distance = getDistance(rightWrist, middleFingers);
-          const xScale = distance / length;
-          const yScale = xScale;
-          const leftHand = new Image(); leftHand.src = LeftHand;
-          this.drawImage(leftHand, rightWrist.x, rightWrist.y, leftHand.height * yScale, leftHand.width * xScale, angle + 270, 0.5, 0);
-        }
+
+      if (rightWrist && rightIndex && rightPinky) {
+        const middleFingers = getMiddle(rightIndex, rightPinky);
+        const angle = getAngle(middleFingers, rightWrist);
+        const distance = getDistance(rightWrist, middleFingers);
+        const xScale = distance / length;
+        const yScale = xScale;
+        const leftHand = new Image(); leftHand.src = LeftHand;
+        this.drawImage(leftHand, rightWrist.x, rightWrist.y, leftHand.height * yScale, leftHand.width * xScale, angle + 270, 0.5, 0);
+      }
     }
-    
+
     //LeftThigh
-    { 
+    {
       const leftHip = this.results.poseLandmarks[23];
       const leftKnee = this.results.poseLandmarks[25];
-    
+
       const length = 482;
-    
-        if (leftHip && leftKnee) {
-          const angle = getAngle(leftKnee, leftHip);
-          const distance = getDistance(leftHip, leftKnee);
-          const xScale = distance / length;
-          const yScale = xScale;
-          const leftThigh = new Image(); leftThigh.src = LeftThigh;
-          this.drawImage(leftThigh, leftHip.x, leftHip.y, leftThigh.height * yScale, leftThigh.width * xScale, angle - 90, 0.5, 0.1);
-        }
+
+      if (leftHip && leftKnee) {
+        const angle = getAngle(leftKnee, leftHip);
+        const distance = getDistance(leftHip, leftKnee);
+        const xScale = distance / length;
+        const yScale = xScale;
+        const leftThigh = new Image(); leftThigh.src = LeftThigh;
+        this.drawImage(leftThigh, leftHip.x, leftHip.y, leftThigh.height * yScale, leftThigh.width * xScale, angle - 90, 0.5, 0.1);
+      }
     }
 
     //RightThigh
-    { 
+    {
       const rightHip = this.results.poseLandmarks[24];
       const rightKnee = this.results.poseLandmarks[26];
-    
+
       const length = 482;
-    
-        if (rightHip && rightKnee) {
-          const angle = getAngle(rightKnee, rightHip);
-          const distance = getDistance(rightHip, rightKnee);
-          const xScale = distance / length;
-          const yScale = xScale;
-          const rightThigh = new Image(); rightThigh.src = RightThigh;
-          this.drawImage(rightThigh, rightHip.x, rightHip.y, rightThigh.height * yScale, rightThigh.width * xScale, angle - 90, 0.5, 0.1);
-        }
+
+      if (rightHip && rightKnee) {
+        const angle = getAngle(rightKnee, rightHip);
+        const distance = getDistance(rightHip, rightKnee);
+        const xScale = distance / length;
+        const yScale = xScale;
+        const rightThigh = new Image(); rightThigh.src = RightThigh;
+        this.drawImage(rightThigh, rightHip.x, rightHip.y, rightThigh.height * yScale, rightThigh.width * xScale, angle - 90, 0.5, 0.1);
+      }
     }
 
     // LeftLowerLeg
     {
       const leftKnee = this.results.poseLandmarks[25];
       const leftAnkle = this.results.poseLandmarks[27];
-    
+
       const length = 464;
-    
-        if (leftAnkle && leftKnee) {
-          const angle = getAngle(leftKnee, leftAnkle);
-          const distance = getDistance(leftAnkle, leftKnee);
-          const xScale = distance / length;
-          const yScale = xScale;
-          const leftLowerLeg = new Image(); leftLowerLeg.src = LeftLowerLeg;
-          this.drawImage(leftLowerLeg, leftKnee.x, leftKnee.y, leftLowerLeg.height * yScale, leftLowerLeg.width * xScale, angle - 270, 0.5,0.1);
-        }
+
+      if (leftAnkle && leftKnee) {
+        const angle = getAngle(leftKnee, leftAnkle);
+        const distance = getDistance(leftAnkle, leftKnee);
+        const xScale = distance / length;
+        const yScale = xScale;
+        const leftLowerLeg = new Image(); leftLowerLeg.src = LeftLowerLeg;
+        this.drawImage(leftLowerLeg, leftKnee.x, leftKnee.y, leftLowerLeg.height * yScale, leftLowerLeg.width * xScale, angle - 270, 0.5, 0.1);
+      }
     }
 
     // RightLowerLeg
     {
       const rightKnee = this.results.poseLandmarks[26];
       const rightAnkle = this.results.poseLandmarks[28];
-    
+
       const length = 464;
-    
-        if (rightAnkle && rightKnee) {
-          const angle = getAngle(rightKnee, rightAnkle);
-          const distance = getDistance(rightAnkle, rightKnee);
-          const xScale = distance / length;
-          const yScale = xScale;
-          const rightLowerLeg = new Image(); rightLowerLeg.src = RightLowerLeg;
-          this.drawImage(rightLowerLeg, rightKnee.x, rightKnee.y, rightLowerLeg.height * yScale, rightLowerLeg.width * xScale, angle - 270, 0.5,0.1);
-        }
+
+      if (rightAnkle && rightKnee) {
+        const angle = getAngle(rightKnee, rightAnkle);
+        const distance = getDistance(rightAnkle, rightKnee);
+        const xScale = distance / length;
+        const yScale = xScale;
+        const rightLowerLeg = new Image(); rightLowerLeg.src = RightLowerLeg;
+        this.drawImage(rightLowerLeg, rightKnee.x, rightKnee.y, rightLowerLeg.height * yScale, rightLowerLeg.width * xScale, angle - 270, 0.5, 0.1);
+      }
     }
   }
   draw = () => {
-    // console.log(this.left_hand, this.right_hand)
+    // console.log('activity', this.activity)
     // this.activity = 'hands-x';
-    if(this.activity === 'none') return;
-    this.drawBird(); return;
-    // for (const ar in activity_ar) {
-    //   for (const activity in activity_ar[ar]) {
-    //     if (activity_ar[ar][activity] === this.activity && this.syncScore >= 75) {
-    //       switch (ar) {
-    //         case 'bird': this.drawBird(); break;
-    //         case 'horse': this.drawGlasses(); break;
-    //         case 'rainbow': this.drawLines(); break;
-    //         case 'zombie': this.drawCrazy(); break;
-    //         case 'rain': this.drawSkeleton(); break;
-    //         default: console.log('ar not exist for this activity'); break;
-    //       }
-    //       return;
-    //     }
-    //   }
-    // }
+    if (this.activity === 'none') return;
+    //this.drawBird(); return;
+    //console.log('activity_ar', activity_ar);
+    for (const ar in activity_ar) {
+      // console.log('ar', ar);
+      for (const activity in activity_ar[ar]) {
+        //  console.log('activity', activity);
+        if (activity_ar[ar][activity] === this.activity) {
+          switch (ar) {
+            case 'bird': this.drawBird(); break;
+            case 'horse': this.drawGlasses(); break;
+            //  case 'rainbow': this.drawLines(); break;
+            case 'zombie': this.drawCrazy(); break;
+            case 'rain': this.drawSkeleton(); break;
+            default: console.log('ar not exist for this activity'); break;
+          }
+          return;
+        }
+      }
+    }
   }
 }
 

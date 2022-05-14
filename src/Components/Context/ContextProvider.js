@@ -10,7 +10,7 @@ import * as cam from '@mediapipe/camera_utils';
 import isEmpty from '../../validation/isEmpty';
 import mediaPipeLandmarks from './mediaPipeLandmarks';
 import draw from './DrawAnimation/draw';
-
+const SYNC = 0.8;
 {
   /* 
     ContextProvider Component is responsible for holding the calls required to support 
@@ -218,7 +218,7 @@ function ContextProvider({ children, socket, profile }) {
   };
 
   const is_sync = () => {
-    if (syncScoreRef?.current >= 0.75) return true;
+    if (syncScoreRef?.current >= SYNC) return true;
     return false;
   };
 
@@ -257,7 +257,7 @@ function ContextProvider({ children, socket, profile }) {
     let inframe = calculatingUserInFrame(results);
     let syncing = is_sync();
     let activity = now_activity();
-    if (syncScoreRef?.current < 0.75) {
+    if (syncScoreRef?.current < SYNC) {
       canvasCtx.globalCompositeOperation = 'source-in';
       canvasCtx.fillStyle = 'rgba(255,0,0,0.1)';
       canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
@@ -268,7 +268,7 @@ function ContextProvider({ children, socket, profile }) {
       canvasCtx.globalCompositeOperation = 'source-over';
     }
 
-    if (syncScoreRef?.current >= 0.75) {
+    if (syncScoreRef?.current >= SYNC) {
       canvasCtx.globalCompositeOperation = 'source-in';
       canvasCtx.fillStyle = 'rgba(0,255,0,0.1)';
       canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
@@ -292,7 +292,7 @@ function ContextProvider({ children, socket, profile }) {
     }
 
     if (results) {
-      if (syncScoreRef?.current >= 0.75)
+      if (syncScoreRef?.current >= SYNC)
         results.poseLandmarks && draw(canvasCtx, canvasElement, results, activity, "you");
     }
     canvasCtx.restore();
@@ -321,7 +321,7 @@ function ContextProvider({ children, socket, profile }) {
     let inframe = calculatingUserInFrame(results);
     let syncing = is_sync();
     let activity = now_activity();
-    if (syncScoreRef?.current < 0.75) {
+    if (syncScoreRef?.current < SYNC) {
       canvasCtx.globalCompositeOperation = 'source-in';
       canvasCtx.fillStyle = 'rgba(255,0,0,0.1)';
       canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
@@ -332,7 +332,7 @@ function ContextProvider({ children, socket, profile }) {
       canvasCtx.globalCompositeOperation = 'source-over';
     }
 
-    if (syncScoreRef?.current >= 0.75) {
+    if (syncScoreRef?.current >= SYNC) {
       canvasCtx.globalCompositeOperation = 'source-in';
       canvasCtx.fillStyle = 'rgba(0,255,0,0.1)';
       canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
@@ -356,7 +356,7 @@ function ContextProvider({ children, socket, profile }) {
     }
 
     if (results) {
-      if (syncScoreRef?.current >= 0.75)
+      if (syncScoreRef?.current >= SYNC)
         results.poseLandmarks && draw(canvasCtx, canvasElement, results, activity);
 
       if (!inframe) {
@@ -800,11 +800,11 @@ function ContextProvider({ children, socket, profile }) {
         return;
       }
       if (!ARdisplayRef.current) return;
-      if (syncScoreRef.current >= 0.75 && sync_score <= 0.75 ||
-        syncScoreRef.current <= 0.75 && sync_score >= 0.75
+      if (syncScoreRef.current >= SYNC && sync_score <= SYNC ||
+        syncScoreRef.current <= SYNC && sync_score >= SYNC
       ) {
-        // console.log(syncScoreRef.current, ">= 0.75 &&", sync_score, "<= 0.75 ||",
-        //   syncScoreRef.current, "<= 0.75 &&", sync_score, ">= 0.75");
+        // console.log(syncScoreRef.current, ">= SYNC &&", sync_score, "<= SYNC ||",
+        //   syncScoreRef.current, "<= SYNC &&", sync_score, ">= SYNC");
         // console.log("frame::::", frameeRef.current, frame);
         if (frameeRef.current === 2) {
           //  console.log("frameeRef.current", frameeRef.current);
@@ -823,11 +823,11 @@ function ContextProvider({ children, socket, profile }) {
         setSyncScore(sync_score);
         return;
       }
-      if (syncScoreRef.current >= 0.75 && sync_score <= 0.75 ||
-        syncScoreRef.current <= 0.75 && sync_score >= 0.75
+      if (syncScoreRef.current >= SYNC && sync_score <= SYNC ||
+        syncScoreRef.current <= SYNC && sync_score >= SYNC
       ) {
-        console.log(syncScoreRef.current, ">= 0.75 &&", sync_score, "<= 0.75 ||",
-          syncScoreRef.current, "<= 0.75 &&", sync_score, ">= 0.75",
+        console.log(syncScoreRef.current, ">= SYNC &&", sync_score, "<= SYNC ||",
+          syncScoreRef.current, "<= SYNC &&", sync_score, ">= SYNC",
           "frameeRef.current", frameeRef.current);
         console.log("frameeRef.current", frameeRef.current);
 
