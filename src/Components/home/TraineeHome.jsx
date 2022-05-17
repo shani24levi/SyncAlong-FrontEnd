@@ -68,6 +68,8 @@ function TraineeHome({ meeting, date }) {
         }
     }, [updateMeetingAlrt])
 
+    console.log('callQuickMeeting', callQuickMeeting);
+
     return (
         <>
             <HeaderWaves meeting={meeting} date={date} upcamingMeeting={upcamingMeeting} />

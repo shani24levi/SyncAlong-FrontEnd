@@ -111,7 +111,7 @@ function PopUpQuickStart({ quickStartOpen, setQuickStartOpen }) {
 
         let random5 = [];
         let randomNum = 0;
-        while (randomNum !== 5) {
+        while (randomNum !== 3) {
             let item = all_activitis[Math.floor(Math.random() * all_activitis.length)];
             console.log(item);
             random5.push(item);
@@ -229,7 +229,7 @@ function PopUpQuickStart({ quickStartOpen, setQuickStartOpen }) {
                                                     </DialogContentText>
                                                     {
                                                         !isEmpty(onlineTrainees) &&
-                                                        <Grid container spacing={1} justifyContent='center' sx={{ padingTop: '30px' }}>
+                                                        <Grid container spacing={1} justifyContent='center' sx={{ padingTop: '30px', marginLeft: '0px' }}>
                                                             {
                                                                 onlineTrainees.map(el => {
                                                                     console.log('onlineTrainees', el);
@@ -256,7 +256,7 @@ function PopUpQuickStart({ quickStartOpen, setQuickStartOpen }) {
 
                                                     {
                                                         !isEmpty(offlineTrainees) &&
-                                                        <Grid container spacing={1} justifyContent='center' sx={{ padingTop: '30px' }}>
+                                                        <Grid container spacing={1} justifyContent='center' sx={{ padingTop: '30px', marginLeft: '0px' }}>
                                                             {
                                                                 offlineTrainees.map(el => {
                                                                     return (
@@ -337,7 +337,7 @@ function PopUpQuickStart({ quickStartOpen, setQuickStartOpen }) {
                                             return (
                                                 <Grid item key={i}>
                                                     <Tooltip title={capitalize(el)} placement="top" arrow>
-                                                        <Avatar alt={el} src={el} className={classes.middle} />
+                                                        <Avatar alt={el} src={`/activities/imgs\\${el}.PNG`} className={classes.middle} />
                                                     </Tooltip>
                                                 </Grid>
                                             )

@@ -28,7 +28,8 @@ const Transition = forwardRef(function Transition(props, ref) {
 });
 
 function PopUpCallQuickMeeting({ currMeeting }) {
-    const { socket, setActiveMeetingPopUp, setYourSocketId, yourSocketId, setMySocketId, setCallTrainee, setAccseptScheduleMeetingCall, scheduleMeetingPopUpCall, setScheduleMeetingPopUpCall, setIsModalVisible, isModalVisible, Audio, answerCall, call, callAccepted } = useContext(SocketContext);
+    const { socket, setActiveMeetingPopUp, setYourSocketId, yourSocketId, setMySocketId, setCallTrainee, setAccseptScheduleMeetingCall, scheduleMeetingPopUpCall, setScheduleMeetingPopUpCall, Audio, answerCall, call, callAccepted } = useContext(SocketContext);
+    const [isModalVisible, setIsModalVisible] = useState(true);
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const classes = useStyles();
@@ -64,7 +65,9 @@ function PopUpCallQuickMeeting({ currMeeting }) {
         dispatch(setActiveMeeting(currMeeting, true));
         navigate('/video-room', { state: { meeting: currMeeting } });
     }
-    const handleClose = (showVal) => { }
+    const handleClose = (showVal) => {
+        setIsModalVisible(false);
+    }
 
     return (
         <>
