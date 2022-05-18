@@ -11,7 +11,10 @@ function RecordView({ setStatus, statusBool, setStatusBool, setMediaBlobUrl }) {
     mediaBlobUrl
   } = useReactMediaRecorder({
     screen: true,
-    facingMode: { exact: "environment" }
+    facingMode: { exact: "environment" }, 
+    blobPropertyBag: {
+      type: "video/mp4"
+    }
   });
 
   useEffect(() => {
