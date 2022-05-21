@@ -161,9 +161,9 @@ function PopUpQuickStart({ quickStartOpen, setQuickStartOpen }) {
         if (!isEmpty(userSelcted) && !isEmpty(activities)) {
             setCreateMeetingProcces(true);
             let date = new Date();
-            date.setHours(date.getMonth() + 3); //to avoide pop up meeting nowwww
+            date.setMonth(date.getMonth() + 3); //to avoide pop up meeting nowwww
             let newMeeting = {
-                title: `random${new Date()}`,
+                title: `Me+${userSelcted.user.user.user}`,
                 trainee: userSelcted.userId,
                 date,
                 activities: activities,
@@ -173,7 +173,7 @@ function PopUpQuickStart({ quickStartOpen, setQuickStartOpen }) {
     }
 
     const selctedUser = (user) => {
-        console.log(user);
+        console.log('useruser', user);
         if (!isEmpty(user)) {
             //set random list of activity:
             let random_5 = random5activities(user);
@@ -182,8 +182,7 @@ function PopUpQuickStart({ quickStartOpen, setQuickStartOpen }) {
         }
 
     }
-
-    console.log(userSelcted);
+    console.log("userSelcted", userSelcted);
 
     return (
         <Dialog

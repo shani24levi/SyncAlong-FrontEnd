@@ -48,6 +48,7 @@ function VideoContext({ meeting }) {
   const navigate = useNavigate();
 
   const {
+    meetingClosedByPeer,
     setARdisplay,
     mediapipeOfTrainer,
     erorrWithPeerConection,
@@ -127,7 +128,6 @@ function VideoContext({ meeting }) {
   const [start, setStartActivity] = useState(false);
   const [showDemo, setDemo] = useState(false);
   const [activityTime, setActivityTime] = useState(false);
-  // const [currActivity, setCurrActivity] = useState(0);
   const [sync, setSync] = useState(false);
   const [currData, setSendCurrPoses] = useState(false);
   const [displayErrorMessage, setDisplayErrorMessage] = useState(null);
@@ -730,6 +730,7 @@ function VideoContext({ meeting }) {
 
   return (
     <>
+      {meetingClosedByPeer && <ErrorAlert title={'Sorry ,Meeting has been closed by peer'} />}
       {(errorUserLeft || erorrWithPeerConection) && (
         <ErrorAlert title="Peer DisConected..." />
       )}

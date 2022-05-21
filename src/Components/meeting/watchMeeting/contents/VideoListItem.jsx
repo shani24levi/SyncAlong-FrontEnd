@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
+import { dateFormat } from '../../../../Utils/dateFormat';
 
 const LinkStyled = styled('div')`
+text-decoration: none,
 cursor: pointer;
 background-color: #161d35 !important;
 padding: 5%;
@@ -47,23 +49,23 @@ function VideoListItem({ video }) {
     //console.log(video);
     return (
         <LinkStyled>
-            <Link to={{ pathname: `/meeting/watch/${video._id}` }}>
+            <Link to={{ pathname: `/meeting/watch/${video._id}` }} style={{ textDecoration: 'none' }}>
                 <div className="video-list media">
                     <div className="media-body">
                         <div className="media-heading">
-                            {video.tariner.user} {" "}
+                            Participents : {" "}
+                            {video.tariner.user} {" & "}
                             {video.trainee.user}
                         </div>
                         <div className="media-heading-channel-title">
+                            Meeting Title: {" "}
                             {video.title}
                         </div>
                         <div className="media-heading-channel-date">
-                            {video.date}
+                            Priformed at : {" "}
+                            {dateFormat(video.date)}
                         </div>
                     </div>
-                    {/* <div className="media-right">
-                    <img className="media-object" src={'https://www.irganim.com/images/itempics/165_large.jpg'} />
-                </div> */}
                 </div>
             </Link>
         </LinkStyled>

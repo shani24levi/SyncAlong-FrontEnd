@@ -19,7 +19,7 @@ import ReConectCall from '../popupCall/ReConectCall';
 import { Button } from '@material-ui/core';
 
 const Home = ({ socket }) => {
-    const { erorrWithPeerConection, setErorrWithPeerConection, activeMeetingPopUp, setYourSocketId, yourSocketId, upcamingMeeting, traineeEntered, setMyTraineeEntered, scheduleMeetingPopUpCall } = useContext(SocketContext);
+    const { meetingClosedByPeer, setMeetingClosedByPeer, erorrWithPeerConection, setErorrWithPeerConection, activeMeetingPopUp, setYourSocketId, yourSocketId, upcamingMeeting, traineeEntered, setMyTraineeEntered, scheduleMeetingPopUpCall } = useContext(SocketContext);
     const dispatch = useDispatch();
     const user = useSelector(state => state.auth.user);
     const profile = useSelector(state => state.profile);
@@ -64,17 +64,12 @@ const Home = ({ socket }) => {
     }, [traineeEntered]);
 
     useEffect(() => {
-        console.log('change meetings.upcoming_meeting', meetings.upcoming_meeting);
+        console.log('change meetings.upcoming_meeting', meetings.upcoming_meeting, !isEmpty(meetings.upcoming_meeting));
         if (!isEmpty(meetings.upcoming_meeting)) {
-            console.log(meetings.upcoming_meeting);
+            console.log('ddd', meetings.upcoming_meeting);
             console.log(meetings.upcoming_meeting?.date);
             const t = new Date(meetings.upcoming_meeting?.date)//?.slice(0, -1));
-            // t.setHours(t.getHours() + 3);
             setDateToMeeting(t);
-
-            // const t2 = new Date(meetings.upcoming_meeting?.date)
-            // t2.setHours(t2.getHours() - 3);
-            // setDate(t2.getTime() / 1000)
             setDate(t.getTime() / 1000)
             setMeeting(true)
         }
@@ -115,12 +110,21 @@ const Home = ({ socket }) => {
         }
     }, [erorrWithPeerConection])
 
+    useEffect(async () => {
+        if (meetingClosedByPeer) {
+            await delay(5000);
+            setMeetingClosedByPeer(false)
+        }
+    }, [meetingClosedByPeer])
+
     const navigate = useNavigate();
 
+    console.log('activeMeetingPopUp', activeMeetingPopUp);
     return (
         <>
             {/* <Button onClick={() => navigate('/video-room', { state: { meeting: { _id: 's', activities: ['s', 'd'], tariner: { _id: "d", usrr: 'dd' }, tariner: { _id: "d", usrr: 'dd' } } } })}>goToVideoPage</Button> */}
             <div id="back-to-top-anchor" />
+            {meetingClosedByPeer && !isEmpty(meetings.active_meeting) && <ErrorAlert title={'Sorry ,Meeting has been closed by peer'} />}
             {!isEmpty(scheduleMeetingPopUpCall) && <PopUpCall />}
             {!isEmpty(meetings.active_meeting) && !isEmpty(yourSocketId) && <ReConectCall />}
             {!isEmpty(meetings.active_meeting) && !isEmpty(yourSocketId) && activeMeetingPopUp && <ReConectCall />}

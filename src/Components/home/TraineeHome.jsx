@@ -47,15 +47,6 @@ function TraineeHome({ meeting, date }) {
     const theme = useTheme();
     const user = useSelector(state => state.auth.user);
     const profile = useSelector(state => state.profile);
-    // const [trainer, setTrainer] = useState({});
-
-    // useEffect(() => {
-    //     if (!isEmpty(profile) && isEmpty(trainer)) {
-    //         setTrainer(profile.traineeOf?.user);
-    //     }
-    // }, [profile])
-
-
 
     // console.log('====================================');
     // console.log(callTrainee);

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid, Box } from '@material-ui/core';
 import HeatMapChart from '../charts/HeatMapChart';
 import PurpleChartCard from '../charts/PurpleChartCard';
 import isEmpty from '../../validation/isEmpty';
@@ -7,6 +7,7 @@ import { dateFormat } from '../../Utils/dateFormat';
 import MultyChart from '../charts/MultyChart';
 import DonutAvg from '../charts/DonutAvg';
 import SyncsLineChart from './SyncsLineChart';
+import Column from '../charts/Column';
 
 function SyncView({ selectedVideo, syncs }) {
     let [syncbyAct, setSyncByAct] = useState([]);
@@ -133,11 +134,44 @@ function SyncView({ selectedVideo, syncs }) {
         }
     }, [series1])
 
+
+    console.log('series1', series1, syncAvgs);
     return (
         <>
-            <PurpleChartCard time={selectedVideo.dateEnd ? dateFormat(selectedVideo.dateEnd) : ''} totalSync={avgSync} syncs={allSync} />
-            <HeatMapChart syncObjs={syncObjs} series={series} />
-            <SyncsLineChart syncs={syncObjs} syncAvgs={syncAvgs} />
+            <Grid
+                container
+                spacing={3}
+                direction="row"
+                justify="center"
+                alignItems="center"
+                style={{ marginBottom: '2%' }}>
+                <Grid item xs={12} md={12} lg={8}>
+                    <PurpleChartCard time={selectedVideo.dateEnd ? dateFormat(selectedVideo.dateEnd) : ''} totalSync={avgSync} syncs={allSync} />
+                </Grid>
+                <Grid
+                    component={Box}
+                    item
+                    xs={4}
+                    display={{ xs: "none", md: "none", lg: "block" }}
+                >{!isEmpty(syncAvgs) && <DonutAvg syncAvgs={syncAvgs} />}
+                </Grid>
+            </Grid>
+
+            <Grid
+                container
+                spacing={3}
+                direction="row"
+                justify="center"
+                alignItems="center">
+                <Grid item xs={12} md={12} lg={6}><SyncsLineChart syncs={syncObjs} syncAvgs={syncAvgs} /> </Grid>
+                {!isEmpty(series) && !isEmpty(syncAvgs) && <Grid item xs={12} md={12} lg={6}> <Column series={series} syncAvgs={syncAvgs} /> </Grid>}
+
+                <Grid item xs={12} md={12} lg={12}><HeatMapChart syncObjs={syncObjs} series={series} /></Grid>
+
+            </Grid>
+            {/* <PurpleChartCard time={selectedVideo.dateEnd ? dateFormat(selectedVideo.dateEnd) : ''} totalSync={avgSync} syncs={allSync} /> */}
+            {/* <HeatMapChart syncObjs={syncObjs} series={series} />
+            <SyncsLineChart syncs={syncObjs} syncAvgs={syncAvgs} /> */}
             {/* <DonutAvg /> */}
         </>
     );

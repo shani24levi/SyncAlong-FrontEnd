@@ -78,7 +78,11 @@ function ReConectCall(props) {
         //in this case peer2 is in the room waits.....
         //if closed room thire them send to the peer in the room the notification
         let roomId = currMeeting._id;
-        socket?.emit('closeRoom', roomId);
+        let data = {
+            roomId,
+            yourSocketId
+        }
+        socket?.emit('closeRoomByDeclining', data);
         //remove from state the active meeting
         !isEmpty(currMeeting) && dispatch(setActiveMeeting(currMeeting, false));
     };

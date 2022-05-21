@@ -36,13 +36,27 @@ function NextMeetingTime({ date }) {
     const [stratTime, setStratTime] = useState(Date.now() / 1000);
     const [time, setTime] = useState((date !== 0 || date !== NaN) ? date - stratTime : 0);
     const [endTime, setEndTime] = useState(stratTime + time);
+
+    const [remainingTime, setremainingTime] = useState(endTime - stratTime);
+    const [days, setdays] = useState(Math.ceil(remainingTime / daySeconds));
+    const [daysDuration, setdaysDuration] = useState(days * daySeconds);
+
     console.log('date', date);
 
+    useEffect(() => {
+        setStratTime(Date.now() / 1000);
+        setTime((date !== 0 || date !== NaN) ? date - stratTime : 0);
+        setEndTime(stratTime + time);
+        setremainingTime(endTime - stratTime);
+        setdays(Math.ceil(remainingTime / daySeconds));
+        setdaysDuration(days * daySeconds);
+        console.log(' remainingTime,days,daysDuration', date, remainingTime, days, daysDuration);
+    }, [date])
 
     // let endTime = stratTime + time
-    let remainingTime = endTime - stratTime;
-    let days = Math.ceil(remainingTime / daySeconds);
-    let daysDuration = days * daySeconds
+    // let remainingTime = endTime - stratTime;
+    // let days = Math.ceil(remainingTime / daySeconds);
+    // let daysDuration = days * daySeconds
 
     return (
         <Container maxWidth="xl">

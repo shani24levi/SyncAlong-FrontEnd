@@ -67,6 +67,18 @@ function PopUpCallQuickMeeting({ currMeeting }) {
     }
     const handleClose = (showVal) => {
         setIsModalVisible(false);
+        socket?.emit("getSocketId", currMeeting.tariner._id, user => {
+            setYourSocketId(user.socketId);
+
+            let data = {
+                roomId: currMeeting._id,
+                yourSocketId: user.socketId
+            }
+            socket?.emit('closeRoomByDeclining', data);
+            //remove from state the active meeting
+            !isEmpty(currMeeting) && dispatch(setActiveMeeting(currMeeting, false));
+
+        });
     }
 
     return (

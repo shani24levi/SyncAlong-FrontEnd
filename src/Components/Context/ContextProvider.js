@@ -10,6 +10,7 @@ import * as cam from '@mediapipe/camera_utils';
 import isEmpty from '../../validation/isEmpty';
 import mediaPipeLandmarks from './mediaPipeLandmarks';
 import draw from './DrawAnimation/draw';
+import { delay } from '../../helpers';
 const SYNC = 0.8;
 {
   /* 
@@ -50,6 +51,8 @@ function ContextProvider({ children, socket, profile }) {
   const [mediaPipeInitilaize, setMediaPipeInitilaize] = useState('');
   const [peer, setMeAsPeer] = useState(null);
   const [recognition, setRecognition] = useState(null);
+  const [meetingClosedByPeer, setMeetingClosedByPeer] = useState(false);
+
 
   const [prossingEndMeeting, setProssingEndMeeting] = useState(false);
   const [errorUserLeft, setErrorUserLeft] = useState(false);
@@ -451,7 +454,7 @@ function ContextProvider({ children, socket, profile }) {
     lisiningTraineeCall();
     lisiningAccseptScheduleMeetingCall();
     lisiningForDisconectPeerInRoom();
-    // lisiningRoomClosed();
+    lisiningRoomClosedDeclining();
     //lisiningForConnected();
     lisiningReConected();
     lisiningStatePeer();
@@ -604,7 +607,7 @@ function ContextProvider({ children, socket, profile }) {
           if (trainee === userEnteredNow.userId) {
             console.log(trainee, userEnteredNow.userId);
             setMyTraineeEntered(trainee);
-            return;
+            // return;
           }
         });
       }
@@ -680,9 +683,9 @@ function ContextProvider({ children, socket, profile }) {
   useEffect(() => {
     if (!isEmpty(upcamingMeeting) && !isEmpty(meetings.upcoming_meeting) && meetings.upcoming_meeting?._id !== upcamingMeeting._id) {
       //this is a neww upcaming meeting that the user taninee set now???
-      console.log("upcamingMeetingupcamingMeeting", upcamingMeeting);
+      console.log("upcamingMeetingupcamingMeeting", upcamingMeeting, "user.role", user.role);
       //get the user socket and send to you the changes....
-      socket?.emit("getSocketId", meetings.upcoming_meeting.trainee._id, user => {
+      user.role === 'trainer' && socket?.emit("getSocketId", meetings.upcoming_meeting.trainee._id, user => {
         console.log("getSocketIduser", user);
         let data = {
           to: user.socketId,
@@ -938,34 +941,26 @@ function ContextProvider({ children, socket, profile }) {
     });
   };
 
-  // const lisiningRoomClosed = () => {
-  //   //TO DO - case im not in the room then im not getting this 
-  //   // and i can be on my way to the room .... and not be notifyied by this .
-  //   socket?.on('closeRoom', (meetingId) => {
-  //     console.log('closeRoom ', meetingId);
-  //     if (location.pathname !== '/video-room') {
-  //       console.log('herer', user?.role, meetings, meetings.active_meeting);
-  //       let meeting = meetings.active_meeting;
-  //       if (!meetings.active_meeting)
-  //         meeting = meetings.all_meetings.find(el => el._id === meetingId);
-  //       //Clear the state of all and return to home page
-  //       user?.role === 'trainer' && dispatch(closeActiveMeeting()); //no need to update db becose peer2 alrady done that
-  //       user?.role === 'trainee' && meeting && dispatch(setMeetingComplited(meeting, { status: false, urlRoom: "Processing" }));
-  //       leaveCall();
-  //       // user?.role === 'trainee' &&
-  //       navigate(`/meeting/watch/${meetingId}`);
-  //       return;
-  //     }
-  //     else {
-  //       let id = meetings.meetings.active_meeting._id;
-  //       console.log('herer');
-  //       console.log('close', id, meetings.active_meeting);
-  //       dispatch(setMeetingComplited(meetings.active_meeting, { status: false, urlRoom: "Processing" }));
-  //       navigate(`/meeting/watch/${id}`);
-  //       leaveCall();
-  //     }
-  //   });
-  // };
+  const lisiningRoomClosedDeclining = () => {
+    //TO DO - case im not in the room then im not getting this 
+    // and i can be on my way to the room .... and not be notifyied by this .
+    socket?.on('closeRoomByDeclining', (data) => {
+      console.log('closeRoomByDeclining ', location.pathname, data.roomId);
+      setMeetingClosedByPeer(true);
+      //  if (meetings.active_meeting._id === data.roomId) {
+      setYourSocketId(null);
+      dispatch(closeActiveMeeting());
+      navigate(`/home`);
+
+      // if (location.pathname === '/video-room') {
+      //   console.log('sslsllsls');
+      //   leaveCall();
+      //   navigate(`/home`);
+      // }
+      //}
+      return;
+    });
+  };
 
   const lisiningReConected = () => {
     let id = user?._id
@@ -1372,7 +1367,8 @@ function ContextProvider({ children, socket, profile }) {
         peerInDelay,
         updateMeetingAlrt, setUpdateMeetingAlrt,
 
-        setARdisplay
+        setARdisplay,
+        meetingClosedByPeer, setMeetingClosedByPeer,
       }}
     >
       {children}

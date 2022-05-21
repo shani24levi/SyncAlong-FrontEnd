@@ -11,6 +11,7 @@ import Loader from '../../loder/Loder';
 import isEmpty from '../../../validation/isEmpty';
 // import PurpleChartCard from '../../charts/PurpleChartCard';
 import SyncView from '../../syncscore/SyncView';
+import VideoHeader from './VideoHeader';
 
 function WatchMeeting() {
     const dispatch = useDispatch();
@@ -19,6 +20,7 @@ function WatchMeeting() {
     let syncs = useSelector((state) => state.syncs?.all_syncs);
     const [selectedVideo, setSelectedVideo] = useState(null);
     const [sync, setSync] = useState(null);
+    const [search, setSearch] = React.useState('');
 
     useEffect(() => {
         if (id && isEmpty(meetings)) {
@@ -47,26 +49,36 @@ function WatchMeeting() {
         else return <>error</>;
     }, [meetings, id])
 
-    const videoSearch = () => {
+    const onSearch = (search) => {
+        setSearch(search.toLowerCase());
+    };
 
-    }
+    let meetings_filtered = meetings;
+    if (!isEmpty(meetings_filtered))
+        meetings_filtered = meetings.filter(i => i?.title?.toString().toLowerCase().includes(search) || i.trainee.user.toString().toLowerCase().includes(search));
 
     console.log('====================================');
     console.log('selectedVideo', selectedVideo);
     console.log('====================================');
     return (
         <Container>
-            <SearchBar onSearchTermChange={videoSearch} />
+            <SearchBar onSearch={onSearch} />
             <Grid container spacing={3}>
                 {
                     !selectedVideo && !isEmpty(sync) && syncs[0].meeting_id._id === id ?
                         <Loader />
                         :
-                        <VideoDetail video={selectedVideo} syncs={sync} />
+                        <>
+                            <VideoHeader videoUrl={selectedVideo}
+                                onVideoSelect={selectedVideo => setSelectedVideo({ selectedVideo })}
+                                videos={meetings_filtered ? meetings_filtered.slice(0, 4) : null}
+                            />
+                            <VideoDetail video={selectedVideo} syncs={sync} />
+                        </>
                 }
-                <VideoList
+                {/* <VideoList
                     onVideoSelect={selectedVideo => setSelectedVideo({ selectedVideo })}
-                    videos={meetings ? meetings.slice(0, 14) : null} />
+                    videos={meetings_filtered ? meetings_filtered.slice(0, 5) : null} /> */}
             </Grid>
         </Container>
     );
