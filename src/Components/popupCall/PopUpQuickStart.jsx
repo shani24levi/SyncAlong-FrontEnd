@@ -139,7 +139,7 @@ function PopUpQuickStart({ quickStartOpen, setQuickStartOpen }) {
             let to = meeting.meeeting_created.trainee._id;
 
             let data = {
-                yourSocketId: userSelcted.socketId,
+                yourSocketId: userSelcted?.socketId,
                 quickMeeting: meeting.meeeting_created
             }
 

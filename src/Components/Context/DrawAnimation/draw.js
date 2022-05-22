@@ -19,7 +19,7 @@ let my_Draw = null;
 let your_Draw = null
 const draw = (ctx, canvas, results, activity_now = 'none', user = 'me') => {
 
-  activity_now = 'hands-x';
+  activity_now = 'gamp';
   if (past_activity != activity_now) {
     past_activity = activity_now;
     my_array = {

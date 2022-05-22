@@ -1,7 +1,8 @@
 import { bottom_activities, upper_activities, activity_ar } from './points_parts';
-import {  drawHead, drawBody, drawLeftUpperArm, drawRightUpperArm, drawLeftForearm, drawRightForearm,
-          drawLeftHand, drawRightHand, drawLeftThigh, drawRightThigh, drawLeftLowerLeg, drawRightLowerLeg,
-          drawImage,        
+import {
+  drawHead, drawBody, drawLeftUpperArm, drawRightUpperArm, drawLeftForearm, drawRightForearm,
+  drawLeftHand, drawRightHand, drawLeftThigh, drawRightThigh, drawLeftLowerLeg, drawRightLowerLeg,
+  drawImage,
 } from './drawParts';
 
 //images
@@ -22,6 +23,12 @@ import EyesBird from './../images/birdGIF/0.png';
 import RightForearmB from './../images/birdGIF/3/1.png';
 import LeftForearmB from './../images/birdGIF/3/2.png';
 
+import Piza from './../images/borger/piza.jpg';
+import Cack from './../images/borger/cack.png';
+import Popkoen from './../images/borger/pop.jpg';
+import Hotdog from './../images/borger/hotdog.jpg';
+import Pic2 from './../images/borger/2pic.jpg';
+
 import LeftUpperArmC from './../images/crazy/face/LeftUpperArm.png';
 import RightUpperArmC from './../images/crazy/face/RightUpperArm.png';
 import RightForearmC from './../images/crazy/face/RightLowerArm.png';
@@ -41,6 +48,7 @@ class Draw {
   Init = () => {
     this.syncScore = 0;
     this.dxBird = this.width; this.dyBird = 0; this.dxBird2 = 0; this.dyBird2 = 0;
+    this.dxEl = this.width; this.dyEl = 0; this.dxEl2 = 0; this.dyEl2 = 0;
     this.index = 0; this.cahngeWalk = true;
 
     this.globalAlpha = [0, 0.2, 0.4, 0.6, 0.8, 0.9, 1];
@@ -49,7 +57,7 @@ class Draw {
     this.my_array = {
       left_hand: new Array(), right_hand: new Array(), left_leg: new Array(), right_leg: new Array()
     }
-    
+
     this.your_array = {
       left_hand: new Array(), right_hand: new Array(), left_leg: new Array(), right_leg: new Array()
     }
@@ -63,7 +71,6 @@ class Draw {
   setResults = (results) => {
     this.results = results;
   }
-  
 
   drawHat = () => {
     const heart = require('../images/hat/0.png');
@@ -89,13 +96,12 @@ class Draw {
 
 
     // this.ctx.globalAlpha = 0.5;
-    console.log('draw hat', img.src, xNose - widthImage/2, yNose - heightImage/2 - heightShoulderToNose, widthImage, heightImage);
-    this.ctx.drawImage(img,xNose - widthImage/2 ,yNose - heightImage/2 - heightShoulderToNose, widthImage, heightImage);
+    console.log('draw hat', img.src, xNose - widthImage / 2, yNose - heightImage / 2 - heightShoulderToNose, widthImage, heightImage);
+    this.ctx.drawImage(img, xNose - widthImage / 2, yNose - heightImage / 2 - heightShoulderToNose, widthImage, heightImage);
 
   }
 
   drawLines = () => {
-
     let flag = [], in_upper = null, in_bottom = null;
     in_upper = upper_activities.find((activity) => activity === this.activity);
     in_bottom = bottom_activities.find((activity) => activity === this.activity);
@@ -150,45 +156,45 @@ class Draw {
       }
       if (i === 28) {
         right_leg.push({
-            startX: parseInt(x1), startY: parseInt(y1), endX: parseInt(dx), endY: parseInt(dy),
-            color: '#' + Math.floor(Math.random() * 16777215).toString(16)
+          startX: parseInt(x1), startY: parseInt(y1), endX: parseInt(dx), endY: parseInt(dy),
+          color: '#' + Math.floor(Math.random() * 16777215).toString(16)
         })
       }
     }
-    if(this.user === 'me'){
-      left_hand.forEach(obj =>{
+    if (this.user === 'me') {
+      left_hand.forEach(obj => {
         this.my_array.left_hand.push(obj);
       });
-      right_hand.forEach(obj =>{
+      right_hand.forEach(obj => {
         this.my_array.right_hand.push(obj);
       });
-      left_leg.forEach(obj =>{
+      left_leg.forEach(obj => {
         this.my_array.left_leg.push(obj);
       });
-      right_leg.forEach(obj =>{
+      right_leg.forEach(obj => {
         this.my_array.right_leg.push(obj);
       });
     }
-    else{
-      left_hand.forEach(obj =>{
+    else {
+      left_hand.forEach(obj => {
         this.your_array.left_hand.push(obj);
       });
-      right_hand.forEach(obj =>{
+      right_hand.forEach(obj => {
         this.your_array.right_hand.push(obj);
       });
-      left_leg.forEach(obj =>{
+      left_leg.forEach(obj => {
         this.your_array.left_leg.push(obj);
       });
-      right_leg.forEach(obj =>{
+      right_leg.forEach(obj => {
         this.your_array.right_leg.push(obj);
       });
     }
-   console.log(this.my_array, this.your_array);
+    console.log(this.my_array, this.your_array);
     const drawL = (array) => {
       for (const index in array) {
         const part = array[index];
         let end = part.length, start = end > 10 ? end - 10 : 0;
-        for(let i = end - 1; i >= start; i-- ) {
+        for (let i = end - 1; i >= start; i--) {
           const line = part[i];
           this.ctx.lineWidth = 0.5;
           this.ctx.beginPath();
@@ -209,7 +215,7 @@ class Draw {
     // this.ctx.translate(pose[number].x * this.width, pose[number].y * this.height);
     this.ctx.globalAlpha = this.globalAlpha[this.gIndex % this.globalAlpha.length];
     console.log(`pose: x:${pose[number].x * this.width}, y:${pose[number].y * this.height}, globalAlpha: ${this.globalAlpha[this.gIndex % this.globalAlpha.length]}, distance: ${distance}`)
-    this.ctx.drawImage(img, ((pose[number].x * this.width)/2) - distance/2, ((pose[number].y * this.height)/2) - distance, img.width/distance, img.height/distance);
+    this.ctx.drawImage(img, ((pose[number].x * this.width) / 2) - distance / 2, ((pose[number].y * this.height) / 2) - distance, img.width / distance, img.height / distance);
     // this.ctx.restore();
   }
 
@@ -220,14 +226,14 @@ class Draw {
     // this.ctx.translate(pose[number].x * this.width, pose[number].y * this.height);
     this.ctx.globalAlpha = this.globalAlpha[this.gIndex % this.globalAlpha.length];
     console.log(`neg: img: ${img.src},x:${pose[number].x * this.width}, y:${pose[number].y * this.height}, globalAlpha: ${this.globalAlpha[this.gIndex % this.globalAlpha.length]}, distance: ${distance}`)
-    this.ctx.drawImage(img, ((pose[number].x * this.width)/2) - distance/2, ((pose[number].y * this.height)/2) - distance, img.width/distance, img.height/distance);
+    this.ctx.drawImage(img, ((pose[number].x * this.width) / 2) - distance / 2, ((pose[number].y * this.height) / 2) - distance, img.width / distance, img.height / distance);
     // this.ctx.restore();
   }
 
   drawHeart = () => {
     const heart = require('../images/heart/0.png');
     const img = new Image(); img.src = heart;
-    
+
     const pose = this.results.poseLandmarks;
     let x1 = pose[12].x * this.width;
     let x2 = pose[11].x * this.width;
@@ -238,40 +244,40 @@ class Draw {
     // img.width = distance; img.width = distance;
     // this.ctx.drawImage(img, 0, 0, distance, distance);
 
-    this.drawPosPoint(pose, 28,distance);
+    this.drawPosPoint(pose, 28, distance);
     this.drawNegPoint(pose, 27, distance);
 
-    this.drawPosPoint(pose,26, distance);
-    this.drawNegPoint(pose,25, distance);
+    this.drawPosPoint(pose, 26, distance);
+    this.drawNegPoint(pose, 25, distance);
 
-    this.drawPosPoint(pose, 24,distance);
+    this.drawPosPoint(pose, 24, distance);
     this.drawNegPoint(pose, 23, distance);
 
-    this.drawPosPoint(pose,12, distance);
-    this.drawNegPoint(pose,11, distance);
-    
+    this.drawPosPoint(pose, 12, distance);
+    this.drawNegPoint(pose, 11, distance);
+
     this.gIndex += 1;
   }
-  drawBird = () => {
 
+  drawBird = () => {
     const head = new Image(); head.src = EyesBird;
     drawHead(this.ctx, this.results.poseLandmarks, head);
-    
+
     //LeftForearm
-    const leftForearm = new Image(); 
-    if(this.results.poseLandmarks[13].x >= this.results.poseLandmarks[15].x){
+    const leftForearm = new Image();
+    if (this.results.poseLandmarks[13].x >= this.results.poseLandmarks[15].x) {
       leftForearm.src = LeftForearmB;
-    } else{
+    } else {
       leftForearm.src = RightForearmB;
     }
-     
+
     drawLeftForearm(this.ctx, this.results.poseLandmarks, leftForearm);
-    
+
     //RightForearm
-    const rightForearm = new Image(); 
-    if(this.results.poseLandmarks[14].x >= this.results.poseLandmarks[16].x){ 
+    const rightForearm = new Image();
+    if (this.results.poseLandmarks[14].x >= this.results.poseLandmarks[16].x) {
       rightForearm.src = LeftForearmB
-    }else{
+    } else {
       rightForearm.src = RightForearmB
     }
 
@@ -321,7 +327,7 @@ class Draw {
     else {
       this.ctx.globalAlpha = 0.5;
       this.ctx.drawImage(img, this.dxBird, this.dyBird, distance, distance);
-      
+
       this.ctx.globalAlpha = 0.5;
       this.ctx.drawImage(img2, this.dxBird2, this.dyBird2, distance, distance);
     }
@@ -339,10 +345,145 @@ class Draw {
     else {
       this.ctx.globalAlpha = 0.5;
       this.ctx.drawImage(img3, this.dxBird, this.dyBird, distance / 2, distance / 2);
-      
+
       this.ctx.globalAlpha = 0.5;
       this.ctx.drawImage(img4, this.dxBird2, this.dyBird2, distance / 2, distance / 2);
     }
+  }
+
+  drowButterfly = () => {
+    let x1 = this.results.poseLandmarks[12].x * this.width;
+    let x2 = this.results.poseLandmarks[11].x * this.width;
+    let y1 = this.results.poseLandmarks[12].y * this.height;
+    let y2 = this.results.poseLandmarks[11].y * this.height;
+
+    let distance = Math.sqrt(Math.abs(x1 - x2) + Math.abs(y1 - y2)) * 10;
+    const { yellow } = require('./Array_AR/butterfly');
+    const index = this.index % yellow.length;
+    this.index += 1;
+    x1 = this.results.poseLandmarks[15].x * this.width;
+    y1 = this.results.poseLandmarks[15].y * this.height;
+    x2 = this.results.poseLandmarks[16].x * this.width;
+    y2 = this.results.poseLandmarks[16].y * this.height;
+
+    let img = new Image(), img2 = new Image();
+    img.src = this.dxBird <= x2 ? yellow[index] : yellow[index];
+    img2.src = this.dxBird2 <= x1 ? yellow[index] : yellow[index];
+
+    this.ctx.globalAlpha = 0.7;
+    console.log("img2.src", img2.src);
+    this.ctx.drawImage(img, x1, y1, distance, distance);
+    this.ctx.drawImage(img2, x2, y2, distance, distance);
+
+    //////////////yellow//////////////////
+
+    // let x1 = this.results.poseLandmarks[13].x * this.width;
+    // let y1 = this.results.poseLandmarks[13].y * this.height;
+    // let x2 = this.results.poseLandmarks[14].x * this.width;
+    // let y2 = this.results.poseLandmarks[14].y * this.height;
+    // const distance = Math.sqrt(Math.abs(x1 - x2) + Math.abs(y1 - y2)) * 10;
+
+    // this.dxEl += this.dxEl <= x2 ? step : -1 * step;
+    // this.dyEl += this.dyEl <= y2 ? step : -1 * step;
+
+    // if (this.dxEl < 0) this.dxEl = 0;
+    // if (this.dxEl > this.width) this.dxEl = this.width;
+    // if (this.dyEl < 0) this.dyEl = 0;
+    // if (this.dyEl > this.height) this.dyEl = this.height;
+    // this.dxEl2 += this.dxEl2 <= x1 ? step : -1 * step;
+    // this.dyEl2 += this.dyEl2 <= y1 ? step : -1 * step;
+    // if (this.dxEl2 < 0) this.dxEl2 = 0;
+    // if (this.dxEl2 > this.width) this.dxEl2 = this.width;
+    // if (this.dyEl2 < 0) this.dyEl2 = 0;
+    // if (this.dyEl2 > this.height) this.dyEl2 = this.height;
+
+    // let img3 = new Image(), img4 = new Image();
+    // img3.src = this.dxEl <= x2 ? yellow[index] : yellow[index];
+    // img4.src = this.dxEl2 <= x1 ? yellow[index] : yellow[index];
+    // console.log('img', img3.src, this.dxEl, this.dyEl, distance, distance);
+    // this.ctx.drawImage(img3, this.dxEl, this.dyEl, distance, distance);
+    // this.ctx.drawImage(img4, this.dxEl2, this.dyEl2, distance, distance);
+    // this.ctx.drawImage(img4, 0, 0, distance, distance);
+
+
+    ////////////face//////////////////////
+
+    const face = require('../images/baterflay/heart.png');
+    const imgface = new Image(); imgface.src = face;
+    imgface.width /= 2; imgface.height /= 2;
+
+    const pose = this.results.poseLandmarks;
+    let xNose = pose[0].x * this.width;
+    let yNose = pose[0].y * this.height;
+
+    let widthImage = distance;
+    let heightImage = distance * 0.2;
+
+    let shoulder11y = pose[11].y * this.height;
+    let heightShoulderToNose = Math.abs(yNose - shoulder11y);
+    this.ctx.drawImage(imgface, xNose - widthImage / 2, yNose - heightImage / 2 - heightShoulderToNose, widthImage, heightImage);
+  }
+
+  drawBorger = () => {
+    const imgPiza = new Image(); imgPiza.src = Piza;
+    const imgCaek = new Image(); imgCaek.src = Cack;
+    const imgPopkoen = new Image(); imgPopkoen.src = Popkoen;
+    const imgHotdog = new Image(); imgHotdog.src = Hotdog;
+    const imgPic2 = new Image(); imgPic2.src = Pic2;
+    imgPiza.width /= 2; imgPiza.height /= 2;
+
+    const pose = this.results.poseLandmarks;
+    let x1 = pose[8].x * this.width;
+    let x2 = pose[7].x * this.width;
+    let y1 = pose[8].y * this.height;
+    let y2 = pose[7].y * this.height;
+
+    let left_ear_x = pose[7].x * this.width;
+    let left_ear_y = pose[7].y * this.height;
+    let distance = Math.sqrt(Math.abs(x1 - x2) + Math.abs(y1 - y2)) * 10;
+    let rigth_ear_x = pose[8].x * this.width;
+    let rigth_ear_y = pose[8].y * this.height;
+
+    let widthImage = distance;
+    let heightImage = distance;
+
+    let estimation_distanc = pose[0].x * this.width;
+    let estimation_distanc_y = pose[9].y * this.width;
+
+    let approximation_distance = Math.abs(left_ear_x - estimation_distanc);
+    let approximation_distance_y = Math.abs(left_ear_y - estimation_distanc_y);
+    let approximation_distance_rigth = Math.abs(rigth_ear_x - estimation_distanc);
+    let approximation_distance_y_rigth = Math.abs(rigth_ear_y - estimation_distanc_y);
+
+    this.ctx.globalAlpha = 0.8;
+    this.ctx.drawImage(imgPiza, left_ear_x - widthImage / 2 + approximation_distance_y, left_ear_y - heightImage / 2 - approximation_distance, widthImage * 1.5, heightImage * 1.5);
+    this.ctx.drawImage(imgCaek, left_ear_x - widthImage / 2 + approximation_distance_y * 0.5, left_ear_y - heightImage / 2 + approximation_distance * 0.5, widthImage, heightImage);
+    // this.ctx.drawImage(imgPopkoen, left_ear_x - widthImage / 2 - approximation_distance_y * 1.5, left_ear_y - heightImage / 2 - approximation_distance * 1.3, widthImage * 0.9, heightImage * 0.9);
+    // this.ctx.drawImage(imgHotdog, left_ear_x - widthImage / 2 - approximation_distance_y * 0.8, left_ear_y - heightImage / 2 - approximation_distance * 1.8, widthImage * 0.9, heightImage * 0.9);
+    this.ctx.drawImage(imgPic2, rigth_ear_x - widthImage / 2 - approximation_distance_y_rigth * 1.2, rigth_ear_y - heightImage / 2 - approximation_distance_rigth * 2.5, widthImage * 1.5, heightImage * 1.5);
+
+
+    x1 = this.results.poseLandmarks[12].x * this.width;
+    x2 = this.results.poseLandmarks[11].x * this.width;
+    y1 = this.results.poseLandmarks[12].y * this.height;
+    y2 = this.results.poseLandmarks[11].y * this.height;
+
+    distance = Math.sqrt(Math.abs(x1 - x2) + Math.abs(y1 - y2)) * 10;
+    const { dancBorger } = require('./Array_AR/borgers');
+    const index = this.index % dancBorger.length;
+    this.index += 1;
+    x1 = this.results.poseLandmarks[15].x * this.width;
+    y1 = this.results.poseLandmarks[15].y * this.height;
+    x2 = this.results.poseLandmarks[16].x * this.width;
+    y2 = this.results.poseLandmarks[16].y * this.height;
+
+    let img = new Image(), img2 = new Image();
+    img.src = this.dxBird <= x2 ? dancBorger[index] : dancBorger[index];
+    img2.src = this.dxBird2 <= x1 ? dancBorger[index] : dancBorger[index];
+
+    this.ctx.globalAlpha = 0.7;
+    this.ctx.drawImage(img, x1, y1, distance, distance);
+    this.ctx.drawImage(img2, x2, y2, distance, distance);
   }
 
   drawGlasses = () => {
@@ -350,7 +491,7 @@ class Draw {
     const rightEye = this.results.poseLandmarks[5];
     const angle = this.getAngle(leftEye, rightEye);
 
-   const { glasses } = require('./Array_AR/glasses');
+    const { glasses } = require('./Array_AR/glasses');
     const { horseGIFPos, horseGIFNeg } = require('./Array_AR/horse');
     let x1 = this.results.poseLandmarks[7].x * this.width;
     let x2 = this.results.poseLandmarks[8].x * this.width;
@@ -362,7 +503,7 @@ class Draw {
     const head = new Image(); head.src = glasses[0];
     head.width = distanceWidth; head.height = distanceHeight;
     drawHead(this.ctx, this.results.poseLandmarks, head);
-    
+
     const index = this.index % horseGIFNeg.length;
     let imgZ = new Image()
     imgZ.src = this.cahngeWalk ? horseGIFPos[index] : horseGIFNeg[index];
@@ -370,7 +511,7 @@ class Draw {
     const p28 = this.results.poseLandmarks[28].y * this.height;
     let d = p27 - p28;
     d = d > 0 ? d : d * -1;
-    if (d === 10) {}
+    if (d === 10) { }
     else if (p27 < p28) {
       this.dxBird += 50;
       this.cahngeWalk = false;
@@ -389,7 +530,7 @@ class Draw {
     return (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI;
   }
   drawCrazy = () => {
-    
+
     const leftEye = this.results.poseLandmarks[2];
     const rightEye = this.results.poseLandmarks[5];
     const angleC = this.getAngle(leftEye, rightEye);
@@ -409,10 +550,10 @@ class Draw {
     this.ctx.translate(0, 0);
     // this.ctx.rotate(((180 + angleC) * Math.PI) / 180);
     this.ctx.globalAlpha = 0.7;
-    this.ctx.drawImage( head, (this.results.poseLandmarks[0].x * this.width) - ( head.width / 2) - 15,
-      (this.results.poseLandmarks[0].y * this.height) - ( head.height / 2) - 25,
-       head.width,  head.height);
-    
+    this.ctx.drawImage(head, (this.results.poseLandmarks[0].x * this.width) - (head.width / 2) - 15,
+      (this.results.poseLandmarks[0].y * this.height) - (head.height / 2) - 25,
+      head.width, head.height);
+
 
     let index = this.index % lips.length;
     let imgLips = new Image(); imgLips.src = lips[index];
@@ -421,7 +562,7 @@ class Draw {
     const yM = (this.results.poseLandmarks[10].y * this.height)
     imgLips.width = Math.sqrt(Math.pow(this.results.poseLandmarks[8].x * this.width - this.results.poseLandmarks[7].x * this.width, 2));
     imgLips.height = yM;
-    
+
     this.ctx.save();
     this.ctx.translate(0, 0);
     this.ctx.globalAlpha = 0.7;
@@ -434,15 +575,15 @@ class Draw {
     //LeftUpperArm
     const leftUpperArm = new Image(); leftUpperArm.src = LeftUpperArmC;
     drawLeftUpperArm(this.ctx, this.results.poseLandmarks, leftUpperArm);
-    
+
     //RightUpperArm
     const rightUpperArm = new Image(); rightUpperArm.src = RightUpperArmC;
     drawRightUpperArm(this.ctx, this.results.poseLandmarks, rightUpperArm);
-    
+
     //LeftForearm
     const leftForearm = new Image(); leftForearm.src = LeftForearmC;
     drawLeftForearm(this.ctx, this.results.poseLandmarks, leftForearm);
-    
+
     //RightForearm
     const rightForearm = new Image(); rightForearm.src = RightForearmC;
     drawRightForearm(this.ctx, this.results.poseLandmarks, rightForearm);
@@ -509,7 +650,7 @@ class Draw {
   }
 
   drawSkeleton = () => {
-    
+
     //drawHead
     const head = new Image(); head.src = Head;
     drawHead(this.ctx, this.results.poseLandmarks, head);
@@ -517,47 +658,47 @@ class Draw {
     //Body
     const body = new Image(); body.src = Body;
     drawBody(this.ctx, this.results.poseLandmarks, body);
-    
+
     //LeftUpperArm
     const leftUpperArm = new Image(); leftUpperArm.src = LeftUpperArm;
     drawLeftUpperArm(this.ctx, this.results.poseLandmarks, leftUpperArm);
-    
+
     //RightUpperArm
     const rightUpperArm = new Image(); rightUpperArm.src = RightUpperArm;
     drawRightUpperArm(this.ctx, this.results.poseLandmarks, rightUpperArm);
-    
+
     //LeftForearm
     const leftForearm = new Image(); leftForearm.src = LeftForearm;
     drawLeftForearm(this.ctx, this.results.poseLandmarks, leftForearm);
-    
+
     //RightForearm
     const rightForearm = new Image(); rightForearm.src = RightForearm;
     drawRightForearm(this.ctx, this.results.poseLandmarks, rightForearm);
-    
+
     // LeftHand
     const leftHand = new Image(); leftHand.src = LeftHand;
     drawLeftHand(this.ctx, this.results.poseLandmarks, leftHand);
-    
+
     // RightHand
     const rightHand = new Image(); rightHand.src = RightHand;
     drawRightHand(this.ctx, this.results.poseLandmarks, rightHand);
-    
+
     //LeftThigh
     const leftThigh = new Image(); leftThigh.src = LeftThigh;
     drawLeftThigh(this.ctx, this.results.poseLandmarks, leftThigh);
-    
+
     //RightThigh
     const rightThigh = new Image(); rightThigh.src = RightThigh;
     drawRightThigh(this.ctx, this.results.poseLandmarks, rightThigh);
-    
+
     // LeftLowerLeg
     const leftLowerLeg = new Image(); leftLowerLeg.src = LeftLowerLeg;
     drawLeftLowerLeg(this.ctx, this.results.poseLandmarks, leftLowerLeg);
-    
+
     // RightLowerLeg
     const rightLowerLeg = new Image(); rightLowerLeg.src = RightLowerLeg;
     drawRightLowerLeg(this.ctx, this.results.poseLandmarks, rightLowerLeg);
-    
+
   }
   draw = (ar) => {
     switch (ar) {
@@ -569,9 +710,9 @@ class Draw {
     }
   }
   draw = () => {
-    
+
     if (this.activity === 'none') return;
-    
+
     for (const ar in activity_ar) {
       for (const activity in activity_ar[ar]) {
         if (activity_ar[ar][activity] === this.activity) {
@@ -582,6 +723,8 @@ class Draw {
             case 'zombie': this.drawCrazy(); break;
             case 'rain': this.drawSkeleton(); break;
             case 'hat': this.drawHat(); break;
+            case 'borger': this.drawBorger(); break;
+            case 'butterfly': this.drowButterfly(); break;
             default: console.log('ar not exist for this activity'); break;
           }
           return;

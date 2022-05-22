@@ -132,6 +132,7 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
     return (
         <>
             <Container maxWidth="xl">
+                <Button onClick={() => navigate('/video-room', { state: { meeting: meetings.upcoming_meeting } })}>Video</Button>
                 {quickStartOpen && <PopUpQuickStart quickStartOpen={quickStartOpen} setQuickStartOpen={setQuickStartOpen} />}
                 {errorDisplay && <ErrorAlert name={upcamingMeeting.trainee.user} title=" is not online in order to conect joined meeting" />}
                 <Grid container alignItems='center' justifyContent='center' spacing={1} >

@@ -41,7 +41,9 @@ const bottom_activities = [
 ]
 
 const activity_ar = {
+    'butterfly': ['gamp'],
     'hat': ['hands-x'],
+    'borger': ['zomba'],
     'rainbow': [
         'hands-x', 'swim-hands', 'swing-hands',
     ],
@@ -57,8 +59,8 @@ const activity_ar = {
     ],
     'rain': [
         'poshup', 'baly-run', 'baly-legs', 'back-down', 'toch-flor', 'claping', 'all-up-1',
-        'gamp', 'legs-gumping', 'open-close', 'kicks', 'pray', 'right-all', 'up-dwon-both',
-        'gump-sides', 'zomba'
+        'legs-gumping', 'open-close', 'kicks', 'pray', 'right-all', 'up-dwon-both',
+        'gump-sides'
     ]
 }
 const center_part = [11, 12, 23, 24];
