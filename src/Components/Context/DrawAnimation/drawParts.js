@@ -22,10 +22,9 @@ export const drawImage = ({ctx, image, x, y, height, width, rotation, offsetX, o
     ctx.drawImage(image, 0 - (width * offsetX), 0 - (height * offsetY), width, height);
     ctx.restore();
 }
-
 export const drawHead = (ctx, pose, image) => {
-    const eyeWidth = 205;
-    const eyesToMouth = 220;
+    const eyeWidth = Math.abs(pose[1].x - pose[2].x) * 100;
+    const eyesToMouth = Math.abs(pose[1].y - pose[9].y)* 100;
     
     const leftEye = pose[2];
     const rightEye = pose[5];

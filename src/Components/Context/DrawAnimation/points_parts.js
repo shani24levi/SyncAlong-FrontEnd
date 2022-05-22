@@ -41,6 +41,7 @@ const bottom_activities = [
 ]
 
 const activity_ar = {
+    'hat': ['hands-x'],
     'rainbow': [
         'hands-x', 'swim-hands', 'swing-hands',
     ],
