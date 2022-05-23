@@ -11,6 +11,9 @@ require('../../images/baterflay/yelow/9.PNG'), require('../../images/baterflay/y
 require('../../images/baterflay/yelow/12.PNG'), require('../../images/baterflay/yelow/13.PNG')
 ];
 
+const flay1 = [require('../../images/baterflay/yelow/1.PNG')];
+
+
 module.exports = {
-    blue, yellow
+    blue, yellow, flay1
 }

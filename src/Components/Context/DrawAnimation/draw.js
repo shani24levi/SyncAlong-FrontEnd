@@ -19,7 +19,7 @@ let my_Draw = null;
 let your_Draw = null
 const draw = (ctx, canvas, results, activity_now = 'none', user = 'me') => {
 
-  activity_now = 'gamp';
+  activity_now = 'open-close';
   if (past_activity != activity_now) {
     past_activity = activity_now;
     my_array = {
@@ -36,7 +36,7 @@ const draw = (ctx, canvas, results, activity_now = 'none', user = 'me') => {
     };
   }
 
-  console.log(`activity_now is ${activity_now}`);
+  // console.log(`activity_now is ${activity_now}`);
   if (activity_now === 'none') return;
 
   if (user === 'me' && !my_Draw) {

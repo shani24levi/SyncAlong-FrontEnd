@@ -241,10 +241,12 @@ function VideoContext({ meeting }) {
     });
   };
 
+  const FRAME_RATE = 30;
+
   useEffect(async () => {
     // setCamera(new Camera());
     navigator.mediaDevices
-      .getUserMedia({ video: true }) //audio: true
+      .getUserMedia({ video: { frameRate: FRAME_RATE } }) //audio: true
       .then((currentStream) => {
         console.log('stream', currentStream);
         setStream(currentStream);
@@ -294,6 +296,7 @@ function VideoContext({ meeting }) {
   }, [errorUserLeft]);
 
   useEffect(async () => {
+    // console.log('poseFarFrame', poseFarFrame);
     if (currData && !stop) {
       let data = {
         poses: poseFarFrame,

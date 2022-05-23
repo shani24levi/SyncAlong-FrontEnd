@@ -43,6 +43,7 @@ const bottom_activities = [
 const activity_ar = {
     'butterfly': ['gamp'],
     'hat': ['hands-x'],
+    'flay': ['open-close'],
     'borger': ['zomba'],
     'rainbow': [
         'hands-x', 'swim-hands', 'swing-hands',

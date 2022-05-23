@@ -51,6 +51,8 @@ class Draw {
     this.dxEl = this.width; this.dyEl = 0; this.dxEl2 = 0; this.dyEl2 = 0;
     this.index = 0; this.cahngeWalk = true;
 
+    console.log('this.results', this.results);
+
     this.globalAlpha = [0, 0.2, 0.4, 0.6, 0.8, 0.9, 1];
     this.gIndex = 0;
 
@@ -214,7 +216,7 @@ class Draw {
     // this.ctx.save();
     // this.ctx.translate(pose[number].x * this.width, pose[number].y * this.height);
     this.ctx.globalAlpha = this.globalAlpha[this.gIndex % this.globalAlpha.length];
-    console.log(`pose: x:${pose[number].x * this.width}, y:${pose[number].y * this.height}, globalAlpha: ${this.globalAlpha[this.gIndex % this.globalAlpha.length]}, distance: ${distance}`)
+    // console.log(`pose: x:${pose[number].x * this.width}, y:${pose[number].y * this.height}, globalAlpha: ${this.globalAlpha[this.gIndex % this.globalAlpha.length]}, distance: ${distance}`)
     this.ctx.drawImage(img, ((pose[number].x * this.width) / 2) - distance / 2, ((pose[number].y * this.height) / 2) - distance, img.width / distance, img.height / distance);
     // this.ctx.restore();
   }
@@ -359,21 +361,21 @@ class Draw {
 
     let distance = Math.sqrt(Math.abs(x1 - x2) + Math.abs(y1 - y2)) * 10;
     const { yellow } = require('./Array_AR/butterfly');
-    const index = this.index % yellow.length;
-    this.index += 1;
-    x1 = this.results.poseLandmarks[15].x * this.width;
-    y1 = this.results.poseLandmarks[15].y * this.height;
-    x2 = this.results.poseLandmarks[16].x * this.width;
-    y2 = this.results.poseLandmarks[16].y * this.height;
+    // const index = this.index % yellow.length;
+    // this.index += 1;
+    // x1 = this.results.poseLandmarks[15].x * this.width;
+    // y1 = this.results.poseLandmarks[15].y * this.height;
+    // x2 = this.results.poseLandmarks[16].x * this.width;
+    // y2 = this.results.poseLandmarks[16].y * this.height;
 
-    let img = new Image(), img2 = new Image();
-    img.src = this.dxBird <= x2 ? yellow[index] : yellow[index];
-    img2.src = this.dxBird2 <= x1 ? yellow[index] : yellow[index];
+    // let img = new Image(), img2 = new Image();
+    // img.src = this.dxBird <= x2 ? yellow[index] : yellow[index];
+    // img2.src = this.dxBird2 <= x1 ? yellow[index] : yellow[index];
 
-    this.ctx.globalAlpha = 0.7;
-    console.log("img2.src", img2.src);
-    this.ctx.drawImage(img, x1, y1, distance, distance);
-    this.ctx.drawImage(img2, x2, y2, distance, distance);
+    // this.ctx.globalAlpha = 0.7;
+    // // console.log("img2.src", img2.src);
+    // this.ctx.drawImage(img, x1, y1, distance, distance);
+    // this.ctx.drawImage(img2, x2, y2, distance, distance);
 
     //////////////yellow//////////////////
 
@@ -417,11 +419,104 @@ class Draw {
     let yNose = pose[0].y * this.height;
 
     let widthImage = distance;
-    let heightImage = distance * 0.2;
+    let heightImage = distance;
 
-    let shoulder11y = pose[11].y * this.height;
-    let heightShoulderToNose = Math.abs(yNose - shoulder11y);
-    this.ctx.drawImage(imgface, xNose - widthImage / 2, yNose - heightImage / 2 - heightShoulderToNose, widthImage, heightImage);
+    console.log(imgface.src);
+    this.ctx.drawImage(imgface, xNose, yNose, widthImage, heightImage);
+  }
+
+  drawflay = () => {
+    const imgPiza = new Image(); imgPiza.src = require('../images/baterflay/heart.png');
+    const imgFlay = new Image(); imgFlay.src = require('../images/baterflay/yelow/1.PNG');
+    const imgFlay2 = new Image(); imgFlay2.src = require('../images/baterflay/yelow/5.PNG');
+    const imgFlay3 = new Image(); imgFlay2.src = require('../images/baterflay/yelow/8.PNG');
+    const imgFlay4 = new Image(); imgFlay2.src = require('../images/baterflay/blue/8.PNG');
+
+    imgPiza.width /= 2; imgPiza.height /= 2;
+
+    const pose = this.results.poseLandmarks;
+    let x1 = pose[8].x * this.width;
+    let x2 = pose[7].x * this.width;
+    let y1 = pose[8].y * this.height;
+    let y2 = pose[7].y * this.height;
+
+    let distance = Math.sqrt(Math.abs(x1 - x2) + Math.abs(y1 - y2)) * 10;
+    let left__x, left_e_y = null;
+    let l__x, l_y = null;
+    let l__x2, l_y2 = null;
+    let l__x3, l_y3 = null;
+    let l__x12, l_y12 = null;
+
+    if (pose[33]) {
+      left__x = pose[33].x * this.width;
+      left_e_y = pose[33].y * this.height;
+    }
+
+    if (pose[35]) {
+      l__x = pose[35].x * this.width;
+      l_y = pose[35].y * this.height;
+    }
+
+    if (pose[36]) {
+      l__x2 = pose[36].x * this.width;
+      l_y2 = pose[36].y * this.height;
+    }
+    if (pose[37]) {
+      l__x3 = pose[37].x * this.width;
+      l_y3 = pose[37].y * this.height;
+    }
+
+    if (pose[12]) {
+      l__x12 = pose[12].x * this.width;
+      l_y12 = pose[12].y * this.height;
+    }
+
+    let widthImage = distance;
+    let heightImage = distance;
+    this.ctx.globalAlpha = 0.8;
+    pose[33] && left__x && left_e_y && this.ctx.drawImage(imgPiza, left__x - widthImage / 2 - 10, left_e_y - heightImage / 2 - 50, widthImage * 1.5, heightImage * 1.5);
+    pose[35] && l_y && l__x && this.ctx.drawImage(imgFlay, l__x - widthImage / 2 + 50, l_y - heightImage / 2 - 10, widthImage * 0.5, heightImage * 0.5);
+    pose[35] && l_y && l__x && this.ctx.drawImage(imgFlay3, l__x - widthImage / 2 + 70, l_y - heightImage / 2 + 50, widthImage * 0.5, heightImage * 0.5);
+    pose[36] && l_y2 && l__x2 && this.ctx.drawImage(imgFlay3, l__x2 - widthImage / 2 - 50, l_y2 - heightImage / 2 - 50, widthImage * 0.5, heightImage * 0.5);
+    pose[37] && l_y3 && l__x3 && this.ctx.drawImage(imgFlay2, l__x3 - widthImage / 2, l_y3 - heightImage / 2, widthImage * 0.5, heightImage * 0.5);
+    pose[12] && l_y12 && l__x12 && this.ctx.drawImage(imgFlay3, l__x12 - widthImage / 2, l_y12 - heightImage / 2, widthImage * 0.5, heightImage * 0.5);
+
+    // x1 = this.results.poseLandmarks[12].x * this.width;
+    // x2 = this.results.poseLandmarks[11].x * this.width;
+    // y1 = this.results.poseLandmarks[12].y * this.height;
+    // y2 = this.results.poseLandmarks[11].y * this.height;
+
+    // distance = Math.sqrt(Math.abs(x1 - x2) + Math.abs(y1 - y2)) * 10;
+    const { blue } = require('./Array_AR/butterfly');
+    let index = this.index % blue.length;
+    this.index += 1;
+    x1 = this.results.poseLandmarks[15].x * this.width;
+    y1 = this.results.poseLandmarks[15].y * this.height;
+    x2 = this.results.poseLandmarks[16].x * this.width;
+    y2 = this.results.poseLandmarks[16].y * this.height;
+
+    let img = new Image(), img2 = new Image();
+    img.src = blue[index];
+    img2.src = blue[index];
+
+    this.ctx.drawImage(imgFlay2, x1, y1, widthImage, heightImage);
+    this.ctx.drawImage(imgFlay2, x2, y2, widthImage, heightImage);
+
+
+    x1 = this.results.poseLandmarks[12].x * this.width;
+    y1 = this.results.poseLandmarks[12].y * this.height;
+    x2 = this.results.poseLandmarks[11].x * this.width;
+    y2 = this.results.poseLandmarks[11].y * this.height;
+    this.ctx.drawImage(imgFlay3, x1, y1, widthImage, heightImage);
+    this.ctx.drawImage(imgFlay3, x2, y2, widthImage, heightImage);
+
+
+    x1 = this.results.poseLandmarks[24].x * this.width;
+    y1 = this.results.poseLandmarks[24].y * this.height;
+    x2 = this.results.poseLandmarks[23].x * this.width;
+    y2 = this.results.poseLandmarks[23].y * this.height;
+    this.ctx.drawImage(imgFlay4, x1, y1, widthImage, heightImage);
+    this.ctx.drawImage(imgFlay4, x2, y2, widthImage, heightImage);
   }
 
   drawBorger = () => {
@@ -725,6 +820,7 @@ class Draw {
             case 'hat': this.drawHat(); break;
             case 'borger': this.drawBorger(); break;
             case 'butterfly': this.drowButterfly(); break;
+            case 'flay': this.drawflay(); break;
             default: console.log('ar not exist for this activity'); break;
           }
           return;

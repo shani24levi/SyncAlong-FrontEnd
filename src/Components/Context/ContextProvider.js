@@ -295,6 +295,15 @@ function ContextProvider({ children, socket, profile }) {
     }
 
     if (results) {
+      if (results.faceLandmarks) {
+        results.poseLandmarks.push(results.faceLandmarks[10]); //results.poseLandmarks[33]
+        results.poseLandmarks.push(results.faceLandmarks[152]); //results.poseLandmarks[34]
+        results.poseLandmarks.push(results.faceLandmarks[454]); //results.poseLandmarks[35]
+        results.poseLandmarks.push(results.faceLandmarks[234]); //results.poseLandmarks[36]
+        results.poseLandmarks.push(results.faceLandmarks[0]); //results.poseLandmarks[37]
+        results.poseLandmarks.push(results.faceLandmarks[18]); //results.poseLandmarks[38]
+        //total lenght 39 
+      }
       if (syncScoreRef?.current >= SYNC)
         results.poseLandmarks && draw(canvasCtx, canvasElement, results, activity, "you");
     }
@@ -358,7 +367,18 @@ function ContextProvider({ children, socket, profile }) {
       canvasCtx.globalCompositeOperation = 'source-over';
     }
 
+    // console.log('results', results);
+
     if (results) {
+      if (results.faceLandmarks) {
+        results.poseLandmarks.push(results.faceLandmarks[10]);
+        results.poseLandmarks.push(results.faceLandmarks[152]);
+        results.poseLandmarks.push(results.faceLandmarks[454]);
+        results.poseLandmarks.push(results.faceLandmarks[234]);
+        results.poseLandmarks.push(results.faceLandmarks[0]);
+        results.poseLandmarks.push(results.faceLandmarks[18]);
+
+      }
       if (syncScoreRef?.current >= SYNC)
         results.poseLandmarks && draw(canvasCtx, canvasElement, results, activity);
 
@@ -509,27 +529,6 @@ function ContextProvider({ children, socket, profile }) {
       }
       else found_el = array_poses[array_poses.length - 1];
 
-      // found_el = array_poses.find(
-      //   (el) => el.time === yourDataResived.end_time_of_colection
-      // );
-      // //if its not colected at the same time
-      // //get the next after
-      // if (!found_el || found_el === undefined) {
-      //   for (const el of array_poses) {
-      //     if (el.time > yourDataResived.end_time_of_colection) {
-      //       found_el = el;
-      //       break;
-      //     }
-      //   }
-      // }
-
-      // if (!found_el || found_el === undefined) {
-      //   ///whan you computer is faster then me
-      //   //you send time of: 00:00:02 , i get it in 00:00:01
-      //   //and my last colection is in 00:00:00
-      //   //then get my last one in the array .
-      //   found_el = array_poses[array_poses.length - 1]; //set it to the last
-      // }
 
       console.log('posesArry now...found_el...', found_el);
       //send me & you data to socket for sync calculation
