@@ -197,18 +197,12 @@ function ContextProvider({ children, socket, profile }) {
     results.poseLandmarks.map((i, body_index) => {
       if (
         i.visibility < 0.6 &&
-        // mediaPipeLandmarks('RIGHR_WRIST') === body_index ||
-        // mediaPipeLandmarks('LEFT_WRIST') === body_index ||
-        // mediaPipeLandmarks('RIGHR_ELBOW') === body_index ||
-        // mediaPipeLandmarks('LEFT_ELBOW') === body_index ||
         (mediaPipeLandmarks('RIGHR_SHOULDER') === body_index ||
           mediaPipeLandmarks('LEFT_SHOULDER') === body_index ||
           mediaPipeLandmarks('RIGHR_HIP') === body_index ||
           mediaPipeLandmarks('LEFT_HIP') === body_index ||
           mediaPipeLandmarks('RIGHR_KNEE') === body_index ||
-          mediaPipeLandmarks('LEFT_KNEE') === body_index ||
-          mediaPipeLandmarks('RIGHR_ANKLE') === body_index ||
-          mediaPipeLandmarks('LEFT_ANKLE') === body_index)
+          mediaPipeLandmarks('LEFT_KNEE') === body_index)
       ) {
         inframe = false;
       }
@@ -285,7 +279,7 @@ function ContextProvider({ children, socket, profile }) {
     // Only overwrite existing pixels when user is out of the frame
     if (!inframe) {
       canvasCtx.globalCompositeOperation = 'source-in';
-      canvasCtx.fillStyle = 'rgba(255, 0, 0, 0.6)';
+      canvasCtx.fillStyle = 'rgba(255, 0, 0, 0.3)';
       canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
       // Only overwrite missing pixels.
       canvasCtx.globalCompositeOperation = 'destination-atop';
@@ -358,7 +352,7 @@ function ContextProvider({ children, socket, profile }) {
     // Only overwrite existing pixels when user is out of the frame
     if (!inframe) {
       canvasCtx.globalCompositeOperation = 'source-in';
-      canvasCtx.fillStyle = 'rgba(255, 0, 0, 0.6)';
+      canvasCtx.fillStyle = 'rgba(255, 0, 0, 0.3)';
       canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
       // Only overwrite missing pixels.
       canvasCtx.globalCompositeOperation = 'destination-atop';
@@ -821,6 +815,8 @@ function ContextProvider({ children, socket, profile }) {
     //for eyal
     socket?.on('resivingSyncScoure', (sync_score) => {
       console.log('///...score.../// now:', syncScoreRef.current, "new : ", sync_score);
+      console.log('////resivingSyncScoure ..', new Date().toLocaleString('en-GB'), new Date().getMilliseconds());
+
       if (syncScoreRef.current === 0) { //first init
         setSyncScore(sync_score);
         return;
@@ -1238,8 +1234,10 @@ function ContextProvider({ children, socket, profile }) {
     };
     //let frameNum = frameNum.current;
     //console.log(new Date().toLocaleString('en-GB'), new Date().getMilliseconds());
-    let trainer = peerInDelay; // myRole === 'trainer' ? true : false;
-    //console.log('////sending ..', data, new Date().toLocaleString('en-GB'), new Date().getMilliseconds());
+    //  let trainer = peerInDelay; 
+    let trainer = myRole === 'trainer' ? true : false;
+
+    console.log('////sending ..', data, new Date().toLocaleString('en-GB'), new Date().getMilliseconds());
     socket.emit('sendPosesByPeers', data, mySocketId, yourSocketId, trainer, activity, roomId, { frameNum: frameNum.current });
     //console.log(new Date().toLocaleString('en-GB'), new Date().getMilliseconds());
   }

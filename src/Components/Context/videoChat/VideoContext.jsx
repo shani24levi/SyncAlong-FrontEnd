@@ -719,10 +719,7 @@ function VideoContext({ meeting }) {
     if (callAccepted && mediapipeOfTrainee) {
       //when user answer the call the set this meeting as active
       //set it in db to seport reconect
-      !isEmpty(meeting) &&
-        !meeting.status &&
-        dispatch(setActiveMeeting(meeting, true));
-
+      !isEmpty(meeting) && dispatch(setActiveMeeting(meeting, true));
       console.log('start Meeting and recorder');
       await delay(5000);
       if (user.role === 'trainer' && mediapipeOfTrainee) {

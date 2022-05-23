@@ -41,7 +41,7 @@ const bottom_activities = [
 ]
 
 const activity_ar = {
-    'butterfly': ['gamp'],
+    'lips': ['claping'],
     'hat': ['hands-x'],
     'flay': ['open-close'],
     'borger': ['zomba'],
