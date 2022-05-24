@@ -259,9 +259,11 @@ function VideoContext({ meeting }) {
     await lisiningForUserLeftActiveRoom();
 
     setYourId(
-      user.role === 'trainer' ? meeting.trainee._id : meeting.tariner._id
+      meeting ? 
+        user.role === 'trainer' ? meeting.trainee._id : meeting.tariner._id
+        : null
     );
-    setRoomId(meeting._id);
+    setRoomId(meeting ? meeting._id : null);
     //set starte in case of re-conect this page agin with different meeting
     setStartActivity(false);
     setDemo(false);
@@ -864,7 +866,7 @@ function VideoContext({ meeting }) {
       </Grid>
 
       <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-        {meeting.activities.map((i) => {
+        {meeting && meeting.activities && meeting.activities.map((i) => {
           return (
             <Box
               key={i}

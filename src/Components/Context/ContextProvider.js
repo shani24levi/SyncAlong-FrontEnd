@@ -296,6 +296,11 @@ function ContextProvider({ children, socket, profile }) {
         results.poseLandmarks.push(results.faceLandmarks[234]); //results.poseLandmarks[36]
         results.poseLandmarks.push(results.faceLandmarks[0]); //results.poseLandmarks[37]
         results.poseLandmarks.push(results.faceLandmarks[18]); //results.poseLandmarks[38]
+
+        results.poseLandmarks.push(results.faceLandmarks[8]); //results.poseLandmarks[39]
+        results.poseLandmarks.push(results.faceLandmarks[6]); //results.poseLandmarks[40]
+        
+        
         //total lenght 39 
       }
       if (syncScoreRef?.current >= SYNC)
@@ -365,12 +370,15 @@ function ContextProvider({ children, socket, profile }) {
 
     if (results) {
       if (results.faceLandmarks) {
-        results.poseLandmarks.push(results.faceLandmarks[10]);
-        results.poseLandmarks.push(results.faceLandmarks[152]);
-        results.poseLandmarks.push(results.faceLandmarks[454]);
-        results.poseLandmarks.push(results.faceLandmarks[234]);
-        results.poseLandmarks.push(results.faceLandmarks[0]);
-        results.poseLandmarks.push(results.faceLandmarks[18]);
+        results.poseLandmarks.push(results.faceLandmarks[10]); //results.poseLandmarks[33]
+        results.poseLandmarks.push(results.faceLandmarks[152]); //results.poseLandmarks[34]
+        results.poseLandmarks.push(results.faceLandmarks[454]); //results.poseLandmarks[35]
+        results.poseLandmarks.push(results.faceLandmarks[234]); //results.poseLandmarks[36]
+        results.poseLandmarks.push(results.faceLandmarks[0]); //results.poseLandmarks[37]
+        results.poseLandmarks.push(results.faceLandmarks[18]); //results.poseLandmarks[38]
+
+        results.poseLandmarks.push(results.faceLandmarks[8]); //results.poseLandmarks[39]
+        results.poseLandmarks.push(results.faceLandmarks[6]); //results.poseLandmarks[40]
 
       }
       if (syncScoreRef?.current >= SYNC)

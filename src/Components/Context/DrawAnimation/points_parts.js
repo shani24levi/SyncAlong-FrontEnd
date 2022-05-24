@@ -42,7 +42,7 @@ const bottom_activities = [
 
 const activity_ar = {
     'lips': ['claping'],
-    'hat': ['hands-x'],
+    'flay2': ['hands-x'],
     'flay': ['open-close'],
     'borger': ['zomba'],
     'rainbow': [
