@@ -328,7 +328,7 @@ function ContextProvider({ children, socket, profile }) {
     setTimeOfColectionPose(new Date().toLocaleString('en-GB'));
     setPoseFarFrame(results.poseLandmarks);
 
-    collectionUserPose(results);
+    //collectionUserPose(results);
     let inframe = calculatingUserInFrame(results);
     let syncing = is_sync();
     let activity = now_activity();
@@ -379,8 +379,8 @@ function ContextProvider({ children, socket, profile }) {
 
         results.poseLandmarks.push(results.faceLandmarks[8]); //results.poseLandmarks[39]
         results.poseLandmarks.push(results.faceLandmarks[6]); //results.poseLandmarks[40]
-
       }
+      setPose_Results(results);
       if (syncScoreRef?.current >= SYNC)
         results.poseLandmarks && draw(canvasCtx, canvasElement, results, activity);
 
