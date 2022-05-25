@@ -137,55 +137,7 @@ function ContextProvider({ children, socket, profile }) {
 
 
   const collectionUserPose = (results) => {
-    //calls inside of the midiapipe loop thets runs fer frams
-    //colect 1 sec and set it in the start array of posess
-    let currTime = new Date().getTime();
-    if (flagTime) {
-      timeObject = new Date();
-      timeObject = new Date(timeObject.getTime() + 1000 * 1).getTime(); //1 sec
-      flagTime = false;
-    }
-
-    if (currTime < timeObject && flagFeatch) {
-      arryof1sec.push(results);
-      setPose_Results(results);
-    } else if (currTime > timeObject && flagFeatch) {
-      let array_of_poses = arryof1sec.map((p) => {
-        const width = 640;
-        const height = 480;
-        // console.log("p.poseLandmarks", p.poseLandmarks, width, height);
-
-        for (var i = 0; p.poseLandmarks && i < p.poseLandmarks.length; i++) {
-          p.poseLandmarks[i].x = p.poseLandmarks[i].x * width;
-          p.poseLandmarks[i].y = p.poseLandmarks[i].y * height;
-
-          if (mediaPipeLandmarks('RIGHR_HIP') === i ||
-            mediaPipeLandmarks('LEFT_HIP') === i ||
-            mediaPipeLandmarks('RIGHR_KNEE') === i ||
-            mediaPipeLandmarks('LEFT_KNEE') === i ||
-            mediaPipeLandmarks('RIGHR_ANKLE') === i ||
-            mediaPipeLandmarks('LEFT_ANKLE') === i) {
-            p.poseLandmarks[i].x = p.poseLandmarks[i].x * 10;
-            p.poseLandmarks[i].y = p.poseLandmarks[i].y * 10;
-          }
-        }
-        // console.log("new poseLandmarks", p.poseLandmarks);
-        return p.poseLandmarks;
-      });
-      let add = {
-        time: new Date().toLocaleString('en-GB'),
-        poses: array_of_poses
-      };
-      // console.log("add", add);
-      setPosesArray((array_poses) => [...array_poses, add]);
-
-      setTimeOfColectionPose(new Date().toLocaleString('en-GB'));
-      setPosesArry(array_of_poses); //now......
-
-      arryof1sec = [];
-      flagTime = true;
-      flagFeatch = true;
-    }
+    setPose_Results(results);
   };
 
   const calculatingUserInFrame = (results) => {
@@ -225,20 +177,16 @@ function ContextProvider({ children, socket, profile }) {
 
   useEffect(() => {
     if (pose_results) {
-      //  console.log("Pose_Results ", pose_results)
       if (peer) {
         poseLandmarks_ref.current = pose_results.poseLandmarks;
-        //  console.log("peer is connect");
         peer?.emit('connect');
-      } //else console.log('peer is not connect');
+      } 
     }
   }, [pose_results]);
 
   const onResults2 = async (results) => {
     const videoWidth = 640;
     const videoHeight = 480;
-
-    // setMediaPipeInitilaize('none');
 
     if (userCanvasRef.current === undefined || userCanvasRef.current == null) return;
     // Set canvas width
@@ -250,7 +198,7 @@ function ContextProvider({ children, socket, profile }) {
     canvasCtx.save();
     canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
     canvasCtx.drawImage(userVideo.current, 0, 0, canvasElement.width, canvasElement.height);
-    // collectionUserPose(results);
+    
     let inframe = calculatingUserInFrame(results);
     let syncing = is_sync();
     let activity = now_activity();
@@ -289,20 +237,6 @@ function ContextProvider({ children, socket, profile }) {
     }
 
     if (results) {
-      if (results.faceLandmarks) {
-        results.poseLandmarks.push(results.faceLandmarks[10]); //results.poseLandmarks[33]
-        results.poseLandmarks.push(results.faceLandmarks[152]); //results.poseLandmarks[34]
-        results.poseLandmarks.push(results.faceLandmarks[454]); //results.poseLandmarks[35]
-        results.poseLandmarks.push(results.faceLandmarks[234]); //results.poseLandmarks[36]
-        results.poseLandmarks.push(results.faceLandmarks[0]); //results.poseLandmarks[37]
-        results.poseLandmarks.push(results.faceLandmarks[18]); //results.poseLandmarks[38]
-
-        results.poseLandmarks.push(results.faceLandmarks[8]); //results.poseLandmarks[39]
-        results.poseLandmarks.push(results.faceLandmarks[6]); //results.poseLandmarks[40]
-
-
-        //total lenght 39 
-      }
       if (syncScoreRef?.current >= SYNC)
         results.poseLandmarks && draw(canvasCtx, canvasElement, results, activity, "you");
     }
@@ -315,6 +249,20 @@ function ContextProvider({ children, socket, profile }) {
 
     setMediaPipeInitilaize('none');
 
+    if (results && results.faceLandmarks) {
+      results.poseLandmarks.push(results.faceLandmarks[10]); //results.poseLandmarks[33]
+      results.poseLandmarks.push(results.faceLandmarks[152]); //results.poseLandmarks[34]
+      results.poseLandmarks.push(results.faceLandmarks[454]); //results.poseLandmarks[35]
+      results.poseLandmarks.push(results.faceLandmarks[234]); //results.poseLandmarks[36]
+      results.poseLandmarks.push(results.faceLandmarks[0]); //results.poseLandmarks[37]
+      results.poseLandmarks.push(results.faceLandmarks[18]); //results.poseLandmarks[38]
+      results.poseLandmarks.push(results.faceLandmarks[8]); //results.poseLandmarks[39]
+      results.poseLandmarks.push(results.faceLandmarks[6]); //results.poseLandmarks[40]
+      results.poseLandmarks.push(results.faceLandmarks[51]); //results.poseLandmarks[41]
+      results.poseLandmarks.push(results.faceLandmarks[57]); //results.poseLandmarks[42]
+      results.poseLandmarks.push(results.faceLandmarks[60]); //results.poseLandmarks[43]
+      results.poseLandmarks.push(results.faceLandmarks[64]); //results.poseLandmarks[44] 
+    }
     // Set canvas width
     myCanvasRef.current.width = videoWidth;
     myCanvasRef.current.height = videoHeight;
@@ -328,7 +276,7 @@ function ContextProvider({ children, socket, profile }) {
     setTimeOfColectionPose(new Date().toLocaleString('en-GB'));
     setPoseFarFrame(results.poseLandmarks);
 
-    //collectionUserPose(results);
+    collectionUserPose(results);
     let inframe = calculatingUserInFrame(results);
     let syncing = is_sync();
     let activity = now_activity();
@@ -369,18 +317,6 @@ function ContextProvider({ children, socket, profile }) {
     // console.log('results', results);
 
     if (results) {
-      if (results.faceLandmarks) {
-        results.poseLandmarks.push(results.faceLandmarks[10]); //results.poseLandmarks[33]
-        results.poseLandmarks.push(results.faceLandmarks[152]); //results.poseLandmarks[34]
-        results.poseLandmarks.push(results.faceLandmarks[454]); //results.poseLandmarks[35]
-        results.poseLandmarks.push(results.faceLandmarks[234]); //results.poseLandmarks[36]
-        results.poseLandmarks.push(results.faceLandmarks[0]); //results.poseLandmarks[37]
-        results.poseLandmarks.push(results.faceLandmarks[18]); //results.poseLandmarks[38]
-
-        results.poseLandmarks.push(results.faceLandmarks[8]); //results.poseLandmarks[39]
-        results.poseLandmarks.push(results.faceLandmarks[6]); //results.poseLandmarks[40]
-      }
-      setPose_Results(results);
       if (syncScoreRef?.current >= SYNC)
         results.poseLandmarks && draw(canvasCtx, canvasElement, results, activity);
 

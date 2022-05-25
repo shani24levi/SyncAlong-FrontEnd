@@ -1,8 +1,8 @@
 import { bottom_activities, upper_activities, activity_ar } from './points_parts';
 import {
-  drawEye, drawEye2, drawHead, drawHead2, drawBody, drawLeftUpperArm, drawRightUpperArm, drawLeftForearm, drawRightForearm,
+  drawEye, drawEye2, drawEye3,drawlips, drawHead, drawHead2, drawBody, drawLeftUpperArm, drawRightUpperArm, drawLeftForearm, drawRightForearm,
   drawLeftHand, drawRightHand, drawLeftThigh, drawRightThigh, drawLeftLowerLeg, drawRightLowerLeg,
-  drawImage,
+  drawPosPoint, drawNegPoint
 } from './drawParts';
 
 //images
@@ -44,12 +44,9 @@ class Draw {
     this.user = user;
     this.Init();
   }
-
   Init = () => {
     this.syncScore = 0;
     this.index = 0;
-
-    console.log('this.results', this.results);
 
     this.globalAlpha = [0, 0.2, 0.4, 0.6, 0.8, 0.9, 1];
     this.gIndex = 0;
@@ -57,8 +54,11 @@ class Draw {
     this.my_array = {
       left_hand: new Array(), right_hand: new Array(), left_leg: new Array(), right_leg: new Array()
     }
-  }
 
+    this.cahngeWalk = false;
+    this.xWalk = 0;
+
+  }
   setActivity = (activity) => {
     if (this.activity === activity) return;
     this.activity = activity;
@@ -68,34 +68,7 @@ class Draw {
     this.results = results;
   }
 
-  drawHat = () => {
-    const heart = require('../images/hat/0.png');
-    const img = new Image(); img.src = heart;
-    img.width /= 2; //img.height /= 2;
-
-    const pose = this.results.poseLandmarks;
-    let x1 = pose[8].x * this.width;
-    let x2 = pose[7].x * this.width;
-    let y1 = pose[8].y * this.height;
-    let y2 = pose[7].y * this.height;
-
-    let xNose = pose[0].x * this.width;
-    let yNose = pose[0].y * this.height;
-    const distance = Math.sqrt(Math.abs(x1 - x2) + Math.abs(y1 - y2)) * 10;
-
-    let widthImage = distance;
-    let heightImage = distance * 0.2;
-
-    let shoulder11y = pose[11].y * this.height;
-
-    let heightShoulderToNose = Math.abs(yNose - shoulder11y);
-
-
-    // this.ctx.globalAlpha = 0.5;
-    console.log('draw hat', img.src, xNose - widthImage / 2, yNose - heightImage / 2 - heightShoulderToNose, widthImage, heightImage);
-    this.ctx.drawImage(img, xNose - widthImage / 2, yNose - heightImage / 2 - heightShoulderToNose, widthImage, heightImage);
-
-  }
+  // start draw functions
 
   // FIX 100 %
   drawLines = () => {
@@ -214,38 +187,12 @@ class Draw {
       }
     }
   };
-
-
-  drawPosPoint = (pose, number, distance) => {
-    const heart = require('../images/heart/0.png');
-    const img = new Image(); img.src = heart;
-    // this.ctx.save();
-    // this.ctx.translate(pose[number].x * this.width, pose[number].y * this.height);
-    this.ctx.globalAlpha = this.globalAlpha[this.gIndex % this.globalAlpha.length];
-    // console.log(`pose: x:${pose[number].x * this.width}, y:${pose[number].y * this.height}, globalAlpha: ${this.globalAlpha[this.gIndex % this.globalAlpha.length]}, distance: ${distance}`)
-    this.ctx.drawImage(img, (pose[number].x * this.width) + distance / 2, (pose[number].y * this.height) - distance / 2, distance * 4, distance * 4);
-    // this.ctx.drawImage(img, ((pose[number].x * this.width)) - distance / 2, ((pose[number].y * this.height)) - distance / 2, img.width * distance, img.height * distance);
-    // this.ctx.restore();
-  }
-
-  drawNegPoint = (pose, number, distance) => {
-    const heart = require('../images/heart/0.png');
-    const img = new Image(); img.src = heart;
-    // this.ctx.save();
-    // this.ctx.translate(pose[number].x * this.width, pose[number].y * this.height);
-    this.ctx.globalAlpha = this.globalAlpha[this.gIndex % this.globalAlpha.length];
-    console.log(`neg: img: ${img.src},x:${pose[number].x * this.width}, y:${pose[number].y * this.height}, globalAlpha: ${this.globalAlpha[this.gIndex % this.globalAlpha.length]}, distance: ${distance}`)
-    this.ctx.drawImage(img, (pose[number].x * this.width) - distance / 2, (pose[number].y * this.height) - distance / 2, distance * 4, distance * 4);
-    // this.ctx.drawImage(img, ((pose[number].x * this.width) / 2) - distance / 2, ((pose[number].y * this.height) / 2) - distance, img.width / distance, img.height / distance);
-    // this.ctx.restore();
-  }
-
   //FIX
   drawHeart = () => {
     const heart = require('../images/heart/0.png');
     const imgheart = new Image(); imgheart.src = require('../images/baterflay/heart.png');
     const img = new Image(); img.src = heart;
-
+    drawEye3(this.ctx, this.results.poseLandmarks, imgheart);
     const pose = this.results.poseLandmarks;
     let x1 = pose[12].x * this.width;
     let x2 = pose[11].x * this.width;
@@ -253,31 +200,18 @@ class Draw {
     let y2 = pose[11].y * this.height;
 
     const distance = Math.sqrt(Math.abs(x1 - x2) + Math.abs(y1 - y2));
-    // img.width = distance; img.width = distance;
-    // this.ctx.drawImage(img, 0, 0, distance, distance);
+    
+    drawPosPoint(this.ctx,pose, 13, distance, img, this.globalAlpha, this.gIndex);
+    drawNegPoint(this.ctx,pose, 14, distance, img, this.globalAlpha, this.gIndex);
 
+    drawPosPoint(this.ctx,pose, 26, distance, img, this.globalAlpha, this.gIndex);
+    drawNegPoint(this.ctx,pose, 25, distance, img, this.globalAlpha, this.gIndex);
 
-    let left__x, left_e_y = null;
-    if (pose[33]) {
-      left__x = pose[33].x * this.width;
-      left_e_y = pose[33].y * this.height;
-    }
-    pose[33] && left__x && left_e_y && this.ctx.drawImage(imgheart, left__x - distance / 2 - 50, left_e_y - distance / 2 - 50, distance * 10, distance * 10);
+    drawPosPoint(this.ctx,pose, 24, distance, img, this.globalAlpha, this.gIndex);
+    drawNegPoint(this.ctx,pose, 23, distance, img, this.globalAlpha, this.gIndex);
 
-    this.ctx.drawImage(img, (pose[13].x * this.width) - distance / 2, (pose[13].y * this.height) - distance / 2, distance * 2, distance * 2);
-    this.ctx.drawImage(img, (pose[14].x * this.width) - distance / 2, (pose[14].y * this.height) - distance / 2, distance * 2, distance * 2);
-
-    // this.drawPosPoint(pose, 28, distance);
-    // this.drawNegPoint(pose, 27, distance);
-
-    this.drawPosPoint(pose, 26, distance);
-    this.drawNegPoint(pose, 25, distance);
-
-    this.drawPosPoint(pose, 24, distance);
-    this.drawNegPoint(pose, 23, distance);
-
-    this.drawPosPoint(pose, 12, distance);
-    this.drawNegPoint(pose, 11, distance);
+    drawPosPoint(this.ctx,pose, 12, distance, img, this.globalAlpha, this.gIndex);
+    drawNegPoint(this.ctx,pose, 11, distance, img, this.globalAlpha, this.gIndex);
 
     this.gIndex += 1;
   }
@@ -322,7 +256,9 @@ class Draw {
     y2 = this.results.poseLandmarks[19].y * this.height;
 
     let img = new Image(), img2 = new Image();
+    //right
     img.src = birdGIFPos1[index];
+    //left
     img2.src =birdGIFNeg1[index];
 
     if (this.activity.includes('left')) {
@@ -352,7 +288,7 @@ class Draw {
       this.ctx.drawImage(img4, x2 + 70, y2 - 150, distance / 2, distance / 2);
     }
   }
-  // 90% good
+  // FIX
   drawButterfly = () => {
     let x1 = this.results.poseLandmarks[12].x * this.width;
     let x2 = this.results.poseLandmarks[11].x * this.width;
@@ -374,12 +310,12 @@ class Draw {
     const img2 = new Image();
     img2.src = blue[index];
     distance = 100;
-    this.ctx.drawImage(img, x1 - (distance * 1.5/2), y1 + 50, distance * 1.5, distance* 1.5);
-    this.ctx.drawImage(img, x2 - (distance * 1.5/2), y2 + 50, distance * 1.5, distance * 1.5);
+    this.ctx.drawImage(img, x1 - (distance * 1.5/2), y1 + 50, distance, distance);
+    this.ctx.drawImage(img, x2 - (distance * 1.5/2), y2 + 50, distance, distance);
 
     let x11 = this.results.poseLandmarks[12].x * this.width;
     let y11 = this.results.poseLandmarks[12].y * this.height;
-    this.ctx.drawImage(img, x11 - (distance), y11, distance/2, distance/2);
+    this.ctx.drawImage(img, x11 - (distance), y11 - (distance), distance, distance);
 
     this.ctx.drawImage(img2, x1- (distance * 1.5/2), y1 - 50, distance * 1.5, distance* 1.5);
     this.ctx.drawImage(img2, x2 - (distance * 1.5/2), y2 - 50, distance * 1.5, distance * 1.5);
@@ -391,7 +327,7 @@ class Draw {
     imgface.src = face;
     drawHead2(this.ctx, this.results.poseLandmarks, imgface);
   };
-
+  //don't for view
   drawflay = () => {
     const imgPiza = new Image(); imgPiza.src = require('../images/baterflay/heart.png');
     const imgFlay = new Image(); imgFlay.src = require('../images/baterflay/yelow/1.PNG');
@@ -459,24 +395,14 @@ class Draw {
     this.ctx.drawImage(imgFlay3, (pose[23].x * this.width) - distance / 2 - 50, (pose[23].y * this.height) - distance / 2 - 50, distance * 3, distance * 3);
     this.ctx.drawImage(imgFlay4, (pose[18].x * this.width) - distance / 2 + 30, (pose[18].y * this.height) - distance / 2 - 50, distance * 0.5, distance * 0.5);
   }
-
-  drowLips = () => {
+  //don't for view
+  drawLips = () => {
     const imgLip = new Image(); imgLip.src = require('../images/lip/rainbow.png');
     const pose = this.results.poseLandmarks;
-    let uper_lip_x, uper_lip_y, lower_lip_x, lower_lip_y = null;
+    drawlips(this.ctx, pose, imgLip);
+    return;
 
-    if (pose[37] && pose[38]) {
-      uper_lip_x = pose[37].x * this.width;
-      uper_lip_y = pose[37].y * this.height;
-      lower_lip_x = pose[38].x * this.width;
-      lower_lip_y = pose[38].y * this.height;
-    }
 
-    let is_open_lips = null;
-    if (uper_lip_y && lower_lip_y) is_open_lips = lower_lip_y - uper_lip_y;
-    console.log('is_open_lips', uper_lip_y, '-', lower_lip_y, "=", is_open_lips);
-    let distance = Math.sqrt(Math.abs(uper_lip_x - lower_lip_x) + Math.abs(uper_lip_y - lower_lip_y)) * 10;
-    uper_lip_y && lower_lip_y && is_open_lips > (30 - distance / 2) && this.ctx.drawImage(imgLip, uper_lip_x - distance / 2 - 37, uper_lip_y - distance / 2 + 33, distance * 2, distance * 2);
 
     const imglip2 = new Image(); imglip2.src = require('../images/lip/lips.png');
 
@@ -509,16 +435,31 @@ class Draw {
     const { dancBorger } = require('./Array_AR/borgers');
     const index = this.index % 3;
     this.index += 1;
+    let img = new Image(),
+    img2 = new Image();
+    img.src = dancBorger[index];
+    const pose = this.results.poseLandmarks
+    drawPosPoint(this.ctx,pose, 13, distance, img);
+    drawNegPoint(this.ctx,pose, 14, distance, img);
+
+    drawPosPoint(this.ctx,pose, 26, distance, img);
+    drawNegPoint(this.ctx,pose, 25, distance, img);
+
+    drawPosPoint(this.ctx,pose, 24, distance, img);
+    drawNegPoint(this.ctx,pose, 23, distance, img);
+
+    drawPosPoint(this.ctx,pose, 12, distance, img);
+    drawNegPoint(this.ctx,pose, 11, distance, img);
+
+    
+    drawPosPoint(this.ctx,pose, 15, distance, img);
+    drawNegPoint(this.ctx,pose, 16, distance, img);
+
     x1 = this.results.poseLandmarks[15].x * this.width;
     y1 = this.results.poseLandmarks[15].y * this.height;
     x2 = this.results.poseLandmarks[16].x * this.width;
     y2 = this.results.poseLandmarks[16].y * this.height;
-
-    let img = new Image(),
-      img2 = new Image();
-    img.src = dancBorger[index];
-
-    const pose = this.results.poseLandmarks
+    return;
     this.ctx.globalAlpha = 0.7;
     this.ctx.drawImage(img, x1 + 50, y1, distance/1.5, distance/1.5);
     this.ctx.drawImage(img, x2 - 50, y2, distance/2, distance/2);
@@ -534,10 +475,6 @@ class Draw {
   };
 
   drawGlasses = () => {
-    const leftEye = this.results.poseLandmarks[2];
-    const rightEye = this.results.poseLandmarks[5];
-    const angle = this.getAngle(leftEye, rightEye);
-
     const { glasses } = require('./Array_AR/glasses');
     const { horseGIFPos, horseGIFNeg } = require('./Array_AR/horse');
     let x1 = this.results.poseLandmarks[7].x * this.width;
@@ -573,24 +510,9 @@ class Draw {
     this.ctx.globalAlpha = 0.5;
     this.ctx.drawImage(imgZ, this.dxBird, 400, 100, 100);
   }
-  getAngle = (a, b) => {
-    return (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI;
-  }
+  //FIX
   drawCrazy = () => {
-    const leftEye = this.results.poseLandmarks[2];
-    const rightEye = this.results.poseLandmarks[5];
-    const angleC = this.getAngle(leftEye, rightEye);
-    const {
-      lips,
-      zombieGIFPos,
-      zombieGIFNeg,
-      face
-    } = require('./Array_AR/crazy');
-    let x1 = this.results.poseLandmarks[7].x * this.width;
-    let x2 = this.results.poseLandmarks[8].x * this.width;
-
-    let y1 = this.results.poseLandmarks[2].y * this.height;
-    let y2 = this.results.poseLandmarks[11].y * this.height;
+    const {zombieGIFPos, zombieGIFNeg, face} = require('./Array_AR/crazy');
 
     const head = new Image();
     head.src = face[0];
@@ -620,9 +542,31 @@ class Draw {
     rightForearm.src = RightForearmC;
     rightForearm.width /= 1.5;
     drawRightForearm(this.ctx, this.results.poseLandmarks, rightForearm);
-  };
 
-  
+    const index = this.index % 3;
+    let imgZ = new Image()
+    imgZ.src = this.cahngeWalk ? zombieGIFPos[index] : zombieGIFNeg[index];
+
+    console.log(this.xWalk, this.cahngeWalk);
+    if (this.cahngeWalk) {
+      this.xWalk += 50;
+      if (this.xWalk >= this.width) {
+        this.cahngeWalk = false;
+      }
+    } else {
+      this.xWalk -= 50;
+      if (this.xWalk <= 0) {
+        this.cahngeWalk = true;
+      }
+    }
+    imgZ.width = 200; imgZ.height = 200;
+    this.ctx.globalAlpha = 0.5;
+    this.ctx.drawImage(imgZ, this.xWalk, 300, 100, 100);
+    this.ctx.globalAlpha = 0.5;
+    this.ctx.drawImage(imgZ, this.xWalk, 400, 100, 100);
+    this.index += 1;
+  };
+  //FIX
   drawSkeleton = () => {
 
     //drawHead
@@ -692,14 +636,14 @@ class Draw {
         if (activity_ar[ar][activity] === this.activity) {
           switch (ar) {
             case 'bird': this.drawBird(); break;
-            case 'horse': this.drawHeart(); break;
+            case 'heart': this.drawHeart(); break;
             case 'rainbow': this.drawLines(); break;
             case 'zombie': this.drawCrazy(); break;
             case 'rain': this.drawSkeleton(); break;
             case 'borger': this.drawBorger(); break;
             case 'flay': this.drawButterfly(); break;
             case 'flay2': this.drawflay(); break;
-            case 'lips': this.drowLips(); break;
+            case 'lips': this.drawLips(); break;
             default: console.log('ar not exist for this activity'); break;
           }
           return;
