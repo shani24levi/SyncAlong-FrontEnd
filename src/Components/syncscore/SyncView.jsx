@@ -99,7 +99,7 @@ function SyncView({ selectedVideo, syncs }) {
                             //console.log('jjjj', el.time[i], el.time[i - 1], "sum", sum);
                         }
                         else {
-                            console.log("sss", sum, count, sum / count);
+                            //console.log("sss", sum, count, sum / count);
                             let avg = sum / count;
                             arr.push({ x: j, y: Math.trunc(avg * 10) });
                             sum = 0;
@@ -142,7 +142,7 @@ function SyncView({ selectedVideo, syncs }) {
                 container
                 spacing={3}
                 direction="row"
-                justify="center"
+                justifyContent="center"
                 alignItems="center"
                 style={{ marginBottom: '2%' }}>
                 <Grid item xs={12} md={12} lg={8}>
@@ -161,7 +161,7 @@ function SyncView({ selectedVideo, syncs }) {
                 container
                 spacing={3}
                 direction="row"
-                justify="center"
+                justifyContent="center"
                 alignItems="center">
                 <Grid item xs={12} md={12} lg={6}><SyncsLineChart syncs={syncObjs} syncAvgs={syncAvgs} /> </Grid>
                 {!isEmpty(series) && !isEmpty(syncAvgs) && <Grid item xs={12} md={12} lg={6}> <Column series={series} syncAvgs={syncAvgs} /> </Grid>}

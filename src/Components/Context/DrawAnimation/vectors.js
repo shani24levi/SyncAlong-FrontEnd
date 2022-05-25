@@ -14,8 +14,12 @@ export const getMiddle = (a, b) => {
  * @param b
  */
 export const getDistance = (a, b) => {
-    const x = a.x - b.x;
-    const y = a.y - b.y;
+    let x = 0;
+    let y = 0;
+    if (a && b) {
+        x = a.x - b.x;
+        y = a.y - b.y;
+    }
     return Math.sqrt(x * x + y * y);
 }
 

@@ -53,6 +53,7 @@ function TraineeHome({ meeting, date }) {
     // console.log('====================================');
 
     useEffect(async () => {
+        console.log('updateMeetingAlrt', updateMeetingAlrt);
         if (updateMeetingAlrt) {
             await delay(10000);
             setUpdateMeetingAlrt(false);
@@ -60,13 +61,15 @@ function TraineeHome({ meeting, date }) {
     }, [updateMeetingAlrt])
 
     console.log('callQuickMeeting', callQuickMeeting);
+    console.log('upcamingMeeting', upcamingMeeting);
+
 
     return (
         <>
             <HeaderWaves meeting={meeting} date={date} upcamingMeeting={upcamingMeeting} />
             {callTrainee && <PopUpCall />}
             {!isEmpty(callQuickMeeting) && <PopUpCallQuickMeeting currMeeting={callQuickMeeting} />}
-            {updateMeetingAlrt && <WorningAlert title={`Up Coming Meeting is updating by ${profile.traineeOf?.user}`} />}
+            {updateMeetingAlrt && <WorningAlert title={`Up Coming Meeting is updating by ${upcamingMeeting.tariner.user}`} />}
             <Box
                 position="relative"
                 paddingTop="4rem"

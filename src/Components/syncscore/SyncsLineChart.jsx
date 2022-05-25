@@ -89,7 +89,7 @@ function SyncsLineChart({ syncs, syncAvgs }) {
                                                 }}
                                             >
                                                 {syncs.map((el, i) => {
-                                                    return (<MenuItem value={i} key={el.activity} onClick={() => onSetActivity(el, i)}>{el.activity}</MenuItem>
+                                                    return (<MenuItem value={i} key={`${el.activity}${new Date()}`} onClick={() => onSetActivity(el, i)}>{el.activity}</MenuItem>
                                                     )
                                                 })}
                                             </Menu>

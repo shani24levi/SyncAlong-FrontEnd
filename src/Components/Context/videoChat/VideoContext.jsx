@@ -259,7 +259,7 @@ function VideoContext({ meeting }) {
     await lisiningForUserLeftActiveRoom();
 
     setYourId(
-      meeting ? 
+      meeting ?
         user.role === 'trainer' ? meeting.trainee._id : meeting.tariner._id
         : null
     );
@@ -558,7 +558,7 @@ function VideoContext({ meeting }) {
       await nextActivitySession();
       console.log('next....');
     } else if (recognition == 'leave') {
-      camera && camera.distroy();
+      //camera && camera.distroy();
       setActivitiesEnded(true);
       setStop(true);
       console.log('leave....');
@@ -739,7 +739,6 @@ function VideoContext({ meeting }) {
       {!isPeerHere && yourName && mediaPipeInitilaize === 'none' && (
         <>
           <ErrorAlert name={yourName} title=" is not in the room" />
-          {/* <WorningAlert title="Try to call from the room" /> */}
         </>
       )}
       {isPeerHere && mediaPipeInitilaize !== 'none' && (

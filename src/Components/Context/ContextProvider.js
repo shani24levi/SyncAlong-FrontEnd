@@ -299,8 +299,8 @@ function ContextProvider({ children, socket, profile }) {
 
         results.poseLandmarks.push(results.faceLandmarks[8]); //results.poseLandmarks[39]
         results.poseLandmarks.push(results.faceLandmarks[6]); //results.poseLandmarks[40]
-        
-        
+
+
         //total lenght 39 
       }
       if (syncScoreRef?.current >= SYNC)
@@ -658,7 +658,7 @@ function ContextProvider({ children, socket, profile }) {
             recording: recording?.recording,
             dateEnd: recording.dateEnd
           }
-          console.log('data', data);
+          console.log('datameetingComplited', data);
           socket?.emit("meetingComplited", data);
         });
 
@@ -682,7 +682,8 @@ function ContextProvider({ children, socket, profile }) {
   const [MeetingIsNOW, setMeetingIsNOW] = useState(false);
 
   useEffect(() => {
-    if (!isEmpty(upcamingMeeting) && !isEmpty(meetings.upcoming_meeting) && meetings.upcoming_meeting?._id !== upcamingMeeting._id) {
+    console.log("upcamingMeeting1111", upcamingMeeting, 'meetings', meetings);
+    if (!isEmpty(meetings.meeeting_created) && !isEmpty(meetings.upcoming_meeting) && meetings.upcoming_meeting?._id === meetings.meeeting_created._id) {
       //this is a neww upcaming meeting that the user taninee set now???
       console.log("upcamingMeetingupcamingMeeting", upcamingMeeting, "user.role", user.role);
       //get the user socket and send to you the changes....
