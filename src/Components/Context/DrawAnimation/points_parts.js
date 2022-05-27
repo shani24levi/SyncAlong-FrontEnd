@@ -41,28 +41,40 @@ const bottom_activities = [
 ]
 
 const activity_ar = {
-    'lips': ['claping'],
-    'flay2': ['hands-x'],
-    'flay': ['open-close'],
-    'borger': ['zomba'],
-    'rainbow': [
-        'hands-x', 'swim-hands', 'swing-hands',
-    ],
-    'bird': [
-        'hands-y', "left-hand-up", "right-hand-up",
-    ],
-    'zombie': [
-        'crazy',
-    ],
-    'horse': [
-        'left-leg-up', 'right-leg-up', 'legs-both-up',
-        '90leging-right', '90leging-left',
-    ],
-    'rain': [
-        'poshup', 'baly-run', 'baly-legs', 'back-down', 'toch-flor', 'claping', 'all-up-1',
-        'legs-gumping', 'open-close', 'kicks', 'pray', 'right-all', 'up-dwon-both',
-        'gump-sides'
-    ]
+    // hands
+    'flay': ['hands-x'],
+    'bird': ['hands-y'],
+    'rainbow': ['swim-hands', 'swing-hands'],
+    'zombie': ['crazy'],
+    //legs
+    'heart': ['left-leg-up', 'right-leg-up', 'legs-both-up','90leging-right', '90leging-left'],
+    //both
+    'borger': ['gamp', 'open-close', 'poshup', 'baly-run', 'baly-legs', 'back-down', 'toch-flor', 'claping', 'all-up-1', 'legs-gumping', 'open-close', 'kicks', 'pray', 'right-all', 'up-dwon-both',
+    'gump-sides',],
+
+
+
+    // 'lips': ['claping'],
+    // 'flay2': ['hands-x'],
+    // 'flay': ['open-close'],
+    // 'rainbow': [
+    //     'hands-x', 'swim-hands', 'swing-hands',
+    // ],
+    // 'bird': [
+    //     'hands-y', "left-hand-up", "right-hand-up",
+    // ],
+    // 'zombie': [
+    //     'crazy',
+    // ],
+    // 'horse': [
+    //     'left-leg-up', 'right-leg-up', 'legs-both-up',
+    //     '90leging-right', '90leging-left',
+    // ],
+    // 'rain': [
+    //     'poshup', 'baly-run', 'baly-legs', 'back-down', 'toch-flor', 'claping', 'all-up-1',
+    //     'legs-gumping', 'open-close', 'kicks', 'pray', 'right-all', 'up-dwon-both',
+    //     'gump-sides'
+    // ]
 }
 const center_part = [11, 12, 23, 24];
 const joints_keys = [13, 14, 25, 26]; //13:right-hand, 14:left-hand, 25:right-leg, 26:left-leg
