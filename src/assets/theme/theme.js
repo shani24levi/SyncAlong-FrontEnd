@@ -20,6 +20,8 @@ const theme = createTheme({
             main: '#3f50b5',
             dark: indigo[800],
             contrastText: '#fff',
+            800: "#4527a0"
+
         },
         secondary: {
             light: deepPurple[50],

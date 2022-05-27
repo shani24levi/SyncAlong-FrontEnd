@@ -1,5 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Grid, Box } from '@material-ui/core';
+import { Grid, Box, Typography } from '@material-ui/core';
+import {
+    Stack,
+
+} from '@mui/material';
 import HeatMapChart from '../charts/HeatMapChart';
 import PurpleChartCard from '../charts/PurpleChartCard';
 import isEmpty from '../../validation/isEmpty';
@@ -8,6 +12,44 @@ import MultyChart from '../charts/MultyChart';
 import DonutAvg from '../charts/DonutAvg';
 import SyncsLineChart from './SyncsLineChart';
 import Column from '../charts/Column';
+import ColoredLines from '../charts/ColoredLines';
+
+
+const bgcolor = [
+    'rgb(159, 159, 248)',
+    'rgb(248, 159, 204)',
+    'rgb(248, 248, 159)',
+    'rgb(159, 248, 204)',
+    'rgb(159, 248, 248)',
+    'rgb(248, 195, 159)',
+    'rgb(159, 230, 248)',
+
+    'rgb(159, 159, 248)',
+    'rgb( 248, 159, 204)',
+    'rgb(248, 248, 159)',
+    'rgb(159, 248, 204)',
+    'rgb(159, 248, 248)',
+    'rgb(248, 195, 159)',
+    'rgb(159, 230, 248)',
+]
+
+const linecolor = [
+    '#5050de',
+    '#912d60',
+    '#bdbd2d',
+    '#2a7550',
+    '#277575',
+    '#c96622',
+    '#388194',
+
+    '#5050de',
+    '#912d60',
+    '#bdbd2d',
+    '#2a7550',
+    '#277575',
+    '#c96622',
+    '#388194'
+]
 
 function SyncView({ selectedVideo, syncs }) {
     let [syncbyAct, setSyncByAct] = useState([]);
@@ -18,6 +60,7 @@ function SyncView({ selectedVideo, syncs }) {
 
     const [series1, setSeries1] = useState([]);
     const [series, setSeries] = useState([]);
+    const [dataEach3sec, setDataEach3sec] = useState([]);
 
     useEffect(() => {
         if (!isEmpty(syncs)) {
@@ -134,6 +177,43 @@ function SyncView({ selectedVideo, syncs }) {
         }
     }, [series1])
 
+    useEffect(() => {
+        if (!isEmpty(series) && !isEmpty(syncAvgs)) {
+            let series_arr = [];
+            let series_arr_2 = [];
+            let series_arr_3 = [];
+
+
+            series.map(i => {
+                i.data.map(j => {
+                    series_arr.push(j.y);
+                })
+                series_arr_2.push(series_arr);
+                series_arr = [];
+            })
+
+            let count = 0;
+            let sum5sec = 0;
+            series_arr_2.map(i => {
+                i.map(j => {
+                    if (count !== 2) {
+                        sum5sec += j;
+                        count++;
+                    }
+                    else {
+                        let total5 = sum5sec / count;
+                        series_arr.push(total5);
+                        count = 0;
+                        sum5sec = 0;
+                    }
+                })
+                series_arr_3.push(series_arr);
+                series_arr = [];
+            })
+            setDataEach3sec(series_arr_3);
+        }
+    }, [series, syncAvgs])
+
 
     console.log('series1', series1, syncAvgs);
     return (
@@ -166,13 +246,35 @@ function SyncView({ selectedVideo, syncs }) {
                 <Grid item xs={12} md={12} lg={6}><SyncsLineChart syncs={syncObjs} syncAvgs={syncAvgs} /> </Grid>
                 {!isEmpty(series) && !isEmpty(syncAvgs) && <Grid item xs={12} md={12} lg={6}> <Column series={series} syncAvgs={syncAvgs} /> </Grid>}
 
-                <Grid item xs={12} md={12} lg={12}><HeatMapChart syncObjs={syncObjs} series={series} /></Grid>
+                {/* <Grid item xs={12} md={12} lg={12}><HeatMapChart syncObjs={syncObjs} series={series} /></Grid> */}
 
             </Grid>
-            {/* <PurpleChartCard time={selectedVideo.dateEnd ? dateFormat(selectedVideo.dateEnd) : ''} totalSync={avgSync} syncs={allSync} /> */}
-            {/* <HeatMapChart syncObjs={syncObjs} series={series} />
-            <SyncsLineChart syncs={syncObjs} syncAvgs={syncAvgs} /> */}
-            {/* <DonutAvg /> */}
+
+            <Stack direction="row" alignItems="center" justifyContent="space-between" mt={3} mb={1}>
+                <Typography variant="h5"
+                    sx={{ fontWeight: 700, flexGrow: 1, color: '#f5f5f5' }} gutterBottom>
+                    Syncs By Activitis
+                </Typography>
+            </Stack>
+
+            <Grid
+                container
+                spacing={3}
+                direction="row"
+                justifyContent="center"
+                alignItems="center">
+
+                {
+                    !isEmpty(series) && !isEmpty(dataEach3sec) && dataEach3sec.map((el, i) => {
+                        return (
+                            <Grid item xs={6} md={4} lg={4}> <ColoredLines bgcolored={bgcolor[i]} lineColore={linecolor[i]} series={el} syncAvgs={syncAvgs[i]} /> </Grid>
+                        )
+                    })
+
+                }
+            </Grid>
+            {/* <ColoredLines /> */}
+
         </>
     );
 }

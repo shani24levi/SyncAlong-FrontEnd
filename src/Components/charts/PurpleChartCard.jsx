@@ -7,7 +7,7 @@ import isEmpty from '../../validation/isEmpty';
 function PurpleChartCard({ time, totalSync, syncs }) {
     const theme = useTheme();
 
-    console.log('syncs', syncs);
+    //   console.log('syncs', syncs);
 
     const chartData = {
         type: 'area',
@@ -19,13 +19,32 @@ function PurpleChartCard({ time, totalSync, syncs }) {
                     enabled: true
                 }
             },
-            dataLabels: {
-                enabled: false
-            },
             stroke: {
                 curve: 'smooth',
                 width: 1
             },
+            markers: {
+                colors: ['#5e35b1', '#4527a0', '#673ab7']
+            },
+            dataLabels: {
+                style: {
+                    colors: ['#5e35b1', '#4527a0', '#673ab7']
+                }
+            },
+            fill: {
+                colors: "#4527a0",
+                opacity: 0.9,
+                type: 'gradient',
+                gradient: {
+                    shadeIntensity: 1,
+                    opacityFrom: 0.5,
+                    opacityTo: 0.5,
+                    stops: [0, 100],
+                    color: "#4527a0"
+                }
+            },
+            colors: ['#5e35b1', '#b39ddb', '#4527a0'],
+
             tooltip: {
                 fixed: {
                     enabled: false
