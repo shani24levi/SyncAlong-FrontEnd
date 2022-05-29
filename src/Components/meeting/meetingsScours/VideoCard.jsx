@@ -54,7 +54,6 @@ let activitiesImgs = [
   'https://www.kreedon.com/wp-content/uploads/2018/11/physicaleducation.jpg',
   'https://www.acc.org//-/media/Non-Clinical/Images/2019/08/CARDIOLOGY/Cover-Story-Sports-1200x800.jpg',
   'https://www.datocms-assets.com/43889/1616686394-illustration-sport-zero-dechets01plan-de-travail-1.jpg',
-  'https://sport-handicap-centrevaldeloire.fr/images/administration/diveriste.jpg',
 ]
 
 function VideoCard({ video }) {

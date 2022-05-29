@@ -100,7 +100,21 @@ const theme = createTheme({
             colorInherit: {
                 color: "white",
             },
+
+            h4: {
+                fontWeight: 700,
+                flexGrow: 1, color: '#f5f5f5',
+                textTransform: "none",
+                fontSize: "26px",
+            },
+            colorTextSecondary: {
+                color: "white",
+            },
+            colorInherit: {
+                color: "white",
+            },
         },
+
         MuiMenuItem: {
             root: {
                 fontFamily: "'Montserrat', sans-serif",

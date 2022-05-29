@@ -1,7 +1,9 @@
 import React, { useContext, useEffect, useState, useRef } from 'react';
 import { SocketContext } from '../Context/ContextProvider';
+import { Link } from 'react-router-dom';
 import { styled } from '@mui/system'
 import { Grid, Container, Button, Box, Card, Typography } from '@material-ui/core';
+import { Stack } from '@mui/material';
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { useSelector } from 'react-redux';
 import isEmpty from '../../validation/isEmpty';
@@ -26,6 +28,7 @@ import Carousel from '../card/Carousel/Carousel';
 import Loader from '../loder/Loder';
 import ListedMeetings from './trainer/listTable/ListedMeetings';
 import VideoCameraFrontIcon from '@mui/icons-material/VideoCameraFront';
+import AddIcon from '@mui/icons-material/Add';
 
 const buttonStyle = makeStyles(buttonsStyles);
 
@@ -129,6 +132,7 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
         setQuickStartOpen(true);
     }
 
+    console.log('dddd', !isEmpty(my_trainees), profile?.trainerOf.length);
     return (
         <>
             <Container maxWidth="xl">
@@ -187,8 +191,25 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
                     <Grid item xs={12} md={12} lg={12}>
                         {
                             profile && !isEmpty(meetings.meetings) ?
-                                <ListedMeetings /> :
-                                <></>
+                                <>
+                                    <Stack direction="row" alignItems="center" justifyContent="space-between" mt={3} mb={1}>
+                                        <Typography variant="h4" gutterBottom>
+                                            Your Meetings
+                                        </Typography>
+                                        <Button
+                                            variant="contained"
+                                            component={Link}
+                                            to="/schedule/meetings"
+                                            className={btnClasses.purpleRound}
+                                            startIcon={<AddIcon />}
+                                        >
+                                            New Meeting
+                                        </Button>
+                                    </Stack>
+                                    <ListedMeetings />
+                                </>
+
+                                : <></>
                         }
                     </Grid>
                 </Grid>

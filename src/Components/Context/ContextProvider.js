@@ -180,7 +180,7 @@ function ContextProvider({ children, socket, profile }) {
       if (peer) {
         poseLandmarks_ref.current = pose_results.poseLandmarks;
         peer?.emit('connect');
-      } 
+      }
     }
   }, [pose_results]);
 
@@ -198,7 +198,7 @@ function ContextProvider({ children, socket, profile }) {
     canvasCtx.save();
     canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
     canvasCtx.drawImage(userVideo.current, 0, 0, canvasElement.width, canvasElement.height);
-    
+
     let inframe = calculatingUserInFrame(results);
     let syncing = is_sync();
     let activity = now_activity();
@@ -249,20 +249,20 @@ function ContextProvider({ children, socket, profile }) {
 
     setMediaPipeInitilaize('none');
 
-    if (results && results.faceLandmarks) {
-      results.poseLandmarks.push(results.faceLandmarks[10]); //results.poseLandmarks[33]
-      results.poseLandmarks.push(results.faceLandmarks[152]); //results.poseLandmarks[34]
-      results.poseLandmarks.push(results.faceLandmarks[454]); //results.poseLandmarks[35]
-      results.poseLandmarks.push(results.faceLandmarks[234]); //results.poseLandmarks[36]
-      results.poseLandmarks.push(results.faceLandmarks[0]); //results.poseLandmarks[37]
-      results.poseLandmarks.push(results.faceLandmarks[18]); //results.poseLandmarks[38]
-      results.poseLandmarks.push(results.faceLandmarks[8]); //results.poseLandmarks[39]
-      results.poseLandmarks.push(results.faceLandmarks[6]); //results.poseLandmarks[40]
-      results.poseLandmarks.push(results.faceLandmarks[51]); //results.poseLandmarks[41]
-      results.poseLandmarks.push(results.faceLandmarks[57]); //results.poseLandmarks[42]
-      results.poseLandmarks.push(results.faceLandmarks[60]); //results.poseLandmarks[43]
-      results.poseLandmarks.push(results.faceLandmarks[64]); //results.poseLandmarks[44] 
-    }
+    // if (results && results.faceLandmarks) {
+    //   results.poseLandmarks.push(results.faceLandmarks[10]); //results.poseLandmarks[33]
+    //   results.poseLandmarks.push(results.faceLandmarks[152]); //results.poseLandmarks[34]
+    //   results.poseLandmarks.push(results.faceLandmarks[454]); //results.poseLandmarks[35]
+    //   results.poseLandmarks.push(results.faceLandmarks[234]); //results.poseLandmarks[36]
+    //   results.poseLandmarks.push(results.faceLandmarks[0]); //results.poseLandmarks[37]
+    //   results.poseLandmarks.push(results.faceLandmarks[18]); //results.poseLandmarks[38]
+    //   results.poseLandmarks.push(results.faceLandmarks[8]); //results.poseLandmarks[39]
+    //   results.poseLandmarks.push(results.faceLandmarks[6]); //results.poseLandmarks[40]
+    //   results.poseLandmarks.push(results.faceLandmarks[51]); //results.poseLandmarks[41]
+    //   results.poseLandmarks.push(results.faceLandmarks[57]); //results.poseLandmarks[42]
+    //   results.poseLandmarks.push(results.faceLandmarks[60]); //results.poseLandmarks[43]
+    //   results.poseLandmarks.push(results.faceLandmarks[64]); //results.poseLandmarks[44] 
+    // }
     // Set canvas width
     myCanvasRef.current.width = videoWidth;
     myCanvasRef.current.height = videoHeight;
