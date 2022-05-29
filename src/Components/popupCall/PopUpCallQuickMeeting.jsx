@@ -62,6 +62,7 @@ function PopUpCallQuickMeeting({ currMeeting }) {
         socket?.off("joinUser");
         setAccseptScheduleMeetingCall(true);
 
+        console.log('currMeetingcurrMeeting', currMeeting);
         dispatch(setActiveMeeting(currMeeting, true));
         navigate('/video-room', { state: { meeting: currMeeting } });
     }

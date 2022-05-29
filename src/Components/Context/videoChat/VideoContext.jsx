@@ -184,16 +184,15 @@ function VideoContext({ meeting }) {
       console.log('herer', user?.role, meetings, meetings?.active_meeting);
       let meeting = meetings?.active_meeting;
       if (!meetings.active_meeting)
-        meeting = meetings.all_meetings.find((el) => el._id === meetingId);
+        meeting = meetings.all_meetings.find((el) => el._id === meetingId._id);
       //Clear the state of all and return to home page
       user?.role === 'trainer' && dispatch(closeActiveMeeting()); //no need to update db becose peer2 alrady done that
       user?.role === 'trainee' &&
-        meeting &&
         dispatch(
-          setMeetingComplited(meeting, { status: false, urlRoom: 'Processing' })
+          setMeetingComplited(meetingId, { status: false, urlRoom: 'Processing' })
         );
       leaveCall();
-      navigate(`/meeting/watch/${meetingId}`);
+      navigate(`/meeting/watch/${meetingId._id}`);
       return;
     });
   };
@@ -459,7 +458,7 @@ function VideoContext({ meeting }) {
     ) {
       //after its done notify the trainee
       console.log('socket?.on("prossesDone", roomId);', meeting);
-      let meetingId = meeting._id;
+      let meetingId = meeting;
       socket?.emit('closeRoom', meetingId);
       navigate(`/meeting/watch/${meeting._id}`);
     }
