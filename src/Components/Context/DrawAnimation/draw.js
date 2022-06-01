@@ -3,14 +3,14 @@ import Draw from './drawGlobal';
 let my_Draw = null;
 let your_Draw = null
 const draw = (ctx, canvas, results, activity_now = 'none', user = 'me') => {
-
+  // activity_now = 'gamp';
   if (activity_now === 'none') return;
 
   if (user === 'me' && !my_Draw) {
-    my_Draw = new Draw(ctx, canvas, results, 'me', activity_now);
+    my_Draw = new Draw(ctx, canvas);
   }
   if (user === 'you' && !your_Draw) {
-    your_Draw = new Draw(ctx, canvas, results, 'you', activity_now);
+    your_Draw = new Draw(ctx, canvas);
   }
 
   user === 'me' ? my_Draw.setActivity(activity_now) : your_Draw.setActivity(activity_now);

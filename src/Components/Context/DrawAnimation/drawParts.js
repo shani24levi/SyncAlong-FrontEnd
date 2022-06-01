@@ -1,21 +1,14 @@
 import { getAngle, getDistance, getMiddle, } from './vectors';
 
-export const drawPosPoint = (ctx,pose, number, distance,img, globalAlpha = null, gIndex = 0) => {
+export const drawforPoint = (ctx,pose, number, distance,img, globalAlpha = null, gIndex = 0) => {
     if(globalAlpha)
             ctx.globalAlpha = globalAlpha[gIndex % globalAlpha.length];
-    else    ctx.globalAlpha = 0.6;
+    else    ctx.globalAlpha = 0.4;
     if(globalAlpha)
             ctx.drawImage(img, (pose[number].x * _width) - (distance * 2), (pose[number].y * _height) - (distance * 2), distance * 4, distance * 4);
     else    ctx.drawImage(img, (pose[number].x * _width) - (distance / 4), (pose[number].y * _height) - (distance / 4), distance / 1.5, distance / 1.5);
 }
-export const drawNegPoint = (ctx, pose, number, distance, img, globalAlpha = null, gIndex = 0) => {
-    if(globalAlpha)
-    ctx.globalAlpha = globalAlpha[gIndex % globalAlpha.length];
-    else    ctx.globalAlpha = 0.6;
-    if(globalAlpha)
-            ctx.drawImage(img, (pose[number].x * _width) - (distance * 2), (pose[number].y * _height) - (distance * 2), distance * 4, distance * 4);
-    else    ctx.drawImage(img, (pose[number].x * _width) - (distance / 4), (pose[number].y * _height) - (distance / 4), distance / 1.5, distance / 1.5);
-}
+
 const _width = 640;
 const _height = 480;
 export const drawImage = ({ctx, image, x, y, height, width, rotation, offsetX, offsetY}) => {
@@ -177,7 +170,7 @@ export const drawBody = (ctx, pose, image) =>{
     }
 }
 export const drawLeftUpperArm = (ctx, pose, image) => {
-    const upperArmLength = 327;
+    const upperArmLength = 500;
 
     const leftShoulder = pose[11];
     const leftElbow = pose[13];
@@ -191,7 +184,7 @@ export const drawLeftUpperArm = (ctx, pose, image) => {
 }
 export const drawRightUpperArm = (ctx, pose, image) => {
 
-    const upperArmLength = 327;
+    const upperArmLength = 500;
     const rightShoulder = pose[12];
     const rightElbow = pose[14];
     if (rightShoulder && rightElbow) {
@@ -203,7 +196,7 @@ export const drawRightUpperArm = (ctx, pose, image) => {
     }
 }
 export const drawLeftForearm = (ctx, pose, image) => {
-    const forearmLength = 386;
+    const forearmLength = 500;
     const leftElbow = pose[13];
     const leftWrist = pose[15];
 
@@ -216,7 +209,7 @@ export const drawLeftForearm = (ctx, pose, image) => {
     }
 }
 export const drawRightForearm = (ctx, pose, image) => {
-    const forearmLength = 386;
+    const forearmLength = 500;
     const rightElbow = pose[14];
     const rightWrist = pose[16];
     if (rightElbow && rightWrist) {
@@ -233,7 +226,7 @@ export const drawLeftHand = (ctx, pose, image) => {
     const leftIndex = pose[19];
     const leftPinky = pose[17];
 
-    const length = 125;
+    const length = 500;
 
     if (leftWrist && leftIndex && leftPinky) {
         const middleFingers = getMiddle(leftIndex, leftPinky);
@@ -249,7 +242,7 @@ export const drawRightHand = (ctx, pose, image) => {
     const rightIndex = pose[20];
     const rightPinky = pose[18];
 
-    const length = 125;
+    const length = 500;
 
     if (rightWrist && rightIndex && rightPinky) {
         const middleFingers = getMiddle(rightIndex, rightPinky);
@@ -264,7 +257,7 @@ export const drawLeftThigh = (ctx, pose, image) => {
     const leftHip = pose[23];
     const leftKnee = pose[25];
 
-    const length = 482;
+    const length = 800;
 
     if (leftHip && leftKnee) {
       const angle = getAngle(leftKnee, leftHip);
@@ -278,7 +271,7 @@ export const drawRightThigh = (ctx, pose, image) => {
     const rightHip = pose[24];
     const rightKnee = pose[26];
 
-    const length = 482;
+    const length = 800;
 
     if (rightHip && rightKnee) {
       const angle = getAngle(rightKnee, rightHip);
@@ -292,7 +285,7 @@ export const drawLeftLowerLeg = (ctx, pose, image) => {
     const leftKnee = pose[25];
     const leftAnkle = pose[27];
 
-    const length = 464;
+    const length = 800;
 
     if (leftAnkle && leftKnee) {
         const angle = getAngle(leftKnee, leftAnkle);
@@ -306,7 +299,7 @@ export const drawRightLowerLeg = (ctx, pose, image) => {
     const rightKnee = pose[26];
     const rightAnkle = pose[28];
 
-    const length = 464;
+    const length = 800;
 
     if (rightAnkle && rightKnee) {
     const angle = getAngle(rightKnee, rightAnkle);

@@ -49,7 +49,7 @@ const activity_ar = {
     //legs
     'heart': ['left-leg-up', 'right-leg-up', 'legs-both-up','90leging-right', '90leging-left'],
     //both
-    'borger': ['gamp', 'open-close', 'poshup', 'baly-run', 'baly-legs', 'back-down', 'toch-flor', 'claping', 'all-up-1', 'legs-gumping', 'open-close', 'kicks', 'pray', 'right-all', 'up-dwon-both',
+    'skeleton': ['gamp', 'open-close', 'poshup', 'baly-run', 'baly-legs', 'back-down', 'toch-flor', 'claping', 'all-up-1', 'legs-gumping', 'open-close', 'kicks', 'pray', 'right-all', 'up-dwon-both',
     'gump-sides',],
 
 
