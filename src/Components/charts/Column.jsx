@@ -97,6 +97,8 @@ function Column({ series, syncAvgs }) {
         }
     }, [data, categories])
 
+
+    console.log('dataeee', data);
     return (
         <>
             {

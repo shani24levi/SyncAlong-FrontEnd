@@ -5,6 +5,7 @@ import {
     CLEAR_SYNCS,
 } from './types';
 import { syncService } from '../../servises';
+import { syncperformanceService } from '../../servises';
 
 export const clearLogoutSyncs = () => { return { type: CLEAR_SYNCS }; };
 

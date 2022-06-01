@@ -4,6 +4,7 @@ import { SocketContext } from '../Context/ContextProvider';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { getAllMeetings, setActiveMeeting } from '../../Store/actions/meetingActions';
+import { getMySyncs } from '../../Store/actions/syncperformanceActions';
 import { setCurrentProfile, getTraineesProfiles, getAllTraineesProfiles } from '../../Store/actions/profileAction';
 import { futureMeetings } from '../../Store/actions/meetingActions';
 import PopUpCall from '../popupCall/PopUpCall';
@@ -24,6 +25,7 @@ const Home = ({ socket }) => {
     const user = useSelector(state => state.auth.user);
     const profile = useSelector(state => state.profile);
     const meetings = useSelector(state => state.meetings);
+    const syncperformance = useSelector(state => state.syncperformance);
 
     const [meeting, setMeeting] = useState(false);
     const [date, setDate] = useState(0);
@@ -48,6 +50,13 @@ const Home = ({ socket }) => {
             }
         }
     }, [profile.profile]);
+
+    useEffect(() => {
+        if (isEmpty(syncperformance.syncs)) {
+            // user?.role === 'trainer' && profile?.profile?.trainerOf.length !== 0 && !profile?.trainee_profile_called && dispatch(getAllTraineesProfiles());
+            dispatch(getMySyncs());
+        }
+    }, [syncperformance.syncs]);
 
     useEffect(async () => {
         if (traineeEntered) {

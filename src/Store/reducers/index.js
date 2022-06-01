@@ -6,6 +6,8 @@ import profileReducer from './profileReducer';
 import meetingReducer from './meetingReducer';
 import syncReducer from './syncReducer';
 import recordingReducer from './recordingReducer';
+import syncperformanceReducer from './syncperformanceReducer';
+
 export default combineReducers({
     auth: authReducer,
     errors: errorReducer,
@@ -14,4 +16,5 @@ export default combineReducers({
     meetings: meetingReducer,
     syncs: syncReducer,
     recording: recordingReducer,
+    syncperformance: syncperformanceReducer
 });

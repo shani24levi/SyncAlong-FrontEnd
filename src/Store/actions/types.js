@@ -58,8 +58,19 @@ export const SET_MEETING_COMPKITED = 'SET_MEETING_COMPKITED';
 export const SET_MEETING_COMPKITED_URL = 'SET_MEETING_COMPKITED_URL';
 export const CLEARE_QUICK_MEETING = 'CLEARE_QUICK_MEETING';
 export const UPCOMING_MEETING_UPDATE = 'UPCOMING_MEETING_UPDATE';
+
+export const SYNC_PERFORM_LOADING = 'SYNC_PERFORM_LOADING';
+export const CLEAR_SYNC_PERFORM = 'CLEAR_SYNC_PERFORM';
+export const GET_CURR_SYNC_PERFORM = 'GET_CURR_SYNC_PERFORM';
+export const CREATE_MEETING_SYNC = 'CREATE_MEETING_SYNC';
+export const GET_TRAINEES_SYNC_PERFORM = 'GET_TRAINEES_SYNC_PERFORM';
 //export const  = '';
 //export const  = '';
+//export const  = '';
+//export const  = '';
+//export const  = '';
+//export const  = '';
+
 
 
 

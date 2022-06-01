@@ -1,11 +1,12 @@
 import React, { useContext, useEffect, useState, useRef } from 'react';
 import { SocketContext } from '../Context/ContextProvider';
+import { useSelector, useDispatch } from 'react-redux';
+import { getTraineesSyncs } from '../../Store/actions/syncperformanceActions';
 import { Link } from 'react-router-dom';
 import { styled } from '@mui/system'
 import { Grid, Container, Button, Box, Card, Typography } from '@material-ui/core';
 import { Stack } from '@mui/material';
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import { useSelector } from 'react-redux';
 import isEmpty from '../../validation/isEmpty';
 import NextMeetingTime from '../meeting/NextMeetingTime';
 import Search from '../search/Search';
@@ -29,6 +30,7 @@ import Loader from '../loder/Loder';
 import ListedMeetings from './trainer/listTable/ListedMeetings';
 import VideoCameraFrontIcon from '@mui/icons-material/VideoCameraFront';
 import AddIcon from '@mui/icons-material/Add';
+import ColumnSyncs from '../charts/ColumnSyncs';
 
 const buttonStyle = makeStyles(buttonsStyles);
 
@@ -61,6 +63,7 @@ const useStyles = makeStyles({
 function TrainerHome({ meeting, date, dateToMeeting }) {
     const { setAccseptScheduleMeetingCall, setYourSocketId, setMySocketId, socket, setUpcomingMeetingToNow, scheduleMeetingPopUpCall, upcamingMeeting } = useContext(SocketContext);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const classes = useStyles();
     const btnClasses = buttonStyle();
     const theme = useTheme();
@@ -70,6 +73,7 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
     const meetings = useSelector(state => state.meetings);
     const my_trainees = useSelector(state => state.profile.trainees_profiles);
     const trainee_profile_called = useSelector(state => state.profile.trainee_profile_called);
+    const syncperformance_trainees = useSelector(state => state.syncperformance.trainees);
 
     let abortController = new AbortController(); //why? https://www.loginradius.com/blog/engineering/how-to-fix-memory-leaks-in-react/
     useEffect(async () => {
@@ -81,6 +85,30 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
             abortController.abort();
         }
     }, [errorDisplay])
+
+    useEffect(() => {
+        if (isEmpty(syncperformance_trainees) && !isEmpty(meetings.meetings_complited)) {
+            dispatch(getTraineesSyncs());
+        }
+        else {
+            console.log('syncperformance_trainees', syncperformance_trainees);
+            let arruser = [];
+            let arrsyncs = [];
+
+            syncperformance_trainees.map(el => {
+                arruser.push(el.user.user);
+                let sum, count = 0;
+                el.syncs.map((s, i) => {
+                    sum += Number(s.totalAv);
+                    count++;
+                })
+                arrsyncs.push(sum / count);
+            })
+            // setTop3HighSync();
+            // setTop3LowSync();
+            // setTop1LastMeeting();
+        }
+    }, [syncperformance_trainees, meetings.meetings_complited])
 
     const handelConectNow = () => {
         if (upcamingMeeting) {
@@ -136,7 +164,7 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
     return (
         <>
             <Container maxWidth="xl">
-                <Button onClick={() => navigate('/video-room', { state: { meeting: meetings.upcoming_meeting } })}>Video</Button>
+                {/* <Button onClick={() => navigate('/video-room', { state: { meeting: meetings.upcoming_meeting } })}>Video</Button> */}
                 {quickStartOpen && <PopUpQuickStart quickStartOpen={quickStartOpen} setQuickStartOpen={setQuickStartOpen} />}
                 {errorDisplay && <ErrorAlert name={upcamingMeeting.trainee.user} title=" is not online in order to conect joined meeting" />}
                 <Grid container alignItems='center' justifyContent='center' spacing={1} >
@@ -186,6 +214,21 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
                                 </Button>
                             </Box>
                         </CardContiner>
+                    </Grid>
+
+                    <Grid item xs={12} md={12} lg={12}>
+                        {
+                            !isEmpty(syncperformance_trainees) && syncperformance_trainees.lenght !== 0 ?
+                                <>
+                                    <Stack direction="row" alignItems="center" justifyContent="space-between" mt={3} mb={1}>
+                                        <Typography variant="h4" gutterBottom>
+                                            Trainees Syncs Follow Up
+                                        </Typography>
+                                    </Stack>
+                                    <ColumnSyncs />
+                                </>
+                                : <></>
+                        }
                     </Grid>
 
                     <Grid item xs={12} md={12} lg={12}>

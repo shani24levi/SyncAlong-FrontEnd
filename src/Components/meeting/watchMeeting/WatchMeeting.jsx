@@ -76,9 +76,6 @@ function WatchMeeting() {
                             <VideoDetail video={selectedVideo} syncs={sync} />
                         </>
                 }
-                {/* <VideoList
-                    onVideoSelect={selectedVideo => setSelectedVideo({ selectedVideo })}
-                    videos={meetings_filtered ? meetings_filtered.slice(0, 5) : null} /> */}
             </Grid>
         </Container>
     );

@@ -11,7 +11,6 @@ const initialState = {
     loading: false,
     all_syncs: null,
     meeting: null,
-
 }
 
 export default function (state = initialState, action) {

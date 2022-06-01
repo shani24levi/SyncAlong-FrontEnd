@@ -1,4 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { createMeetingSync } from '../../Store/actions/syncperformanceActions'
 import { Grid, Box, Typography } from '@material-ui/core';
 import {
     Stack,
@@ -13,6 +15,7 @@ import DonutAvg from '../charts/DonutAvg';
 import SyncsLineChart from './SyncsLineChart';
 import Column from '../charts/Column';
 import ColoredLines from '../charts/ColoredLines';
+import { is } from 'date-fns/locale';
 
 
 const bgcolor = [
@@ -52,6 +55,10 @@ const linecolor = [
 ]
 
 function SyncView({ selectedVideo, syncs }) {
+    const dispatch = useDispatch();
+    const syncperformance = useSelector(state => state.syncperformance.syncs);
+    const user = useSelector(state => state.auth.user);
+
     let [syncbyAct, setSyncByAct] = useState([]);
     let [syncObjs, setSyncObjs] = useState([]);
     let [syncAvgs, setSyncAvgs] = useState([]);
@@ -214,8 +221,33 @@ function SyncView({ selectedVideo, syncs }) {
         }
     }, [series, syncAvgs])
 
+    console.log('selectedVideo', selectedVideo);
 
-    console.log('series1', series1, syncAvgs);
+
+    useEffect(() => {
+        if (!isEmpty(dataEach3sec) && !isEmpty(syncAvgs) && user.role === 'trainer') {
+            let arrResults = syncAvgs;
+            arrResults.map((el, i) => {
+                el.series = dataEach3sec[i];
+            })
+
+            if (!isEmpty(syncperformance.length !== 0)) {
+                let meeting_fuond = syncperformance.find(el => el.meeting_id === selectedVideo._id);
+                if (isEmpty(meeting_fuond)) {
+                    dispatch(createMeetingSync({ meeting_id: selectedVideo._id, totalAvg: avgSync, resultByActivities: arrResults }))
+                    return;
+                }
+                else return; // camtinue -dont do anything
+            }
+            else {
+                dispatch(createMeetingSync({ meeting_id: selectedVideo._id, totalAvg: avgSync, resultByActivities: arrResults }))
+            }
+        }
+    }, [dataEach3sec, syncperformance])
+
+    console.log('series', series);
+    console.log('dataEach3sec', dataEach3sec, syncAvgs);
+
     return (
         <>
             <Grid
@@ -267,7 +299,7 @@ function SyncView({ selectedVideo, syncs }) {
                 {
                     !isEmpty(series) && !isEmpty(dataEach3sec) && dataEach3sec.map((el, i) => {
                         return (
-                            <Grid item xs={6} md={4} lg={4}> <ColoredLines bgcolored={bgcolor[i]} lineColore={linecolor[i]} series={el} syncAvgs={syncAvgs[i]} /> </Grid>
+                            <Grid item xs={6} md={4} lg={4} key={i}> <ColoredLines bgcolored={bgcolor[i]} lineColore={linecolor[i]} series={el} syncAvgs={syncAvgs[i]} /> </Grid>
                         )
                     })
 
