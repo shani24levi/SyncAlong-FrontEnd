@@ -216,7 +216,7 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
                         </CardContiner>
                     </Grid>
 
-                    <Grid item xs={12} md={12} lg={12}>
+                    {/* <Grid item xs={12} md={12} lg={12}>
                         {
                             !isEmpty(syncperformance_trainees) && syncperformance_trainees.lenght !== 0 ?
                                 <>
@@ -229,7 +229,7 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
                                 </>
                                 : <></>
                         }
-                    </Grid>
+                    </Grid> */}
 
                     <Grid item xs={12} md={12} lg={12}>
                         {
