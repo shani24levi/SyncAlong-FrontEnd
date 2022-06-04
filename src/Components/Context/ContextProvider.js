@@ -414,7 +414,7 @@ function ContextProvider({ children, socket, profile }) {
     lisiningForDisconectPeerInRoom();
     lisiningRoomClosedDeclining();
     //lisiningForConnected();
-    lisiningReConected();
+    //lisiningReConected();
     lisiningStatePeer();
     lisiningMeetingComplited();
     calltoTraineeQuickMeeting();
@@ -839,7 +839,7 @@ function ContextProvider({ children, socket, profile }) {
       console.log('responsRoomId ', res);
     });
   };
-
+  let indexReconnect = 0;
   const lisiningForDisconectPeerInRoom = () => {
     let mypeer = null;
     if (!isEmpty(meetings.active_meeting)) mypeer = user.role === 'trainer' ? meetings.active_meeting.trainee._id : meetings.active_meeting.tariner._id
@@ -857,26 +857,47 @@ function ContextProvider({ children, socket, profile }) {
       }
     });
 
-    socket?.on("reconect", (user) => {
-      if (user.userId === user._id)
-        setMySocketId(user.socketId);
-      else setYourSocketId(user.socketId);
+    socket?.on("reconect", (users) => {
+      let id = user?._id
+      indexReconnect++;
+      console.log("indexReconnect", indexReconnect)
+      if (users.length === 1 && indexReconnect < 2){
+        socket?.emit('reconect', (users[0].userId, roomId));
+      }
+      else if(users.length === 1 && indexReconnect === 2) {
+        indexReconnect = 0;
+        leaveCall();
+        navigate('/home', { state: { meeting_id: roomId, me: myName, you: yourName } });
+      }
+      else {
+        indexReconnect = 0;
+        users.forEach(user => {
+          if (user.userId === id) setMySocketId(user.socketId);
+          else setYourSocketId(user.socketId);
+        })
+        setOneTime(true);
 
-      //when im in the room waiting 
-      //you come in - you dont have my accsept
-      //i tall you agin 
-      console.log(location.pathname, user.role);
-      if (location.pathname === '/video-room') {
-        if (user.role === 'trainee') {
+        //when im in the room waiting 
+        //you come in - you dont have my accsept
+        //i tall you agin 
+        console.log("c",location.pathname, user.role);
+        //if (location.pathname === '/video-room') {
+          if (user.role === 'trainee') {
           //all states are cleard when you left the meeting
           console.log('i accsept Schedule MeetingCall to', yourSocketId);
           socket?.emit('accseptScheduleMeetingCall', yourSocketId);
           socket?.emit('t', { yourSocketId, roomId });
-        }
-        if (user.role === 'trainer') {
-          //all states are cleard when you left the meeting
-          socket?.emit('accseptScheduleMeetingCall', yourSocketId);
-        }
+          }
+          if (user.role === 'trainer') {
+            //all states are cleard when you left the meeting
+            socket?.emit('accseptScheduleMeetingCall', yourSocketId);
+          }
+        // }
+        // else {
+        //   console.log("auto leave");
+        //   leaveCall();
+        //   navigate('/home', { state: { meeting_id: roomId, me: myName, you: yourName } });
+        // }
       }
     });
   };
@@ -902,24 +923,24 @@ function ContextProvider({ children, socket, profile }) {
     });
   };
 
-  const lisiningReConected = () => {
-    let id = user?._id
-    socket?.on('reconect', (users) => {
-      console.log('reconect ', users, user, id);
-      if (location.pathname !== '/video-room') {
-        users.forEach(user => {
-          console.log('reconect foreach ', user.userId, id);
-          if (user.userId === id) setMySocketId(user.socketId);
-          else setYourSocketId(user.socketId);
-        })
-        setOneTime(true);
-      }
-      else {
-        leaveCall();
-        navigate('/home', { state: { meeting_id: roomId, me: myName, you: yourName } });
-      }
-    });
-  };
+  // const lisiningReConected = () => {
+  //   let id = user?._id
+  //   socket?.on('reconect', (users) => {
+  //     console.log('reconect ', users, user, id);
+  //     if (location.pathname !== '/video-room') {
+  //       users.forEach(user => {
+  //         console.log('reconect foreach ', user.userId, id);
+  //         if (user.userId === id) setMySocketId(user.socketId);
+  //         else setYourSocketId(user.socketId);
+  //       })
+  //       setOneTime(true);
+  //     }
+  //     else {
+  //       leaveCall();
+  //       navigate('/home', { state: { meeting_id: roomId, me: myName, you: yourName } });
+  //     }
+  //   });
+  // };
 
   const lisiningStatePeer = () => {
     socket?.on('statePeer', (state) => {
@@ -1134,7 +1155,7 @@ function ContextProvider({ children, socket, profile }) {
   const leaveCall = () => {
     console.log('leve func');
     setCallEnded(true);
-    connectionRef.current.destroy();
+    connectionRef.current && connectionRef.current.destroy();
     // stop both video and audio
     // stream.getTracks().forEach(function (track) {
     //   track.stop();
