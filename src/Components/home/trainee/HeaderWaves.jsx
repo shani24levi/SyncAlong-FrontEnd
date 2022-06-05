@@ -12,7 +12,7 @@ function HeaderWaves({ meeting, date, upcamingMeeting }) {
         <Box className="header">
             <Box className="inner-header flex">
                 <Container maxWidth="xl">
-                    <Box marginBottom="6rem" textAlign="center">
+                    <Box marginBottom="6rem" marginTop="6rem" textAlign="center">
                         <Box
                             component={Grid}
                             container
@@ -20,7 +20,7 @@ function HeaderWaves({ meeting, date, upcamingMeeting }) {
                         //color={theme.palette.grey[100]}
                         >
                             <Grid item lg={5} md={6} xs={12}>
-                                <h1 style={{ padding: '10px' }}>Welcome {user.user}!</h1>
+                                <h1 style={{ padding: '10px', marginTop: '10px' }}>Welcome {user.user}!</h1>
                                 {meeting
                                     ?
                                     <>

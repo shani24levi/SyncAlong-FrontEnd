@@ -64,6 +64,7 @@ function SyncView({ selectedVideo, syncs }) {
     let [syncAvgs, setSyncAvgs] = useState([]);
     let [allSync, setAllSync] = useState([]);
     let [avgSync, setAvgSync] = useState(null);
+    let [oneTime, setOneTime] = useState(false);
 
     const [series1, setSeries1] = useState([]);
     const [series, setSeries] = useState([]);
@@ -71,7 +72,7 @@ function SyncView({ selectedVideo, syncs }) {
 
     useEffect(() => {
         if (!isEmpty(syncs)) {
-            console.log('syncs', syncs, syncs[0].meeting_id);
+            console.log('syncs111', syncs, syncs[0].meeting_id);
             syncs.map(el => {
                 let sync = el.meeting_id.activities.find(activity => activity === el.activity);
                 setSyncByAct((syncbyAct) => [...syncbyAct, { activity: sync, result: el.result, time: el.time }]);
@@ -225,7 +226,7 @@ function SyncView({ selectedVideo, syncs }) {
 
 
     useEffect(() => {
-        if (!isEmpty(dataEach3sec) && !isEmpty(syncAvgs) && user.role === 'trainer') {
+        if (!isEmpty(dataEach3sec) && !isEmpty(syncAvgs) && user.role === 'trainer' && !oneTime) {
             let arrResults = syncAvgs;
             arrResults.map((el, i) => {
                 el.series = dataEach3sec[i];
@@ -243,15 +244,17 @@ function SyncView({ selectedVideo, syncs }) {
                 console.log('meeting_fuond', meeting_fuond);
                 if (isEmpty(meeting_fuond)) {
                     dispatch(createMeetingSync({ meeting_id: selectedVideo._id, totalAvg: avgSync, resultByActivities: arrResults }))
+                    setOneTime(true);
                     return;
                 }
                 else return; // camtinue -dont do anything
             }
             else {
                 dispatch(createMeetingSync({ meeting_id: selectedVideo._id, totalAvg: avgSync, resultByActivities: arrResults }))
+                setOneTime(true);
             }
         }
-    }, [dataEach3sec, syncperformance])
+    }, [dataEach3sec, syncperformance, oneTime])
 
     console.log('series', series);
     console.log('dataEach3sec', dataEach3sec, syncAvgs);

@@ -23,7 +23,7 @@ p {
      /* linear-gradient(60deg, rgba(84, 58, 183, 1) 0%, rgba(0, 172, 193, 1) 100%); */
 
 .inner-header {
-    height: 65vh;
+    /* height: 65vh; */
     width: 100%;
     margin: 0;
     padding: 0;

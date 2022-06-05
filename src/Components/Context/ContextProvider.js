@@ -625,12 +625,14 @@ function ContextProvider({ children, socket, profile }) {
       //get the user socket and send to you the changes....
       user.role === 'trainer' && socket?.emit("getSocketId", meetings.upcoming_meeting.trainee._id, user => {
         console.log("getSocketIduser", user);
-        let data = {
-          to: user.socketId,
-          meeting: meetings.upcoming_meeting,
+        if (!isEmpty(user.socketId)) {
+          let data = {
+            to: user.socketId,
+            meeting: meetings.upcoming_meeting,
+          }
+          console.log('data', data, "user.role", user.role);
+          socket?.emit("updateUpcomingMeeting", data);
         }
-        console.log('data', data, "user.role", user.role);
-        socket?.emit("updateUpcomingMeeting", data);
       });
     }
     setUpcamingMeeting(meetings.upcoming_meeting);

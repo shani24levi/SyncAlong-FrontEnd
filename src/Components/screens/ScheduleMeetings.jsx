@@ -21,6 +21,7 @@ const ScheduleMeetings = (props) => {
     const [meetingEvents, setMeetingEvents] = useState([]);
     const [firstTime, setFirstTime] = useState(true);
 
+    const user = useSelector(state => state.auth.user);
     const profile = useSelector(state => state.profile);
     const meetings = useSelector(state => state.meetings);
 
@@ -63,6 +64,7 @@ const ScheduleMeetings = (props) => {
     };
 
     const handleSelectEvent = (start) => {
+        if (user.role === 'trainee') return;
         //  console.log('handleSelectEvent', start);
         setModalCreate(false);
         setFirstTime(false)
