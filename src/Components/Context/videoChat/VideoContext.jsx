@@ -34,7 +34,8 @@ import {
 import {
   setActiveMeeting,
   setMeetingComplited,
-  closeActiveMeeting
+  closeActiveMeeting,
+  setComplitedWithUrl
 } from '../../../Store/actions/meetingActions';
 
 import isEmpty from '../../../validation/isEmpty';
@@ -157,7 +158,7 @@ function VideoContext({ meeting }) {
   const [activityOn, setActivityOn] = useState(false);
 
   const lisiningForConnected = () => {
-    setIsPeerHere(false);
+    // setIsPeerHere(false);
     //lisinig for changes in the array of users caming in to the app
     socket?.on('connected', (socketId, users) => {
       console.log('i am connected');
@@ -221,7 +222,7 @@ function VideoContext({ meeting }) {
           setCallAccepted(false);
           setCall({});
           setOneTimeCall(true);
-          setIsPeerHere(false);
+          // setIsPeerHere(false);
           setYourSocketId(null);
           setConectReq(false);
 
@@ -273,7 +274,7 @@ function VideoContext({ meeting }) {
     setDisplayErrorMessage(null);
     setSession(false);
     setActivitiesEnded(false);
-    setIsPeerHere(yourSocketId ? true : false);
+    // setIsPeerHere(yourSocketId ? true : false);
     setOneTimeCall(true);
     setStop(false);
   }, []);
@@ -400,12 +401,51 @@ function VideoContext({ meeting }) {
     return true; //end of all session
   };
 
-  useEffect(() => {
+  useEffect(async () => {
     console.log('status,mediaBlobUrl', status, mediaBlobUrl);
     if (status === 'stopped' && mediaBlobUrl) {
       saveMeetingRecording();
     }
-  }, [status, mediaBlobUrl]);
+    else if (status === 'acquiring_media' && !mediaBlobUrl && recognition === 'leave') {
+      if (user.role === 'trainer') {
+        dispatch(
+          setMeetingComplited(meeting, {
+            status: false,
+            urlRoom: 'recordingFailed'
+          })
+        );
+        //dispatch(setActiveMeeting(meeting, false));
+
+        dispatch(
+          setComplitedWithUrl(meeting, {
+            status: false,
+            urlRoom: 'recordingFailed',
+            dateEnd: new Date()
+          })
+        );
+
+        //updats the peer if his here
+        socket?.emit("getSocketId", meeting.trainee._id, user => {
+          console.log('getSocketId', meeting.trainee._id, user);
+          let data = {
+            to: user.socketId,
+            meeting: meeting,
+            recording: 'recordingFailed',
+            dateEnd: new Date()
+          }
+          console.log('datameetingComplited', data);
+          socket?.emit("meetingComplited", data);
+        });
+
+
+      }
+
+      //somting wrong with recording.....
+      await delay(2000);
+      console.log('No RECORDINGGGGG: ', meeting._id);
+    }
+
+  }, [status, mediaBlobUrl, recognition]);
 
   const saveMeetingRecording = async () => {
     setProssingEndMeeting(true);
@@ -729,6 +769,7 @@ function VideoContext({ meeting }) {
     }
   }, [callAccepted]);
 
+  // console.log('isPeerHere', isPeerHere);
   return (
     <>
       {meetingClosedByPeer && <ErrorAlert title={'Sorry ,Meeting has been closed by peer'} />}
@@ -783,7 +824,7 @@ function VideoContext({ meeting }) {
         {stream && (
           <Paper className={classes.paper}>
             <Grid item xs={12} md={6} style={{ textAlign: 'center' }}>
-              <Typography variant="h5" gutterBottom>
+              <Typography variant="h6" gutterBottom>
                 {myName || 'Name'}
               </Typography>
               <Webcam
@@ -816,7 +857,7 @@ function VideoContext({ meeting }) {
         {callAccepted && !callEnded && (
           <Paper className={classes.paper}>
             <Grid item xs={12} md={6}>
-              <Typography variant="h5" gutterBottom>
+              <Typography variant="h6" gutterBottom>
                 {yourName || 'Name'}
               </Typography>
               <video

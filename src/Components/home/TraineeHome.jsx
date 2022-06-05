@@ -15,9 +15,11 @@ import TableChartOutlinedIcon from '@mui/icons-material/TableChartOutlined';
 import PopUpCallQuickMeeting from '../popupCall/PopUpCallQuickMeeting';
 import isEmpty from '../../validation/isEmpty';
 import WorningAlert from '../alrets/WorningAlert';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
+import TimelineIcon from '@mui/icons-material/Timeline';
 import { delay } from '../../helpers';
 const useStyles = makeStyles(componentStyles);
-
 
 // styles
 const CardWrapper = styled(Card)(({ theme }) => ({
@@ -47,6 +49,58 @@ function TraineeHome({ meeting, date }) {
     const theme = useTheme();
     const user = useSelector(state => state.auth.user);
     const profile = useSelector(state => state.profile);
+    const meetings = useSelector(state => state.meetings);
+    const syncperformance = useSelector(state => state.syncperformance.syncs);
+    const [dataChart, setDataChart] = useState(null);
+
+    useEffect(() => {
+        if (!isEmpty(syncperformance) && !isEmpty(meetings.meetings_complited)) {
+            console.log('syncperformance_trainees', syncperformance);
+            // let arruser = [];
+            // let arrsyncs = [];
+            // let arrdata = [];
+
+            // syncperformance.map(el => {
+            //     console.log('elel', el);
+            //     arruser.push(el.user.user);
+            //     let sum = 0;
+            //     let count = 0;
+            //     let sum5 = 0;
+            //     let flag = false;
+            //     let last = 0;
+            //     //set Total_AVG
+            //     el.syncs.map((s, i) => {
+            //         if (i === 0) last = Number(s.totalAvg);
+            //         console.log('sss', Number(s.totalAvg));
+            //         sum += Number(s.totalAvg);
+            //         count++;
+            //         //Top 5 meetings avg
+            //         if (count === 4) {
+            //             sum5 = sum;
+            //             flag = true;
+            //         }
+            //     })
+
+            //     //Top 5 meetings avg
+            //     let top5 = sum / count;
+            //     if (flag) top5 = sum5 / 5;
+
+            //     //console.log('sumsumsum', sum5, sum);
+            //     arrsyncs.push(Math.trunc(sum / count), Math.trunc(last), Math.trunc(top5))
+            //     console.log('arrsyncsarrsyncs', arrsyncs);
+
+            //     arrdata.push({ name: el.user.user, data: arrsyncs });
+            //     arrsyncs = [];
+            //     flag = false;
+            //     sum = 0;
+            //     count = 0;
+            //     sum5 = 0;
+            // })
+            // console.log('arrdata', arrdata);
+            // setDataChart(arrdata)
+        }
+    }, [syncperformance, meetings.meetings_complited])
+
 
     // console.log('====================================');
     // console.log(callTrainee);
@@ -96,7 +150,7 @@ function TraineeHome({ meeting, date }) {
                                                         color: '#fff'
                                                     }}
                                                 >
-                                                    <TableChartOutlinedIcon width={34} height={34} />
+                                                    <EmojiEventsIcon width={34} height={34} />
                                                 </Avatar>
                                             </ListItemAvatar>
                                             <ListItemText
@@ -107,12 +161,12 @@ function TraineeHome({ meeting, date }) {
                                                 }}
                                                 primary={
                                                     <Typography variant="h4" sx={{ color: '#fff' }}>
-                                                        $203k
+                                                        99%
                                                     </Typography>
                                                 }
                                                 secondary={
                                                     <Typography variant="subtitle2" sx={{ color: 'primary.light', mt: 0.25 }}>
-                                                        Total Income
+                                                        Bast Sync Score Meeting
                                                     </Typography>
                                                 }
                                             />
@@ -140,7 +194,7 @@ function TraineeHome({ meeting, date }) {
                                                         color: '#fff'
                                                     }}
                                                 >
-                                                    <TableChartOutlinedIcon width={34} height={34} />
+                                                    <MilitaryTechIcon width={34} height={34} />
                                                 </Avatar>
                                             </ListItemAvatar>
                                             <ListItemText
@@ -151,12 +205,12 @@ function TraineeHome({ meeting, date }) {
                                                 }}
                                                 primary={
                                                     <Typography variant="h4" sx={{ color: '#fff' }}>
-                                                        $203k
+                                                        ##78 hands
                                                     </Typography>
                                                 }
                                                 secondary={
                                                     <Typography variant="subtitle2" sx={{ color: 'primary.light', mt: 0.25 }}>
-                                                        Total Income
+                                                        Bast Activity Sync Score
                                                     </Typography>
                                                 }
                                             />
@@ -173,7 +227,7 @@ function TraineeHome({ meeting, date }) {
                         >
                             <CardAvatar>
                                 <AvatarGroup max={4}>
-                                    <Avatar alt="you" src={user.avatar} className={classes.middle} />
+                                    <Avatar alt="you" src={profile.profile.traineeOf.avatar} className={classes.middle} />
                                     <Avatar alt="me" src={user.avatar} className={classes.middle} />
                                 </AvatarGroup>
 
@@ -200,7 +254,7 @@ function TraineeHome({ meeting, date }) {
                                                             color: '#fff'
                                                         }}
                                                     >
-                                                        <TableChartOutlinedIcon width={34} height={34} />
+                                                        <TimelineIcon width={34} height={34} />
                                                     </Avatar>
                                                 </ListItemAvatar>
                                                 <ListItemText
@@ -211,12 +265,12 @@ function TraineeHome({ meeting, date }) {
                                                     }}
                                                     primary={
                                                         <Typography variant="h4" sx={{ color: '#fff' }}>
-                                                            $203k
+                                                            Total Sync So Far: 74%
                                                         </Typography>
                                                     }
                                                     secondary={
                                                         <Typography variant="subtitle2" sx={{ color: 'primary.light', mt: 0.25 }}>
-                                                            Total Income
+                                                            Your Sync Progress on Meetings
                                                         </Typography>
                                                     }
                                                 />

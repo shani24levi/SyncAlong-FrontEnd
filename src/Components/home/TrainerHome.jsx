@@ -70,6 +70,7 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
     const profile = useSelector(state => state.profile.profile)
     const [errorDisplay, setErrorDisplay] = useState(false);
     const [quickStartOpen, setQuickStartOpen] = useState(false);
+    const [dataChart, setDataChart] = useState(null);
     const meetings = useSelector(state => state.meetings);
     const my_trainees = useSelector(state => state.profile.trainees_profiles);
     const trainee_profile_called = useSelector(state => state.profile.trainee_profile_called);
@@ -94,16 +95,46 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
             console.log('syncperformance_trainees', syncperformance_trainees);
             let arruser = [];
             let arrsyncs = [];
+            let arrdata = [];
 
             syncperformance_trainees.map(el => {
+                console.log('elel', el);
                 arruser.push(el.user.user);
-                let sum, count = 0;
+                let sum = 0;
+                let count = 0;
+                let sum5 = 0;
+                let flag = false;
+                let last = 0;
+                //set Total_AVG
                 el.syncs.map((s, i) => {
-                    sum += Number(s.totalAv);
+                    if (i === 0) last = Number(s.totalAvg);
+                    console.log('sss', Number(s.totalAvg));
+                    sum += Number(s.totalAvg);
                     count++;
+                    //Top 5 meetings avg
+                    if (count === 4) {
+                        sum5 = sum;
+                        flag = true;
+                    }
                 })
-                arrsyncs.push(sum / count);
+
+                //Top 5 meetings avg
+                let top5 = sum / count;
+                if (flag) top5 = sum5 / 5;
+
+                //console.log('sumsumsum', sum5, sum);
+                arrsyncs.push(Math.trunc(sum / count), Math.trunc(last), Math.trunc(top5))
+                console.log('arrsyncsarrsyncs', arrsyncs);
+
+                arrdata.push({ name: el.user.user, data: arrsyncs });
+                arrsyncs = [];
+                flag = false;
+                sum = 0;
+                count = 0;
+                sum5 = 0;
             })
+            console.log('arrdata', arrdata);
+            setDataChart(arrdata)
             // setTop3HighSync();
             // setTop3LowSync();
             // setTop1LastMeeting();
@@ -216,20 +247,20 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
                         </CardContiner>
                     </Grid>
 
-                    {/* <Grid item xs={12} md={12} lg={12}>
+                    <Grid item xs={12} md={12} lg={12}>
                         {
-                            !isEmpty(syncperformance_trainees) && syncperformance_trainees.lenght !== 0 ?
+                            !isEmpty(dataChart) && dataChart.lenght !== 0 ?
                                 <>
                                     <Stack direction="row" alignItems="center" justifyContent="space-between" mt={3} mb={1}>
                                         <Typography variant="h4" gutterBottom>
                                             Trainees Syncs Follow Up
                                         </Typography>
                                     </Stack>
-                                    <ColumnSyncs />
+                                    <ColumnSyncs data={dataChart} />
                                 </>
                                 : <></>
                         }
-                    </Grid> */}
+                    </Grid>
 
                     <Grid item xs={12} md={12} lg={12}>
                         {

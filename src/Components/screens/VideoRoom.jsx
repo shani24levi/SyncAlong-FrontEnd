@@ -57,7 +57,9 @@ function VideoRoom({ socket }) {
     me && setMyRole(me?.role);
 
     //get my socket id
-    //console.log(me?._id, you?._id);
+    console.log("me+YOUY", me?._id, you?._id);
+    if (me?._id === you?._id) return;
+
     socket?.emit('getSocketId', me?._id, (user) => {
       console.log('getSocketId', me?._id, user);
       setMySocketId(user?.socketId);

@@ -829,7 +829,7 @@ function ContextProvider({ children, socket, profile }) {
 
   const lisiningAccseptScheduleMeetingCall = () => {
     socket?.on('accseptScheduleMeetingCall', (id) => {
-      console.log('accseptScheduleMeetingCall of you');
+      console.log('accseptScheduleMeetingCall of you', id);
       setAccseptPeer2ScheduleMeetingCall(id);
     });
   };
@@ -861,10 +861,10 @@ function ContextProvider({ children, socket, profile }) {
       let id = user?._id
       indexReconnect++;
       console.log("indexReconnect", indexReconnect)
-      if (users.length === 1 && indexReconnect < 2){
+      if (users.length === 1 && indexReconnect < 2) {
         socket?.emit('reconect', (users[0].userId, roomId));
       }
-      else if(users.length === 1 && indexReconnect === 2) {
+      else if (users.length === 1 && indexReconnect === 2) {
         indexReconnect = 0;
         leaveCall();
         navigate('/home', { state: { meeting_id: roomId, me: myName, you: yourName } });
@@ -880,18 +880,18 @@ function ContextProvider({ children, socket, profile }) {
         //when im in the room waiting 
         //you come in - you dont have my accsept
         //i tall you agin 
-        console.log("c",location.pathname, user.role);
+        console.log("c", location.pathname, user.role);
         //if (location.pathname === '/video-room') {
-          if (user.role === 'trainee') {
+        if (user.role === 'trainee') {
           //all states are cleard when you left the meeting
           console.log('i accsept Schedule MeetingCall to', yourSocketId);
           socket?.emit('accseptScheduleMeetingCall', yourSocketId);
           socket?.emit('t', { yourSocketId, roomId });
-          }
-          if (user.role === 'trainer') {
-            //all states are cleard when you left the meeting
-            socket?.emit('accseptScheduleMeetingCall', yourSocketId);
-          }
+        }
+        if (user.role === 'trainer') {
+          //all states are cleard when you left the meeting
+          socket?.emit('accseptScheduleMeetingCall', yourSocketId);
+        }
         // }
         // else {
         //   console.log("auto leave");

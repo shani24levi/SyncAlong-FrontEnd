@@ -231,8 +231,16 @@ function SyncView({ selectedVideo, syncs }) {
                 el.series = dataEach3sec[i];
             })
 
-            if (!isEmpty(syncperformance.length !== 0)) {
-                let meeting_fuond = syncperformance.find(el => el.meeting_id === selectedVideo._id);
+            if (!isEmpty(syncperformance) && syncperformance.length !== 0) {
+                console.log('syncperformance', syncperformance);
+                let meeting_fuond = null;
+                syncperformance.map(el => {
+                    if (el.meeting_id === selectedVideo._id) {
+                        meeting_fuond = el;
+                        return;
+                    }
+                }); // el.meeting_id === selectedVideo._id);
+                console.log('meeting_fuond', meeting_fuond);
                 if (isEmpty(meeting_fuond)) {
                     dispatch(createMeetingSync({ meeting_id: selectedVideo._id, totalAvg: avgSync, resultByActivities: arrResults }))
                     return;

@@ -21,6 +21,7 @@ export const createMeetingSync = data => dispatch => {
     syncperformanceService.createMeetingSync(data)
         .then(
             sync => {
+                console.log('syncsync', sync);
                 dispatch(success(sync));
             },
             error => {

@@ -7,6 +7,7 @@ import isEmpty from '../../../validation/isEmpty';
 import { dateFormat } from '../../../Utils/dateFormat';
 import { capitalize } from '../../../helpers';
 import VideoList from './contents/VideoList';
+import { Typography } from '@mui/material';
 
 const Ifram = styled('div')`
 position: relative;
@@ -73,6 +74,10 @@ function VideoHeader({ videoUrl, onVideoSelect, videos }) {
                         <Ifram>
                             <video controls className="responsive-iframe" src={videoUrl.urlRoom} ></video>
                         </Ifram>
+                    }
+                    {
+                        videoUrl.urlRoom === "recordingFailed" &&
+                        <Typography>No Recording....</Typography>
                     }
                     <Details>
                         <div className="details-title">
