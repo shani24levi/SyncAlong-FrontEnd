@@ -455,9 +455,8 @@ function VideoContext({ meeting }) {
         if (user.role === 'trainer' && status === 'stopped' && mediaBlobUrl) {
           console.log('can save recording', mediaBlobUrl);
           // window.open(mediaBlobUrl, "_blank").focus();
-          const blob = await fetch(mediaBlobUrl).then((res) => res.blob());
-          const myFile = new File([blob], 'demo.mp4', { type: 'video/mp4' });
-          console.log(blob);
+          //const blob = await fetch(mediaBlobUrl).then((res) => res.blob());
+          const myFile = mediaBlobUrl; //new File([blob], 'demo.mp4', { type: 'video/mp4' });
           let formData = new FormData();
           formData.append('file', myFile);
           console.log('formData', formData.getAll('file'));

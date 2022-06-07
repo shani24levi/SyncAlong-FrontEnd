@@ -19,6 +19,8 @@ import ScrollTop from '../scrollToTop/ScrollTop';
 import ReConectCall from '../popupCall/ReConectCall';
 import { Button } from '@material-ui/core';
 
+import {redirect} from '../../helpers/redirect';
+
 const Home = ({ socket }) => {
     const { meetingClosedByPeer, setMeetingClosedByPeer, erorrWithPeerConection, setErorrWithPeerConection, activeMeetingPopUp, setYourSocketId, yourSocketId, upcamingMeeting, traineeEntered, setMyTraineeEntered, scheduleMeetingPopUpCall } = useContext(SocketContext);
     const dispatch = useDispatch();
@@ -116,6 +118,7 @@ const Home = ({ socket }) => {
         if (erorrWithPeerConection) {
             await delay(4000);
             setErorrWithPeerConection(false);
+            redirect('/home')
         }
     }, [erorrWithPeerConection])
 
