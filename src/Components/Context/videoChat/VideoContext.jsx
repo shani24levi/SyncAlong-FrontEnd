@@ -49,6 +49,7 @@ function VideoContext({ meeting }) {
   const navigate = useNavigate();
 
   const {
+    erorrTryingToConection, setErorrTryingToConection,
     meetingClosedByPeer,
     setARdisplay,
     mediapipeOfTrainer,
@@ -642,35 +643,11 @@ function VideoContext({ meeting }) {
     });
   };
 
-  const swalEndMeeting = () => {
-    let timerInterval;
-    Swal.fire({
-      title: 'Activity completed ! !',
-      html: 'meeting sync score will be in <b></b> milliseconds.',
-      timer: 4000,
-      timerProgressBar: true,
-      width: 600,
-      padding: '3em',
-      background: '#fff',
-      backdrop: `
-                          rgba(0,0,123,0.4)
-                          url("/img/emojyGIF/good.gif")`,
-      didOpen: () => {
-        Swal.showLoading();
-        const b = Swal.getHtmlContainer().querySelector('b');
-        timerInterval = setInterval(() => {
-          b.textContent = Swal.getTimerLeft();
-        }, 100);
-      },
-      willClose: () => {
-        clearInterval(timerInterval);
-      }
-    }).then((result) => {
-      if (result.dismiss === Swal.DismissReason.timer) {
-        console.log('I was closed by the timer');
-      }
-    });
-  };
+  useEffect(async () => {
+    if (erorrWithPeerConection) {
+      window.location.href = '/home';
+    }
+  }, [erorrWithPeerConection])
 
   //Handles the request for automatic connection of the chat after the two users connect with the library
   useEffect(() => {
@@ -772,9 +749,9 @@ function VideoContext({ meeting }) {
   return (
     <>
       {meetingClosedByPeer && <ErrorAlert title={'Sorry ,Meeting has been closed by peer'} />}
-      {(errorUserLeft || erorrWithPeerConection) && (
-        <ErrorAlert title="Peer DisConected..." />
-      )}
+      {errorUserLeft && <ErrorAlert title="Peer DisConected..." />}
+      {erorrWithPeerConection && <ErrorAlert title="Peer Connection Failed. " />}
+      {erorrTryingToConection && <ErrorAlert title="Problem with connection..." />}
       {!isPeerHere && yourName && mediaPipeInitilaize === 'none' && (
         <>
           <ErrorAlert name={yourName} title=" is not in the room" />

@@ -87,6 +87,7 @@ function ContextProvider({ children, socket, profile }) {
   const [startingDelay, setStartingDelay] = useState(false);
   const [currActivity, setCurrActivity] = useState(0);
   const [OneTimeCall, setOneTimeCall] = useState(true);
+  const [erorrTryingToConection, setErorrTryingToConection] = useState(false);
 
   const [ARdisplay, setARdisplay] = useState(false);
   const ARdisplayRef = useRef(ARdisplay);
@@ -841,19 +842,22 @@ function ContextProvider({ children, socket, profile }) {
       console.log('responsRoomId ', res);
     });
   };
+
   let indexReconnect = 0;
   const lisiningForDisconectPeerInRoom = () => {
     let mypeer = null;
     if (!isEmpty(meetings.active_meeting)) mypeer = user.role === 'trainer' ? meetings.active_meeting.trainee._id : meetings.active_meeting.tariner._id
     //whan im left the socket and im in a sstion then reconect me and continue
     socket?.on("disconnected", (reason) => {
-      console.log("disconnect", reason);
+      console.log("disconnect", reason, callAccepted, meetings.active_meeting._id);
       if (reason === "ping timeout" || reason === "transport error") {
-        if (callAccepted) {
+        // if (callAccepted) {
+        if (!isEmpty(meetings?.active_meeting)) {
           socket?.connect();
           let userId = user._id
           let roomId = meetings.active_meeting._id
           console.log('reconnect now');
+          console.log('path', location.pathname);
           socket?.emit('reconect', (userId, roomId));
         }
       }
@@ -864,14 +868,17 @@ function ContextProvider({ children, socket, profile }) {
       indexReconnect++;
       console.log("indexReconnect", indexReconnect)
       if (users.length === 1 && indexReconnect < 2) {
+        console.log('users.length', users.length, indexReconnect);
         socket?.emit('reconect', (users[0].userId, roomId));
       }
       else if (users.length === 1 && indexReconnect === 2) {
+        console.log('users.length2', users.length, indexReconnect);
         indexReconnect = 0;
         leaveCall();
         navigate('/home', { state: { meeting_id: roomId, me: myName, you: yourName } });
       }
       else {
+        console.log('users.length3', users, id);
         indexReconnect = 0;
         users.forEach(user => {
           if (user.userId === id) setMySocketId(user.socketId);
@@ -893,6 +900,7 @@ function ContextProvider({ children, socket, profile }) {
         if (user.role === 'trainer') {
           //all states are cleard when you left the meeting
           socket?.emit('accseptScheduleMeetingCall', yourSocketId);
+          socket?.emit('t-trainer', { yourSocketId, roomId });
         }
         // }
         // else {
@@ -962,7 +970,7 @@ function ContextProvider({ children, socket, profile }) {
   const answerCall = () => {
     let flagChannel = false;
     let time = new Date();
-    let timeEnd = time.setMinutes(time.getMinutes() + 2);
+    let timeEnd = time.setMinutes(time.getMinutes() + 1);
     console.log('answerCall');
     setCallAccepted(true);
 
@@ -974,6 +982,12 @@ function ContextProvider({ children, socket, profile }) {
     peer.on('error', (err) => {
       console.log('error with peer', err);
       console.log('peer', peer);
+      if (new Date().getTime() >= new Date(timeEnd).getTime() && !flagChannel) {
+        console.log("go home")
+        setErorrWithPeerConection(true)
+      }
+      if (erorrTryingToConection) setErorrWithPeerConection(true);
+      setErorrTryingToConection(true);
       answerCall();
     });
 
@@ -987,11 +1001,12 @@ function ContextProvider({ children, socket, profile }) {
       let data = { state, yourSocketId }
       if (myStateRef?.current !== state) {
         setMyState(state);
+        console.log("myState ,myStateRef, state", myState, myStateRef?.current, state);
         socket?.emit("statePeer", data);
       }
-      
-      if ( 
-        peerStateConectedRef?.current === 'connected' && state == 'connected' && 
+
+      if (
+        peerStateConectedRef?.current === 'connected' && state == 'connected' &&
         peer && peer?._channel && peer?._channel?.readyState === "open"
       ) {//i want see what perspectiveOrigin: i
         //console.log("you", peerStateConectedRef.current);
@@ -1022,10 +1037,10 @@ function ContextProvider({ children, socket, profile }) {
           //navigate('/home')
         }
       }
-      else{
+      else {
         // console.log(`peer error:`, JSON.stringify(peer), peer?._channel?.label,peer?._channel?.readyState, JSON.stringify(peer?.config))
         //console.log("peer error");
-        if(new Date().getTime() >= new Date(timeEnd).getTime() && !flagChannel){
+        if (new Date().getTime() >= new Date(timeEnd).getTime() && !flagChannel) {
           // console.log("go home")
           setErorrWithPeerConection(true);
         } else {
@@ -1060,7 +1075,7 @@ function ContextProvider({ children, socket, profile }) {
     console.log('callUser');
     let flagChannel = false;
     let time = new Date();
-    let timeEnd = time.setMinutes(time.getMinutes() + 2);
+    let timeEnd = time.setMinutes(time.getMinutes() + 1);
     let tryingConect = 0;
     const peer = new Peer({ initiator: true, trickle: false, stream });
     setMeAsPeer(peer);
@@ -1068,10 +1083,18 @@ function ContextProvider({ children, socket, profile }) {
     peer.on('error', (err) => {
       console.log('error with peer', err);
       console.log('peer', peer);
+      console.log('error with peer', err.response);
+      if (new Date().getTime() >= new Date(timeEnd).getTime() && !flagChannel) {
+        console.log("go home")
+        setErorrWithPeerConection(true)
+      }
+      if (erorrTryingToConection) setErorrWithPeerConection(true);
+      setErorrTryingToConection(true)
       callUser();
     });
 
     peer.on('data', (data) => {
+      if (!data) return
       data = JSON.parse(data);
       onResults2({ poseLandmarks: data });
     });
@@ -1085,9 +1108,9 @@ function ContextProvider({ children, socket, profile }) {
         socket?.emit("statePeer", data);
       }
       if (
-        peerStateConectedRef?.current === 'connected' && state == 'connected' && 
+        peerStateConectedRef?.current === 'connected' && state == 'connected' &&
         peer && peer?._channel && peer?._channel?.readyState === "open"
-      ){
+      ) {
         // console.log(`peer send`)
         flagChannel = true
         peer && peer?.send(JSON.stringify(poseLandmarks_ref.current));
@@ -1117,10 +1140,10 @@ function ContextProvider({ children, socket, profile }) {
           // navigate('/home')
         }
       }
-      else{
+      else {
         // console.log(`peer error:`, JSON.stringify(peer), peer?._channel?.label,peer?._channel?.readyState, JSON.stringify(peer?.config))
         // console.log("peer error");
-        if(new Date().getTime() >= new Date(timeEnd).getTime() && !flagChannel){
+        if (new Date().getTime() >= new Date(timeEnd).getTime() && !flagChannel) {
           // console.log("go home")
           setErorrWithPeerConection(true);
         } else {
@@ -1133,7 +1156,7 @@ function ContextProvider({ children, socket, profile }) {
     // console.time('timer2-callUser');
     peer.on('signal', (data) => {
       // console.log('signal', data);
-      setConectReq(false);
+      // setConectReq(false);
       socket.emit('callUser', {
         userToCall: yourSocketId,
         signalData: data,
@@ -1352,6 +1375,7 @@ function ContextProvider({ children, socket, profile }) {
 
         setARdisplay,
         meetingClosedByPeer, setMeetingClosedByPeer,
+        erorrTryingToConection, setErorrTryingToConection,
       }}
     >
       {children}

@@ -8,11 +8,11 @@ function RecordView({ setStatus, statusBool, setStatusBool, setMediaBlobUrl }) {
   const [statusR, setStatusR] = useState();
   const [mediaBlobUrlR, setMediaBlobUrlR] = useState();
 
-  useEffect(async () => {console.log("mediaRecorderR", mediaRecorderR)}, [mediaRecorderR]);
-  useEffect(async () => {console.log("statusR", statusR), setStatus(statusR)}, [statusR]);
-  useEffect(async () => {console.log("mediaBlobUrlR", mediaBlobUrlR); setMediaBlobUrl(mediaBlobUrlR)},[mediaBlobUrlR]);
+  useEffect(async () => { console.log("mediaRecorderR", mediaRecorderR) }, [mediaRecorderR]);
+  useEffect(async () => { console.log("statusR", statusR), setStatus(statusR) }, [statusR]);
+  useEffect(async () => { console.log("mediaBlobUrlR", mediaBlobUrlR); setMediaBlobUrl(mediaBlobUrlR) }, [mediaBlobUrlR]);
 
-  const saveFile = async(recordedChunks) => {
+  const saveFile = async (recordedChunks) => {
     const blob = new Blob(recordedChunks, {
       type: 'video/webm'
     });
@@ -21,16 +21,16 @@ function RecordView({ setStatus, statusBool, setStatusBool, setMediaBlobUrl }) {
     console.log(myFile, urlFile);
     setMediaBlobUrlR(myFile);
   }
-  const createRecorder = async(streamP, mimeTypeP) => {
+  const createRecorder = async (streamP, mimeTypeP) => {
     // the stream data is stored in this array
     let recordedChunks = [];
     const mediaRecorder = new MediaRecorder(streamP);
 
     mediaRecorder.ondataavailable = (e) => {
       if (e.data.size > 0) {
-        console.log("data");
+        // console.log("data");
         recordedChunks.push(e.data);
-      }  
+      }
     };
     mediaRecorder.onstop = () => {
       saveFile(recordedChunks);
@@ -39,7 +39,7 @@ function RecordView({ setStatus, statusBool, setStatusBool, setMediaBlobUrl }) {
     mediaRecorder.start(200); // For every 200ms the stream data will be stored in a separate chunk.
     setStatusR(mediaRecorder.state);
     return mediaRecorder;
-}
+  }
   const recordScreen = async () => {
     return await navigator.mediaDevices
       .getDisplayMedia({ audio: true, video: { mediaSource: 'screen' } })
@@ -64,7 +64,7 @@ function RecordView({ setStatus, statusBool, setStatusBool, setMediaBlobUrl }) {
     // startRecorder();
   }, []);
 
-    useEffect(() => {
+  useEffect(() => {
     console.log('statusBool', statusBool);
     if (statusBool) startRecorder();
     else stopRecorder();
@@ -80,10 +80,10 @@ function RecordView({ setStatus, statusBool, setStatusBool, setMediaBlobUrl }) {
 
   useEffect(() => {
     console.log('statusBool', statusBool)
-    if(statusBool){
+    if (statusBool) {
       setStatus(statusR);
       setMediaBlobUrl(mediaBlobUrlR)
-    }else{
+    } else {
       console.log('stop recorder');
       stopRecorder();
     }
