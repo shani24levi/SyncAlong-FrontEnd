@@ -261,7 +261,7 @@ class Draw {
     let y1 = this.results.poseLandmarks[12].y * this.height;
     let y2 = this.results.poseLandmarks[11].y * this.height;
 
-    // let distance = Math.sqrt(Math.abs(x1 - x2) + Math.abs(y1 - y2)) * 10;
+    let distance = Math.sqrt(Math.abs(x1 - x2) + Math.abs(y1 - y2)) * 10;
     const index = this.index % 3;
     const index2 = (this.index + 1) % 3;
     this.index += 1;
@@ -277,7 +277,7 @@ class Draw {
     //left
     img2.src = yellow[1][index];
 
-    let distance = 100;
+    distance = distance * 1.1 //100;
     if (this.activity.includes('left')) {
       this.ctx.globalAlpha = 0.7;
       this.ctx.drawImage(img, x1 - (distance / 2) - 40, y1 - 100, distance, distance);
@@ -291,7 +291,7 @@ class Draw {
     }
 
     const img3 = new Image(); img3.src = blue[index];
-    distance = 250;
+    distance = distance * 1.5 //250;
     if (this.activity.includes('left')) {
       this.ctx.globalAlpha = 0.7;
       this.ctx.drawImage(img3, x1 - (distance / 2), y1, distance, distance);

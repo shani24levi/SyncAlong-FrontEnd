@@ -13,22 +13,23 @@ function RecordView({ setStatus, statusBool, setStatusBool, setMediaBlobUrl }) {
   useEffect(async () => { console.log("mediaBlobUrlR", mediaBlobUrlR); setMediaBlobUrl(mediaBlobUrlR) }, [mediaBlobUrlR]);
 
   const saveFile = async (recordedChunks) => {
-    const blob = new Blob(recordedChunks, {
-      type: 'video/webm'
-    });
-    const myFile = new File([blob], 'demo .mp4', { type: 'video/mp4' });
-    const urlFile = URL.createObjectURL(myFile);
-    console.log(myFile, urlFile);
-    setMediaBlobUrlR(myFile);
+    console.log(recordedChunks);
+    // const blob = new Blob(recordedChunks, {
+    //   type: 'video/webm'
+    // });
+    //const myFile = new File([blob], 'demo.mp4', { type: 'video/mp4' });
+    //const urlFile = URL.createObjectURL(myFile);
+    //console.log(myFile, urlFile);
+    //setMediaBlobUrlR(myFile);
   }
   const createRecorder = async (streamP, mimeTypeP) => {
     // the stream data is stored in this array
     let recordedChunks = [];
-    const mediaRecorder = new MediaRecorder(streamP);
-
+    const mediaRecorder = new MediaRecorder(streamP, {mimeType: mimeTypeP});
+    console.log('create recorder', mediaRecorder)
     mediaRecorder.ondataavailable = (e) => {
       if (e.data.size > 0) {
-        // console.log("data");
+        console.log("data");
         recordedChunks.push(e.data);
       }
     };
@@ -37,18 +38,21 @@ function RecordView({ setStatus, statusBool, setStatusBool, setMediaBlobUrl }) {
       recordedChunks = [];
     };
     mediaRecorder.start(200); // For every 200ms the stream data will be stored in a separate chunk.
-    setStatusR(mediaRecorder.state);
+    setStatusR('recording');
     return mediaRecorder;
   }
   const recordScreen = async () => {
-    return await navigator.mediaDevices
+    await navigator.mediaDevices
       .getDisplayMedia({ audio: true, video: { mediaSource: 'screen' } })
+      .then((streamRR) => {return streamRR})
       .catch((e) => console.error(`error recorderScreen: ${e}`));
   };
 
   const startRecorder = async () => {
+    console.log('start recorder');
     const streamR = await recordScreen();
-    const mimeType = 'video/webm';
+    console.log('start recorder streamR:', streamR);
+    const mimeType = 'video/mp4';
     const mediaSourceR = await createRecorder(streamR, mimeType);
     setMediaRecorderR(mediaSourceR);
     // mediaRecorderR = mediaSourceR;
@@ -56,7 +60,7 @@ function RecordView({ setStatus, statusBool, setStatusBool, setMediaBlobUrl }) {
 
   const stopRecorder = async () => {
     console.log("mediaRecorderR", mediaRecorderR)
-    mediaRecorderR && mediaRecorderR.stop();
+    mediaRecorderR && mediaRecorderR.state == "recording" && mediaRecorderR.stop();
     mediaRecorderR && setStatusR("stopped");
   }
   useEffect(() => {
@@ -78,16 +82,16 @@ function RecordView({ setStatus, statusBool, setStatusBool, setMediaBlobUrl }) {
     setStatus(statusR);
   }, [statusR])
 
-  useEffect(() => {
-    console.log('statusBool', statusBool)
-    if (statusBool) {
-      setStatus(statusR);
-      setMediaBlobUrl(mediaBlobUrlR)
-    } else {
-      console.log('stop recorder');
-      stopRecorder();
-    }
-  }, [statusBool])
+  // useEffect(() => {
+  //   console.log('statusBool', statusBool)
+  //   if (statusBool) {
+  //     setStatus(statusR);
+  //     // setMediaBlobUrl(mediaBlobUrlR)
+  //   } else {
+  //     console.log('stop recorder');
+  //     stopRecorder();
+  //   }
+  // }, [statusBool])
 
   return (
     <Container>
