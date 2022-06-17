@@ -13,19 +13,21 @@ function RecordView({ setStatus, statusBool, setStatusBool, setMediaBlobUrl }) {
   useEffect(async () => { console.log("mediaBlobUrlR", mediaBlobUrlR); setMediaBlobUrl(mediaBlobUrlR) }, [mediaBlobUrlR]);
 
   const saveFile = async (recordedChunks) => {
+    console.log('saveFile');
     console.log(recordedChunks);
-    // const blob = new Blob(recordedChunks, {
-    //   type: 'video/webm'
-    // });
-    //const myFile = new File([blob], 'demo.mp4', { type: 'video/mp4' });
-    //const urlFile = URL.createObjectURL(myFile);
-    //console.log(myFile, urlFile);
-    //setMediaBlobUrlR(myFile);
+    console.log(mediaRecorderR);
+    const blob = new Blob(recordedChunks, {
+      type: 'video/mp4'
+    });
+    const myFile = new File([blob], 'demo.mp4', { type: 'video/mp4' });
+    const urlFile = URL.createObjectURL(blob);
+    console.log(myFile, urlFile);
+    setMediaBlobUrlR(myFile);
   }
-  const createRecorder = async (streamP, mimeTypeP) => {
+  const createRecorder = async (streamP) => {
     // the stream data is stored in this array
     let recordedChunks = [];
-    const mediaRecorder = new MediaRecorder(streamP, {mimeType: mimeTypeP});
+    const mediaRecorder = new MediaRecorder(streamP);
     console.log('create recorder', mediaRecorder)
     mediaRecorder.ondataavailable = (e) => {
       if (e.data.size > 0) {
@@ -42,9 +44,8 @@ function RecordView({ setStatus, statusBool, setStatusBool, setMediaBlobUrl }) {
     return mediaRecorder;
   }
   const recordScreen = async () => {
-    await navigator.mediaDevices
+    return await navigator.mediaDevices
       .getDisplayMedia({ audio: true, video: { mediaSource: 'screen' } })
-      .then((streamRR) => {return streamRR})
       .catch((e) => console.error(`error recorderScreen: ${e}`));
   };
 
@@ -52,8 +53,7 @@ function RecordView({ setStatus, statusBool, setStatusBool, setMediaBlobUrl }) {
     console.log('start recorder');
     const streamR = await recordScreen();
     console.log('start recorder streamR:', streamR);
-    const mimeType = 'video/mp4';
-    const mediaSourceR = await createRecorder(streamR, mimeType);
+    const mediaSourceR = await createRecorder(streamR);
     setMediaRecorderR(mediaSourceR);
     // mediaRecorderR = mediaSourceR;
   };
