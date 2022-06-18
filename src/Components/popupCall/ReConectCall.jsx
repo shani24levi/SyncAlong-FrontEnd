@@ -38,7 +38,7 @@ function ReConectCall(props) {
     const currMeeting = useSelector(state => state.meetings.active_meeting);
 
     useEffect(() => {
-        if (isModalVisible) {
+        if (isModalVisible && Audio.current !== null) {
             Audio?.current?.play();
         } else Audio?.current?.pause();
     }, [isModalVisible])
@@ -86,6 +86,9 @@ function ReConectCall(props) {
         //remove from state the active meeting
         !isEmpty(currMeeting) && dispatch(setActiveMeeting(currMeeting, false));
     };
+    console.log('====================================');
+    console.log('Audio', Audio);
+    console.log('====================================');
 
     return (
         <>
@@ -162,7 +165,6 @@ function ReConectCall(props) {
                     </DialogActions>
                 </Dialog>
             </>
-            {/* )} */}
         </>
     );
 }

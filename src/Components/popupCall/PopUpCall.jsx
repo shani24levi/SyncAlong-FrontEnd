@@ -1,12 +1,15 @@
-import React, { useContext, useEffect, useState, forwardRef } from 'react';
+import React, { useContext, useEffect, useState, forwardRef, useRef } from 'react';
 import { SocketContext } from '../Context/ContextProvider';
 import { useSelector, useDispatch } from 'react-redux';
 import { setActiveMeeting } from '../../Store/actions/meetingActions';
 import { useNavigate } from 'react-router-dom';
+import { makeStyles } from "@material-ui/core/styles";
 import PhoneCallbackIcon from '@mui/icons-material/PhoneCallback';
 import Calling from "../../assets/sounds/calling.mp3";
 import Phone from "../../assets/img/phone.gif";
 import isEmpty from '../../validation/isEmpty';
+import PhoneEnabledIcon from '@mui/icons-material/PhoneEnabled';
+import PhoneDisabledIcon from '@mui/icons-material/PhoneDisabled';
 
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -17,23 +20,43 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
+import { IconButton } from '@mui/material';
 import { Avatar } from '@material-ui/core';
+import { capitalize } from '../../helpers';
+import componentStyles from "../../assets/material-ui-style/componenets/avatars";
+const useStyles = makeStyles(componentStyles);
 
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-function PopUpCall(props) {
-    const { setYourSocketId, setMySocketId, setCallTrainee, socket, setAccseptScheduleMeetingCall, scheduleMeetingPopUpCall, setScheduleMeetingPopUpCall, setIsModalVisible, isModalVisible, Audio, answerCall, call, callAccepted } = useContext(SocketContext);
+const PopUpCall = (props) => {
+    const { isModalVisible, setIsModalVisible, Audio, setYourSocketId, setMySocketId, setCallTrainee, socket, setAccseptScheduleMeetingCall, scheduleMeetingPopUpCall, setScheduleMeetingPopUpCall, answerCall, call, callAccepted } = useContext(SocketContext);
     // const scheduleMeetingPopUpCall = { id: 'ddd', trainee: { user: 'nam2', avatar: '22' }, trainer: { user: 'name1', avatar: '233' } }
     const user = useSelector(state => state.auth.user);
     const meetings = useSelector(state => state.meetings);
     const [currMeeting, setCurrMeeting] = useState(scheduleMeetingPopUpCall);
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const classes = useStyles();
+
+    // useEffect(() => {
+    //     console.log('Audio1', Audio, isModalVisible);
+    //     if (isModalVisible && Audio.current !== null) {
+    //         const promise = Audio?.current?.play();
+    //         if (promise !== undefined) {
+    //             promise.then(() => {
+    //                 // Autoplay started
+    //             }).catch(error => {
+    //                 // Autoplay was prevented.
+    //                 Audio?.current?.play();
+    //             });
+    //         }
+    //     } else Audio?.current?.pause();
+    // }, [])
 
     useEffect(() => {
-        if (isModalVisible) {
+        if (isModalVisible && Audio.current !== null) {
             Audio?.current?.play();
         } else Audio?.current?.pause();
     }, [isModalVisible])
@@ -75,30 +98,21 @@ function PopUpCall(props) {
         //declineCall
     };
 
-    //     activities: (3) ['squats', 'center body area and upper-body moves to right-left side on X-axis', 'stretching hands up 90 degrees without moving']
-    // date: "2022-03-19T15:02:00.000Z"
-    // status: false
-    // tariner: {_id: '61f41299f214dbc605e23778', user: 'xxx1', role: 'trainer'}
-    // trainee: {_id: '6214b44405ebc47e36303a6b', user: 'g122.2', role: 'trainee'}
-    // __v: 0
-    // _id: "6235d3e3f556f618668c617b"
-
-    console.log('scheduleMeetingPopUpCall', scheduleMeetingPopUpCall);
-    console.log('meetings', meetings);
-    console.log('isModalVisible', isModalVisible);
-    console.log('user.role', user.role);
 
     useEffect(() => {
         if (!isEmpty(scheduleMeetingPopUpCall)) setCurrMeeting(scheduleMeetingPopUpCall)
         else if (!isEmpty(meetings.upcoming_meeting)) setCurrMeeting(meetings.upcoming_meeting)
     }, [])
 
+    console.log('====================================');
+    console.log('Audio', Audio, isModalVisible);
+    console.log('====================================');
 
     return (
         <>
+            <audio src={Calling} loop ref={Audio} />
             {(!isEmpty(currMeeting)) && (
                 <>
-                    <audio src={Calling} loop ref={Audio} />
                     <Dialog
                         open={isModalVisible}
                         TransitionComponent={Transition}
@@ -108,11 +122,14 @@ function PopUpCall(props) {
                     >
                         <DialogTitle>{"Schedule Meeting Call"}</DialogTitle>
                         <DialogContent>
-                            <DialogContentText id="alert-dialog-slide-description">
+                            <DialogContentText id="alert-dialog-slide-description"
+                                style={{
+                                    fontSize: 'x-large', fontWeight: 'bold', marginBottom: '35px', textAlign: 'center'
+                                }} >
                                 Your Meeting with {" "}
                                 {user.role === 'trainer' //trainer
-                                    ? currMeeting.trainee.user
-                                    : currMeeting.tariner.user ////erroreee text 
+                                    ? capitalize(currMeeting.trainee.user)
+                                    : capitalize(currMeeting.tariner.user)
                                 }
                                 {" "} is NOW ! !
                                 <img
@@ -127,22 +144,49 @@ function PopUpCall(props) {
                                     <Avatar
                                         alt="avatar"
                                         src={currMeeting.trainee.avatar}
-                                        sx={{ width: 70, height: 70 }}
+                                        className={classes.middle}
                                     >{user.user}</Avatar>
                                 </Grid>
                                 <Grid item>
                                     <Avatar
                                         alt="avatar"
                                         src={currMeeting.tariner.avatar}
-                                        sx={{ width: 70, height: 70 }}
+                                        className={classes.middle}
                                     />
                                 </Grid>
                             </Grid>
                         </DialogContent>
                         <DialogActions>
+                            <Grid
+                                container
+                                height="100%"
+                                justifyContent="space-between"
+                                sx={{ padding: '0rem 4rem' }}>
+
+                                <IconButton
+                                    onClick={() => handleClose(false)}
+                                    aria-label="join"
+                                    size="large"
+                                    color="inherit"
+                                >
+                                    <PhoneDisabledIcon fontSize="large" />
+                                </IconButton>
+
+                                <IconButton
+                                    onClick={() => showModal(false)}
+                                    aria-label="close"
+                                    size="large"
+                                    color="inherit"
+                                >
+                                    <PhoneEnabledIcon fontSize="large" />
+                                </IconButton>
+                            </Grid>
+                        </DialogActions>
+
+                        {/* <DialogActions>
                             <Button onClick={() => handleClose(false)}>Disagree</Button>
                             <Button onClick={() => showModal(false)}>Agree</Button>
-                        </DialogActions>
+                        </DialogActions> */}
                     </Dialog>
                 </>
             )}

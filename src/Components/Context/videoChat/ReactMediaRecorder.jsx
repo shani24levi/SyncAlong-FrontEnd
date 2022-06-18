@@ -1,7 +1,7 @@
 import { Box, Button, Container, Grid, Typography } from '@material-ui/core';
 import React, { useEffect, useRef, useState } from 'react';
 
-function RecordView({ setStatus, statusBool, setStatusBool, setMediaBlobUrl }) {
+function RecordView({ setStatus, statusBool, setStatusBool, setMediaBlobUrl, setRecognition }) {
 
   // let mediaRecorderR = null;
   const [mediaRecorderR, setMediaRecorderR] = useState();
@@ -101,7 +101,12 @@ function RecordView({ setStatus, statusBool, setStatusBool, setMediaBlobUrl }) {
             Start Recording
           </Button>
           <Typography>status: {statusR}</Typography>
-          <Button onClick={() => stopRecorder()}>
+          <Button
+            onClick={() => {
+              setRecognition('start');
+            }}
+          // onClick={() => stopRecorder()}
+          >
             Stop Recording
           </Button>
         </Grid>

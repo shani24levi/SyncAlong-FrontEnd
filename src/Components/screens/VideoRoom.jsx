@@ -76,11 +76,10 @@ function VideoRoom({ socket }) {
       {erorrWithPeerConection && <ErrorAlert title={'Error connecting Peer'} />}
       <div id="back-to-top-anchor" />
       <VideoContext meeting={location.state.meeting} />
-      <Sidebar>
+      {/* <Sidebar>
         <Notifications />
-      </Sidebar>
+      </Sidebar> */}
       <ScrollTop />
-      {/* <PopUpCall /> */}
     </>
   );
 }

@@ -59,14 +59,14 @@ function SpeachRecognition(props) {
 
     const startListening = () => { SpeechRecognition.startListening({ continuous: true }) }
 
-    return (
-        <Container>
-            <p>Microphone: {listening ? 'on' : 'off'}</p>
-            <button onClick={startListening}>Start</button>
-            <button onClick={SpeechRecognition.stopListening}>Stop</button>
-            <button onClick={resetTranscript}>Reset</button>
-            <p>{transcript}</p>
-        </Container>
+    return (<></>
+        // <Container>
+        //     <p>Microphone: {listening ? 'on' : 'off'}</p>
+        //     <button onClick={startListening}>Start</button>
+        //     <button onClick={SpeechRecognition.stopListening}>Stop</button>
+        //     <button onClick={resetTranscript}>Reset</button>
+        //     <p>{transcript}</p>
+        // </Container>
     );
 }
 

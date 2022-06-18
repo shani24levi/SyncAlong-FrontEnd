@@ -1,4 +1,5 @@
 import React from 'react';
+import { capitalize } from '../../../../helpers';
 import "./style.css";
 
 function FunQuestionPopUp({ name = 'Hi' }) {
@@ -12,11 +13,11 @@ function FunQuestionPopUp({ name = 'Hi' }) {
             </div>
 
             <div className="text">
-                <span>{name}, </span>
-                <span>ARE </span>
-                <span>YOU </span>
-                <span>READY </span>
-                <span> ?</span>
+                <span>{capitalize(name)},   </span>
+                <span>ARE   </span>
+                <span>YOU   </span>
+                <span>READY   </span>
+                <span> ?  </span>
             </div>
         </>
     );

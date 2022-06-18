@@ -1,23 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100..700&display=swap');
 
-/* * {
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-}
-
-body {
-    height: 100vh;
-    background: #161616;
-} */
-
-/* CSS for text animation */
-
 .text {
     z-index: 1;
     color: #fff;
     font-family: "Roboto Mono", monospace;
-    font-size: 30px;
+    font-size: 50px;
     font-weight: 200;
     display: flex;
     position: absolute;
@@ -43,9 +30,10 @@ body {
 }
 
 .text span:nth-child(1) {
-    color: #f442d6;
+    color: #711b80;
     font-weight: 900;
     animation: animMark 1s ease-in-out infinite;
+    animation-delay: 0.5s;
 }
 
 .text span:nth-child(2) {

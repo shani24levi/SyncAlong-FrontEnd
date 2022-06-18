@@ -94,7 +94,7 @@ function TraineeHome({ meeting, date }) {
 
             if (syncperformance.length >= 6) {
                 setTop5(syncperformance.slice(1, 6));
-            }
+            } else setTop5(syncperformance);
         }
     }, [syncperformance, meetings.meetings_complited])
 
@@ -135,10 +135,10 @@ function TraineeHome({ meeting, date }) {
     }
 
     console.log('callQuickMeeting', callQuickMeeting);
-    console.log('upcamingMeeting', upcamingMeeting);
+    //console.log('top5', top5);
 
     console.log('====================================');
-    console.log('MeetingDisplay', MeetingDisplay);
+    console.log('MeetingDisplay', syncperformance, MeetingDisplay);
     console.log('====================================');
 
     return (

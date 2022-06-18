@@ -9,6 +9,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import EventNoteIcon from '@mui/icons-material/EventNote';
 import { setDate } from 'date-fns/esm';
 import isEmpty from '../../validation/isEmpty';
+import { capitalize } from '../../helpers';
 
 const Wrapper = styled(Paper)`
   height: 300px;
@@ -102,7 +103,7 @@ function UserCard({ trainee }) {
           </Grid>
           <Grid item>{trainee.profile?.relation ? trainee.profile.relation : ''}</Grid>
           <Grid item className="UserCard_text">
-            {trainee.user.user}
+            {capitalize(trainee.user.user)}
           </Grid>
         </AbsoluteGrid>
       </Wrapper>

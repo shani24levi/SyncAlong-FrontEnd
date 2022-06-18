@@ -14,7 +14,7 @@ import {
 import Webcam from 'react-webcam';
 import Swal from 'sweetalert2';
 import { CircularProgress } from '@material-ui/core';
-import { delay } from '../../../helpers';
+import { capitalize, delay } from '../../../helpers';
 import Timer from './timer/Timer';
 import RecordView from './ReactMediaRecorder';
 import HorizontalGauge from 'react-horizontal-gauge';
@@ -794,14 +794,15 @@ function VideoContext({ meeting }) {
           statusBool={statusBool}
           setStatusBool={setStatusBool}
           setMediaBlobUrl={setMediaBlobUrl}
+          setRecognition={setRecognition}
         />
       )}
       <Grid container className={classes.gridContainer}>
         {stream && (
           <Paper className={classes.paper}>
             <Grid item xs={12} md={6} style={{ textAlign: 'center' }}>
-              <Typography variant="h6" gutterBottom>
-                {myName || 'Name'}
+              <Typography variant="h6" gutterBottom style={{ color: '#837e7e' }}>
+                {capitalize(myName) || 'Peer 1'}
               </Typography>
               <Webcam
                 style={{ display: mediaPipeInitilaize }}
@@ -832,9 +833,9 @@ function VideoContext({ meeting }) {
         )}
         {callAccepted && !callEnded && (
           <Paper className={classes.paper}>
-            <Grid item xs={12} md={6}>
-              <Typography variant="h6" gutterBottom>
-                {yourName || 'Name'}
+            <Grid item xs={12} md={6} style={{ textAlign: 'center' }}>
+              <Typography variant="h6" gutterBottom style={{ color: '#837e7e' }}>
+                {capitalize(yourName) || 'Peer 2'}
               </Typography>
               <video
                 style={{ transform: 'scaleX(-1)', display: 'none' }}
@@ -898,7 +899,15 @@ function VideoContext({ meeting }) {
       </Box>
 
       <>
-        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+        <Button
+          onClick={() => {
+            setRecognition('start');
+          }}
+        >
+          Ok
+        </Button>
+
+        {/* <Box sx={{ display: 'flex', justifyContent: 'center' }}>
           <HorizontalGauge
             height={100}
             width={300}
@@ -908,7 +917,6 @@ function VideoContext({ meeting }) {
           />
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-          {/* <Grid container justifyContent='space-between'> */}
           <Button
             onClick={() => {
               setSettingUserInFrame(true);
@@ -977,7 +985,7 @@ function VideoContext({ meeting }) {
             syncSendByFraime-both-firstTraineeeeeee
           </Button>
         </Box>
-        <br />
+        <br /> */}
       </>
 
       <SpeachRecognition />
