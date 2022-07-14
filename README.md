@@ -16,6 +16,9 @@ To connect two users over WebRTC, we exchange information to allow browsers to t
 - [socket-io](https://socket.io/) as a wrapper over web sockets.
 - [MediaPipe](https://google.github.io/mediapipe/) Google Ai Human pose estimation model.
 
+## OverAll system architecture
+![חדש22](https://user-images.githubusercontent.com/48565585/178983484-adec8e87-e11f-44e1-9f76-14e8f6280496.PNG)
+
 
 ## Features
 
