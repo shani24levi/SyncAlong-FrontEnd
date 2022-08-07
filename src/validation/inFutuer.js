@@ -7,12 +7,8 @@ const inFutuer = (meetingTime, currentTime) => {
     if (typeof meetingTime === 'string') {
         meetingTime = new Date(meetingTime);
     }
-
     let upcomingMeeting = meetingTime.getTime();
-    console.log('====================================');
     console.log(currentTime, '<', upcomingMeeting, 'is: ', currentTime < upcomingMeeting);
-    console.log('====================================');
-
     if (currentTime < upcomingMeeting) return true;
     else return false;
 }

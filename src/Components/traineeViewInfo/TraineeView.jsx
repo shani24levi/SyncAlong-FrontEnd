@@ -84,20 +84,13 @@ const Photo = styled('div')`
 `;
 
 function TraineeView({ trainee }) {
-  const location = useLocation();
   const navigate = useNavigate();
   const user = useSelector(state => state.auth.user);
   const [page, setPage] = useState(1);
   const [type, setType] = useState(10);
   const [open, setOpen] = React.useState(false);
   const [lastMeeting, setlastMeetingState] = useState(null);
-
-  console.log('id', trainee.user._id);
-
-  const setlastMeeting = (lastMeeting) => {
-    console.log('kckckc', lastMeeting);
-    setlastMeetingState(lastMeeting);
-  }
+  const setlastMeeting = (lastMeeting) => { setlastMeetingState(lastMeeting); }
 
   return (
     <>

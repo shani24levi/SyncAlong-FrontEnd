@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled, useTheme } from '@mui/system'
+import { styled } from '@mui/system'
 import { Grid, LinearProgress, Typography } from '@mui/material'
 
 const CustomLinearProgress = styled(LinearProgress)(() => ({
@@ -29,11 +29,7 @@ function ProgressBarVals({
             </Grid>
             {text !== '' && (
                 <Grid item xs={text ? 4 : false}>
-                    {/* <Typography color={color}>
-                        <Typography sx={{ color: coloredText ? '' : 'red' }}> */}
                     {text}
-                    {/* </Typography>
-                    </Typography> */}
                 </Grid>
             )}
         </Grid>

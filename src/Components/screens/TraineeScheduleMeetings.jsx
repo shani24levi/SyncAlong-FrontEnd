@@ -1,15 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import {
-    styled, Grid, Container, IconButton, Typography, Select,
-    Box, Button, Dialog,
-} from '@mui/material';
+import { Grid, Container } from '@mui/material';
 import isEmpty from '../../validation/isEmpty';
-import Loader from '../loder/Loder';
 import ListedMeetings from '../home/trainer/listTable/ListedMeetings';
-
 
 function TraineeScheduleMeetings(props) {
     const { id } = useParams();

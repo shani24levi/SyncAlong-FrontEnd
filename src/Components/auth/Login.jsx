@@ -33,8 +33,8 @@ const Login = (props) => {
     const theme = useTheme();
     const navigate = useNavigate()
 
-    const [user, setUser] = useState('');
-    const [pass, setPass] = useState('');
+    const [user, setUser] = useState('shaniLe@');
+    const [pass, setPass] = useState('123456');
     const [changed, setChaged] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [errors, setErorrs] = useState({});
@@ -110,12 +110,6 @@ const Login = (props) => {
         }
     }
 
-    const handleClick = () => { setAlert(true); };
-    const handleClose = (event, reason) => {
-        if (reason === 'clickaway') { return; }
-        setAlert(false);
-    };
-
     return (
         <Grid className="index-page">
             <CircelsHeader />
@@ -143,6 +137,7 @@ const Login = (props) => {
                                     autoComplete="on"
                                     label='Username or email'
                                     placeholder='Enter username or email'
+                                    value={'shaniLe@'}
                                     fullWidth
                                     required
                                     margin="normal"
@@ -164,6 +159,7 @@ const Login = (props) => {
                                     fullWidth required
                                     margin="normal"
                                     variant="outlined"
+                                    value={'123456'}
                                     error={errors.pass || (submitted && !pass)}
                                     helperText={
                                         (submitted && !pass)

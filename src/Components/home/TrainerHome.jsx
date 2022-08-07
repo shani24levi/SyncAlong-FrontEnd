@@ -3,7 +3,6 @@ import { SocketContext } from '../Context/ContextProvider';
 import { useSelector, useDispatch } from 'react-redux';
 import { getTraineesSyncs } from '../../Store/actions/syncperformanceActions';
 import { Link } from 'react-router-dom';
-import { styled } from '@mui/system'
 import { Grid, Container, Button, Box, Card, Typography } from '@material-ui/core';
 import { Stack } from '@mui/material';
 import { makeStyles, useTheme } from "@material-ui/core/styles";
@@ -14,15 +13,11 @@ import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom'
 import { dateFormat } from '../../Utils/dateFormat';
 import buttonsStyles from "../../assets/theme/buttons";
-import QuickStartBtn from './QuickStartBtn';
 import PopUpQuickStart from '../popupCall/PopUpQuickStart';
 import ListBoxTop from '../listBox/ListBoxTop';
 import DoughnutChart from '../charts/DoughnutChart';
-import ProgressUserView from './trainer/ProgressUserView';
 import CardContiner from '../card/CardContiner';
-import SeccsesAlert from '../alrets/SeccsesAlert';
 import CallIcon from '@mui/icons-material/Call';
-import TraineesCard from './trainer/TraineesCard';
 import ErrorAlert from '../alrets/ErrorAlert';
 import { delay } from '../../helpers';
 import Carousel from '../card/Carousel/Carousel';
@@ -31,7 +26,6 @@ import ListedMeetings from './trainer/listTable/ListedMeetings';
 import VideoCameraFrontIcon from '@mui/icons-material/VideoCameraFront';
 import AddIcon from '@mui/icons-material/Add';
 import ColumnSyncs from '../charts/ColumnSyncs';
-
 const buttonStyle = makeStyles(buttonsStyles);
 
 const useStyles = makeStyles({
@@ -66,7 +60,6 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
     const dispatch = useDispatch();
     const classes = useStyles();
     const btnClasses = buttonStyle();
-    const theme = useTheme();
     const profile = useSelector(state => state.profile.profile)
     const [errorDisplay, setErrorDisplay] = useState(false);
     const [quickStartOpen, setQuickStartOpen] = useState(false);
@@ -82,9 +75,7 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
             await delay(3000);
             setErrorDisplay(false);
         }
-        return () => {
-            abortController.abort();
-        }
+        return () => { abortController.abort(); }
     }, [errorDisplay])
 
     useEffect(() => {
@@ -92,13 +83,11 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
             dispatch(getTraineesSyncs());
         }
         else {
-            console.log('syncperformance_trainees', syncperformance_trainees);
             let arruser = [];
             let arrsyncs = [];
             let arrdata = [];
 
             syncperformance_trainees.map(el => {
-                console.log('elel', el);
                 arruser.push(el.user.user);
                 let sum = 0;
                 let count = 0;
@@ -108,7 +97,6 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
                 //set Total_AVG
                 el.syncs.map((s, i) => {
                     if (i === 0) last = Number(s.totalAvg);
-                    console.log('sss', Number(s.totalAvg));
                     sum += Number(s.totalAvg);
                     count++;
                     //Top 5 meetings avg
@@ -121,10 +109,7 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
                 //Top 5 meetings avg
                 let top5 = sum / count;
                 if (flag) top5 = sum5 / 5;
-
-                //console.log('sumsumsum', sum5, sum);
-                arrsyncs.push(Math.trunc(sum / count), Math.trunc(last), Math.trunc(top5))
-                console.log('arrsyncsarrsyncs', arrsyncs);
+                arrsyncs.push(Math.trunc(sum / count), Math.trunc(last), Math.trunc(top5));
 
                 arrdata.push({ name: el.user.user, data: arrsyncs });
                 arrsyncs = [];
@@ -133,11 +118,7 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
                 count = 0;
                 sum5 = 0;
             })
-            console.log('arrdata', arrdata);
             setDataChart(arrdata)
-            // setTop3HighSync();
-            // setTop3LowSync();
-            // setTop1LastMeeting();
         }
     }, [syncperformance_trainees, meetings.meetings_complited])
 
@@ -145,11 +126,9 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
         if (upcamingMeeting) {
             //get your socket id
             socket?.emit("getSocketId", upcamingMeeting.tariner._id, user => {
-                console.log('getSocketId', upcamingMeeting.tariner._id, user);
                 setMySocketId(user?.socketId)
             });
             socket?.emit("getSocketId", upcamingMeeting.trainee._id, user => {
-                console.log('getSocketId', upcamingMeeting.trainee._id, user);
                 if (user !== null) {
                     setYourSocketId(user?.socketId);
                     //sand popup call to trainee
@@ -170,7 +149,6 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
                     return;
                 }
                 else if (user === null) {
-                    console.log('errrorrrrrrr rturnnnnn');
                     setErrorDisplay(true);
                     return;
                 }
@@ -186,16 +164,11 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
             })
         }
     }
+    const quickStart = () => setQuickStartOpen(true);
 
-    const quickStart = () => {
-        setQuickStartOpen(true);
-    }
-
-    console.log('dddd', !isEmpty(my_trainees), profile?.trainerOf.length);
     return (
         <>
             <Container maxWidth="xl">
-                {/* <Button onClick={() => navigate('/video-room', { state: { meeting: meetings.upcoming_meeting } })}>Video</Button> */}
                 {quickStartOpen && <PopUpQuickStart quickStartOpen={quickStartOpen} setQuickStartOpen={setQuickStartOpen} />}
                 {errorDisplay && <ErrorAlert name={upcamingMeeting.trainee.user} title=" is not online in order to conect joined meeting" />}
                 <Grid container alignItems='center' justifyContent='center' spacing={1} >
@@ -214,7 +187,6 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
                         <Search />
                     </Grid>
                 </Grid>
-
                 {
                     profile && !trainee_profile_called && profile?.trainerOf.length !== 0
                         ? <Loader />
@@ -223,7 +195,6 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
                                 !isEmpty(my_trainees) || profile?.trainerOf.length !== 0 ? <Carousel /> : <></>
                             }
                         </>
-
                 }
                 <Grid container alignItems='center' alignContent='center' spacing={2}>
                     <Grid item xs={12} md={12}>
@@ -246,7 +217,6 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
                             </Box>
                         </CardContiner>
                     </Grid>
-
                     <Grid item xs={12} md={12} lg={12}>
                         {
                             !isEmpty(dataChart) && dataChart.lenght !== 0 ?
@@ -257,8 +227,7 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
                                         </Typography>
                                     </Stack>
                                     <ColumnSyncs data={dataChart} />
-                                </>
-                                : <></>
+                                </> : <></>
                         }
                     </Grid>
 
@@ -282,12 +251,10 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
                                     </Stack>
                                     <ListedMeetings />
                                 </>
-
                                 : <></>
                         }
                     </Grid>
                 </Grid>
-
                 {
                     !isEmpty(meetings.meetings_complited) &&
                     <Grid container spacing={3}>
@@ -302,14 +269,11 @@ function TrainerHome({ meeting, date, dateToMeeting }) {
                                     meetings_complited={meetings.meetings_complited}
                                 />
                             </Card>
-                            {/* <ProgressUserView /> */}
                         </Grid>
                     </Grid>
                 }
-
             </Container>
         </>
-
     );
 }
 

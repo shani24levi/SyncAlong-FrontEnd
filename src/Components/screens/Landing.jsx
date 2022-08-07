@@ -1,8 +1,7 @@
 //when un-login user- first page in the app.
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'
+import React from 'react';
 import PropTypes from "prop-types";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { useTheme } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 //redux 
 import { connect } from 'react-redux';
@@ -13,8 +12,6 @@ import TitleHeader from '../layout/Header/TitleHeader';
 import WelcomContainer from '../WelcomContainer';
 
 const Landing = (props) => {
-    const theme = useTheme();
-    const navigate = useNavigate()
     return (
         <>
             <WelcomContainer />
@@ -27,7 +24,6 @@ const Landing = (props) => {
                     />
                 </Grid>
             </Grid>
-            {/* <Header /> */}
         </>
     );
 }

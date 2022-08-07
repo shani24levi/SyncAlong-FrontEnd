@@ -17,7 +17,6 @@ const psoe_landmarks = [
     'LEFT_FOOT_INDEX', 'RIGHR_FOOT_INDEX'
 ]
 
-
 const mediaPipeLandmarks = i => {
     return psoe_landmarks.indexOf(i)
 };

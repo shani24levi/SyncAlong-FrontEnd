@@ -20,19 +20,17 @@ const Wrapper = styled('div')`
   }
 `;
 
-
-
 function NotFoundCard({ icon, title, description }) {
-    return (
-        <Wrapper>
-            {icon}
-            <div>
-                <h1>{title}</h1>
-                <p>{description}</p>
-                <br />
-            </div>
-        </Wrapper>
-    );
+  return (
+    <Wrapper>
+      {icon}
+      <div>
+        <h1>{title}</h1>
+        <p>{description}</p>
+        <br />
+      </div>
+    </Wrapper>
+  );
 }
 
 export default NotFoundCard;

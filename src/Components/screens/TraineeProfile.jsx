@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateAvatarTraineePic } from '../../Store/actions/profileAction';
@@ -7,7 +6,6 @@ import {
     styled, Grid, Avatar, IconButton, Typography, Select,
     Box, Button, Dialog,
 } from '@mui/material';
-
 import isEmpty from '../../validation/isEmpty';
 import Loader from '../loder/Loder';
 import ScrollTop from '../scrollToTop/ScrollTop';
@@ -17,7 +15,6 @@ import { capitalize } from '../../helpers';
 import LimitationCard from '../profile/trainee/LimitationCard';
 import About from '../profile/views/links/About';
 import ProfileEditeModal from '../profile/forms/edit/ProfileEditeModal';
-
 
 const Wrapper = styled('div')`
   min-height: 100vh;
@@ -89,7 +86,6 @@ const Input = styled('input')({
 
 const AvatarTrainee = styled(Avatar)({
     border: '3px solid white',
-    // padding: '0px !important',
     "&:hover": {
         top: "-1px",
         opacity: 0.95,
@@ -97,7 +93,6 @@ const AvatarTrainee = styled(Avatar)({
         boxShadow: "0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08)",
     },
 });
-
 
 function TraineeProfile(props) {
     const dispatch = useDispatch();
@@ -107,7 +102,6 @@ function TraineeProfile(props) {
     const [openDelete, setOpenDelete] = React.useState(false);
     const [openUser, setOpenUser] = React.useState(false);
     const [modalIsOpen, setModalIsOpen] = React.useState(false);
-
     const [address, setAddress] = useState(trainee?.profile.address ? trainee?.profile.address : '');
     const [phone, setPhone] = useState(trainee?.profile.phone ? trainee?.profile.phone : '');
     const [city, setCity] = useState(trainee?.profile.city ? trainee?.profile.city : '');
@@ -118,7 +112,6 @@ function TraineeProfile(props) {
     const [about, setAbout] = useState(trainee?.profile.about ? trainee?.profile.about : '');
     const [changed, setChaged] = useState(false);
     const [submitted, setSubmitted] = useState(false);
-
 
     useEffect(() => {
         if (id && !isEmpty(trainees_profiles) && !trainee) {
@@ -135,15 +128,10 @@ function TraineeProfile(props) {
         };
         let formData = new FormData();
         formData.append('file', event.target.files[0]);
-
-        console.log('formData', formData.getAll('file'));
         if (imgData) dispatch(updateAvatarTraineePic(formData, id));
     };
 
-
-    const handelClose = () => {
-        setModalIsOpen(false);
-    }
+    const handelClose = () => { setModalIsOpen(false); }
 
     const handelEditeAbout = async () => {
         //api update call with all starts
@@ -157,7 +145,6 @@ function TraineeProfile(props) {
         if (hobbies) data.hobbies = hobbies
         if (about) data.about = about
         console.log("data after edit", data);
-        //dispatch(updateProfile(data))
         setModalIsOpen(false);
     }
 
@@ -269,7 +256,6 @@ function TraineeProfile(props) {
             <ProfileEditeModal
                 modalIsOpen={modalIsOpen}
                 handelClose={handelClose}
-
                 address={address} setAddress={setAddress}
                 phone={phone} setPhone={setPhone}
                 city={city} setCity={setCity}

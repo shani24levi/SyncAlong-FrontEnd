@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React from 'react';
 import { useTheme } from '@mui/material/styles';
 import { Grid, Card, Typography } from '@mui/material';
 import Chart from 'react-apexcharts';
@@ -6,9 +6,6 @@ import isEmpty from '../../validation/isEmpty';
 
 function PurpleChartCard({ time, totalSync, syncs }) {
     const theme = useTheme();
-
-    //   console.log('syncs', syncs);
-
     const chartData = {
         type: 'area',
         height: 95,

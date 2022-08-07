@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import { Container, Box, Grid, Button, Typography } from '@mui/material';
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import { alpha, styled } from '@mui/material/styles';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import { TextField } from '@mui/material';
-import VideoGrid from './styles.meeting.sorce/VideoGrid';
 import VideoCard from './VideoCard';
 import componentStyles from "../../../assets/theme/buttons";
 import Search from '../../search/SearchBar';
@@ -14,10 +12,7 @@ import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
 import isEmpty from '../../../validation/isEmpty';
 const useStyles = makeStyles(componentStyles);
 
-
-
 function MeetingsScours({ meetings }) {
-    const classesBtn = useStyles();
     const theme = useTheme();
     const [search, setSearch] = React.useState('');
     const [value, setValue] = useState(null);
@@ -34,7 +29,6 @@ function MeetingsScours({ meetings }) {
     let meetings_filtered = meetings;
     if (!isEmpty(meetings_filtered))
         meetings_filtered = meetings.filter(i => i?.title?.toString().toLowerCase().includes(search) || i.trainee.user.toString().toLowerCase().includes(search));
-    console.log('meetings', meetings_filtered);
 
     return (
         <Container maxWidth="xl">

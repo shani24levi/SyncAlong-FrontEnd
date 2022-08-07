@@ -1,11 +1,8 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { useTheme } from '@mui/material/styles';
-import { Grid, Card, Typography } from '@mui/material';
+import React from 'react';
 import Chart from 'react-apexcharts';
 import isEmpty from '../../validation/isEmpty';
 
 function MultyChart({ syncs, time }) {
-    console.log(syncs);
     const chartData = {
         type: 'area',
         height: 200,
@@ -50,11 +47,8 @@ function MultyChart({ syncs, time }) {
         ]
     };
 
-
     return (
-        <>
-            <Chart {...chartData} />
-        </>
+        <Chart {...chartData} />
     );
 }
 

@@ -63,9 +63,6 @@ export const registerUser = userData => dispatch => {
 
 export const updateUser = userData => dispatch => {
     dispatch(setLoading(true));
-    console.log('====================================');
-    console.log(userData);
-    console.log('====================================');
     userService.updateUser(userData)
         .then(
             user => {

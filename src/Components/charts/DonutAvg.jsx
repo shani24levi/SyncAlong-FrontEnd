@@ -8,7 +8,6 @@ function DonutAvg({ syncAvgs }) {
     const [chartData, setData] = useState(null);
 
     useEffect(() => {
-        console.log('syncAvgs', syncAvgs);
         if (!isEmpty(syncAvgs)) {
             let labals = [];
             let avgs = [];
@@ -69,11 +68,9 @@ function DonutAvg({ syncAvgs }) {
                     },
 
                 },
-
                 series: series, //[84, 55, 41, 17, 15],
                 labels: options  //['A', 'B', 'C', 'D', 'E']
             };
-
             setData(chartData);
         }
     }, [series, options])

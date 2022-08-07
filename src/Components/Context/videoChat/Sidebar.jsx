@@ -57,7 +57,6 @@ const Sidebar = (props) => {
                   onClick={() => {
                     console.log('leave');
                     setRecognition('leave');
-                    //leaveCall();
                   }}
                   className={classes.margin}>
                   Hang Up

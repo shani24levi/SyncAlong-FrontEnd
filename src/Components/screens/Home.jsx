@@ -1,7 +1,6 @@
 // for login users
 import React, { useContext, useState, useEffect } from 'react';
 import { SocketContext } from '../Context/ContextProvider';
-import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { getAllMeetings, setActiveMeeting } from '../../Store/actions/meetingActions';
 import { getMySyncs } from '../../Store/actions/syncperformanceActions';
@@ -18,8 +17,7 @@ import { delay } from '../../helpers';
 import ScrollTop from '../scrollToTop/ScrollTop';
 import ReConectCall from '../popupCall/ReConectCall';
 import { Button } from '@material-ui/core';
-
-import {redirect} from '../../helpers/redirect';
+import { redirect } from '../../helpers/redirect';
 
 const Home = ({ socket }) => {
     const { meetingClosedByPeer, setMeetingClosedByPeer, erorrWithPeerConection, setErorrWithPeerConection, activeMeetingPopUp, setYourSocketId, yourSocketId, upcamingMeeting, traineeEntered, setMyTraineeEntered, scheduleMeetingPopUpCall } = useContext(SocketContext);
@@ -28,7 +26,6 @@ const Home = ({ socket }) => {
     const profile = useSelector(state => state.profile);
     const meetings = useSelector(state => state.meetings);
     const syncperformance = useSelector(state => state.syncperformance);
-
     const [meeting, setMeeting] = useState(false);
     const [date, setDate] = useState(0);
     const [dateToMeeting, setDateToMeeting] = useState(0);
@@ -46,7 +43,6 @@ const Home = ({ socket }) => {
             user?.role === 'trainer' && profile?.profile?.trainerOf.length !== 0 && !profile?.trainee_profile_called && dispatch(getAllTraineesProfiles());
             //get future Meetings
             dispatch(futureMeetings());
-
             if (!meetings.all_meetings || isEmpty(meetings.all_meetings)) {
                 dispatch(getAllMeetings());
             }
@@ -75,10 +71,7 @@ const Home = ({ socket }) => {
     }, [traineeEntered]);
 
     useEffect(() => {
-        console.log('change meetings.upcoming_meeting', meetings.upcoming_meeting, !isEmpty(meetings.upcoming_meeting));
         if (!isEmpty(meetings.upcoming_meeting)) {
-            console.log('ddd', meetings.upcoming_meeting);
-            console.log(meetings.upcoming_meeting?.date);
             const t = new Date(meetings.upcoming_meeting?.date)//?.slice(0, -1));
             setDateToMeeting(t);
             setDate(t.getTime() / 1000)
@@ -99,7 +92,6 @@ const Home = ({ socket }) => {
             }
             else {
                 let you = user?._id === meetings.active_meeting.trainee._id ? meetings.active_meeting.tariner._id : meetings.active_meeting.trainee._id
-                console.log('you', you);
                 you && socket?.emit("getSocketId", you, user => {
                     console.log('getSocketId', you, user);
                     if (user?.socketId)
@@ -129,12 +121,8 @@ const Home = ({ socket }) => {
         }
     }, [meetingClosedByPeer])
 
-    const navigate = useNavigate();
-
-    console.log('activeMeetingPopUp', activeMeetingPopUp);
     return (
         <>
-            {/* <Button onClick={() => navigate('/video-room', { state: { meeting: { _id: 's', activities: ['s', 'd'], tariner: { _id: "d", usrr: 'dd' }, tariner: { _id: "d", usrr: 'dd' } } } })}>goToVideoPage</Button> */}
             <div id="back-to-top-anchor" />
             {meetingClosedByPeer && !isEmpty(meetings.active_meeting) && <ErrorAlert title={'Sorry ,Meeting has been closed by peer'} />}
             {!isEmpty(scheduleMeetingPopUpCall) && <PopUpCall />}

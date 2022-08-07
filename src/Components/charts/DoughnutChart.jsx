@@ -3,10 +3,7 @@ import { useSelector } from 'react-redux';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
 import isEmpty from '../../validation/isEmpty';
-import { el } from 'date-fns/locale';
-import { subHours } from 'date-fns';
 import Loader from '../loder/Loder';
-
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 function DoughnutChart({ height, meetings_complited }) {

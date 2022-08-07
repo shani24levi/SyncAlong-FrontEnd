@@ -1,22 +1,15 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { createMeetingSync } from '../../Store/actions/syncperformanceActions'
 import { Grid, Box, Typography } from '@material-ui/core';
-import {
-    Stack,
-
-} from '@mui/material';
-import HeatMapChart from '../charts/HeatMapChart';
+import { Stack } from '@mui/material';
 import PurpleChartCard from '../charts/PurpleChartCard';
 import isEmpty from '../../validation/isEmpty';
 import { dateFormat } from '../../Utils/dateFormat';
-import MultyChart from '../charts/MultyChart';
 import DonutAvg from '../charts/DonutAvg';
 import SyncsLineChart from './SyncsLineChart';
 import Column from '../charts/Column';
 import ColoredLines from '../charts/ColoredLines';
-import { is } from 'date-fns/locale';
-
 
 const bgcolor = [
     'rgb(159, 159, 248)',
@@ -26,7 +19,6 @@ const bgcolor = [
     'rgb(159, 248, 248)',
     'rgb(248, 195, 159)',
     'rgb(159, 230, 248)',
-
     'rgb(159, 159, 248)',
     'rgb( 248, 159, 204)',
     'rgb(248, 248, 159)',
@@ -44,7 +36,6 @@ const linecolor = [
     '#277575',
     '#c96622',
     '#388194',
-
     '#5050de',
     '#912d60',
     '#bdbd2d',
@@ -58,21 +49,18 @@ function SyncView({ selectedVideo, syncs }) {
     const dispatch = useDispatch();
     const syncperformance = useSelector(state => state.syncperformance.syncs);
     const user = useSelector(state => state.auth.user);
-
     let [syncbyAct, setSyncByAct] = useState([]);
     let [syncObjs, setSyncObjs] = useState([]);
     let [syncAvgs, setSyncAvgs] = useState([]);
     let [allSync, setAllSync] = useState([]);
     let [avgSync, setAvgSync] = useState(null);
     let [oneTime, setOneTime] = useState(false);
-
     const [series1, setSeries1] = useState([]);
     const [series, setSeries] = useState([]);
     const [dataEach3sec, setDataEach3sec] = useState([]);
 
     useEffect(() => {
         if (!isEmpty(syncs)) {
-            console.log('syncs111', syncs, syncs[0].meeting_id);
             syncs.map(el => {
                 let sync = el.meeting_id.activities.find(activity => activity === el.activity);
                 setSyncByAct((syncbyAct) => [...syncbyAct, { activity: sync, result: el.result, time: el.time }]);
@@ -81,7 +69,6 @@ function SyncView({ selectedVideo, syncs }) {
     }, [])
 
     useEffect(() => {
-        console.log('syncbyAct', syncbyAct);
         if (!isEmpty(syncbyAct) && isEmpty(allSync)) {
             let size = true;
             let activity1 = syncbyAct;
@@ -90,7 +77,6 @@ function SyncView({ selectedVideo, syncs }) {
 
             while (size) {
                 let filterd = activity1.filter(el => el.activity === a);
-                console.log('filterd', filterd);
                 let obj = { activity: filterd[0].activity, result: [], time: [] }
                 let sum = 0;
                 let count = 0;
@@ -105,12 +91,9 @@ function SyncView({ selectedVideo, syncs }) {
                 setSyncObjs((syncObjs) => [...syncObjs, obj]);
 
                 size = len - filterd.length > 0;
-                console.log('size', size, " filterd.length < len", filterd.length, "<", len);
-                //  console.log(filterd.length, len, len - filterd.length);
                 if (size) {
                     activity1 = activity1.slice(filterd.length + 1, len) //activity1[filterd.length + 1].activity;
                     a = activity1[0].activity;
-                    console.log(activity1);
                     len = activity1.length;
                 }
             }
@@ -134,12 +117,10 @@ function SyncView({ selectedVideo, syncs }) {
             }
 
             if (!isEmpty(syncObjs)) {
-                //  console.log('d', syncObjs);
                 let sum = 0;
                 let count = 1;
 
                 syncObjs.map((el, index) => {
-                    console.log('el', el);
                     let arr = [];
                     let j = 1;
                     el.result.map((result, i) => {
@@ -147,28 +128,22 @@ function SyncView({ selectedVideo, syncs }) {
                         if (i !== 0 && el.time[i] === el.time[i - 1]) {
                             sum = sum + result;
                             count = count + 1;
-                            //console.log('jjjj', el.time[i], el.time[i - 1], "sum", sum);
                         }
                         else {
-                            //console.log("sss", sum, count, sum / count);
                             let avg = sum / count;
                             arr.push({ x: j, y: Math.trunc(avg * 10) });
                             sum = 0;
                             count = 1;
                             j++;
-                            // console.log('arr', arr);
                         }
                     });
-                    //console.log('arr', arr);
                     setSeries1(series1 => [...series1, { name: el.activity, data: arr }])
                 });
             }
-
         }
     }, [syncObjs])
 
     useEffect(() => {
-        console.log('allSync', allSync, isEmpty(allSync));
         if (!isEmpty(allSync)) {
             let sum = 0;
             allSync.map(i => {
@@ -191,7 +166,6 @@ function SyncView({ selectedVideo, syncs }) {
             let series_arr_2 = [];
             let series_arr_3 = [];
 
-
             series.map(i => {
                 i.data.map(j => {
                     series_arr.push(j.y);
@@ -199,7 +173,6 @@ function SyncView({ selectedVideo, syncs }) {
                 series_arr_2.push(series_arr);
                 series_arr = [];
             })
-
             let count = 0;
             let sum5sec = 0;
             series_arr_2.map(i => {
@@ -221,9 +194,6 @@ function SyncView({ selectedVideo, syncs }) {
             setDataEach3sec(series_arr_3);
         }
     }, [series, syncAvgs])
-
-    console.log('selectedVideo', selectedVideo);
-
 
     useEffect(() => {
         if (!isEmpty(dataEach3sec) && !isEmpty(syncAvgs) && user.role === 'trainer' && !oneTime) {
@@ -256,9 +226,6 @@ function SyncView({ selectedVideo, syncs }) {
         }
     }, [dataEach3sec, syncperformance, oneTime])
 
-    console.log('series', series);
-    console.log('dataEach3sec', dataEach3sec, syncAvgs);
-
     return (
         <>
             <Grid
@@ -288,9 +255,6 @@ function SyncView({ selectedVideo, syncs }) {
                 alignItems="center">
                 <Grid item xs={12} md={12} lg={6}><SyncsLineChart syncs={syncObjs} syncAvgs={syncAvgs} /> </Grid>
                 {!isEmpty(series) && !isEmpty(syncAvgs) && <Grid item xs={12} md={12} lg={6}> <Column series={series} syncAvgs={syncAvgs} /> </Grid>}
-
-                {/* <Grid item xs={12} md={12} lg={12}><HeatMapChart syncObjs={syncObjs} series={series} /></Grid> */}
-
             </Grid>
 
             <Stack direction="row" alignItems="center" justifyContent="space-between" mt={3} mb={1}>
@@ -306,7 +270,6 @@ function SyncView({ selectedVideo, syncs }) {
                 direction="row"
                 justifyContent="center"
                 alignItems="center">
-
                 {
                     !isEmpty(series) && !isEmpty(dataEach3sec) && dataEach3sec.map((el, i) => {
                         return (
@@ -316,8 +279,6 @@ function SyncView({ selectedVideo, syncs }) {
 
                 }
             </Grid>
-            {/* <ColoredLines /> */}
-
         </>
     );
 }

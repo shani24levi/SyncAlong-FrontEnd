@@ -2,7 +2,6 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Box, Container, Grid } from "@material-ui/core";
 import NextMeetingTime from '../../meeting/NextMeetingTime';
-
 import "./style.css";
 
 function HeaderWaves({ meeting, date, upcamingMeeting }) {
@@ -17,7 +16,6 @@ function HeaderWaves({ meeting, date, upcamingMeeting }) {
                             component={Grid}
                             container
                             justifyContent="center"
-                        //color={theme.palette.grey[100]}
                         >
                             <Grid item lg={5} md={6} xs={12}>
                                 <h1 style={{ padding: '10px', marginTop: '10px' }}>Welcome {user.user}!</h1>

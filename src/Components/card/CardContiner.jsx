@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Card } from '@mui/material'
-import { styled, Box } from '@mui/system'
 import { Typography } from '@mui/material';
+import { styled, Box } from '@mui/system'
 
 const CardRoot = styled(Card)(() => ({
     padding: '20px 24px',

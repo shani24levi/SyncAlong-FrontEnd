@@ -7,7 +7,6 @@ import {
   Typography,
   Paper,
   makeStyles,
-  useTheme,
   Button,
   Box
 } from '@material-ui/core';
@@ -17,7 +16,6 @@ import { CircularProgress } from '@material-ui/core';
 import { capitalize, delay } from '../../../helpers';
 import Timer from './timer/Timer';
 import RecordView from './ReactMediaRecorder';
-import HorizontalGauge from 'react-horizontal-gauge';
 //styleing
 import componentStyles from '../../../assets/material-ui-style/componenets/video';
 import SpeachRecognition from './SpeachRecognition';
@@ -25,7 +23,6 @@ import FunQuestionPopUp from './funQuestionPopUp/FunQuestionPopUp';
 import ErrorAlert from '../../alrets/ErrorAlert';
 import LoadingModal from '../../modal/LoadingModal';
 import SeccsesAlert from '../../alrets/SeccsesAlert';
-import WorningAlert from '../../alrets/WorningAlert';
 
 import {
   createRecordingById,
@@ -158,14 +155,13 @@ function VideoContext({ meeting }) {
   const [camera, setCamera] = useState(null);
   const [activityOn, setActivityOn] = useState(false);
 
+  const FRAME_RATE = 30;
+
   const lisiningForConnected = () => {
-    // setIsPeerHere(false);
     //lisinig for changes in the array of users caming in to the app
     socket?.on('connected', (socketId, users) => {
-      console.log('i am connected');
       console.log('user?._id', user, meeting, meetings);
       if (user?._id) {
-        //addUser(socket, userId,roomID)
         let conected = users.find((el) => el.userId === user?._id);
         if (conected) console.log('i am connected - you disConect');
         else {
@@ -242,8 +238,6 @@ function VideoContext({ meeting }) {
     });
   };
 
-  const FRAME_RATE = 30;
-
   useEffect(async () => {
     // setCamera(new Camera());
     navigator.mediaDevices
@@ -275,7 +269,6 @@ function VideoContext({ meeting }) {
     setDisplayErrorMessage(null);
     setSession(false);
     setActivitiesEnded(false);
-    // setIsPeerHere(yourSocketId ? true : false);
     setOneTimeCall(true);
     setStop(false);
   }, []);
@@ -299,7 +292,6 @@ function VideoContext({ meeting }) {
   }, [errorUserLeft]);
 
   useEffect(async () => {
-    // console.log('poseFarFrame', poseFarFrame);
     if (currData && !stop) {
       let data = {
         poses: poseFarFrame,
@@ -321,7 +313,6 @@ function VideoContext({ meeting }) {
 
   const activitiesSession = async () => {
     setStop(false);
-    // startingDelay && delay(1000);
     startingDelay && console.log('waited 1 sec befor starting/////');
     setStartingDelay(false);
     // setActive
@@ -403,7 +394,6 @@ function VideoContext({ meeting }) {
   };
 
   useEffect(async () => {
-    console.log('status,mediaBlobUrl', status, mediaBlobUrl);
     if (status === 'stopped' && mediaBlobUrl) {
       saveMeetingRecording();
     }
@@ -415,7 +405,6 @@ function VideoContext({ meeting }) {
             urlRoom: 'recordingFailed'
           })
         );
-        //dispatch(setActiveMeeting(meeting, false));
 
         dispatch(
           setComplitedWithUrl(meeting, {
@@ -681,7 +670,6 @@ function VideoContext({ meeting }) {
   ]);
 
   useEffect(() => {
-    console.log('spossss to do somting');
     console.log(
       accseptScheduleMeetingCall,
       myRole,
@@ -737,7 +725,7 @@ function VideoContext({ meeting }) {
       //when user answer the call the set this meeting as active
       //set it in db to seport reconect
       !isEmpty(meeting) && dispatch(setActiveMeeting(meeting, true));
-      console.log('start Meeting and recorder');
+      // console.log('start Meeting and recorder');
       await delay(5000);
       if (user.role === 'trainer' && mediapipeOfTrainee) {
         setStatusBool(true);
@@ -745,27 +733,16 @@ function VideoContext({ meeting }) {
     }
   }, [callAccepted]);
 
-  // console.log('isPeerHere', isPeerHere);
   return (
     <>
       {meetingClosedByPeer && <ErrorAlert title={'Sorry ,Meeting has been closed by peer'} />}
       {errorUserLeft && <ErrorAlert title="Peer DisConected..." />}
       {erorrWithPeerConection && <ErrorAlert title="Peer Connection Failed. " />}
       {erorrTryingToConection && <ErrorAlert title="Problem with connection..." />}
-      {!isPeerHere && yourName && mediaPipeInitilaize === 'none' && (
-        <>
-          <ErrorAlert name={yourName} title=" is not in the room" />
-        </>
-      )}
-      {isPeerHere && mediaPipeInitilaize !== 'none' && (
-        <SeccsesAlert title="You will be conected after loading pose evaluation" />
-      )}
-      {isPeerHere && mediaPipeInitilaize === 'none' && (
-        <SeccsesAlert title="will be conected in few sec..." />
-      )}
-      {mediaPipeInitilaize !== 'none' && (
-        <LoadingModal title="Load Identification" />
-      )}
+      {!isPeerHere && yourName && mediaPipeInitilaize === 'none' && (<ErrorAlert name={yourName} title=" is not in the room" />)}
+      {isPeerHere && mediaPipeInitilaize !== 'none' && (<SeccsesAlert title="You will be conected after loading pose evaluation" />)}
+      {isPeerHere && mediaPipeInitilaize === 'none' && (<SeccsesAlert title="will be conected in few sec..." />)}
+      {mediaPipeInitilaize !== 'none' && (<LoadingModal title="Load Identification" />)}
       {isPeerHere &&
         mediaPipeInitilaize === 'none' &&
         !mediapipeOfTrainee &&
@@ -787,7 +764,6 @@ function VideoContext({ meeting }) {
       {callAccepted && !callEnded && question && session && (
         <FunQuestionPopUp name={myName} />
       )}
-      {/* <audio src={ReConect} loop ref={Audio} /> */}
       {user.role === 'trainer' && (
         <RecordView
           setStatus={setStatus}

@@ -3,21 +3,14 @@ import { Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from '@material-ui/styles';
 import theme from './assets/theme/theme';
 import PropTypes from 'prop-types';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 //socket
 import { io } from 'socket.io-client';
-import { URL, SOCKET_URL } from './Utils/globalVaribals';
+import { SOCKET_URL } from './Utils/globalVaribals';
 import { ContextProvider } from './Components/Context/ContextProvider';
 //redux
 import { connect } from 'react-redux';
 import { setCurrentUser, logoutUser } from './Store/actions/authAction';
-import {
-  setCurrentProfile,
-  getTraineesProfiles,
-  getAllTraineesProfiles
-} from './Store/actions/profileAction';
-import { futureMeetings } from './Store/actions/meetingActions';
-import { getSync } from './Store/actions/syncActions';
 //utiles needed
 import setAuthToken from './Utils/setAuthToken';
 import jwt_decode from 'jwt-decode';
@@ -35,7 +28,7 @@ import VideoRoom from './Components/screens/VideoRoom';
 import Profile from './Components/screens/Profile';
 import AddTrainee from './Components/profile/addTrainee/AddTrainee';
 import ScheduleMeetings from './Components/screens/ScheduleMeetings';
-import MeetingReport from './Components/screens/MeetingReport';
+// import MeetingReport from './Components/screens/MeetingReport';
 import TraineePage from './Components/screens/TraineePage';
 import WatchMeeting from './Components/meeting/watchMeeting/WatchMeeting';
 import TraineeScheduleMeetings from './Components/screens/TraineeScheduleMeetings';
@@ -46,15 +39,8 @@ const App = (props) => {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    setSocket(io(`${SOCKET_URL}`));
-    // , {
-    //   rejectUnauthorized: false, // WARN: please do not do this
-    //   reconnection: true,
-    //   reconnectionDelay: 1000,
-    //   reconnectionDelayMax : 5000,
-    //   reconnectionAttempts: 5,
-    // }));
-    return () => {};
+    !socket && setSocket(io(`${SOCKET_URL}`));
+    return () => { };
   }, []);
 
   useEffect(() => {
@@ -65,7 +51,6 @@ const App = (props) => {
     if (localStorage.user) {
       setAuthToken(localStorage.user);
       const decoded = jwt_decode(localStorage.user);
-      console.log(decoded);
       props.setCurrentUser(decoded);
 
       // Check for expired token - didnt set it as time expired in the server
@@ -177,18 +162,6 @@ const App = (props) => {
                     />
                   </Route>
 
-                  <Route
-                    exact
-                    path="/meeting/report"
-                    element={<PrivateRoute />}
-                  >
-                    <Route
-                      exact
-                      path="/meeting/report"
-                      element={<MeetingReport />}
-                    />
-                  </Route>
-
                   <Route exact path="/trainee/:id" element={<PrivateRoute />}>
                     <Route
                       exact
@@ -221,14 +194,9 @@ const App = (props) => {
 };
 
 App.propTypes = {
-  getAllTraineesProfiles: PropTypes.func.isRequired,
-  getTraineesProfiles: PropTypes.func.isRequired,
   setCurrentUser: PropTypes.func.isRequired,
-  setCurrentProfile: PropTypes.func.isRequired,
-  // getSync: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
-  meetings: PropTypes.object.isRequired
-  // allSync: PropTypes.object,
+  profile: PropTypes.object.isRequired,
 };
 
 function mapStateToProps(state) {
@@ -236,17 +204,10 @@ function mapStateToProps(state) {
     auth: state.auth,
     loading: state.auth.loading,
     profile: state.profile,
-    meetings: state.meetings
-    // allSync: state.allSync,
   };
 }
 
 export default connect(mapStateToProps, {
   setCurrentUser,
-  futureMeetings,
   logoutUser,
-  setCurrentProfile,
-  getTraineesProfiles,
-  getAllTraineesProfiles,
-  getSync
 })(App);

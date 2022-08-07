@@ -3,7 +3,6 @@ import { Paper, styled, Grid, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom'
 import { Box } from '@mui/system';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
-import ErrorIcon from '@mui/icons-material/Error';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 

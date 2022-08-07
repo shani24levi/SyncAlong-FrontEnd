@@ -49,7 +49,6 @@ function ColumnSyncs({ data }) {
                 }
             }
         }
-
     }
 
     return (

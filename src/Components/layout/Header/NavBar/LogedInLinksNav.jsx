@@ -6,17 +6,12 @@ import { Link } from "react-router-dom";
 import { Box, ListItem, List } from "@material-ui/core";
 // @material-ui/core components
 import { Avatar } from "@material-ui/core";
-import {
-    Button, MenuItem, Fade, Menu
-} from "@material-ui/core";
+import { MenuItem, Fade, Menu } from "@material-ui/core";
 // @material-ui/icons components
 import Dashboard from "@material-ui/icons/Dashboard";
-import Person from "@material-ui/icons/Person";
 import LogoutIcon from '@mui/icons-material/Logout';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-
 // core components styling
 import { makeStyles } from "@material-ui/core/styles";
 import componentStyles from "../../../../assets/material-ui-style/componenets/auth-navbar";
@@ -32,12 +27,8 @@ const LogedInLinksNav = (props) => {
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
+    const handleClick = (event) => { setAnchorEl(event.currentTarget); };
+    const handleClose = () => { setAnchorEl(null); };
 
     const onLogoutClick = (e) => {
         e.preventDefault();
@@ -73,7 +64,6 @@ const LogedInLinksNav = (props) => {
                     <MenuItem onClick={handleClose}>Logout</MenuItem>
                 </Menu>
             </div>
-
             <ListItem
                 component={Link}
                 to="/home"

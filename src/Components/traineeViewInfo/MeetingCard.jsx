@@ -5,7 +5,6 @@ import { alpha, styled } from '@mui/material/styles';
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { Card, Typography, Grid } from '@mui/material';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
-import { set } from 'date-fns';
 import { dateFormat } from '../../Utils/dateFormat';
 import { Button, IconButton } from '@material-ui/core';
 import buttonsStyles from "../../assets/theme/buttons";

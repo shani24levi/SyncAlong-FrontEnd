@@ -45,7 +45,6 @@ const getAllTraineesProfiles = () => {
         })
 }
 
-
 const createTraineeProfile = (trinee_id, data) => {
     return axios
         .post(`${URL}/${PROFILES}/trainee/${trinee_id}`, data)
@@ -82,7 +81,6 @@ const deleteTraineeProfile = (trinee_id) => {
         })
 }
 
-
 const updateAvatarTraineePic = (formData, id) => {
     console.log(formData.getAll('file'));
     return axios
@@ -96,10 +94,8 @@ const updateAvatarTraineePic = (formData, id) => {
 export const profileService = {
     createProfile,
     update,
-    // deleteProfile,
     getProfile,
     getAllTraineesProfiles,
-
     getTraineeProfile,
     updateTraineeProfile,
     createTraineeProfile,

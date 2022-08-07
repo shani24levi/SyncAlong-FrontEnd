@@ -2,9 +2,6 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom'
 import Stack from '@mui/material/Stack';
 import { Typography } from '@mui/material';
-import ChevronLeftOutlined from '@mui/icons-material/ChevronLeftOutlined';
-import ChevronRightOutlined from '@mui/icons-material/ChevronRightOutlined';
-import { StyledIconButton } from './Carousel.styles';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 
@@ -13,7 +10,6 @@ export const StyledButton = styled(Button)(({ theme }) => ({
     textTransform: 'none',
     color: '#f5f5f5',
     fontWeight: 700,
-    // Margin: '1rem',
     transition: 'all 0.2s ease-in-out',
     [theme.breakpoints.up('xs')]: {
         padding: '12px 6px',

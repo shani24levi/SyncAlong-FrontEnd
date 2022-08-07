@@ -1,11 +1,9 @@
 import React from 'react';
 import { Box, ListItem, List } from "@material-ui/core";
 import { Link } from "react-router-dom";
-
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import Dashboard from "@material-ui/icons/Dashboard";
 import VpnKey from "@material-ui/icons/VpnKey";
-
 // core components styling
 import { makeStyles } from "@material-ui/core/styles";
 import componentStyles from "../../../../assets/material-ui-style/componenets/auth-navbar";

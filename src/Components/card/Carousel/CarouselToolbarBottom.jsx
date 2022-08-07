@@ -14,7 +14,6 @@ export const StyledButton = styled(Button)(({ theme }) => ({
     textTransform: 'none',
     color: '#f5f5f5',
     fontWeight: 700,
-    // Margin: '1rem',
     transition: 'all 0.2s ease-in-out',
     [theme.breakpoints.up('xs')]: {
         padding: '12px 6px',

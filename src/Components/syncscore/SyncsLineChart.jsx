@@ -16,13 +16,10 @@ import id from 'date-fns/esm/locale/id/index.js';
 import Loader from '../loder/Loder';
 
 function SyncsLineChart({ syncs, syncAvgs }) {
-    console.log('syncssyncs', syncs, !isEmpty(syncs), syncs[0]);
-
     const theme = useTheme();
     const [anchorEl, setAnchorEl] = useState(null);
     const [activityDisplay, setActivityDisplay] = useState({});
     const [avgDisplay, setAvgDisplay] = useState({});
-
 
     useEffect(() => {
         if (!isEmpty(syncs) && !isEmpty(syncs[0]))
@@ -31,24 +28,17 @@ function SyncsLineChart({ syncs, syncAvgs }) {
             setAvgDisplay(syncAvgs[0]);
     }, [syncs, syncAvgs])
 
-
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
+    const handleClick = (event) => { setAnchorEl(event.currentTarget); };
+    const handleClose = () => { setAnchorEl(null); };
 
     const onSetActivity = (el, i) => {
-        console.log(i);
         if (!isEmpty(i)) {
             setActivityDisplay(el);
             setAvgDisplay(syncAvgs[i]);
         }
         handleClose();
     }
-    console.log("activityDisplay", activityDisplay);
+
     return (
         <>
             <TraineeSideCard content={false}>

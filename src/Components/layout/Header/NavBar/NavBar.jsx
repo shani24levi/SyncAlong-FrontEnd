@@ -1,11 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
 // @material-ui/core components
 import { makeStyles, useTheme, styled } from "@material-ui/core/styles";
-import {
-    AppBar, Box, Container, Divider, Hidden, IconButton, ListItem, Menu, Toolbar
-} from "@material-ui/core";
+import { AppBar, Box, Container, Divider, Hidden, IconButton, ListItem, Menu, Toolbar } from "@material-ui/core";
 // @material-ui/icons components
 import Clear from "@material-ui/icons/Clear";
 import MenuIcon from "@material-ui/icons/Menu";
@@ -24,21 +21,13 @@ const StyledIconButton = styled(IconButton)`
   }`;
 
 const NavBar = (props) => {
+    const menuId = "responsive-menu-id";
     const classes = useStyles();
     const theme = useTheme();
     const [anchorEl, setAnchorEl] = React.useState(null);
-
     const isMenuOpen = Boolean(anchorEl);
-
-    const handleMenuOpen = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleMenuClose = () => {
-        setAnchorEl(null);
-    };
-
-    const menuId = "responsive-menu-id";
+    const handleMenuOpen = (event) => { setAnchorEl(event.currentTarget); };
+    const handleMenuClose = () => { setAnchorEl(null); };
 
     return (
         <>
@@ -54,12 +43,9 @@ const NavBar = (props) => {
                     >
                         <IconButton
                             disableRipple
-                            // component={Link}
-                            // to="/home"
                             variant="raised"
                             style={{ backgroundColor: 'transparent' }}
                             onClick={() => window.location.href = '/home'}
-
                         >
                             <Box
                                 alt="..."
@@ -142,7 +128,6 @@ const NavBar = (props) => {
         </>
     );
 }
-
 
 NavBar.propTypes = {
     auth: PropTypes.object.isRequired,

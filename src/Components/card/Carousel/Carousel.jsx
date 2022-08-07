@@ -10,7 +10,6 @@ import { Typography } from '@mui/material';
 import UserCard from '../../card/UserCard';
 import Toolbar from './CarouselToolbar';
 import ToolbarBottom from './CarouselToolbarBottom';
-
 import { CarouselDiv } from './Carousel.styles';
 
 SwiperCore.use([Navigation, Mousewheel, Pagination]);
@@ -19,9 +18,6 @@ const Carousel = () => {
     const userList = useSelector(state => state.profile.trainees_profiles);
     const prevRef = useRef(null);
     const nextRef = useRef(null);
-    // console.log('====================================');
-    // console.log('userList', userList);
-    // console.log('====================================');
     return (
         <CarouselDiv style={{ margin: '2rem', backgroundColor: 'inherit' }}>
             <Toolbar prevRef={prevRef} nextRef={nextRef} />

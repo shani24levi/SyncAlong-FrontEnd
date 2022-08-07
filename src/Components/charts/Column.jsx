@@ -1,15 +1,12 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import isEmpty from '../../validation/isEmpty';
 import Loader from '../loder/Loder';
 import Chart from "react-apexcharts";
-
 
 function Column({ series, syncAvgs }) {
     const [categories, setCategories] = useState(null);
     const [data, setData] = useState(null);
     const [options, setOptions] = useState(null);
-
-    // console.log('seriesseries', series, syncAvgs);
 
     useEffect(() => {
         if (!isEmpty(series) && !isEmpty(syncAvgs)) {
@@ -91,14 +88,11 @@ function Column({ series, syncAvgs }) {
                         }
                     }
                 }
-
             }
             setOptions(options);
         }
     }, [data, categories])
 
-
-    console.log('dataeee', data);
     return (
         <>
             {

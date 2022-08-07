@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import isEmpty from '../../validation/isEmpty';
@@ -10,8 +9,6 @@ import ScrollTop from '../scrollToTop/ScrollTop';
 function TraineePage(props) {
     const [trainee, setTrainee] = useState(null);
     const [errorPage, setErrorPage] = useState(false);
-
-    const location = useLocation();
     const { id } = useParams();
     const trainees_profiles = useSelector(state => state.profile.trainees_profiles);
 
@@ -23,8 +20,6 @@ function TraineePage(props) {
         }
         else setErrorPage(true);
     }, [])
-
-    console.log('trainee', trainee);
 
     return (
         <>

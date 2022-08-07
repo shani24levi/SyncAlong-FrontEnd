@@ -4,8 +4,6 @@ import { useNavigate } from 'react-router-dom'
 import { Box, styled, useTheme } from '@mui/system'
 import {
     Card,
-    Icon,
-    IconButton,
     Table,
     TableHead,
     TableRow,
@@ -24,10 +22,9 @@ import { dateFormat } from '../../Utils/dateFormat';
 
 function ListBoxTop({ meetings_complited }) {
     const profile = useSelector(state => state.profile);
-    const [trainee, setTrainee] = useState(null);
     const [traineeId, setTraineeId] = useState(null);
     const [filterdList, setFilterdList] = useState([]);
-
+    const navigate = useNavigate();
 
     const CardHeader = styled('div')(() => ({
         paddingLeft: '24px',
@@ -92,10 +89,6 @@ function ListBoxTop({ meetings_complited }) {
         }
     }, [traineeId])
 
-    console.log(' filterdList', filterdList);
-
-    const navigate = useNavigate();
-
     return (
         <Card elevation={3} sx={{ pt: '20px', mb: 3 }}>
             <CardHeader>
@@ -112,7 +105,6 @@ function ListBoxTop({ meetings_complited }) {
                     </Select>
                 </Grid>
             </CardHeader>
-
             <Box overflow="auto">
                 <SyncTable>
                     <TableHead>
@@ -156,7 +148,6 @@ function ListBoxTop({ meetings_complited }) {
                                         ? <>{dateFormat(el.dateEnd)}</>
                                         : ""}
                                 </TableCell>
-
                                 <TableCell
                                     sx={{ px: 0 }}
                                     align="left"
@@ -183,7 +174,6 @@ function ListBoxTop({ meetings_complited }) {
                                 </TableCell>
                             </TableRow>
                         ))}
-
                         {filterdList.length === 0 &&
                             <Box m="auto"
                                 alignItems="center"
@@ -203,39 +193,5 @@ function ListBoxTop({ meetings_complited }) {
         </Card>
     );
 }
-
-
-const productList = [
-    {
-        imgUrl: '/assets/images/products/headphone-2.jpg',
-        name: 'earphone',
-        price: 100,
-        available: 15,
-    },
-    {
-        imgUrl: '/assets/images/products/headphone-3.jpg',
-        name: 'earphone',
-        price: 1500,
-        available: 30,
-    },
-    {
-        imgUrl: '/assets/images/products/iphone-2.jpg',
-        name: 'iPhone x',
-        price: 1900,
-        available: 35,
-    },
-    {
-        imgUrl: '/assets/images/products/iphone-1.jpg',
-        name: 'iPhone x',
-        price: 100,
-        available: 0,
-    },
-    {
-        imgUrl: '/assets/images/products/headphone-3.jpg',
-        name: 'Head phone',
-        price: 1190,
-        available: 5,
-    },
-]
 
 export default ListBoxTop;

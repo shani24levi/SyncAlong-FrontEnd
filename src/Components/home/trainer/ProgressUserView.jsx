@@ -1,22 +1,14 @@
 import React from 'react';
-import {
-    Grid, Paper, Avatar, TextField, Button, Typography, Link,
-    Card, CardContent, CardHeader, Box, FormControlLabel, Checkbox,
-} from '@material-ui/core'
+import { Typography, Box } from '@material-ui/core'
 import { useTheme } from '@mui/system'
-
 import ProgressBarVals from '../../charts/ProgressBarVals';
 import CardContiner from '../../card/CardContiner';
 import { capitalize } from '../../../helpers';
-
 
 function ProgressUserView({ trainee, lastMeeting }) {
     const theme = useTheme()
     const secondary = theme.palette.mode
 
-    console.log('====================================');
-    console.log(" trainee, lastMeeting", trainee, lastMeeting);
-    console.log('====================================');
     return (
         <CardContiner title={`${capitalize(trainee.user.user)}'s Meetings & Syncs`}>
             <Typography sx={{ color: secondary }}>Last meeting complited</Typography>
@@ -55,7 +47,6 @@ function ProgressUserView({ trainee, lastMeeting }) {
             />
             <Box sx={{ py: '4px' }} />
             <Box sx={{ py: '12px' }} />
-
         </CardContiner>
     );
 }

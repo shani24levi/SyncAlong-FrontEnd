@@ -1,10 +1,7 @@
 import React, { useContext, useEffect, useState, forwardRef } from 'react';
 import { SocketContext } from '../ContextProvider';
-import { makeStyles } from '@material-ui/core';
-import PhoneCallbackIcon from '@mui/icons-material/PhoneCallback';
 import Calling from "../../../assets/sounds/calling.mp3";
 import Phone from "../../../assets/img/phone.gif";
-
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -23,7 +20,6 @@ const PopUpCall = ({ upcomingMeeting }) => {
     const showModal = (showVal) => {
         setIsModalVisible(showVal);
         Audio.current.pause();
-        //answerCall();
     };
     const handleClose = (showVal) => {
         setIsModalVisible(showVal);

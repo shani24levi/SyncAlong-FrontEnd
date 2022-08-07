@@ -5,6 +5,7 @@ import { styled } from '@mui/material/styles';
 import { Avatar } from '@mui/material';
 import { Typography } from '@material-ui/core';
 import { dateFormat } from '../../../Utils/dateFormat';
+import { URL } from '../../../Utils/globalVaribals';
 
 const Wrapper = styled('div')`
   .thumb {
@@ -49,11 +50,12 @@ const Wrapper = styled('div')`
 `;
 
 let activitiesImgs = [
-  'https://www.wcrf-uk.org/wp-content/uploads/2021/05/545112030-blog-header.png',
-  'https://churchviewmedicalpractice.com/images/health_images/physical-activity.jpg',
-  'https://www.kreedon.com/wp-content/uploads/2018/11/physicaleducation.jpg',
-  'https://www.acc.org//-/media/Non-Clinical/Images/2019/08/CARDIOLOGY/Cover-Story-Sports-1200x800.jpg',
-  'https://www.datocms-assets.com/43889/1616686394-illustration-sport-zero-dechets01plan-de-travail-1.jpg',
+  `${URL}/images/1.jpg`,
+  `${URL}/images/2.png`,
+  `${URL}/images/3.jpg`,
+  `${URL}/images/4.jpg`,
+  `${URL}/images/5.jpg`,
+  `${URL}/images/6.jpg`,
 ]
 
 function VideoCard({ video }) {

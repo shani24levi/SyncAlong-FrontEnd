@@ -86,6 +86,7 @@ export const createTraineeProfile = (user, data) => dispatch => {
         );
     function success(user, profile) { return { type: TRINEE_PROFILE_CREATE, payload: { user, profile } } }
 };
+
 export const getTraineesProfiles = (trainees_arr) => dispatch => {
     dispatch(setLoading(true));
     for (const id in trainees_arr) {

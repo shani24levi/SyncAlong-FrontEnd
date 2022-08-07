@@ -1,7 +1,5 @@
 import React from 'react';
-import {
-    Container, Box, Grid
-} from "@material-ui/core";
+import { Container, Box, Grid } from "@material-ui/core";
 
 const TitleHeader = ({ title, description }) => {
     return (

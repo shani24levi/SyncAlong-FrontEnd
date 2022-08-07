@@ -1,6 +1,8 @@
 import {
-    GET_ERRORS, GET_MEETINGS, GET_FUTURE_MEETINGS, MEETINGS_LOADING
-    , CREATE_MEETING,
+    GET_ERRORS,
+    GET_FUTURE_MEETINGS,
+    MEETINGS_LOADING,
+    CREATE_MEETING,
     GET_ALL_MEETINGS,
     SET_ACTIVE_MEETING,
     GET_ACTIVE_MEETING,
@@ -13,8 +15,6 @@ import {
     UPCOMING_MEETING_UPDATE
 } from './types';
 import { meetingsService } from '../../servises';
-import { redirect } from '../../helpers';
-import { alertActions } from './alertActions';
 
 export const clearLogoutMeetings = () => { return { type: CLEAR_MEETINGS }; };
 
@@ -139,7 +139,6 @@ export const clearCreatedQuickMeeting = () => dispatch => {
     return { type: CLEARE_QUICK_MEETING }
 }
 
-
 export const upateUpComingMeeting = (meeting) => dispatch => {
     dispatch(setLoading(true));
     console.log("meeting", meeting);
@@ -151,8 +150,6 @@ export const upateUpComingMeeting = (meeting) => dispatch => {
         }
     };
 }
-
-
 
 export const getActiveMeeting = () => dispatch => {
     dispatch(setLoading(true));

@@ -8,7 +8,6 @@ import { capitalize } from '../../helpers';
 function ColoredLines({ bgcolored, lineColore, series, syncAvgs }) {
     const theme = useTheme();
 
-    console.log('el', syncAvgs);
     const chartData = {
         series: [{
             name: capitalize(syncAvgs.activity),

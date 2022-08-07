@@ -1,19 +1,16 @@
 //Trainee will have his list of activities 
 import React, { useContext, useEffect, useState } from 'react';
 import { SocketContext } from '../Context/ContextProvider';
-import { useSelector, useDispatch } from 'react-redux';
-import { makeStyles, useTheme, styled, alpha } from "@material-ui/core/styles";
+import { useSelector } from 'react-redux';
+import { makeStyles, useTheme, styled } from "@material-ui/core/styles";
 import { Box, Card, CardContent, Container, Grid, Menu, MenuItem } from "@material-ui/core";
-// import NextMeetingTime from '../meeting/NextMeetingTime';
 import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined';
-
 // core components
 import PopUpCall from '../popupCall/PopUpCall';
 import componentStyles from "../../assets/material-ui-style/componenets/avatars";
 import HeaderWaves from './trainee/HeaderWaves';
 import CircelsHeader from '../layout/Header/CircelsHeader';
 import { Avatar, AvatarGroup, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material';
-import TableChartOutlinedIcon from '@mui/icons-material/TableChartOutlined';
 import PopUpCallQuickMeeting from '../popupCall/PopUpCallQuickMeeting';
 import isEmpty from '../../validation/isEmpty';
 import WorningAlert from '../alrets/WorningAlert';
@@ -23,7 +20,6 @@ import TimelineIcon from '@mui/icons-material/Timeline';
 import { capitalize, delay } from '../../helpers';
 import { dateFormat } from '../../Utils/dateFormat';
 import AreaActivities from '../charts/AreaActivities';
-import TraineeSideCard from '../card/TraineeSideCard';
 const useStyles = makeStyles(componentStyles);
 
 // styles
@@ -33,7 +29,6 @@ const CardWrapper = styled(Card)(({ theme }) => ({
     padding: '16px',
     borderRadius: '16px',
     color: 'rgb(4, 41, 122) !important',
-    // backgroundColor: 'rgb(208, 242, 255) !important'
 }));
 
 const CardAvatar = styled(Card)(({ theme }) => ({
@@ -47,7 +42,6 @@ const CardAvatar = styled(Card)(({ theme }) => ({
     alignItems: 'center',
 }));
 
-
 function TraineeHome({ meeting, date }) {
     const { updateMeetingAlrt, setUpdateMeetingAlrt, callQuickMeeting, setCallQuickMeeting, callTrainee, upcomingMeetingToNow, scheduleMeetingPopUpCall, upcamingMeeting } = useContext(SocketContext);
     const classes = useStyles();
@@ -56,7 +50,6 @@ function TraineeHome({ meeting, date }) {
     const profile = useSelector(state => state.profile);
     const meetings = useSelector(state => state.meetings);
     const syncperformance = useSelector(state => state.syncperformance.syncs);
-    const [dataChart, setDataChart] = useState(null);
     const [bastActivity, setBastActivity] = useState(null);
     const [bastMeeting, setBastMeeting] = useState(null);
     const [top5, setTop5] = useState(syncperformance);
@@ -67,7 +60,6 @@ function TraineeHome({ meeting, date }) {
     const [avgDisplay, setAvgDisplay] = useState('');
 
     useEffect(() => {
-
         if (!isEmpty(syncperformance)
             && isEmpty(activityDisplay) && isEmpty(MeetingDisplay) && isEmpty(avgDisplay)) {
             syncperformance.length != 0 && setActivityDisplay(syncperformance[0]);
@@ -98,16 +90,6 @@ function TraineeHome({ meeting, date }) {
         }
     }, [syncperformance, meetings.meetings_complited])
 
-    // useEffect(() => {
-    //     if(!isEmpty(bastActivity) && !isEmpty(bastMeeting)){
-
-    //     }
-    // }, [bastMeeting, bastActivity])
-
-    // console.log('====================================');
-    // console.log(callTrainee);
-    // console.log('====================================');
-
     useEffect(async () => {
         console.log('updateMeetingAlrt', updateMeetingAlrt);
         if (updateMeetingAlrt) {
@@ -116,14 +98,8 @@ function TraineeHome({ meeting, date }) {
         }
     }, [updateMeetingAlrt])
 
-    const handleClick = (event) => {
-        console.log('event', event);
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
+    const handleClick = (event) => { setAnchorEl(event.currentTarget); };
+    const handleClose = () => { setAnchorEl(null); };
 
     const onSetActivity = (el, i) => {
         console.log(i);
@@ -133,13 +109,6 @@ function TraineeHome({ meeting, date }) {
         }
         handleClose();
     }
-
-    console.log('callQuickMeeting', callQuickMeeting);
-    //console.log('top5', top5);
-
-    console.log('====================================');
-    console.log('MeetingDisplay', syncperformance, MeetingDisplay);
-    console.log('====================================');
 
     return (
         <>
@@ -252,7 +221,6 @@ function TraineeHome({ meeting, date }) {
                                 </Grid>
                             </>
                         }
-
                         {
                             !isEmpty(profile.profile) &&
                             <Grid
@@ -269,7 +237,6 @@ function TraineeHome({ meeting, date }) {
                                 </CardAvatar>
                             </Grid>
                         }
-
                         {
                             !isEmpty(syncperformance) &&
                             <Grid
@@ -321,7 +288,6 @@ function TraineeHome({ meeting, date }) {
                             </Grid>
                         }
                     </Grid>
-
                     {
                         !isEmpty(syncperformance) && !isEmpty(MeetingDisplay) &&
                         <Card>
@@ -373,22 +339,17 @@ function TraineeHome({ meeting, date }) {
                                         {
                                             !isEmpty(syncperformance) && !isEmpty(MeetingDisplay) &&
                                             <AreaActivities MeetingDisplay={MeetingDisplay} />
-                                            // <PurpleChartCard time={activityDisplay.activity} totalSync={Math.trunc(avgDisplay.avg * 100)} syncs={activityDisplay.result} />
                                         }
                                     </Grid>
                                 </Grid>
                             </CardContent>
                         </Card>
                     }
-
                 </Container>
             </Box>
-
-
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
                 <path fill="#fff" fillOpacity="1" d="M0,128L40,133.3C80,139,160,149,240,154.7C320,160,400,160,480,149.3C560,139,640,117,720,112C800,107,880,117,960,144C1040,171,1120,213,1200,213.3C1280,213,1360,171,1400,149.3L1440,128L1440,0L1400,0C1360,0,1280,0,1200,0C1120,0,1040,0,960,0C880,0,800,0,720,0C640,0,560,0,480,0C400,0,320,0,240,0C160,0,80,0,40,0L0,0Z"></path>
             </svg>
-
         </>
     );
 }

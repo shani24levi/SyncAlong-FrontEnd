@@ -88,17 +88,6 @@ const updateAvatarPic = (formData) => {
         })
 }
 
-// const updateAvatarTraineePic = (formData,id) => {
-//     console.log(formData.getAll('file'));
-//     return axios
-//         .put(`${URL}/${USERS}/avatar/tarinee/${id}`, formData, {headers: {'Content-Type': 'multipart/form-data'}})
-//         .then(url => { console.log("url:", url); return url })
-//         .catch(err => {
-//             return Promise.reject(err.response.data);
-//         })
-// }
-
-
 export const userService = {
     login,
     logout,
@@ -107,7 +96,5 @@ export const userService = {
     createTraineeUser,
     updateTraineeUser,
     deleteTrainee,
-
     updateAvatarPic,
-    // updateAvatarTraineePic,
 };
