@@ -3,7 +3,7 @@ React Hooks with Redux using Material UI libary for ui-design.
 
 ## Links
 
-- [SyncAlong-client](https://sync-along-app-2022.netlify.app)
+- [SyncAlong-client](https://sync-along.netlify.app/home) 
 - [SyncAlong-server-github](https://github.com/Aymanw1998/SyncAlong)
 - [SyncAlong-API-Postman-Docs](https://documenter.getpostman.com/view/9310231/UVJkBYim/)
 
