@@ -50,12 +50,12 @@ const Wrapper = styled('div')`
 `;
 
 let activitiesImgs = [
-  `${URL}/images/1.jpg`,
-  `${URL}/images/2.png`,
-  `${URL}/images/3.jpg`,
+  `${URL}/images/1.png`,
+  `${URL}/images/2.jpg`,
+  `${URL}/images/3.png`,
   `${URL}/images/4.jpg`,
   `${URL}/images/5.jpg`,
-  `${URL}/images/6.jpg`,
+  `${URL}/images/6.png`,
 ]
 
 function VideoCard({ video }) {
