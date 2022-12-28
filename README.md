@@ -1,6 +1,10 @@
 # SyncAlong-FrontEnd
 React Hooks with Redux using Material UI libary for ui-design.
 
+## Demo Videos
+- [SyncAlong overView](https://www.youtube.com/watch?v=lzavS42n3_8) 
+- [SyncAlong CRUD system](https://www.youtube.com/watch?v=e4UP5bghs6c) 
+
 ## Links
 
 - [SyncAlong-client](https://sync-along.netlify.app/home) 
