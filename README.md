@@ -5,9 +5,7 @@ React Hooks with Redux using Material UI libary for ui-design.
 - [SyncAlong overView](https://www.youtube.com/watch?v=lzavS42n3_8) 
 - [SyncAlong CRUD system](https://www.youtube.com/watch?v=e4UP5bghs6c) 
 
-<p align="center">
 <iframe width="560" height="315" src="https://www.youtube.com/embed/ZWfDbkAgSRY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-</p>
 
 ## Links
 
