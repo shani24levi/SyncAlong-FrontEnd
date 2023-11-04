@@ -47,6 +47,21 @@ The app has the following features:
 - [x] Enable/disable camera
 
 
+
+## QA and Automation Testing
+Setting all test files in Development_documents_and_Testing folder
+includes:
+- docs for Development documents 
+  - alpa
+  - bata 
+- doc for QA
+  - class diagram
+  - uml
+  - use case
+  - 
+- Scripts test case with selenium using python
+
+
 ## Our Web System
 ![234](https://user-images.githubusercontent.com/48565585/178980116-6fcd23e8-13ad-45bb-bb8b-4897aba6de5f.PNG)
 ![עמוד פגישה2](https://user-images.githubusercontent.com/48565585/178980251-986e52d6-fc75-4b84-a141-06574c15e64b.PNG)
